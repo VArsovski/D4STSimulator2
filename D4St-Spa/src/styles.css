@@ -1,0 +1,265 @@
+body {
+    background-image: url("_Resources/img/background3.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+body img {
+    opacity: 0.7;
+}
+
+.sizeSmall img {
+    width: 35px;
+    height: auto;
+}
+
+.sizeMid img {
+    height: 65px;
+    width: auto;
+}
+
+.sizeBar img {
+    height: 75px;
+    width: 75px;
+}
+
+.sizeCrystal img {
+    width: 35px;
+    height: 150%;
+}
+
+.sizeSquashedH {
+    transform: scale(0.75, 1);
+}
+
+.sizeSquashedV {
+    transform: scale(1, 0.75);
+}
+
+.ornament img, .ornament:hover {
+    opacity: 1;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+.skillBar img {
+    opacity: 1;
+    cursor: pointer;
+}
+
+.yellowGlow img {
+    box-shadow:  #BDC581 2px 5px 17px 5px, #BDC581 inset 2px 5px 17px 5px, #BDC581 -2px -5px 17px -5px, #BDC581 inset -2px -5px 17px -5px;
+}
+
+.yellowGlowHover:hover img {
+    box-shadow:  #BDC581 2px 5px 17px 5px, #BDC581 inset 2px 5px 17px 5px, #BDC581 -2px -5px 17px -5px, #BDC581 inset -2px -5px 17px -5px;
+}
+
+.blueGlow img {
+    box-shadow:  #1289A7 2px 5px 17px 5px, #1289A7 inset 2px 5px 17px 5px, #1289A7 -2px -5px 17px -5px, #1289A7 inset -2px -5px 17px -5px;
+}
+
+.blueGlowHover:hover img {
+    box-shadow:  #1289A7 2px 5px 17px 5px, #1289A7 inset 2px 5px 17px 5px, #1289A7 -2px -5px 17px -5px, #1289A7 inset -2px -5px 17px -5px;
+}
+
+.redGlow img {
+    box-shadow:  #ED4C67 2px 5px 17px 5px, #ED4C67 inset 2px 5px 17px 5px, #ED4C67 -2px -5px 17px -5px, #ED4C67 inset -2px -5px 17px -5px;
+}
+
+.redGlowHover:hover img {
+    box-shadow:  #ED4C67 2px 5px 17px 5px, #ED4C67 inset 2px 5px 17px 5px, #ED4C67 -2px -5px 17px -5px, #ED4C67 inset -2px -5px 17px -5px;
+}
+
+.purpleGlow img {
+    box-shadow:  #6F1E51 2px 5px 17px 5px, #6F1E51 inset 2px 5px 17px 5px, #6F1E51 -2px -5px 17px -5px, #6F1E51 inset -2px -5px 17px -5px;
+}
+
+.purpleGlow img:hover {
+    box-shadow:  #6F1E51 2px 5px 17px 5px, #6F1E51 inset 2px 5px 17px 5px, #6F1E51 -2px -5px 17px -5px, #6F1E51 inset -2px -5px 17px -5px;
+}
+
+.titleRowCustom, .statsRowCustom {
+    margin-top: 3em;
+    margin-bottom: 3em;
+}
+
+.jumbotron-transparentCustom {
+    background: none;
+    text-align: center;
+    height: 10vh;
+    vertical-align: top;
+    padding-top: 25px;
+    margin-bottom: 10px;
+}
+
+.customHeaderFont {
+    font-family: 'Bebas Neue', cursive;
+    font-weight: bolder;
+    text-shadow: #5758BB 2px 0 10px;
+    opacity: 1;
+}
+
+.customFontSkills {
+    font-family: 'Bebas Neue', cursive;
+    font-weight: 900;
+    text-shadow: #ED4C67 2px 0 10px;
+    text-shadow: #5758BB;
+    opacity: 1;
+}
+
+.customFontSkills label {
+    font-family: 'Bebas Neue', cursive;
+    font-weight: 900;
+    text-shadow: #12CBC4 2px 0 10px;
+    text-shadow: #A3CB38;
+    line-height: 88%;
+    top:3px;
+}
+
+.customFontSkillsHoverable :hover {
+    font-family: 'Bebas Neue', cursive;
+    font-weight: 900;
+    text-shadow: #1289A7 2px 5px 20px 5px;
+    text-shadow: #5758BB;
+    cursor: pointer;
+    box-shadow:  #1289A7 2px 5px 20px 5px, #1289A7 inset 2px 5px 20px 5px, #1289A7 -2px -5px 20px -5px, #1289A7 inset -2px -5px 20px -5px;
+    border-radius: 50%;
+}
+
+.col4Custom {
+    text-align: center;
+}
+
+.col45Custom {
+    width: 45px;
+    height: 45px;
+}
+
+.marginlessTop {
+    /* margin-top: -10%; */
+    line-height:80%
+}
+
+/* .rowPowersCustom {
+} */
+
+.rowGiftsCustom {
+    padding-top: 5vh;
+    padding-bottom: 5vh;
+}
+
+/* .rowSkillsCustom {
+} */
+
+.marginBottomCustom {
+    margin-bottom: 7vh;
+}
+.marginTopCustom {
+    margin-top: 7vh;
+}
+
+.centeredCustom {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.wrap{
+	display:table;
+	height:56%;
+	width:100%;
+    max-width:100%;
+	max-height:56%;
+    margin:auto;
+    position:absolute;
+    top: -35vh;
+    /* transform: translate(0%, -15vh); */
+    transform: scale(0.8, 0.56);
+}
+
+.btnGroupCustom, .btnGroupCustom ul {
+    background-color: rgba(27,20,100, 0.5);
+    width: auto;
+    cursor:pointer;
+    color: #D6A2E8;
+}
+
+.btnCustom, .btnCustom:hover, .btnCustom:active {
+    display: inline-block;
+    /* background-color: rgba(27,20,100, 0.5); */
+    background-color: rgb(142, 138, 175);
+    width: auto;
+    cursor:pointer;
+    /* color: #D6A2E8; */
+    color: #2A222C;
+    font-size: 77%;
+}
+
+.menuItemCustom {
+    background-color: rgb(142, 138, 175); /* rgba(214,162,232, 0.5); */
+    cursor:pointer;
+    color: #2A222C; /*rgba(27,20,100, 0.5);*/ /*#D6A2E8;*/ /*R: 142 G: 138 B: 175*//*#8E8AAF*/
+    /* box-shadow:  #6F1E51 2px 5px 20px 5px, #6F1E51 inset 2px 5px 20px 5px, #6F1E51 -2px -5px 20px -5px, #6F1E51 inset -2px -5px 20px -5px; */
+    text-decoration: none;
+    display:inline-block;
+    white-space: nowrap;
+    width: 100%;
+    padding-right: 10px;
+    overflow: hidden;    
+}
+
+.noselect {
+-webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+        -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                supported by Chrome, Opera and Firefox */
+}
+
+.menuItemCustom:hover {
+    box-shadow:  #6F1E51 2px 5px 20px 5px, #6F1E51 inset 2px 5px 20px 5px, #6F1E51 -2px -5px 20px -5px, #6F1E51 inset -2px -5px 20px -5px;
+}
+
+.menuItemCustom a {
+    text-decoration: none;
+}
+
+.skillPicker {
+    background-color: rgba(27,20,100, 0.5);
+    width: auto;
+    cursor:pointer;
+}
+.skillPicker option, .skillPicker li {
+    cursor:pointer;
+}
+
+.skillPicker option img, .skillPicker img {
+    height: 45px;
+    width: 45px;
+    box-shadow:  #6F1E51 2px 5px 20px 5px, #6F1E51 inset 2px 5px 20px 5px, #6F1E51 -2px -5px 20px -5px, #6F1E51 inset -2px -5px 20px -5px;
+}
+
+.dropdownItemImg {
+    height: 45px;
+    width: 45px;
+    margin: 8px;
+}
+
+.menuCustom li {
+    width: 100%;
+}
+
+.menuCustom li a {
+    white-space:nowrap;
+    width: auto;
+}
+
+/* first step: remove fixed width from .dropdown ul li a
+
+second step: add the css li li {width:100%;}
+
+third step: add .mainNav li a {white-space:nowrap;} */

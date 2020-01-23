@@ -1,0 +1,15 @@
+<div class="btn-group dropright btnGroupCustom h2" dropdown dropdownToggle ngDefaultControl #dropdown="bs-dropdown" [(ngModel)]="this.selectedItem" [dropup]="true" [autoClose]="true" (placement)="this.placement">
+  <button *ngIf="this.selectedItem" id="button-custom-html" type="button" class="btn btnCustom" aria-controls="dropdown-custom-html">
+    <img [id]="'item-selected---'+ this.selectedItem.id" class="dropdownItemImg" [src]=this.selectedItem.imageUrl>
+    {{this.selectedItem.name}} <span [id]="'item-selected-detail---'+ this.selectedItem.id" *ngIf="this.selectedItem.detail">[{{this.selectedItem.detail}}]</span>
+  </button>
+  <button *ngIf="!this.selectedItem" id="button-custom-html" type="button" class="btn btnCustom" aria-controls="dropdown-custom-html">
+    <img [id]="'item-selected---undefined'" class="dropdownItemImg" [src]=this.srcBorder> {{this.caption}}
+  </button>
+  <ul id="dropdown-custom-html" *dropdownMenu class="dropdown-menu h2 menuCustom" role="menu" aria-spanledby="button-custom-html">
+    <!-- (mouseover)="ItemHovered($event)" (mouseout)="ItemOut($event)" -->
+    <li *ngFor="let item of this.items" class="menuItemCustom noselect" (click)="ItemSelected($event)" (mouseover)="ItemHovered($event)" (mouseout)="ItemOut($event)" role="menuitem">
+        <a class="h3" [id]="'item---'+ item.id"><img [id]="'item-img---'+item.id" class="dropdownItemImg" [src]=item.imageUrl>{{item.name}} <span [id]="'item-detail---'+item.id" *ngIf="item.detail">[{{item.detail}}]</span></a></li>
+    <li *ngIf="!this.items" class="menuItemCustom noselect" (click)="ItemSelected($event)" role="menuitem"><a class="h3"><img class="dropdownItemImg" [src]=this.srcBorder>EMPTY</a></li>
+  </ul>
+</div>

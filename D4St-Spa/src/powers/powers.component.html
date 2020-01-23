@@ -1,0 +1,44 @@
+<div *ngIf="this.model?.BasicData">
+  <div class="row customFontSkills">
+    <div class="col-4 h2">Powers: {{this.model.BasicData.TotalPower}}<label *ngIf="this.previewChanges?.BasicData.TotalPower">+({{this.previewChanges.BasicData.TotalPower}})</label> ({{this.model.BasicData.UnassignedPower}}<label *ngIf="this.previewChanges?.BasicData.UnassignedPower">+({{this.previewChanges.BasicData.UnassignedPower}})</label> Left)</div>
+    <div class="col-2 h2">Angelic: <a tooltip="+1" class="sizeSmall ornament redGlow blueGlowHover" (mouseout)="PowerUpPreviewCancel()" (mouseover)="PowerUpPreview(1)" (click)="PowerUp(1,1)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a> {{this.model.BasicData.AngelicPower}}</div>
+    <div class="col-2 h2">Demonic: <a tooltip="+1" class="sizeSmall ornament redGlow blueGlowHover" (mouseout)="PowerUpPreviewCancel()" (mouseover)="PowerUpPreview(2)" (click)="PowerUp(2,1)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a> {{this.model.BasicData.DemonicPower}}</div>
+    <div class="col-2 h2">Ancestral:<a tooltip="+1" class="sizeSmall ornament redGlow blueGlowHover" (mouseout)="PowerUpPreviewCancel()" (mouseover)="PowerUpPreview(3)" (click)="PowerUp(3,1)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a> {{this.model.BasicData.AncestralPower}}</div>
+  </div>
+  <div class="row customHeaderFont">
+    <div class="col-4 h2">Gifts: {{this.model.BasicData.GiftsTotal}}<label *ngIf="this.previewChanges?.BasicData.GiftsTotal">+({{this.previewChanges.BasicData.GiftsTotal}})</label> ({{this.model.BasicData.GiftsLeft}}<label *ngIf="this.previewChanges?.BasicData.GiftsLeft">+({{this.previewChanges.BasicData.GiftsLeft}})</label> Left)</div>
+    <!-- <div class="col-2 h2">Angelic: <a tooltip="+1" class="crystalSmall" (mouseout)="PowerUpPreviewCancel()" (mouseover)="PowerUpPreview(1)" (click)="PowerUp(1,1)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a> {{this.model.BasicData.AngelicPower}}</div>
+    <div class="col-2 h2">Demonic: <a tooltip="+1" class="crystalSmall" (mouseout)="PowerUpPreviewCancel()" (mouseover)="PowerUpPreview(2)" (click)="PowerUp(2,1)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a> {{this.model.BasicData.DemonicPower}}</div>
+    <div class="col-2 h2">Ancestral:<a tooltip="+1" class="crystalSmall" (mouseout)="PowerUpPreviewCancel()" (mouseover)="PowerUpPreview(3)" (click)="PowerUp(3,1)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a> {{this.model.BasicData.AncestralPower}}</div> -->
+  </div>
+  <div *ngIf="!!this.previewChanges" class="row customFontSkills">
+    <div class="col h2">DE/BUFF rates:</div>
+    <div class="col h4"> {{this.model.AngelicPowers.SpellPowerChance}}
+      <label *ngIf="this.previewChanges.AngelicPowers.SpellPowerChance">+({{this.previewChanges.AngelicPowers.SpellPowerChance| number:'1.2-2'}})</label>
+      % chance to increase spellpower
+      <div class="w-100"></div>
+      ({{this.model.AngelicPowers.SpellPowerBonus}}
+      <label *ngIf="this.previewChanges.AngelicPowers.SpellPowerBonus">+({{this.previewChanges.AngelicPowers.SpellPowerBonus| number:'1.2-2'}})</label>%
+      for {{this.model.AngelicPowers.BuffDuration}}
+      <label *ngIf="this.previewChanges.AngelicPowers.BuffDuration">+({{this.previewChanges.AngelicPowers.BuffDuration| number:'1.2-2'}})</label>
+      sec)
+    </div>
+    <div class="col h4"> {{this.model.DemonicPowers.ReduceSpellpowerChance}}
+      <label *ngIf="this.previewChanges.DemonicPowers.ReduceSpellpowerChance">+({{this.previewChanges.DemonicPowers.ReduceSpellpowerChance| number:'1.2-2'}})</label>
+       % chance to reduce target spellpower
+      <div class="w-100"></div>
+      ({{this.model.DemonicPowers.ReduceSpellDamage}}
+      <label *ngIf="this.previewChanges.DemonicPowers.ReduceSpellDamage">+({{this.previewChanges.DemonicPowers.ReduceSpellDamage| number:'1.2-2'}})</label>%
+      for {{this.model.DemonicPowers.DebuffDuration}}
+      <label *ngIf="this.previewChanges.DemonicPowers.DebuffDuration">+({{this.previewChanges.DemonicPowers.DebuffDuration| number:'1.2-2'}})</label>
+      sec)
+    </div>
+  </div>
+  <div *ngIf="!this.previewChanges" class="row customFontSkills" class="row customFontSkills">
+    <div class="col h2">DE/BUFF rates:</div>
+    <div class="col h4"> {{this.model.AngelicPowers.SpellPowerChance}} % chance to increase spellpower by
+      {{this.model.AngelicPowers.SpellPowerBonus}} for {{this.model.AngelicPowers.BuffDuration}} sec </div>
+    <div class="col h4"> {{this.model.DemonicPowers.ReduceSpellpowerChance}} % chance to reduce target spellpower by
+      {{this.model.DemonicPowers.ReduceSpellDamage}} for {{this.model.DemonicPowers.DebuffDuration}} sec </div>
+  </div>
+</div>

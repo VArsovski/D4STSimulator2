@@ -1,0 +1,11 @@
+<div class="row rowSkillsCustom align-content-center">
+  <div class="customHeaderFont pt-3 col-2">
+    <app-DemoDropdownCustomHtml [caption]="this.caption" [items]="this.skillsPerTier" (itemSelectedEventAsync)="SelectSkill($event)"></app-DemoDropdownCustomHtml>
+  </div>
+  <!-- <div class="col-1 text-left">
+    <label class="h4"><div class="ml-5">TIER {{this.model.tier}} {{this.model.tierName}}</div></label>
+  </div> -->
+  <div class="col h4">
+    <app-skills [(model)]=this.model.selectedSkill (equipSkillEmitter)="EquipSkillHandler($event)"></app-skills>
+  </div>
+</div>

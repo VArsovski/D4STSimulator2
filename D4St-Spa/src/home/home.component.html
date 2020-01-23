@@ -1,0 +1,25 @@
+  <div class="row titleRowCustom">
+      <div class="col text-center jumbotron jumbotron-transparentCustom">
+          <h2 class="display-4 customHeaderFont">Our Mother blessed you with gifts</h2>
+      </div>
+  </div>
+  <div class="row statsRowCustom">
+    <div class="col">
+    <!--TODO: See into the following problem: -->
+    <!-- IDK WHY BUT MOUSEOVER AND MOUSEOUT BEHAVE REVERSE FOR THIS ONE -->
+      <app-stats  [(model)]="model" [initialized]="initializeChildren" [previewModel]="levelUpCalculations" [previewChanges]="levelUpCalculationsCancel" (levelUpEmitter)="LevelUpHandler($event)" (levelUpPreviewEmitter)="LevelUpPreviewHandler($event)" (levelUpPreviewCancelEmitter)="LevelUpPreviewCancelHandler($event)"></app-stats>
+    </div>
+  </div>
+  <!-- <router-outlet></router-outlet> -->
+  <div class="row rowPowersCustom">
+    <div class="col mb-4" id="powersContainer">
+      <app-powers [(model)]="model" [initialized]="initializeChildren" [previewModel]="powerUpCalculations" [previewChanges]="powerUpCalculationsCancel" (powerUpEmitter)="PowerUpHandler($event)" (powerUpPreviewEmitter)="PowerUpPreviewHandler($event)" (powerUpPreviewCancelEmitter)="PowerUpPreviewCancelHandler($event)"></app-powers>
+    </div>
+  </div>
+  <div class="row rowGiftsCustom">
+    <div class="col-1 customHeaderFont h2">SKILLS:</div>
+    <app-skillBar [(equippedModel)]="this.skillEquipModel"></app-skillBar>
+  </div>
+  <div *ngFor="let skillTier of this.skillTiers">
+    <app-skillPicker [(model)]="skillTier" (skillEquippedEmitter)="EquipSkillHandler($event)"></app-skillPicker>
+  </div>

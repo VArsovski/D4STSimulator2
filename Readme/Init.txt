@@ -1,0 +1,8 @@
+If doesn't work, run following commands:
+
+node-v  [see if installed nodejs]
+npm -v  [see if installed npm]              [if not, "run npm install"]
+ng -h   [see if installed @angular/cli]     [npm install -g @angular/cli]
+
+If having NPM and Angular installed, google if not specific error but this should be enough:
+npm install --save rxjs-compat              [install rxjs initial package]
