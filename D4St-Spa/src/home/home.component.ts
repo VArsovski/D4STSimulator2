@@ -140,4 +140,8 @@ export class HomeComponent implements OnInit, OnChanges {
 
     await acknowledgeEmitFn(data);
   }
+
+  public async SkillSelectHandler(data: SkillEquipVM) {
+    this.skillEquipModel.position = data.position;
+  }
 }

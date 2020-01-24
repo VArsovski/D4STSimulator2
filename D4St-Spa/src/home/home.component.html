@@ -18,7 +18,7 @@
   </div>
   <div class="row rowGiftsCustom">
     <div class="col-1 customHeaderFont h2">SKILLS:</div>
-    <app-skillBar [(equippedModel)]="this.skillEquipModel"></app-skillBar>
+    <app-skillBar [(equippedModel)]="this.skillEquipModel" (selectEquipEmitter)="SkillSelectHandler($event)"></app-skillBar>
   </div>
   <div *ngFor="let skillTier of this.skillTiers">
     <app-skillPicker [(model)]="skillTier" (skillEquippedEmitter)="EquipSkillHandler($event)"></app-skillPicker>
