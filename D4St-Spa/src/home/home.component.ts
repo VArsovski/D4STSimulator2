@@ -1,9 +1,10 @@
-import { Component, OnInit, Output, Input, OnChanges, SimpleChanges, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { ApiServiceService } from 'src/_Services/ApiService.service';
 import { BasicStatsVM } from 'src/Models/BasicStatsVM';
 import { SkillListVM } from 'src/Models/SkillListVM';
 import { SkillWithImageVM } from 'src/Models/SkillWithImageVM';
 import { SkillEquipVM } from 'src/Models/SkillEquipVM';
+import { BasicStatDifferencesVM } from 'src/Models/BasicStatDifferencesVM';
 
 @Component({
   selector: "app-home",
@@ -19,34 +20,22 @@ export class HomeComponent implements OnInit, OnChanges {
 
   @Input() initializeChildren: boolean;
   @Input() model: BasicStatsVM;
-  @Input() levelUpCalculations: BasicStatsVM;
-  @Input() powerUpCalculations: BasicStatsVM;
-  @Input() levelUpCalculationsCancel: BasicStatsVM;
-  @Input() powerUpCalculationsCancel: BasicStatsVM;
+  @Input() levelUpCalculations: BasicStatDifferencesVM;
+  @Input() powerUpCalculations: BasicStatDifferencesVM;
   @Input() skillsModel: SkillListVM;
   @Output() skillEquipModel: SkillEquipVM;
   @Output() skillTiers: SkillListVM[];
 
   constructor(private apiService: ApiServiceService) {
     this.skillTiers = [];
-    this.levelUpCalculations = new BasicStatsVM();
-    this.powerUpCalculations = new BasicStatsVM();
+    this.levelUpCalculations = new BasicStatDifferencesVM(new BasicStatsVM());
+    this.powerUpCalculations = new BasicStatDifferencesVM(new BasicStatsVM());
     this.skillEquipModel = new SkillEquipVM();
   }
 
   ngOnInit() {}
 
   async initSkillTiers() {
-    // var tiers: any[] = [];
-    // of<SkillVM[]>(this.skillsModel.skills)
-    //   .pipe(map((s: SkillVM[]) => s.map(x => x.tier)))
-    //   .subscribe(x => tiers.push(x));
-    // var tiersArray = tiers[0];
-    // of(tiersArray).pipe(
-    //   distinct(),
-    // )
-    // .subscribe(x => { console.log(x); tiersDistinct.push(x)});
-
     var tiersDistinct: any[] = [];
     this.skillsModel.skills.forEach(x => {
       if (tiersDistinct.indexOf(x.tier) == -1) tiersDistinct.push(x.tier);
@@ -63,42 +52,21 @@ export class HomeComponent implements OnInit, OnChanges {
     });
   }
 
-
-  //# region CANCEL
-
-  public async LevelUpPreviewCancelHandler() {
-    var acknowledgeEmitFn = async (data: BasicStatsVM) => {
-      this.powerUpCalculationsCancel = data;
-    };
-
-    await acknowledgeEmitFn(new BasicStatsVM());
-  }
-
-  public async PowerUpPreviewCancelHandler() {
-    var acknowledgeEmitFn = async (data: BasicStatsVM) => {
-      this.levelUpCalculationsCancel = data;
-    };
-
-    await acknowledgeEmitFn(new BasicStatsVM());
-  }
-
-  //# endregion
-
   // ## region CLICK
   public async LevelUpHandler(model: BasicStatsVM) {
-    var acknowledgeEmitFn = async data => {
+    var acknowledgeEmitFn = async (data: BasicStatsVM) => {
       this.model = data;
       // Reset comparison data
-      this.levelUpCalculationsCancel = new BasicStatsVM();
+      this.powerUpCalculations = new BasicStatDifferencesVM(data, true, true);
     };
 
     await acknowledgeEmitFn(model);
   }
   public async PowerUpHandler(model: BasicStatsVM) {
-    var acknowledgeEmitFn = async data => {
+    var acknowledgeEmitFn = async (data: BasicStatsVM) => {
       this.model = data;
       // Reset comparison data
-      this.powerUpCalculationsCancel = new BasicStatsVM();
+      this.levelUpCalculations = new BasicStatDifferencesVM(data, true, true);
     };
 
     await acknowledgeEmitFn(model);
@@ -108,17 +76,17 @@ export class HomeComponent implements OnInit, OnChanges {
 
   //# region PREVIEW
 
-  public async LevelUpPreviewHandler(data: BasicStatsVM) {
-    var acknowledgeEmitFn = async (data: BasicStatsVM) => {
-      this.powerUpCalculations = data;
+  public async LevelUpPreviewHandler(data: BasicStatDifferencesVM) {
+    var acknowledgeEmitFn = async (data: BasicStatDifferencesVM) => {
+      this.powerUpCalculations = new BasicStatDifferencesVM(data.statsData, data.showData);
     };
 
     await acknowledgeEmitFn(data);
   }
 
-  public async PowerUpPreviewHandler(data: BasicStatsVM) {
-    var acknowledgeEmitFn = async (data: BasicStatsVM) => {
-      this.levelUpCalculations = data;
+  public async PowerUpPreviewHandler(data: BasicStatDifferencesVM) {
+    var acknowledgeEmitFn = async (data: BasicStatDifferencesVM) => {
+      this.levelUpCalculations = new BasicStatDifferencesVM(data.statsData, data.showData);
     };
 
     await acknowledgeEmitFn(data);
@@ -128,7 +96,7 @@ export class HomeComponent implements OnInit, OnChanges {
 
   public async EquipSkillHandler(data: SkillWithImageVM) {
     var acknowledgeEmitFn = async (data: SkillWithImageVM) => {
-      // MUST CREATE A NEW VARIABLE AND UPDATE TEH MODEL, otherwise doesn't count as changed for some reason
+      // MUST CREATE A NEW VARIABLE AND UPDATE THE MODEL, otherwise doesn't count as changed for some reason
       // this.skillEquipModel.skillData = data;
       var tempEquipModel = new SkillEquipVM(data, this.skillEquipModel.position);
       if (tempEquipModel.position < 8) {

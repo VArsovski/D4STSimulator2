@@ -2,7 +2,7 @@
   <div class="row customFontSkills">
     <!--TODO: See into the following problem: -->
     <!-- IDK WHY BUT MOUSEOVER AND MOUSEOUT BEHAVE REVERSE FOR THIS ONE -->
-    <div class="col-3 h1">LEVEL: {{this.model.BasicData.Level}} <a tooltip="+1" class="sizeMid ornament yellowGlow blueGlowHover" (mouseover)="LevelUpPreview()" (mouseout)="LevelUpPreviewCancel()" (click)="LevelUp(1)" (updateHomeFromStats)="LevelUp($event)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a> </div>
+    <div class="col-3 h1">LEVEL: {{this.model.BasicData.Level}} <a tooltip="+1" class="sizeMid ornament blueGlow redGlowHover" (mouseover)="LevelUpPreview()" (mouseout)="LevelUpPreviewCancel()" (click)="LevelUp(1)" (updateHomeFromStats)="LevelUp($event)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a> </div>
     <div class="col-3 h1">CLASS TYPE: {{this.model.BasicData.ClassTypeStr}}</div>
     <div class="col-6 h1">Basic DAMAGE:
       <label class="h3">{{this.model.BasicData.MinDamage + this.model.BasicData.MinDamageBonus}} - {{this.model.BasicData.MaxDamage + this.model.BasicData.MaxDamageBonus}}</label>
@@ -44,7 +44,7 @@
   <div class="row customFontSkills">
     <!--TODO: See into the following problem: -->
     <!-- IDK WHY BUT MOUSEOVER AND MOUSEOUT BEHAVE REVERSE FOR THIS ONE -->
-    <div class="col-3 h1">LEVEL: {{this.model.BasicData.Level}} <a tooltip="+1" class="sizeMid ornament yellowGlow blueGlowHover" (mouseover)="LevelUpPreview($event)" (mouseout)="LevelUpPreviewCancel($event)" (click)="LevelUp(1)" (updateHomeFromStats)="LevelUp($event)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a></div>
+    <div class="col-3 h1">LEVEL: {{this.model.BasicData.Level}} <a tooltip="+1" class="sizeMid ornament blueGlow redGlowHover" (mouseover)="LevelUpPreview($event)" (mouseout)="LevelUpPreviewCancel($event)" (click)="LevelUp(1)" (updateHomeFromStats)="LevelUp($event)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a></div>
     <div class="col-3 h1">CLASS TYPE: {{this.model.BasicData.ClassTypeStr}}</div>
     <div class="col-6 h1">Basic DAMAGE:
       ({{this.model.BasicData.MinDamage + this.model.BasicData.MinDamageBonus}} -

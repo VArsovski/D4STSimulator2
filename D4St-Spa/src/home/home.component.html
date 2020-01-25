@@ -7,13 +7,13 @@
     <div class="col">
     <!--TODO: See into the following problem: -->
     <!-- IDK WHY BUT MOUSEOVER AND MOUSEOUT BEHAVE REVERSE FOR THIS ONE -->
-      <app-stats  [(model)]="model" [initialized]="initializeChildren" [previewModel]="levelUpCalculations" [previewChanges]="levelUpCalculationsCancel" (levelUpEmitter)="LevelUpHandler($event)" (levelUpPreviewEmitter)="LevelUpPreviewHandler($event)" (levelUpPreviewCancelEmitter)="LevelUpPreviewCancelHandler($event)"></app-stats>
+      <app-stats  [(model)]="model" [initialized]="initializeChildren" [previewModel]="levelUpCalculations" (levelUpEmitter)="LevelUpHandler($event)" (levelUpPreviewEmitter)="LevelUpPreviewHandler($event)"></app-stats>
     </div>
   </div>
   <!-- <router-outlet></router-outlet> -->
   <div class="row rowPowersCustom">
     <div class="col mb-4" id="powersContainer">
-      <app-powers [(model)]="model" [initialized]="initializeChildren" [previewModel]="powerUpCalculations" [previewChanges]="powerUpCalculationsCancel" (powerUpEmitter)="PowerUpHandler($event)" (powerUpPreviewEmitter)="PowerUpPreviewHandler($event)" (powerUpPreviewCancelEmitter)="PowerUpPreviewCancelHandler($event)"></app-powers>
+      <app-powers [(model)]="model" [initialized]="initializeChildren" [previewModel]="powerUpCalculations" (powerUpEmitter)="PowerUpHandler($event)" (powerUpPreviewEmitter)="PowerUpPreviewHandler($event)"></app-powers>
     </div>
   </div>
   <div class="row rowGiftsCustom">

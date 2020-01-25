@@ -2,6 +2,7 @@ import { Component, OnInit, Input, EventEmitter, Output, SimpleChanges, OnChange
 import { BasicStatsVM } from 'src/Models/BasicStatsVM';
 import { ApiServiceService } from 'src/_Services/ApiService.service';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
+import { BasicStatDifferencesVM } from 'src/Models/BasicStatDifferencesVM';
 
 @Component({
   selector: "app-powers",
@@ -11,35 +12,39 @@ import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 export class PowersComponent implements OnInit, OnChanges {
   async ngOnChanges(changes: SimpleChanges) {
     if (changes["previewModel"]) {
-      console.log("Powers preview changed");
-      this.previewChanges = CalculationsHelper.calculateChangeDetails(this.previewModel, this.model);
-      // Must do this otherwise can't compare again
-      var selectedChange = this.previewChanges.BasicData.AngelicPower != 0 ? 1
-                        : this.previewChanges.BasicData.DemonicPower != 0 ? 2
-                        : this.previewChanges.BasicData.DemonicPower != 0 ? 3
-                        : 0;
-
-      this.previewModel = this.getSelectedPreviewModel(selectedChange);
-      // this.previewModel.markAsPristine();
-    }
-    if (changes["previewChanges"]) {
-      this.previewChanges = new BasicStatsVM();
+      var newValue = changes["previewModel"].currentValue as BasicStatDifferencesVM;
+      this.previewChanges = newValue.showData ? CalculationsHelper.calculateChangeDetails(this.previewModel.statsData, this.model) : new BasicStatsVM();
     }
     if (changes["initialized"]) {
       if (changes["initialized"].currentValue) await this.PowerUp(0, 0);
     }
+    if (changes["model"]) {
+      if (changes["model"].currentValue)
+      {
+        var newData = changes["model"].currentValue;// || {BasicData: new BasicStatsVM()}).BasicData;
+        if (!newData)
+          newData = new BasicStatsVM();
+        var oldData = changes["model"].previousValue;
+        if (!oldData)
+          oldData = new BasicStatsVM();
+
+          if (newData.BasicData.Level != oldData.BasicData.Level)
+          // LevelUp, update models fit new data
+          await this.PowerUp(0, 0, false);
+      }
+    }
   }
+
   @Input() initialized: boolean = false;
   @Input() model: BasicStatsVM;
-  @Input() previewChanges: BasicStatsVM;
+  previewChanges: BasicStatsVM;
   // These 3 are used for Hover Info
   poweredUpModelAng: BasicStatsVM;
   poweredUpModelDem: BasicStatsVM;
   poweredUpModelAnc: BasicStatsVM;
-  @Input() previewModel: BasicStatsVM;
+  @Input() previewModel: BasicStatDifferencesVM;
   @Output() powerUpEmitter = new EventEmitter<BasicStatsVM>(true);
-  @Output() powerUpPreviewEmitter = new EventEmitter<BasicStatsVM>(true);
-  @Output() powerUpPreviewCancelEmitter = new EventEmitter<BasicStatsVM>(true);
+  @Output() powerUpPreviewEmitter = new EventEmitter<BasicStatDifferencesVM>(true);
 
   constructor(private apiService: ApiServiceService) {}
 
@@ -49,7 +54,7 @@ export class PowersComponent implements OnInit, OnChanges {
     this.initialized = false;
   }
 
-  async PowerUp(power: number, levels: number) {
+  async PowerUp(power: number, levels: number, execute:boolean = true) {
     var availablePowers = this.model.BasicData.UnassignedPower;
     if (this.initialized) {
       if (availablePowers != 0) {
@@ -64,7 +69,9 @@ export class PowersComponent implements OnInit, OnChanges {
         this.poweredUpModelAnc = data.NewAncestral;
         this.previewModel = power == 1 ? data.NewAngelic : power == 2 ? data.NewDemonic : power == 3 ? data.NewAncestral : this.model;
 
-        this.powerUpEmitter.emit(this.model);
+        if (execute) {
+          this.powerUpEmitter.emit(this.model);
+        }
       }
     }
   }
@@ -72,12 +79,14 @@ export class PowersComponent implements OnInit, OnChanges {
   async PowerUpPreview(power: number) {
     var data = this.getSelectedPreviewModel(power);
     this.previewChanges = CalculationsHelper.calculateChangeDetails(data, this.model);
-    this.powerUpPreviewEmitter.emit(data);
+    var dataToEmit = new BasicStatDifferencesVM(data, true);
+    this.powerUpPreviewEmitter.emit(dataToEmit);
   }
 
   async PowerUpPreviewCancel() {
+    var dataToEmit = new BasicStatDifferencesVM(this.model, false);
     this.previewChanges = new BasicStatsVM();
-    this.powerUpPreviewCancelEmitter.emit(new BasicStatsVM());
+    this.powerUpPreviewEmitter.emit(dataToEmit);
   }
 
   private getSelectedPreviewModel(power: number):BasicStatsVM {
