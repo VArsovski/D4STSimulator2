@@ -12,6 +12,8 @@ namespace D4ST_Api.Models.StatCalculators
         public int CD { get; set; }
         public int Cost { get; set; }
         public int Charges { get; set; }
+        // If not 0 then based on CastTypeEnum it's Summon, De/Buff or DoT
+        public decimal Duration { get; set; }
 
         public DamageSkillStat()
         {

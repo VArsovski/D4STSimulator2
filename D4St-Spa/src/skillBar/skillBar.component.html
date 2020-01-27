@@ -1,5 +1,5 @@
 <div class="col">
-  <ul class="list-inline">
+  <ul class="list-inline skillBarContainer">
     <li class="list-inline-item" name="skill-1"><a id="skillBar---1" (click)="SelectEquip($event)" [class]="this.model.positionSelected == 0 ? this.skillSelectedClass : this.skillClass"><img id="skillBarImg---1"[src]="this.model.skill1.imageUrl || this.srcBorder"></a></li>
     <li class="list-inline-item" name="skill-2"><a id="skillBar---2" (click)="SelectEquip($event)" [class]="this.model.positionSelected == 1 ? this.skillSelectedClass : this.skillClass"><img id="skillBarImg---2"[src]="this.model.skill2.imageUrl || this.srcBorder"></a></li>
     <li class="list-inline-item" name="skill-3"><a id="skillBar---3" (click)="SelectEquip($event)" [class]="this.model.positionSelected == 2 ? this.skillSelectedClass : this.skillClass"><img id="skillBarImg---3"[src]="this.model.skill3.imageUrl || this.srcBorder"></a></li>

@@ -3,6 +3,7 @@ import { ISkillDetailDTO } from './DTOs/ISkillDetailDTO';
 import { SkillDetailVM } from './SkillDetailVM';
 import { ISkillPowerDetailDTO } from './DTOs/ISkillPowerDetailDTO';
 import { PowerDetailVM } from './DTOs/PowerDetailVM';
+import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 
 export class SkillVM implements ISkillDTO {
     id: number;
@@ -24,5 +25,13 @@ export class SkillVM implements ISkillDTO {
             this.level = level;
         if (tier)
             this.tier = tier;
+        
+        if (pd) {
+            this.powerData = pd;
+            if (pd.angelicAffix) pd.angelicAffix.Description = CalculationsHelper.GetSkillAffixDescription(pd, 1);
+            if (pd.demonicAffix) pd.demonicAffix.Description = CalculationsHelper.GetSkillAffixDescription(pd, 2);
+            if (pd.ancestralAffix) pd.ancestralAffix.Description = CalculationsHelper.GetSkillAffixDescription(pd, 3);
+            this.powerData = pd;
+        }
     }
 }

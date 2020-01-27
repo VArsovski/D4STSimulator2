@@ -6,10 +6,10 @@ using D4St_Api.Data;
 using D4St_Api.Models;
 using D4ST_Api.Models;
 using D4ST_Api.Models.Enums;
-using D4ST_Api.Models.Helpers;
-using D4ST_Api.Models.StatCalculators;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using D4St_Api.Models.StatCalculators;
+using D4St_Api.Models.Enums;
 
 namespace D4ST_Api.Controllers
 {
@@ -38,14 +38,15 @@ namespace D4ST_Api.Controllers
                 foreach (var skill in tierSet)
                 {
                     // var levelRand = new Random();
-                    var rand = new Random();
                     var randMax = tier == 4 ? 5 : tier == 3 ? 8 : 10;
                     var skillLevel = 1;// levelRand.Next(1, randMax);
 
                     // var selectedClassType = (ClassTypeEnum)classType;
                     var skillData = skill.SkillData; //getRandomSkillData(selectedClassType, tier);
                     skillData.Level = skillLevel;
-                    skills.Skills.Add(new SkillData(skill.Id, skill.Name, skillData));
+                    var skillToAdd = new Skill(skill.Id, skill.Name, skillData);
+                    skillToAdd.PowerData = SpellPowerDataCalculator.GetPowerAffixesForSkill((ClassTypeEnum)skill.ClassType, (SkillCastTypeEnum)skill.CastType, skillToAdd);
+                    skills.Skills.Add(skillToAdd);
                     
                     skillCount++;
                 }
@@ -56,17 +57,17 @@ namespace D4ST_Api.Controllers
 
         [HttpPost]
         [Route("{id}")]
-        public IActionResult LevelUp([FromBody]SkillData data, [FromQuery]int id) {
-            var levelValid = data.skillData.Level > 0 && data.skillData.Level < _MAX;
+        public IActionResult LevelUp([FromBody]Skill data, [FromQuery]int id) {
+            var levelValid = data.SkillData.Level > 0 && data.SkillData.Level < _MAX;
             if (!levelValid)
                 return BadRequest(_LEVEL_INVALID);
             else
             {
-                var level = data.skillData.Level;
-                data.skillData.Level = level + 1;
-                var skillData = new SkillData(id, data.Name, data.skillData);
-                data.skillData.Level = level + 2;
-                var nextLvlSkillData = new SkillData(id, data.Name, data.skillData);
+                var level = data.SkillData.Level;
+                data.SkillData.Level = level + 1;
+                var skillData = new Skill(id, data.Name, data.SkillData);
+                data.SkillData.Level = level + 2;
+                var nextLvlSkillData = new Skill(id, data.Name, data.SkillData);
                 if (level == _MAX)
                     nextLvlSkillData = skillData;
                 return Ok(new { Current = skillData, New = nextLvlSkillData, IsMaxxed = level == _MAX });
@@ -75,17 +76,17 @@ namespace D4ST_Api.Controllers
 
         [HttpPost]
         [Route("{id}")]
-        public IActionResult PowerUp([FromBody]SkillData data, [FromQuery]int id, [FromQuery]int powerType) {
-            var levelValid = data.skillData.Level > 0 && data.skillData.Level < _MAX;
+        public IActionResult PowerUp([FromBody]Skill data, [FromQuery]int id, [FromQuery]int powerType) {
+            var levelValid = data.SkillData.Level > 0 && data.SkillData.Level < _MAX;
             if (!levelValid)
                 return BadRequest(_LEVEL_INVALID);
             else
             {
-                var level = data.skillData.Level;
-                data.skillData.Level = level + 1;
-                var skillData = new SkillData(id, data.Name, data.skillData);
-                data.skillData.Level = level + 2;
-                var nextLvlSkillData = new SkillData(id, data.Name, data.skillData);
+                var level = data.SkillData.Level;
+                data.SkillData.Level = level + 1;
+                var skillData = new Skill(id, data.Name, data.SkillData);
+                data.SkillData.Level = level + 2;
+                var nextLvlSkillData = new Skill(id, data.Name, data.SkillData);
                 if (level == _MAX)
                     nextLvlSkillData = skillData;
                 return Ok(new { Current = skillData, New = nextLvlSkillData, IsMaxxed = level == _MAX });

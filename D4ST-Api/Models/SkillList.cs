@@ -7,8 +7,8 @@ namespace D4St_Api.Models
     {
         public SkillList()
         {
-            this.Skills = new List<SkillData>();
+            this.Skills = new List<Skill>();
         }
-        public List<SkillData> Skills { get; set; }
+        public List<Skill> Skills { get; set; }
     }
 }

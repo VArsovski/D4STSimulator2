@@ -8,6 +8,9 @@ import { SkillVM } from 'src/Models/SkillVM';
 import { Helpers } from '../_Helpers/helpers';
 import { BasicCharStats } from 'src/Models/BasicCharStats';
 import { LevelUpStatsVM } from 'src/Models/LevelUpStatsVM';
+import { ISkillAffixDetail } from 'src/Models/DTOs/ISkillAffixDetail';
+import { PowerDetailVM } from 'src/Models/DTOs/PowerDetailVM';
+import { SkillAffixDetail } from 'src/Models/DTOs/SkillAffixDetail';
 
 @Injectable({
   providedIn: "root"
@@ -116,6 +119,12 @@ export class ApiServiceService {
               skill.skillData.cd = element.skillData.cd;
               skill.skillData.cost = element.skillData.cost;
               skill.skillData.charges = element.skillData.charges;
+              skill.powerData = new PowerDetailVM();
+              skill.powerData.skillMetadata = element.powerData.skillMetadata;
+              skill.powerData.angelicAffix = this.extractSkillDetailsFromResponse(element.powerData.angelicProcAffix);
+              skill.powerData.demonicAffix = this.extractSkillDetailsFromResponse(element.powerData.demonicProcAffix);
+              skill.powerData.ancestralAffix = this.extractSkillDetailsFromResponse(element.powerData.ancestralProcAffix);
+
               this.SkillsVM.skills.push(skill);
             });
           })
@@ -167,5 +176,18 @@ export class ApiServiceService {
     vm.AncestralPowers.StaminaSunder = data.staminaSunder.procAmount;
 
     return vm;
+  }
+
+  extractSkillDetailsFromResponse(element: any): ISkillAffixDetail {
+    var powerAffix = new SkillAffixDetail();
+    powerAffix.Amount = element.amount;
+    powerAffix.Duration = element.duration;
+    powerAffix.IsBuff = element.isBuff;
+    powerAffix.ProcChance = element.procChance;
+    powerAffix.ProcsOnDeath = element.procsOnDeath;
+    powerAffix.SelectedAffix = element.selectedAffix;
+    powerAffix.Stackable = element.stackable;
+    powerAffix.Description = element.description;
+    return powerAffix;
   }
 }

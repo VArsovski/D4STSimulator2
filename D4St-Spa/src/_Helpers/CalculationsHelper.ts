@@ -1,4 +1,5 @@
 import { BasicStatsVM } from 'src/Models/BasicStatsVM';
+import { SkillEnums } from 'src/_Enums/skillEnums';
 
 export class CalculationsHelper {
   public static calculateChangeDetails(change: BasicStatsVM, orig: BasicStatsVM) {
@@ -44,5 +45,50 @@ export class CalculationsHelper {
 
     changedData = cd;
     return changedData;
-  }    
+  }
+
+  public static GetSkillAffixDescription(powerData: any, powerType:number):string {
+    // var powerTypes = [1, 2, 3];
+    // powerTypes.forEach(powerType => {
+    var selectedAffix = powerType == 1 ? powerData.angelicAffix
+                    :   powerType == 2 ? powerData.demonicAffix
+                    :   powerData.ancestralAffix;
+    var description: string = "";
+
+    if (selectedAffix)
+    {
+        var pd = powerData;
+        var hasProcChance = selectedAffix.ProcChance != 0;
+
+        if (hasProcChance)
+        {
+            var startStr = selectedAffix.ProcsOnDeath ? "Monster death causes "
+            : pd.skillMetadata.indexOf(SkillEnums.AffixMetadataEnum.HitProc) != -1 ? "Hit"
+            : pd.skillMetadata.indexOf(SkillEnums.AffixMetadataEnum.Summon) != -1 ? "Summon"
+            : "Cast" ;
+
+            description = selectedAffix.ProcsOnDeath
+              ? startStr + selectedAffix.SelectedAffix
+              : (startStr + " has a " + selectedAffix.ProcChance + "% chance ") + " to " + selectedAffix.SelectedAffix;
+        }
+        else {
+            description = "Gains " + selectedAffix.ProcChance + " chance to " + selectedAffix.SelectedAffix;
+        }
+
+        if (pd.skillMetadata.indexOf(SkillEnums.AffixMetadataEnum.Curse) != -1) {
+            description += " cast a " + selectedAffix.SelectedAffix + " on target";
+        }
+        if (pd.skillMetadata.indexOf(SkillEnums.AffixMetadataEnum.CC) != -1) {
+            description += selectedAffix.SelectedAffix + " target ";
+        }
+        if (pd.skillMetadata.indexOf(SkillEnums.AffixMetadataEnum.BuffDebuff) != -1) {
+            description += " gain buff which allows you to " + selectedAffix.SelectedAffix;
+        }
+        if (selectedAffix.Duration != 0) {
+            description += " for " + selectedAffix.Duration + " seconds";
+        }
+    }
+
+    return description;
+  }
 }

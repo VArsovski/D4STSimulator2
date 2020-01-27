@@ -180,7 +180,7 @@ body img {
     position:absolute;
     top: -35vh;
     /* transform: translate(0%, -15vh); */
-    transform: scale(0.8, 0.56);
+    transform: scale(0.95, 0.55);
 }
 
 .btnGroupCustom, .btnGroupCustom ul {
@@ -222,6 +222,10 @@ body img {
         -ms-user-select: none; /* Internet Explorer/Edge */
             user-select: none; /* Non-prefixed version, currently
                                 supported by Chrome, Opera and Firefox */
+}
+
+.skillBarContainer {
+    box-shadow:  #6F1E51 2px 5px 20px 5px, #6F1E51 inset 2px 5px 20px 5px, #6F1E51 -2px -5px 20px -5px, #6F1E51 inset -2px -5px 20px -5px;
 }
 
 .menuItemCustom:hover {

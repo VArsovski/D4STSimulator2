@@ -5,7 +5,8 @@ import { SkillDetailVM } from './SkillDetailVM';
 import { Helpers } from 'src/_Helpers/helpers';
 import { SkillVM } from './SkillVM';
 import { ISkillPowerDetailDTO } from './DTOs/ISkillPowerDetailDTO';
-import { IImageUrl } from './DTOs/IImageUrl';
+import { SkillEnums } from 'src/_Enums/skillEnums';
+import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 
 export class SkillWithImageVM implements ISkillWithImageDTO {
     id: number;
@@ -38,27 +39,26 @@ export class SkillWithImageVM implements ISkillWithImageDTO {
             this.level = data.level;
             this.tier = data.tier;
             this.skillData = data.skillData;
-            this.powerData = data.powerData;
         }
         else {
             this.skillData = new SkillDetailVM();
             this.name = nameOpt;
             this.level = levelOpt;
         }
-        
-        // if (imgData)
-        // {
-        //     this.imageUrl = imgData.imageUrl;
-        //     this.imageStyle = imgData.imageStyle;
-        // }
-        // else
-        // {
-            var rand = Helpers.getRandom(1, 24);
-            var imageSrc = "_Resources/img/icons/ph-" + rand + ".png"; //"../_Resources/img/placeholders/ph-" + rand + ".png";
-            this.imageUrl = imageSrc;
-    
-            // Use this property to show in dropdown
-            this.imageStyle = "background-image: url('" + imageSrc + "')";
-        // }
+        var pd = (dataFromItf || data || new SkillVM()).powerData;
+        if (pd) {
+            this.powerData = pd;
+            if (pd.angelicAffix) pd.angelicAffix.Description = CalculationsHelper.GetSkillAffixDescription(pd, 1);
+            if (pd.demonicAffix) pd.demonicAffix.Description = CalculationsHelper.GetSkillAffixDescription(pd, 2);
+            if (pd.ancestralAffix) pd.ancestralAffix.Description = CalculationsHelper.GetSkillAffixDescription(pd, 3);
+            this.powerData = pd;
+        }
+
+        var rand = Helpers.getRandom(1, 29);
+        var imageSrc = "_Resources/img/icons/ph-" + rand + ".png"; //"../_Resources/img/placeholders/ph-" + rand + ".png";
+        this.imageUrl = imageSrc;
+
+        // Use this property to show in dropdown
+        this.imageStyle = "background-image: url('" + imageSrc + "')";
     }
 }
