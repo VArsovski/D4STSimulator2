@@ -4,15 +4,14 @@
       </div>
   </div>
   <div class="row statsRowCustom">
-    <div class="col">
+    <div class="col-7">
     <!--TODO: See into the following problem: -->
     <!-- IDK WHY BUT MOUSEOVER AND MOUSEOUT BEHAVE REVERSE FOR THIS ONE -->
       <app-stats  [(model)]="model" [initialized]="initializeChildren" [previewModel]="levelUpCalculations" (levelUpEmitter)="LevelUpHandler($event)" (levelUpPreviewEmitter)="LevelUpPreviewHandler($event)"></app-stats>
     </div>
-  </div>
-  <!-- <router-outlet></router-outlet> -->
-  <div class="row rowPowersCustom">
-    <div class="col mb-4" id="powersContainer">
+  <!-- </div>
+  <div class="row rowPowersCustom"> -->
+    <div class="col-5 mb-5" id="powersContainer">
       <app-powers [(model)]="model" [initialized]="initializeChildren" [previewModel]="powerUpCalculations" (powerUpEmitter)="PowerUpHandler($event)" (powerUpPreviewEmitter)="PowerUpPreviewHandler($event)"></app-powers>
     </div>
   </div>

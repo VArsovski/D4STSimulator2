@@ -9,7 +9,7 @@ body img {
 }
 
 .sizeSmall img {
-    width: 35px;
+    width: 30px;
     height: auto;
 }
 
@@ -28,23 +28,15 @@ body img {
     height: 150%;
 }
 
-.sizeSquashedH {
-    transform: scale(0.75, 1);
-}
-
-.sizeSquashedV {
-    transform: scale(1, 0.75);
+.skillBar img {
+    opacity: 1;
+    cursor: pointer;
 }
 
 .ornament, .ornament img {
     opacity: 1;
     cursor: pointer;
     border-radius: 50%;
-}
-
-.skillBar img {
-    opacity: 1;
-    cursor: pointer;
 }
 
 .yellowGlow img {
