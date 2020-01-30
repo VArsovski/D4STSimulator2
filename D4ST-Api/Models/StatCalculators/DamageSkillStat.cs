@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace D4ST_Api.Models.StatCalculators
 {
-    public class DamageSkillStat : ISkillDamageStat, ISkillCostStat
+    public class DamageSkillStat : ISkillDamageStat, ISkillCostStat, ISkillPowerStat
     {
         public int From { get; set; }
         public int To { get; set; }
@@ -12,15 +12,18 @@ namespace D4ST_Api.Models.StatCalculators
         public int CD { get; set; }
         public int Cost { get; set; }
         public int Charges { get; set; }
-        // If not 0 then based on CastTypeEnum it's Summon, De/Buff or DoT
         public decimal Duration { get; set; }
+        public bool IsCC { get; set; }
+        public int AngelicPower { get; set; }
+        public int DemonicPower { get; set; }
+        public int AncestralPower { get; set; }
 
         public DamageSkillStat()
         {
             
         }
 
-        public DamageSkillStat(ISkillDamageStat ds, ISkillCostStat cs)
+        public DamageSkillStat(ISkillDamageStat ds, ISkillCostStat cs, bool IsCC = false)
         {
             this.From = ds.From;
             this.To = ds.To;
@@ -29,9 +32,10 @@ namespace D4ST_Api.Models.StatCalculators
             this.Cost = cs?.Cost ?? 0;
             this.CD = cs?.CD ?? 0;
             this.Charges = cs?.Charges ?? 1;
+            this.IsCC = IsCC;
         }
 
-        public DamageSkillStat(ISkillDamageStat ds)
+        public DamageSkillStat(ISkillDamageStat ds, bool IsCC = false)
         {
             this.From = ds.From;
             this.To = ds.To;
@@ -40,6 +44,7 @@ namespace D4ST_Api.Models.StatCalculators
             this.Cost = ds.CD != 0 ? ds.Tier * 5 + ds.Level : 0;
             this.CD = ds.CD;
             this.Charges = Math.Max(ds.Charges, 1);
+            this.IsCC = IsCC;
         }
 
         public DamageSkillStat(int from, int to, int tier)
@@ -48,20 +53,22 @@ namespace D4ST_Api.Models.StatCalculators
             this.To = to;
             this.Tier = tier;
         }
-        public DamageSkillStat(int from, int to, int level, int tier) : this(from, to, tier)
+        public DamageSkillStat(int from, int to, int level, int tier, bool IsCC = false) : this(from, to, tier)
         {
             this.From = from;
             this.To = to;
             // var data = CalculateSkillPower(level);
             this.Level = level;
             this.Tier = tier;
+            this.IsCC = IsCC;
         }
 
-        public DamageSkillStat(int from, int to, int tier, int cost, int CD, int charges) : this(from, to, tier)
+        public DamageSkillStat(int from, int to, int tier, int cost, int CD, int charges, bool IsCC = false) : this(from, to, tier)
         {
             this.Cost = cost == 0 && CD == 0 ? tier * 5 : cost;
             this.CD = CD;
             this.Charges = Math.Max(charges, 1);
+            this.IsCC = IsCC;
         }
 
         public DamageSkillStat CalculateSkillPower(int level)

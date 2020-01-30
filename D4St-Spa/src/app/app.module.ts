@@ -12,6 +12,7 @@ import { StatsComponent } from '../stats/stats.component';
 import { SkillPickerComponent } from '../skillPicker/skillPicker.component';
 import { SkillBarComponent } from '../skillBar/skillBar.component';
 import { DemoDropdownCustomHtmlComponent } from "../_NGXCustom/DemoDropdownCustomHtml/DemoDropdownCustomHtml.component";
+import { CustomCompareLabelComponent } from '../_NGXCustom/CustomCompareLabel/CustomCompareLabel.component';
 // import { SafePipe } from './safe.pipe';
 
 // import { TooltipModule } from "ngx-bootstrap/tooltip";
@@ -29,6 +30,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
       SkillBarComponent,
       // SafePipe,
       DemoDropdownCustomHtmlComponent,
+      CustomCompareLabelComponent
    ],
    imports: [
       BrowserModule,

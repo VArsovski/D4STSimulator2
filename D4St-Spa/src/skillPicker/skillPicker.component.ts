@@ -5,6 +5,7 @@ import { SkillListWithImagesVM } from 'src/Models/SkillListWithImagesVM';
 import { SkillVM } from 'src/Models/SkillVM';
 import { IDropdownImageItem } from 'src/Models/_Common/IDropdownImageItem';
 import { SkillWithImageVM } from 'src/Models/SkillWithImageVM';
+import { ISkillWithImageDTO } from 'src/Models/DTOs/ISkillWithImageDTO';
 
 @Component({
   selector: "app-skillPicker",
@@ -16,7 +17,7 @@ export class SkillPickerComponent implements OnInit, OnChanges {
     if (changes["model"]) {
       var updatedModel = changes["model"].currentValue;
       var imagesModel = new SkillListWithImagesVM(updatedModel);
-      imagesModel.skills.forEach(u => { u["detail"] = 'Level ' + u.level; });
+      imagesModel.skills.forEach(u => { u["detail"] =  'Level ' + u.level + ', Gen '+ u.generatedByGen; });
       this.skillsPerTier = imagesModel.skills as any;
     }
   }
@@ -39,9 +40,10 @@ export class SkillPickerComponent implements OnInit, OnChanges {
   }
 
   SelectSkill(ss: any) {
-    var skillImgVM = new SkillWithImageVM(new SkillVM(ss.id, ss.name, ss.level, ss.tier, ss.skillData, ss.powerData));
-    skillImgVM.imageUrl = ss.imageUrl;
-    skillImgVM.imageStyle = ss.imageStyle;
+    // var skillImgVM = new SkillWithImageVM(null, new SkillVM(ss.id, ss.name, ss.level, ss.tier, ss.skillData, ss.powerData));
+    // skillImgVM.imageUrl = ss.imageUrl;
+    // skillImgVM.imageStyle = ss.imageStyle;
+    var skillImgVM = ss as ISkillWithImageDTO;
     this.model.selectedSkill = skillImgVM;
   }
 

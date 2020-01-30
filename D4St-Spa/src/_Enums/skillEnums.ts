@@ -23,22 +23,22 @@ export class SkillEnums {
     }
 
     public static LDBsEnum: any = {
-        GainThorns : 0, DecreaseArmor : 1, Bleed : 2, Slow : 3, RandCurse_Low : 4, DecrRandRes : 5,
-        GainDamageReductionFromMonsterType : 6, RandomTrap_IfAny : 7, LowPercCastRandomEP : 8, MulticastOnDeath : 9
+        SpreadPoison : 0, Bleed : 1, Slow : 2, GainThorns : 3, RandCurse_Low : 4, DecrRandRes : 5,
+        GainDamageReductionFromMonsterType : 6, SetRandomTrap : 7, LowPercCastRandomEP : 8, MulticastOnDeath : 9
     }
 
     public static EPs_HighDBsEnum:any = {
-        CorpseExplosion : 0, SolidifyCorpse : 1, GainChargesOfRandomTrap : 2, RandomCurse : 3, SplitSunder : 4,
-        RandomCC : 5, MulticastOnDeathForX : 6, RandomTotemOrBanner : 7
+        RandomTotemOrBanner : 0, SolidifyCorpse : 1, CorpseExplosion : 2, GainChargesOfRandomTrap : 3, RandomCurse : 4,
+        RandomCC : 5, SplitSunder : 6, MulticastOnDeathForX : 7
     }
 
     public static CursesEnum:any = {
-        Weaken : 0, AmplifyDamage : 1, Blind : 2, Shackle : 3,
-        Silence : 4, DamageReturn : 5, Ignite : 6,
-        Decripify : 7, AttractLinkedDamage : 8, Horrify : 9
+        Weaken : 0, AmplifyDamage : 1, Blind : 2,
+        Ignite : 3, Charm : 4, DamageReturn : 5,
+        Decripify : 6, AttractLinkedDamage : 7, Horrify : 8
     }
 
     public static CCsEnum:any = {
-        Daze : 0, Knockback : 1, Root : 2, Stun : 3, Silence : 4
+        Root : 0, Wound : 1, Knockback : 2, Shackle : 3, Knockdown : 4, Silence : 5, Levitate : 6, SplitSunder: 7, Stun: 8
     }
 }

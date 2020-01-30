@@ -4,7 +4,7 @@ namespace D4ST_Api.Models.Enums
     {
         HitProc = 0, ProcsOnDeath = 1, HighDamage = 2, HighProcRate = 3, CC = 4, Curse = 5, BuffDebuff = 6,
         Melee = 7, AoE = 8, Projectile = 9, ProjectileCharacter = 10, DoA = 11, HasDoT = 12, Summon = 13,
-        HighCost_Spender = 14, HighCD = 15, Ultimate = 16, BannerOrTotem = 17
+        HighCost_Spender = 14, HighCD = 15, Ultimate = 16, BannerOrTotem = 17, Stackable = 18
     }
 
     public enum AffixTypeEnum {
@@ -13,9 +13,9 @@ namespace D4ST_Api.Models.Enums
     }
 
     public enum LPRsEnum {
-        IncreaseAS = 0, IncreaseMS = 1, IncreaseArmor = 2, IncreaseProcReturn = 3, AddElementalDamage = 4,
+        IncreaseAS = 0, IncreaseMS = 1, IncreaseArmor = 2, IncreaseProcReturn = 3, ReturnStamina = 4,
         // DecrDamageTakenOfType = 5, -> in Debuffs
-        GainDamageAgainstMonsterType = 5, IncrRandomRes = 6, IncrAllRes = 7, ReturnStamina = 8,
+        AddElementalDamage = 5, GainDamageAgainstMonsterType = 6, IncrRandomRes = 7,  IncrAllRes = 8,
         IncrRadius = 9, IncrDoT = 10, Pierce_IfProjectile = 11, DamageTwice_IfProjectile = 12
     }
 
@@ -25,22 +25,25 @@ namespace D4ST_Api.Models.Enums
     }
 
     public enum LDBsEnum {
-        GainThorns = 0, DecreaseArmor = 1, Bleed = 2, Slow = 3, RandCurse_Low = 4, DecrRandRes = 5,
-        GainDamageReductionFromMonsterType = 6, RandomTrap_IfAny = 7, LowPercCastRandomEP = 8, MulticastOnDeath = 9
+        SpreadPoison = 0, Bleed = 1, Slow = 2, GainThorns = 3, RandCurse_Low = 4, DecrRandRes = 5,
+        GainDamageReductionFromMonsterType = 6, SetRandomTrap = 7, LowPercCastRandomEP = 8, MulticastOnDeath = 9
     }
 
     public enum EPs_HighDBsEnum {
-        CorpseExplosion = 0, SolidifyCorpse = 1, GainChargesOfRandomTrap = 2, RandomCurse = 3, SplitSunder = 4,
-        RandomCC = 5, MulticastOnDeathForX = 6, RandomTotemOrBanner = 7
+        RandomTotemOrBanner = 0, SolidifyCorpse = 1, CorpseExplosion = 2, GainChargesOfRandomTrap = 3, RandomCurse = 4,
+        RandomCC = 5, SplitSunder = 6, MulticastOnDeathForX = 7
     }
 
     public enum CursesEnum {
-        Weaken = 0, AmplifyDamage = 1, Blind = 2, Shackle = 3,
-        Silence = 4, DamageReturn = 5, Ignite = 6,
-        Decripify = 7, AttractLinkedDamage = 8, Horrify = 9
+        Weaken = 0, AmplifyDamage = 1, Blind = 2,
+        Ignite = 3, Charm = 4, DamageReturn = 5,
+        Decripify = 6, AttractLinkedDamage = 7, Horrify = 8
     }
 
     public enum CCsEnum {
-        Daze = 0, Knockback = 1, Root = 2, Stun = 3, Silence = 4
+        Root = 0, Wound = 1, Knockback = 2, Shackle = 3, Knockdown = 4, Silence = 5, Levitate = 6, SplitSunder = 7, Stun = 8
+    }
+    public enum HighTierCCAncEnum {
+        SplitSunder = 0, Knockback = 1, Stun = 2, Levitate = 3
     }
 }

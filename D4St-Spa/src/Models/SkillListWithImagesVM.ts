@@ -15,9 +15,10 @@ export class SkillListWithImagesVM {
             this.tier = data.tier;
             this.tierName = data.tierName;
             data.skills.forEach(element => {
-                this.skills.push(new SkillWithImageVM(element));
+                var vm = new SkillWithImageVM(null, element);
+                this.skills.push(vm);
             });
-            this.selectedSkill = new SkillWithImageVM(data.selectedSkill);
+            this.selectedSkill = new SkillWithImageVM(null, data.selectedSkill);
         }
         else this.selectedSkill = new SkillWithImageVM(null);
     }

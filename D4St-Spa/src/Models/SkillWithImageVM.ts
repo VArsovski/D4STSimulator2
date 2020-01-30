@@ -5,7 +5,6 @@ import { SkillDetailVM } from './SkillDetailVM';
 import { Helpers } from 'src/_Helpers/helpers';
 import { SkillVM } from './SkillVM';
 import { ISkillPowerDetailDTO } from './DTOs/ISkillPowerDetailDTO';
-import { SkillEnums } from 'src/_Enums/skillEnums';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 
 export class SkillWithImageVM implements ISkillWithImageDTO {
@@ -14,12 +13,14 @@ export class SkillWithImageVM implements ISkillWithImageDTO {
     level: number;
     tier: number;
     skillData: ISkillDetailDTO;
+    angelicAffix: ISkillPowerDetailDTO;
+    demonicAffix: ISkillPowerDetailDTO;
+    ancestralAffix: ISkillPowerDetailDTO;
+    affixMetadata: number[];
+    generatedByGen: number;
     imageUrl: SafeUrl;
     imageStyle: SafeStyle;
-    powerData: ISkillPowerDetailDTO;
 
-    constructor(dataFromItf: ISkillWithImageDTO);
-    constructor(data:SkillVM);
     constructor(dataFromItf: ISkillWithImageDTO = null, data:SkillVM = null, nameOpt: string = "", levelOpt: number = 1) {
         if (dataFromItf)
         {
@@ -28,9 +29,12 @@ export class SkillWithImageVM implements ISkillWithImageDTO {
             this.level = dataFromItf.level;
             this.tier = dataFromItf.tier;
             this.skillData = dataFromItf.skillData;
-            this.powerData = dataFromItf.powerData;
+            this.angelicAffix = dataFromItf.angelicAffix;
+            this.demonicAffix = dataFromItf.demonicAffix;
+            this.ancestralAffix = dataFromItf.ancestralAffix;
             this.imageUrl = dataFromItf.imageUrl;
             this.imageStyle = dataFromItf.imageStyle;
+            this.generatedByGen = dataFromItf.generatedByGen;
         }
         else if (data)
         {
@@ -39,19 +43,25 @@ export class SkillWithImageVM implements ISkillWithImageDTO {
             this.level = data.level;
             this.tier = data.tier;
             this.skillData = data.skillData;
+            this.generatedByGen = data.generatedByGen;
         }
         else {
             this.skillData = new SkillDetailVM();
             this.name = nameOpt;
             this.level = levelOpt;
         }
-        var pd = (dataFromItf || data || new SkillVM()).powerData;
-        if (pd) {
-            this.powerData = pd;
-            if (pd.angelicAffix) pd.angelicAffix.Description = CalculationsHelper.GetSkillAffixDescription(pd, 1);
-            if (pd.demonicAffix) pd.demonicAffix.Description = CalculationsHelper.GetSkillAffixDescription(pd, 2);
-            if (pd.ancestralAffix) pd.ancestralAffix.Description = CalculationsHelper.GetSkillAffixDescription(pd, 3);
-            this.powerData = pd;
+        // var pd = (new SkillVM()).powerData;
+        if (data || dataFromItf) {
+            var pd = data || dataFromItf || new SkillVM();
+            if (pd.angelicAffix) pd.angelicAffix.powerData.Description = CalculationsHelper.GetSkillAffixDescription(pd.angelicAffix.powerData, pd.affixMetadata || [], 1);
+            if (pd.demonicAffix) pd.demonicAffix.powerData.Description = CalculationsHelper.GetSkillAffixDescription(pd.demonicAffix.powerData, pd.affixMetadata || [], 2);
+            if (pd.ancestralAffix) pd.ancestralAffix.powerData.Description = CalculationsHelper.GetSkillAffixDescription(pd.ancestralAffix.powerData, pd.affixMetadata || [], 3);
+            if (pd.angelicAffix) pd.angelicAffix.powerUp.Description = CalculationsHelper.GetSkillAffixDescription(pd.angelicAffix.powerUp, pd.affixMetadata || [], 1);
+            if (pd.demonicAffix) pd.demonicAffix.powerUp.Description = CalculationsHelper.GetSkillAffixDescription(pd.demonicAffix.powerUp, pd.affixMetadata || [], 2);
+            if (pd.ancestralAffix) pd.ancestralAffix.powerUp.Description = CalculationsHelper.GetSkillAffixDescription(pd.ancestralAffix.powerUp, pd.affixMetadata || [], 3);
+            this.angelicAffix = pd.angelicAffix;
+            this.demonicAffix = pd.demonicAffix;
+            this.ancestralAffix = pd.ancestralAffix;
         }
 
         var rand = Helpers.getRandom(1, 29);

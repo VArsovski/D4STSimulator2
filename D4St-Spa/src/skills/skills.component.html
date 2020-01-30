@@ -18,24 +18,24 @@
       </div>
       <div class="col">
         <div class="row">
-          <div class="col" *ngIf="model.powerData.angelicAffix">
+          <div class="col" *ngIf="model.angelicAffix">
             <div class="row">
             <!-- Angelic: -->
-            <div class="col-1"><a tooltip="+1" class="sizeSmall ornament yellowGlow blueGlowHover" (click)="EmpowerAffix(1,1)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a></div>
-            <div class="col"><label class="clearfix">{{ model.powerData?.angelicAffix.Description }}</label></div>
+            <div class="col-1"><a tooltip="+1" class="sizeSmall ornament yellowGlow blueGlowHover" (mouseover)="PreviewEmpower(1)" (mouseout)="CancelPreview(1)" (click)="EmpowerAffix(1,1)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a></div>
+            <div class="col"><label class="clearfix">{{ model.angelicAffix.powerData.Description }}</label></div>
           </div>
           <div class="col">
-            <div class="row" *ngIf="model.powerData.demonicAffix">
+            <div class="row" *ngIf="model.demonicAffix">
               <!-- Demonic: -->
-              <div class="col-1"><a tooltip="+1" class="sizeSmall ornament redGlow blueGlowHover" (click)="EmpowerAffix(2,1)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a></div>
-              <div class="col"><label class="clearfix">{{ model.powerData?.demonicAffix.Description }}</label></div>
+              <div class="col-1"><a tooltip="+1" class="sizeSmall ornament redGlow blueGlowHover" (mouseover)="PreviewEmpower(2)" (mouseout)="CancelPreview(2)" (click)="EmpowerAffix(2,1)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a></div>
+              <div class="col"><label class="clearfix">{{ model.demonicAffix.powerData.Description }}</label></div>
             </div>
           </div>
           <div class="col">
-            <div class="row" *ngIf="model.powerData.ancestralAffix">
+            <div class="row" *ngIf="model.ancestralAffix">
               <!-- Ancestral: -->
-              <div class="col-1"><a tooltip="+1" class="sizeSmall ornament purpleGlow blueGlowHover" (click)="EmpowerAffix(3,1)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a></div>
-              <div class="col"><label class="clearfix">{{ model.powerData?.ancestralAffix.Description }}</label></div>
+              <div class="col-1"><a tooltip="+1" class="sizeSmall ornament purpleGlow blueGlowHover" (mouseover)="PreviewEmpower(3)" (mouseout)="CancelPreview(3)" (click)="EmpowerAffix(3,1)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a></div>
+              <div class="col"><label class="clearfix">{{ model.ancestralAffix.powerData.Description }}</label></div>
             </div>
           </div>
         </div>

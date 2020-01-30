@@ -1,5 +1,9 @@
 import { BasicStatsVM } from 'src/Models/BasicStatsVM';
 import { SkillEnums } from 'src/_Enums/skillEnums';
+import { ISkillPowerDetailDTO } from 'src/Models/DTOs/ISkillPowerDetailDTO';
+import { SkillAffixDetail } from 'src/Models/DTOs/SkillAffixDetail';
+import { PowerEnums } from 'src/_Enums/powerTypesEnum';
+import { ISkillAffixDetail } from 'src/Models/DTOs/ISkillAffixDetail';
 
 export class CalculationsHelper {
   public static calculateChangeDetails(change: BasicStatsVM, orig: BasicStatsVM) {
@@ -47,45 +51,44 @@ export class CalculationsHelper {
     return changedData;
   }
 
-  public static GetSkillAffixDescription(powerData: any, powerType:number):string {
+  public static GetSkillAffixDescription(pd: ISkillAffixDetail, md:number[], powerType:number):string {
     // var powerTypes = [1, 2, 3];
     // powerTypes.forEach(powerType => {
-    var selectedAffix = powerType == 1 ? powerData.angelicAffix
-                    :   powerType == 2 ? powerData.demonicAffix
-                    :   powerData.ancestralAffix;
     var description: string = "";
 
-    if (selectedAffix)
+    if (pd)
     {
-        var pd = powerData;
-        var hasProcChance = selectedAffix.ProcChance != 0;
+        var hasProcChance = (pd || {ProcChance: 0}).ProcChance != 0;
 
         if (hasProcChance)
         {
-            var startStr = selectedAffix.ProcsOnDeath ? "Monster death causes "
-            : pd.skillMetadata.indexOf(SkillEnums.AffixMetadataEnum.HitProc) != -1 ? "Hit"
-            : pd.skillMetadata.indexOf(SkillEnums.AffixMetadataEnum.Summon) != -1 ? "Summon"
+            var startStr = pd.ProcsOnDeath ? "Monster death causes "
+            : md.indexOf(SkillEnums.AffixMetadataEnum.HitProc) != -1 ? "Hit"
+            : md.indexOf(SkillEnums.AffixMetadataEnum.Summon) != -1 ? "Summon"
             : "Cast" ;
 
-            description = selectedAffix.ProcsOnDeath
-              ? startStr + selectedAffix.SelectedAffix
-              : (startStr + " has a " + selectedAffix.ProcChance + "% chance ") + " to " + selectedAffix.SelectedAffix;
+            description = pd.ProcsOnDeath
+              ? startStr + pd.SelectedAffix
+              : (startStr + " has a " + pd.ProcChance + "% chance ") + " to " + pd.SelectedAffix;
         }
         else {
-            description = "Gains " + selectedAffix.ProcChance + " chance to " + selectedAffix.SelectedAffix;
+            description = "Gains " + pd.ProcChance + " chance to " + pd.SelectedAffix;
         }
 
-        if (pd.skillMetadata.indexOf(SkillEnums.AffixMetadataEnum.Curse) != -1) {
-            description += " cast a " + selectedAffix.SelectedAffix + " on target";
+        if (md.indexOf(SkillEnums.AffixMetadataEnum.Curse) != -1) {
+            description += " cast a " + pd.SelectedAffix + " on target";
         }
-        if (pd.skillMetadata.indexOf(SkillEnums.AffixMetadataEnum.CC) != -1) {
-            description += selectedAffix.SelectedAffix + " target ";
+        if (md.indexOf(SkillEnums.AffixMetadataEnum.CC) != -1) {
+            description += pd.SelectedAffix + " target ";
         }
-        if (pd.skillMetadata.indexOf(SkillEnums.AffixMetadataEnum.BuffDebuff) != -1) {
-            description += " gain buff which allows you to " + selectedAffix.SelectedAffix;
+        if (md.indexOf(SkillEnums.AffixMetadataEnum.BuffDebuff) != -1) {
+            description += " gain buff which allows you to " + pd.SelectedAffix;
         }
-        if (selectedAffix.Duration != 0) {
-            description += " for " + selectedAffix.Duration + " seconds";
+        if (pd.ProcAmount != 0) {
+          description += " by " + pd.ProcAmount;
+        }
+        if (pd.Duration != 0) {
+            description += " for " + pd.Duration + " seconds";
         }
     }
 

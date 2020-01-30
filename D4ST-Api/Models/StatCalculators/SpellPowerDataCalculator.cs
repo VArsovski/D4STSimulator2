@@ -17,10 +17,10 @@ namespace D4St_Api.Models.StatCalculators
         private static Random _randC;
         private static Random randC { get { if (_randC == null) _randC = new Random(); return _randC; } }
 
-        public static SkillPowerAffixData GetPowerAffixesForSkill(ClassTypeEnum classType, SkillCastTypeEnum skillCastType, Skill skillStat) {
+        public static SkillPowerAffixData GetPowerAffixesForSkill(PowerTypesEnum powerType, ClassTypeEnum classType, Skill skillStat) {
             var skillPowerAffixData = new SkillPowerAffixData();
             var skillMetadata = new List<AffixMetadataEnum>();
-                
+
             var skillData = skillStat.SkillData;
             var isHighTier = skillData.Tier > 2;
             var isHighCd = DecimalHelper.RoundToDecimals(skillData.CD / skillData.Charges, 2) >= skillData.Tier + 2;
@@ -33,34 +33,30 @@ namespace D4St_Api.Models.StatCalculators
             var isWeak = skillData.To > skillData.From * 2 && (skillData.From + skillData.Tier / 2) <= skillData.Tier * 3;
             var isDoA = skillStat.CastType == SkillCastTypeEnum.CastLocation || (skillData.Tier > 2 && skillStat.CastType == SkillCastTypeEnum.MeleeAoE);
             var isDoT = skillData.Duration != 0;
-            var isCC = new List<SkillCastTypeEnum> { SkillCastTypeEnum.MeleeAoE, SkillCastTypeEnum.Melee }.Contains(skillStat.CastType) && skillData.Duration != 0;
             var isUltimate = skillStat.CastType == SkillCastTypeEnum.Ultimate;
             var isBuff = skillStat.CastType == SkillCastTypeEnum.BuffDebuff;
-
+            var isCC = skillStat.SkillData.IsCC;
             var procChance = 0.0m;
-            
             var procsOnDeath = false;
+            var procsBuff = false;
 
-            foreach (var powerType in new List<PowerTypesEnum>{ PowerTypesEnum.AngelicPower, PowerTypesEnum.DemonicPower, PowerTypesEnum.AncestralPower})
-            {
-                procChance = isStrong ? 0.10m : isWeak ? 0.22m : 0.15m;
+            // foreach (var powerType in new List<PowerTypesEnum>{ PowerTypesEnum.AngelicPower, PowerTypesEnum.DemonicPower, PowerTypesEnum.AncestralPower})
+            // {
+                procChance = isStrong ? 10 : isWeak ? 22 : 15;
                 
                 var rand = powerType == PowerTypesEnum.AngelicPower ? randA : powerType == PowerTypesEnum.DemonicPower ? randB : randC;
                 if (!isHighTier)
-                    procChance -= 0.05m;
+                    procChance -= 5;
+                if (skillStat.CastType == SkillCastTypeEnum.OnHit || skillStat.CastType == SkillCastTypeEnum.Projectile)
+                    procChance += rand.Next(3, 8) * 0.01m;
                 if (skillStat.CastType == SkillCastTypeEnum.OnHit || skillStat.CastType == SkillCastTypeEnum.Projectile)
                     procChance += rand.Next(3, 8) * 0.01m;
 
-                if (!isHighTier)
-                    procChance -= 0.05m;
-                if (skillStat.CastType == SkillCastTypeEnum.OnHit || skillStat.CastType == SkillCastTypeEnum.Projectile)
-                    procChance += rand.Next(3, 8) * 0.01m;
-
-                // Make sure percentages are somwhat diverse
-                var randFactor = (rand.Next(0, 9) - 5)/100;
+                // Make sure percentages are somewhat diverse
+                var randFactor = (rand.Next(0, 9) - 5);
                 procChance += randFactor;
-
                 procsOnDeath = rand.Next(1, 10) % 3 == 0;
+
                 if (procsOnDeath)
                     skillMetadata.Add(AffixMetadataEnum.ProcsOnDeath);
                 if (isProjectile)
@@ -70,43 +66,32 @@ namespace D4St_Api.Models.StatCalculators
                 if (isDoT)
                     skillMetadata.Add(AffixMetadataEnum.HasDoT);
 
-                var affixProcData = new SkillAffixProcStat();
+                var selectedPowerData = new SkillAffixProcStat();
                 var selectedAffix = string.Empty;
 
                 if (!isHighTier) {
-                    if (isCC) selectedAffix = calculateAffix1(powerType, skillMetadata, rand, ref affixProcData);
-                    else selectedAffix = calculateAffix2(powerType, skillMetadata, rand, ref affixProcData);
+                    if (isCC) selectedAffix = calculateAffix2(powerType, skillMetadata, rand, ref selectedPowerData);
+                    else selectedAffix = calculateAffix1(powerType, skillMetadata, rand, ref selectedPowerData);
                 }
                 else {
                     // HIGH TIER abilities
-                    if (isCC) selectedAffix = calculateAffix3(powerType, skillMetadata, rand, ref affixProcData);
-                    else selectedAffix = calculateAffix4(powerType, skillMetadata, rand, ref affixProcData);
-
-                    if (selectedAffix.Length == 0)
-                    {
-                        var name = skillStat.Name;
-                    }
+                    if (isCC) selectedAffix = calculateAffix4(powerType, skillMetadata, rand, ref selectedPowerData);
+                    else selectedAffix = calculateAffix3(powerType, skillMetadata, rand, ref selectedPowerData);
 
                     if (selectedAffix == EnumHelper.GetName<LBsEnum>(LBsEnum.RandomShoutOrCry))
                     {
-                        affixProcData.Duration = 3 + (skillData.Tier - 1) * 2.5m;
-                        affixProcData.ProcsBuff = true;
-                        affixProcData.Duration = 2 + DecimalHelper.RoundToDecimals(rand.Next(85, 170)/100 * skillData.Tier * 3, 2);
-                        if (!isHighTier)
-                            procChance -= 0.10m;
+                        procsBuff = true;
                     }
                     if (selectedAffix == EnumHelper.GetName<LBsEnum>(LBsEnum.OtherRandomLPROnDeathForX))
                     {
                         var apRand = isProjectile ? 12 : isDoT ? 10 : 9;// : isDoA ? 9 : 10;
                         selectedAffix = EnumHelper.GetName<LPRsEnum>((LPRsEnum)rand.Next(0, apRand));
-                        affixProcData.Duration = 3 + (skillData.Tier - 1) * 2.5m;
                         if (isUltimate)
                         {
                             procChance += 0.1m;
-                            affixProcData.Duration *= 1.25m;
-                            affixProcData.Stackable = true;
+                            selectedPowerData.Stackable = true;
                         }
-                        affixProcData.ProcsBuff = true;
+                        procsBuff = true;
                     }
                     if (selectedAffix == EnumHelper.GetName<LDBsEnum>(LDBsEnum.LowPercCastRandomEP))
                     {
@@ -116,87 +101,115 @@ namespace D4St_Api.Models.StatCalculators
                     }
                     if (selectedAffix == EnumHelper.GetName<EPs_HighDBsEnum>(EPs_HighDBsEnum.RandomCC)) {
                         selectedAffix = EnumHelper.GetName<CCsEnum>((CCsEnum)rand.Next(0, isHighTier ? 4 : 2));
-                        affixProcData.Duration = DecimalHelper.RoundToDecimals(rand.Next(85, 140)/100 * skillData.Tier, 2);
                     }
                     if (selectedAffix == EnumHelper.GetName<EPs_HighDBsEnum>(EPs_HighDBsEnum.RandomCurse)) {
                         selectedAffix = EnumHelper.GetName<CursesEnum>((CursesEnum)rand.Next(0, isHighTier ? 9 : 3));
-                        affixProcData.Duration = DecimalHelper.RoundToDecimals(rand.Next(85, 170)/100 * skillData.Tier, 2);
                     }
                     if (selectedAffix == EnumHelper.GetName<EPs_HighDBsEnum>(EPs_HighDBsEnum.RandomTotemOrBanner)) {
                         selectedAffix = EnumHelper.GetName<CursesEnum>((CursesEnum)rand.Next(0, isHighTier ? 9 : 3));
-                        affixProcData.Duration = 2 + DecimalHelper.RoundToDecimals(rand.Next(85, 170)/100 * skillData.Tier * 3, 2);
                         if (!isHighTier)
                             procChance -= 0.10m;
                     }
                 }
 
-                affixProcData.ProcChance = procChance * 100; //In %
-                affixProcData.ProcsOnDeath = procsOnDeath;
-                affixProcData.PowerType = powerType;
-                // if (procsOnDeath && (isBuff || isDoT)) {
-                //     affixProcData.Duration = skillData.Duration;
-                // }
-                affixProcData.SelectedAffix = selectedAffix;
+                if (procsOnDeath)
+                {
+                    skillMetadata.Add(AffixMetadataEnum.ProcsOnDeath);
+                    // TODO: Recognize buffs/debuffs here and add BuffDebuff properly
+                }
+                if (procsBuff)
+                    skillMetadata.Add(AffixMetadataEnum.BuffDebuff);
 
-                if (powerType == PowerTypesEnum.AngelicPower) {
-                    skillPowerAffixData.AngelicProcAffix = affixProcData;
-                }
-                if (powerType == PowerTypesEnum.DemonicPower) {
-                    skillPowerAffixData.DemonicProcAffix = affixProcData;
-                }
-                if (powerType == PowerTypesEnum.AncestralPower) {
-                    skillPowerAffixData.AncestralProcAffix = affixProcData;
-                }
-            }
+                if (isHit)
+                    skillMetadata.Add(AffixMetadataEnum.HitProc);
+                if (skillStat.CastType == SkillCastTypeEnum.Melee)
+                    skillMetadata.Add(AffixMetadataEnum.Melee);
+                if (skillStat.CastType == SkillCastTypeEnum.MeleeAoE)
+                    skillMetadata.Add(AffixMetadataEnum.AoE);
+                if (skillStat.CastType == SkillCastTypeEnum.CastLocation)
+                    skillMetadata.Add(AffixMetadataEnum.DoA);
+                if (skillStat.CastType == SkillCastTypeEnum.Summon)
+                    skillMetadata.Add(AffixMetadataEnum.Summon);
+                if (isBuff || procsBuff)
+                    skillMetadata.Add(AffixMetadataEnum.BuffDebuff);
+                if (isUltimate)
+                    skillMetadata.Add(AffixMetadataEnum.Ultimate);
+                if (isHighCd)
+                    skillMetadata.Add(AffixMetadataEnum.HighCD);
+                if (isHighCost)
+                    skillMetadata.Add(AffixMetadataEnum.HighCost_Spender);
+                if (isWeak)
+                    skillMetadata.Add(AffixMetadataEnum.HighProcRate);
+                if (isStrong)
+                    skillMetadata.Add(AffixMetadataEnum.HighDamage);
+                if (isCC)
+                    skillMetadata.Add(AffixMetadataEnum.CC);
+                if (!isCC && (isDoA || isDoT))
+                    skillMetadata.Add(AffixMetadataEnum.DoA);
+                if (isProjectile)
+                    skillMetadata.Add(AffixMetadataEnum.Projectile);
+                if (isCharacterProjectile)
+                    skillMetadata.Add(AffixMetadataEnum.ProjectileCharacter);
+                
+                skillPowerAffixData.PowerData = new SkillAffixProcStat(procChance, powerType, selectedAffix, skillData, skillMetadata);
+                var skillUp = skillData;
+                if (powerType == PowerTypesEnum.AngelicPower) { skillUp.AngelicPower += 1; }
+                else if (powerType == PowerTypesEnum.DemonicPower) { skillUp.DemonicPower += 1; }
+                else if (powerType == PowerTypesEnum.AncestralPower) { skillUp.AncestralPower += 1; }
 
-            if (isHit)
-                skillPowerAffixData.SkillMetadata.Add(AffixMetadataEnum.HitProc);
-            if (procsOnDeath)
-                skillPowerAffixData.SkillMetadata.Add(AffixMetadataEnum.ProcsOnDeath);
-            if (skillStat.CastType == SkillCastTypeEnum.Melee)
-                skillPowerAffixData.SkillMetadata.Add(AffixMetadataEnum.Melee);
-            if (skillStat.CastType == SkillCastTypeEnum.MeleeAoE)
-                skillPowerAffixData.SkillMetadata.Add(AffixMetadataEnum.AoE);
-            if (skillStat.CastType == SkillCastTypeEnum.CastLocation)
-                skillPowerAffixData.SkillMetadata.Add(AffixMetadataEnum.DoA);
-            if (skillStat.CastType == SkillCastTypeEnum.Summon)
-                skillPowerAffixData.SkillMetadata.Add(AffixMetadataEnum.Summon);
-            if (isBuff)
-                skillPowerAffixData.SkillMetadata.Add(AffixMetadataEnum.BuffDebuff);
-            if (isUltimate)
-                skillPowerAffixData.SkillMetadata.Add(AffixMetadataEnum.Ultimate);
-            if (isHighCd)
-                skillPowerAffixData.SkillMetadata.Add(AffixMetadataEnum.HighCD);
-            if (isHighCost)
-                skillPowerAffixData.SkillMetadata.Add(AffixMetadataEnum.HighCost_Spender);
-            if (isWeak)
-                skillPowerAffixData.SkillMetadata.Add(AffixMetadataEnum.HighProcRate);
-            if (isStrong)
-                skillPowerAffixData.SkillMetadata.Add(AffixMetadataEnum.HighDamage);
-            if (isCC)
-                skillPowerAffixData.SkillMetadata.Add(AffixMetadataEnum.CC);
-            if (!isCC && (isDoA || isDoT))
-                skillPowerAffixData.SkillMetadata.Add(AffixMetadataEnum.DoA);
-            if (isProjectile)
-                skillPowerAffixData.SkillMetadata.Add(AffixMetadataEnum.Projectile);
-            if (isCharacterProjectile)
-                skillPowerAffixData.SkillMetadata.Add(AffixMetadataEnum.ProjectileCharacter);
-            
+                skillPowerAffixData.PowerUp = new SkillAffixProcStat(procChance, powerType, selectedAffix, skillData, skillMetadata);
+            //}
+
             return skillPowerAffixData;
         }
 
         private static string calculateAffix1(PowerTypesEnum powerType, List<AffixMetadataEnum> md, Random rand, ref SkillAffixProcStat affixProcData) {
             var isHighCd = md.Contains(AffixMetadataEnum.HighCD);
             var procsOnDeath = md.Contains(AffixMetadataEnum.ProcsOnDeath);
-            var selectedAffix = powerType == PowerTypesEnum.AngelicPower
-                            ? EnumHelper.GetName<LPRsEnum>((LPRsEnum)rand.Next(0, 7))
-                            : EnumHelper.GetName<LDBsEnum>((LDBsEnum)rand.Next(0, 7));
+            var isDoT = md.Contains(AffixMetadataEnum.HasDoT);
+            var isProjectile = md.Contains(AffixMetadataEnum.Projectile);
+            var apRand = isProjectile ? 12 : isDoT ? 10 : 9;// : isDoA ? 9 : 10;
+            var selectedAffix = string.Empty;
+            if (powerType == PowerTypesEnum.AngelicPower)
+            {
+                selectedAffix = procsOnDeath ? EnumHelper.GetName<LPRsEnum>((LPRsEnum)rand.Next(0, apRand))
+                                            : EnumHelper.GetName<LBsEnum>((LBsEnum)rand.Next(0, 7));
+            }
+            if (powerType == PowerTypesEnum.DemonicPower)
+            {
+                selectedAffix = EnumHelper.GetName<LDBsEnum>((LDBsEnum)rand.Next(0, 9));
+                                // : EnumHelper.GetName<CCsEnum>((CCsEnum)rand.Next(3, 6));
+            }
+
+            if (powerType == PowerTypesEnum.AncestralPower) {
+                var randCurse = EnumHelper.GetName<CursesEnum>((CursesEnum)rand.Next(0, 3));
+                var randCC = procsOnDeath ? EnumHelper.GetName<EPs_HighDBsEnum>((EPs_HighDBsEnum)rand.Next(0, 3)) : EnumHelper.GetName<CCsEnum>((CCsEnum)rand.Next(0, 3));
+                var randLB = EnumHelper.GetName<LBsEnum>((LBsEnum)rand.Next(0, 3));
+                var randEP = EnumHelper.GetName<EPs_HighDBsEnum>((EPs_HighDBsEnum)rand.Next(0, 3));
+                var selected = rand.Next(1, 9);
+                selectedAffix = (selected % 3 == 0) ? (procsOnDeath ? randEP : randCurse) : (selected % 3 == 1) ? randLB : randCC;
+            }
+            return selectedAffix;
+        }
+
+        private static string calculateAffix2(PowerTypesEnum powerType, List<AffixMetadataEnum> md, Random rand, ref SkillAffixProcStat affixProcData) {
+            var isHighCd = md.Contains(AffixMetadataEnum.HighCD);
+            var procsOnDeath = md.Contains(AffixMetadataEnum.ProcsOnDeath);
+            var selectedAffix = "";
+            if (powerType == PowerTypesEnum.AngelicPower)
+            {
+                selectedAffix = EnumHelper.GetName<LPRsEnum>((LPRsEnum)rand.Next(0, 7));
+            }
+            if (powerType == PowerTypesEnum.DemonicPower)
+            {
+                selectedAffix = EnumHelper.GetName<EPs_HighDBsEnum>((EPs_HighDBsEnum)rand.Next(0, 4));
+            }
             if (powerType == PowerTypesEnum.AncestralPower) {
                 var randEP = EnumHelper.GetName<EPs_HighDBsEnum>((EPs_HighDBsEnum)rand.Next(0, 3));
-                var randLB = EnumHelper.GetName<LBsEnum>((LBsEnum)rand.Next(5, isHighCd ? 8 : 7));
+                var randLB = EnumHelper.GetName<LBsEnum>((LBsEnum)rand.Next(4, isHighCd ? 9 : 8));
                 if (randLB == EnumHelper.GetName(LBsEnum.OtherRandomLPROnDeathForX))
                 {
-                    randLB = EnumHelper.GetName<LPRsEnum>((LPRsEnum)rand.Next(0, 10));
+                    randLB = EnumHelper.GetName<LPRsEnum>((LPRsEnum)rand.Next(3, 7));
                     affixProcData.IsBuff = true;
                 }
                 
@@ -207,36 +220,44 @@ namespace D4St_Api.Models.StatCalculators
 
             return selectedAffix;
         }
-
-        private static string calculateAffix2(PowerTypesEnum powerType, List<AffixMetadataEnum> md, Random rand, ref SkillAffixProcStat affixProcData) {
+        
+        private static string calculateAffix3(PowerTypesEnum powerType, List<AffixMetadataEnum> md, Random rand, ref SkillAffixProcStat affixProcData) {
             var isHighCd = md.Contains(AffixMetadataEnum.HighCD);
             var procsOnDeath = md.Contains(AffixMetadataEnum.ProcsOnDeath);
-            var isDoT = md.Contains(AffixMetadataEnum.HasDoT);
-            var isProjectile = md.Contains(AffixMetadataEnum.Projectile);
-            var apRand = isProjectile ? 12 : isDoT ? 10 : 9;// : isDoA ? 9 : 10;
-            var selectedAffix = powerType == PowerTypesEnum.AngelicPower
-                            ? procsOnDeath ? EnumHelper.GetName<LPRsEnum>((LPRsEnum)rand.Next(0, apRand))
-                                            : EnumHelper.GetName<LBsEnum>((LBsEnum)rand.Next(0, 7))
-                            : procsOnDeath
-                                ? EnumHelper.GetName<EPs_HighDBsEnum>((EPs_HighDBsEnum)rand.Next(0, 6))
-                                : EnumHelper.GetName<CCsEnum>((CCsEnum)rand.Next(0, 3));
+            var selectedAffix = string.Empty;
+            if (powerType == PowerTypesEnum.AngelicPower)
+            {
+                selectedAffix = EnumHelper.GetName<LBsEnum>((LBsEnum)rand.Next(0, isHighCd ? 9 : 8));
+            }
+            if (powerType == PowerTypesEnum.DemonicPower)
+            {
+                selectedAffix = procsOnDeath
+                                ? EnumHelper.GetName<EPs_HighDBsEnum>((EPs_HighDBsEnum)rand.Next(0, 4))
+                                : EnumHelper.GetName<CCsEnum>((CCsEnum)rand.Next(0, 4));
+            }
 
             if (powerType == PowerTypesEnum.AncestralPower) {
-                var randCC = EnumHelper.GetName<CCsEnum>((CCsEnum)rand.Next(0, 3));
-                var randLB = EnumHelper.GetName<LBsEnum>((LBsEnum)rand.Next(0, 3));
-                var randEP = EnumHelper.GetName<EPs_HighDBsEnum>((EPs_HighDBsEnum)rand.Next(0, 3));
+                var randCC = EnumHelper.GetName<HighTierCCAncEnum>((HighTierCCAncEnum)rand.Next(0, 4));
+                var randLB = EnumHelper.GetName<LBsEnum>((LBsEnum)rand.Next(3, isHighCd ? 9 : 8));
+                var randEP = EnumHelper.GetName<EPs_HighDBsEnum>((EPs_HighDBsEnum)rand.Next(3, 6));
                 var selected = rand.Next(1, 9);
                 selectedAffix = (selected % 3 == 0) ? randEP : (selected % 3 == 1) ? randLB : randCC;
             }
             return selectedAffix;
         }
 
-        private static string calculateAffix3(PowerTypesEnum powerType, List<AffixMetadataEnum> md, Random rand, ref SkillAffixProcStat affixProcData) {
+        private static string calculateAffix4(PowerTypesEnum powerType, List<AffixMetadataEnum> md, Random rand, ref SkillAffixProcStat affixProcData) {
             var isHighCd = md.Contains(AffixMetadataEnum.HighCD);
             var procsOnDeath = md.Contains(AffixMetadataEnum.ProcsOnDeath);
-            var selectedAffix = powerType == PowerTypesEnum.AngelicPower
-                        ? EnumHelper.GetName<LBsEnum>((LBsEnum)rand.Next(0, isHighCd ? 9 : 8))
-                        : EnumHelper.GetName<EPs_HighDBsEnum>((EPs_HighDBsEnum)rand.Next(0, 6));
+            var selectedAffix = string.Empty;
+            if (powerType == PowerTypesEnum.AngelicPower)
+            {
+                selectedAffix = EnumHelper.GetName<LBsEnum>((LBsEnum)rand.Next(0, isHighCd ? 9 : 8));
+            }
+            if (powerType == PowerTypesEnum.DemonicPower)
+            {
+                selectedAffix = EnumHelper.GetName<EPs_HighDBsEnum>((EPs_HighDBsEnum)rand.Next(0, 6));
+            }
 
             if (powerType == PowerTypesEnum.AncestralPower) {
                 var randEP = EnumHelper.GetName<EPs_HighDBsEnum>((EPs_HighDBsEnum)rand.Next(0, 3));
@@ -247,25 +268,6 @@ namespace D4St_Api.Models.StatCalculators
                 var randCurse = EnumHelper.GetName<CursesEnum>((CursesEnum)rand.Next(4, 9));
                 var selected = rand.Next(1, 9);
                 selectedAffix = (selected % 3 == 0) ? randEP : (selected % 3 == 1) ? randLB : randCurse;
-            }
-            return selectedAffix;
-        }
-
-        private static string calculateAffix4(PowerTypesEnum powerType, List<AffixMetadataEnum> md, Random rand, ref SkillAffixProcStat affixProcData) {
-            var isHighCd = md.Contains(AffixMetadataEnum.HighCD);
-            var procsOnDeath = md.Contains(AffixMetadataEnum.ProcsOnDeath);
-            var selectedAffix = powerType == PowerTypesEnum.AngelicPower
-                            ? EnumHelper.GetName<LBsEnum>((LBsEnum)rand.Next(0, isHighCd ? 9 : 8))
-                            : procsOnDeath
-                                ? EnumHelper.GetName<EPs_HighDBsEnum>((EPs_HighDBsEnum)rand.Next(0, 5))
-                                : EnumHelper.GetName<CCsEnum>((CCsEnum)rand.Next(0, 3));
-
-            if (powerType == PowerTypesEnum.AncestralPower) {
-                var randCC = EnumHelper.GetName<CCsEnum>((CCsEnum)rand.Next(0, 3));
-                var randLB = EnumHelper.GetName<LBsEnum>((LBsEnum)rand.Next(3, isHighCd ? 9 : 8));
-                var randEP = EnumHelper.GetName<EPs_HighDBsEnum>((EPs_HighDBsEnum)rand.Next(3, 6));
-                var selected = rand.Next(1, 9);
-                selectedAffix = (selected % 3 == 0) ? randEP : (selected % 3 == 1) ? randLB : randCC;
             }
             return selectedAffix;
         }

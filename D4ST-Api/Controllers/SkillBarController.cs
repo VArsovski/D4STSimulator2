@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,10 +43,12 @@ namespace D4ST_Api.Controllers
                     // var selectedClassType = (ClassTypeEnum)classType;
                     var skillData = skill.SkillData; //getRandomSkillData(selectedClassType, tier);
                     skillData.Level = skillLevel;
-                    var skillToAdd = new Skill(skill.Id, skill.Name, skillData);
-                    skillToAdd.PowerData = SpellPowerDataCalculator.GetPowerAffixesForSkill((ClassTypeEnum)skill.ClassType, (SkillCastTypeEnum)skill.CastType, skillToAdd);
+                    // THIS IS BAD BUT SO FAR OK, must include isCC as separate otherwise need change low-layer Interface for 1 purpose
+                    var skillToAdd = new Skill(skill.Id, skill.Name, skillData, skillData.IsCC);
+                    skillToAdd.AngelicAffix = SpellPowerDataCalculator.GetPowerAffixesForSkill(PowerTypesEnum.AngelicPower, (ClassTypeEnum)skill.ClassType,skillToAdd);
+                    skillToAdd.DemonicAffix = SpellPowerDataCalculator.GetPowerAffixesForSkill(PowerTypesEnum.DemonicPower, (ClassTypeEnum)skill.ClassType, skillToAdd);
+                    skillToAdd.AncestralAffix = SpellPowerDataCalculator.GetPowerAffixesForSkill(PowerTypesEnum.AncestralPower, (ClassTypeEnum)skill.ClassType, skillToAdd);
                     skills.Skills.Add(skillToAdd);
-                    
                     skillCount++;
                 }
             }
@@ -129,68 +130,5 @@ namespace D4ST_Api.Controllers
 
             return classType == ClassTypeEnum.Ranged ? rangedSkills : classType == ClassTypeEnum.Melee ? meleeSkills : alternateSkills;
         }
-
-        // private DamageSkillStat getRandomSkillDetails(ClassTypeEnum classType, int tier) {
-
-        //     var skillsList = getClassSkills(classType);
-
-        //     var rand = new Random();
-        //     var skillStat = new DamageSkillStat(0, 0, 0);
-        //     var skillRng = rand.Next(0, 4);
-
-        //     var tier1From = rand.Next(2, 3);
-        //     var tier1To = rand.Next(3, 5);
-        //     if (tier1To <= tier1From)
-        //         tier1To = tier1From+1;
-
-        //     var tier2From = rand.Next(4, 8);
-        //     var tier2To = rand.Next(6, 12);
-        //     if (tier2To <= tier2From)
-        //         tier2To = tier2From + rand.Next(2,4);
-
-        //     var tier3From = rand.Next(14, 20);
-        //     var tier3To = rand.Next(22, 30);
-        //     if (tier3To <= tier3From)
-        //         tier3To = tier3From + rand.Next(3, 10);
-
-        //     var tier4From = rand.Next(30, 45);
-        //     var tier4To = rand.Next(50, 80);
-        //     if (tier4To <= tier4From)
-        //         tier4To = tier4From + rand.Next(8, 20);
-            
-        //     var selectedFrom = tier == 1 ? tier1From : tier == 2 ? tier2From : tier == 3 ? tier3From : tier4From;
-        //     var selectedTo = tier == 1 ? tier1To : tier == 2 ? tier2To : tier == 3 ? tier3To : tier4To;
-        //     var selectedCD = tier == 1 ? rand.Next(2, 4) : tier == 2 ? rand.Next(3, 6) : tier == 3 ? rand.Next(4, 9) : 15 + rand.Next(2, 5) * 5;
-        //     var selectedCost = tier == 1 ? rand.Next(4, 8) : tier == 2 ? rand.Next(6, 12) : tier == 3 ? rand.Next(8, 16) : rand.Next(24, 35);
-
-        //     skillStat.From = selectedFrom;
-        //     skillStat.To = selectedTo;
-        //     var rngData = CalculateCostsCDAndCharges(selectedCD, selectedCost, tier);
-        //     skillStat.CD = rngData.CD;
-        //     skillStat.Cost = rngData.Cost;
-        //     skillStat.Charges = rngData.Charges;
-
-        //     skillStat.Tier = tier;
-        //     return skillStat;
-        // }
-
-        // private DamageSkillStat CalculateCostsCDAndCharges(int cd, int cost, int tier) {
-        //     var rand = new Random();
-        //     var skillStat = new DamageSkillStat(0, 0, 0);
-        //     skillStat.Charges = 1;
-
-        //     skillStat.CD = rand.Next(0, 10) % 2 == 1 ? cd : 0;
-        //     if (skillStat.CD == 0)
-        //         skillStat.Cost = cost;
-        //     else if (rand.Next(0, 10) % 2 == 1)
-        //     {
-        //         var charges = rand.Next(1, 4);
-        //         var tierDelay = tier < 3 ? tier : tier == 3 ? 5 : 20;
-        //         skillStat.CD += tierDelay + Convert.ToInt32(Math.Round(DecimalHelper.RoundToDecimalsD(Convert.ToDecimal(cd/(5-charges)), 1)));
-        //         skillStat.Charges = charges;
-        //     }
-
-        //     return skillStat;
-        // }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using D4St_Api.Models.Enums;
+﻿using D4St_Api.Models.Enums;
 using D4St_Api.Models.StatCalculators;
 using D4ST_Api.Models.Enums;
 using D4ST_Api.Models.StatCalculators;
@@ -15,19 +14,23 @@ namespace D4ST_Api.Models
         public SkillCastTypeEnum CastType { get; set; }
         // public SkillTypeEnum? SkillType { get; set; }
         public DamageSkillStat SkillData { get; set; }
-        public SkillPowerAffixData PowerData { get; set; }
         public int CharacterClassId { get; set; }
-        // public CharacterClass CharacterClass { get; set; }
+        public SkillPowerAffixData AngelicAffix { get; set; }
+        public SkillPowerAffixData DemonicAffix { get; set; }
+        public SkillPowerAffixData AncestralAffix { get; set; }
+        public int GeneratedByGen { get; set; }
 
-
-        public Skill(int id, string name, ISkillDamageStat skillStats, bool calculatePowerup = false)
+        public Skill(int id, string name, ISkillDamageStat skillStats, bool IsCC = false, bool calculatePowerup = false)
         {
             this.Id = id;
             this.Name = name;
-            this.SkillData = new DamageSkillStat(skillStats, null);
+            this.SkillData = new DamageSkillStat(skillStats, null, IsCC);
             this.SkillData.Level = skillStats.Level;
             if (calculatePowerup)
                 this.SkillData = StatCalculators.SpellCalculator.CalculateSkillData(skillStats);
+            
+            // TODO: Remove this after testing/dev phase done
+            this.GeneratedByGen = skillStats.Tier <= 2 ? IsCC ? 2 : 1 : IsCC ? 4 : 3;
         }
     }
 

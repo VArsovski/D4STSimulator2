@@ -5,24 +5,16 @@ using D4ST_Api.Models.Enums;
 
 namespace D4ST_Api.Models.StatCalculators
 {
-    public interface ISkillPowerAffixData
-    {
-        List<AffixMetadataEnum> SkillMetadata { get; set; }
-        ISkillAffixProcStat AngelicProcAffix { get; set; }
-        ISkillAffixProcStat DemonicProcAffix { get; set; }
-        ISkillAffixProcStat AncestralProcAffix { get; set; }
-    }
-
     public interface ISkillAffixProcStat {
-        string Description { get; set; }
+        // string Description { get; set; }
         PowerTypesEnum PowerType { get; set; }
         decimal ProcChance { get; set; }
+        decimal ProcAmount { get; set; }
         decimal Duration { get; set; }
-        decimal Amount { get; set; }
         string SelectedAffix { get; set; }
-        bool ProcsOnDeath { get; set; }
         bool Stackable { get; set; }
         bool IsBuff { get; set; }
+        int Level { get; set; }
     }
     
     public interface ISkillStat
@@ -35,6 +27,12 @@ namespace D4ST_Api.Models.StatCalculators
         int CD { get; set; }
         int Cost { get; set; }
         int Charges { get; set; }
+    }
+
+    public interface ISkillPowerStat {
+        int AngelicPower { get; set; }
+        int DemonicPower { get; set; }
+        int AncestralPower { get; set; }
     }
 
     public interface ISkillDamageStat : ISkillStat, ISkillCostStat

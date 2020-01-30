@@ -4,9 +4,11 @@ export interface ISkillAffixDetail {
     PowerType: number;// PowerTypesEnum
     ProcChance : number;
     Duration : number;
-    Amount : number;
+    ProcAmount : number;
     SelectedAffix : string;
     ProcsOnDeath : boolean;
     Stackable : boolean;
     IsBuff : boolean;
+    Level: number;
+    AffixMetadata: [];
 }
