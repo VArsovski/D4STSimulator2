@@ -1,15 +1,15 @@
-import { ISkillDetailDTO } from './ISkillDetailDTO';
-import { ISkillPowerDetailDTO } from './ISkillPowerDetailDTO';
+import { ISkillPowerDataDTO } from './ISkillPowerDataDTO';
+import { ISkillDamageDataDTO } from './ISkillDamageDataDTO';
 
 export interface ISkillDTO {
   id: number;
   name: string;
   level: number;
   tier: number;
-  skillData: ISkillDetailDTO;
-  angelicAffix: ISkillPowerDetailDTO;
-  demonicAffix: ISkillPowerDetailDTO;
-  ancestralAffix: ISkillPowerDetailDTO;
+  skillData: ISkillDamageDataDTO;
+  angelicAffix: ISkillPowerDataDTO;
+  demonicAffix: ISkillPowerDataDTO;
+  ancestralAffix: ISkillPowerDataDTO;
   affixMetadata: number[];
   generatedByGen: number;
 }

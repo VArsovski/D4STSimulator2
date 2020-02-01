@@ -10,9 +10,13 @@ import { BasicCharStats } from 'src/Models/BasicCharStats';
 import { LevelUpStatsVM } from 'src/Models/LevelUpStatsVM';
 import { ISkillAffixDetail } from 'src/Models/DTOs/ISkillAffixDetail';
 import { SkillAffixDetail } from 'src/Models/DTOs/SkillAffixDetail';
-import { SkillPowerDetailDTO } from 'src/Models/DTOs/SkillPowerDetailDTO';
 import { ISkillDTO } from 'src/Models/DTOs/ISkillDTO';
 import { SkillDTO } from 'src/Models/DTOs/SkillDTO';
+import { SkillWithImageVM } from 'src/Models/SkillWithImageVM';
+import { ISkillDamageDataDTO } from 'src/Models/DTOs/ISkillDamageDataDTO';
+import { SkillDamageDataDTO } from 'src/Models/DTOs/SkillDamageDataDTO';
+import { SkillDetailDTO } from 'src/Models/SkillDetailDTO';
+import { ISkillDetailDTO } from 'src/Models/DTOs/ISkillDetailDTO';
 
 @Injectable({
   providedIn: "root"
@@ -22,6 +26,7 @@ export class ApiServiceService {
   VM: BasicStatsVM;
   LevelUpVM: LevelUpStatsVM;
   SkillsVM: SkillListVM;
+  LevelUpSkillVM: ISkillDTO;
   baseUrl: string;
 
   headerDict: any = {
@@ -38,6 +43,7 @@ export class ApiServiceService {
     this.VM = new BasicStatsVM();
     this.LevelUpVM = new LevelUpStatsVM();
     this.SkillsVM = new SkillListVM();
+    this.LevelUpSkillVM = new SkillDTO();
   }
 
   getBasicStats = (): Promise<LevelUpStatsVM> => {
@@ -102,6 +108,20 @@ export class ApiServiceService {
       })
     })
   }
+
+  LevelUpSkill(model: ISkillDTO): Promise<ISkillDTO> {
+    return new Promise((resolve, reject) => {
+      var url = this.baseUrl + "SkillBar/LevelUp";
+      this.http.post(url, model, this.headerDict)
+      .pipe(map((response:any) => {
+        debugger;
+      }))
+      .subscribe(() => {
+        resolve(this.LevelUpSkillVM);
+        return this.LevelUpSkillVM;
+      });
+    })
+  }
   
   getSkills = (classType: number): Promise<any> => {
     return new Promise((resolve, reject) => {
@@ -114,8 +134,7 @@ export class ApiServiceService {
               var skill = new SkillVM();
               skill.id = element.id;
               skill.name = element.name;
-              skill.skillData = this.extractSkillDTOFromResponse(element.data);
-              skill.skillLvlUpData = this.extractSkillDTOFromResponse(element.levelUp);
+              skill.data = this.extractSkillDTOFromResponse(element.data);
 
               // TODO: Fix on API (if possible without Overchanging stuff)
               skill.level = element.level || element.data.skillData.level;
@@ -194,11 +213,8 @@ export class ApiServiceService {
     skill.level = element.skillData.level;
     skill.name = element.name;
     skill.tier = element.skillData.tier;
-    skill.skillData.from = element.skillData.from;
-    skill.skillData.to = element.skillData.to;
-    skill.skillData.cd = element.skillData.cd;
-    skill.skillData.cost = element.skillData.cost;
-    skill.skillData.charges = element.skillData.charges;
+    skill.skillData.powerData = new SkillDetailDTO(element.skillData.powerData);
+    skill.skillData.powerUp = new SkillDetailDTO(element.skillData.powerUp);
 
     // skill.angelicAffix = new SkillPowerDetailDTO();
     // skill.demonicAffix = new SkillPowerDetailDTO();

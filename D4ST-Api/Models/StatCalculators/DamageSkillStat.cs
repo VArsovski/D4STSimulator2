@@ -25,10 +25,10 @@ namespace D4ST_Api.Models.StatCalculators
 
         public DamageSkillStat(ISkillDamageStat ds, ISkillCostStat cs, bool IsCC = false)
         {
-            this.From = ds.From;
-            this.To = ds.To;
-            this.Level = ds.Level;
-            this.Tier = ds.Tier;
+            this.From = ds?.From ?? 0;
+            this.To = ds?.To ?? 0;
+            this.Level = ds?.Level ?? 0;
+            this.Tier = ds?.Tier ?? 0;
             this.Cost = cs?.Cost ?? 0;
             this.CD = cs?.CD ?? 0;
             this.Charges = cs?.Charges ?? 1;
@@ -84,8 +84,8 @@ namespace D4ST_Api.Models.StatCalculators
 
         public DamageSkillStat CalculateSkillCosts(int level)
         {
-            var costIncreaseRate = level * (this.Tier <= 2 ? 1 : this.Tier == 3 ? 2 : 3);
-            this.Cost = this.Cost == 0 && this.CD == 0 ? this.Tier * 5 : this.Cost;
+            var costIncreaseRate = level * (this.Tier <= 1 ? 1 : this.Tier == 2 ? 2 : this.Tier == 3 ? 3 : 5);
+            this.Cost = this.Cost == 0 && this.CD == 0 ? this.Tier * 4 : this.Cost;
             if (this.Cost != 0) {
                 this.Cost += costIncreaseRate;
             }

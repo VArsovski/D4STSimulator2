@@ -44,7 +44,7 @@ namespace D4ST_Api.Models.Helpers
 
         public static List<AffixMetadataEnum> GetSkillMetadata(PowerTypesEnum powerType, ClassTypeEnum classType, SkillDTO skillStat) {
             var skillMetadata = new List<AffixMetadataEnum>();
-            var skillData = skillStat.SkillData;
+            var skillData = skillStat.SkillData.PowerData;
             var isHighTier = skillData.Tier > 2;
             var isHighCd = DecimalHelper.RoundToDecimals(skillData.CD / skillData.Charges, 2) >= skillData.Tier + 2;
             var isHighCost = DecimalHelper.RoundToDecimals(skillData.Cost / skillData.Charges, 2) >= 2*skillData.Tier + 3;
@@ -58,7 +58,7 @@ namespace D4ST_Api.Models.Helpers
             var isDoT = skillData.Duration != 0;
             var isUltimate = skillStat.CastType == SkillCastTypeEnum.Ultimate;
             var isBuff = skillStat.CastType == SkillCastTypeEnum.BuffDebuff;
-            var isCC = skillStat.SkillData.IsCC;
+            var isCC = skillStat.SkillData.PowerData.IsCC;
             // var procsOnDeath = false;
 
             if (isProjectile)

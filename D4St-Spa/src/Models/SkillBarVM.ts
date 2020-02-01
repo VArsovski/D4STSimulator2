@@ -15,13 +15,13 @@ export class SkillBarVM implements ISkillBarDTO {
     skill8: ISkillWithImageDTO;
     constructor() {
         this.positionSelected = -1;
-        this.skill1 = new SkillWithImageVM(null, null, new SkillVM()).skillWithImgData;
-        this.skill2 = new SkillWithImageVM(null, null, new SkillVM()).skillWithImgData;
-        this.skill3 = new SkillWithImageVM(null, null, new SkillVM()).skillWithImgData;
-        this.skill4 = new SkillWithImageVM(null, null, new SkillVM()).skillWithImgData;
-        this.skill5 = new SkillWithImageVM(null, null, new SkillVM()).skillWithImgData;
-        this.skill6 = new SkillWithImageVM(null, null, new SkillVM()).skillWithImgData;
-        this.skill7 = new SkillWithImageVM(null, null, new SkillVM()).skillWithImgData;
-        this.skill8 = new SkillWithImageVM(null, null, new SkillVM()).skillWithImgData;
+        this.skill1 = new SkillWithImageVM(null, new SkillVM()).skillWithImgData;
+        this.skill2 = new SkillWithImageVM(null, new SkillVM()).skillWithImgData;
+        this.skill3 = new SkillWithImageVM(null, new SkillVM()).skillWithImgData;
+        this.skill4 = new SkillWithImageVM(null, new SkillVM()).skillWithImgData;
+        this.skill5 = new SkillWithImageVM(null, new SkillVM()).skillWithImgData;
+        this.skill6 = new SkillWithImageVM(null, new SkillVM()).skillWithImgData;
+        this.skill7 = new SkillWithImageVM(null, new SkillVM()).skillWithImgData;
+        this.skill8 = new SkillWithImageVM(null, new SkillVM()).skillWithImgData;
     }
 }

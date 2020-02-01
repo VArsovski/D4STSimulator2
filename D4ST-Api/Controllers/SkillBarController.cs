@@ -35,14 +35,15 @@ namespace D4ST_Api.Controllers
                 skillCount = 0;
                 foreach (var skill in tierSet)
                 {
+                    var skillTier = skill.SkillData.Tier;
                     var skillLevel = 1;// levelRand.Next(1, randMax);
                     var skillData = skill.SkillData; //getRandomSkillData(selectedClassType, tier);
                     skillData.Level = skillLevel;
-                    var scs = new SkillCostStat(){ CD = skillData.CD, Cost = skillData.Cost, Charges = skillData.Charges };
-                    var skillToAdd = new Skill(skill.Id, skill.Name, skillData, scs, skillData.IsCC);
+                    var scs = new SkillCostStat(skillData);
+                    var skillToAdd = new Skill(skill.Id, skill.Name, skillTier, skill.SkillData, scs, skillData.IsCC);
                     // skillToAdd.Data.SkillData.Level = skill.SkillData.Level;
-                    skillToAdd.Data.SkillData.Tier = skill.SkillData.Tier;
-                    skillToAdd.LevelUp.SkillData.Tier = skill.SkillData.Tier;
+                    // skillToAdd.Data.SkillData.PowerData.Tier = skillTier;
+                    // skillToAdd.Data.SkillData.PowerUp.Tier = skillTier;
 
                     var skillMetadata = SkillStatHelper.GetSkillMetadata(PowerTypesEnum.AngelicPower, (ClassTypeEnum)skill.ClassType, skillToAdd.Data);
                     var PoDAng = SkillStatHelper.GetRNG(PowerTypesEnum.AngelicPower).Next(1, 18) % 5 == 0;
@@ -56,14 +57,17 @@ namespace D4ST_Api.Controllers
                     if (PoDDem) md2.Add(AffixMetadataEnum.ProcsOnDeath);
                     if (PoDAnc) md3.Add(AffixMetadataEnum.ProcsOnDeath);
 
-                    skillToAdd.Data.AngelicAffix = SpellPowerDataCalculator.GetPowerAffixesForSkill(PowerTypesEnum.AngelicPower, (SkillCastTypeEnum)skill.CastType, skillToAdd.Data.SkillData, md1);
-                    skillToAdd.Data.DemonicAffix = SpellPowerDataCalculator.GetPowerAffixesForSkill(PowerTypesEnum.DemonicPower, (SkillCastTypeEnum)skill.CastType, skillToAdd.Data.SkillData, md2);
-                    skillToAdd.Data.AncestralAffix = SpellPowerDataCalculator.GetPowerAffixesForSkill(PowerTypesEnum.AncestralPower, (SkillCastTypeEnum)skill.CastType, skillToAdd.Data.SkillData, md3);
+                    skillToAdd.Data.AngelicAffix = SpellPowerDataCalculator.GetPowerAffixesForSkill(PowerTypesEnum.AngelicPower, (SkillCastTypeEnum)skill.CastType, skillToAdd.Data.SkillData.PowerData, md1);
+                    skillToAdd.Data.DemonicAffix = SpellPowerDataCalculator.GetPowerAffixesForSkill(PowerTypesEnum.DemonicPower, (SkillCastTypeEnum)skill.CastType, skillToAdd.Data.SkillData.PowerData, md2);
+                    skillToAdd.Data.AncestralAffix = SpellPowerDataCalculator.GetPowerAffixesForSkill(PowerTypesEnum.AncestralPower, (SkillCastTypeEnum)skill.CastType, skillToAdd.Data.SkillData.PowerData, md3);
 
                     // Recalculate for same affix selected from above..
-                    skillToAdd.LevelUp.AngelicAffix = SpellPowerDataCalculator.RecalculatePowerAffixesForSkill(PowerTypesEnum.AngelicPower, (SkillCastTypeEnum)skill.CastType, skillToAdd.Data.AngelicAffix.PowerUp, skillToAdd.LevelUp.SkillData, md1);
-                    skillToAdd.LevelUp.DemonicAffix = SpellPowerDataCalculator.RecalculatePowerAffixesForSkill(PowerTypesEnum.DemonicPower, (SkillCastTypeEnum)skill.CastType, skillToAdd.Data.DemonicAffix.PowerUp, skillToAdd.LevelUp.SkillData, md2);
-                    skillToAdd.LevelUp.AncestralAffix = SpellPowerDataCalculator.RecalculatePowerAffixesForSkill(PowerTypesEnum.AncestralPower, (SkillCastTypeEnum)skill.CastType, skillToAdd.Data.AncestralAffix.PowerUp, skillToAdd.LevelUp.SkillData, md3);
+                    // skillToAdd.LevelUp.AngelicAffix = SpellPowerDataCalculator.RecalculatePowerAffixesForSkill(PowerTypesEnum.AngelicPower, (SkillCastTypeEnum)skill.CastType, skillToAdd.Data.AngelicAffix.PowerUp, skillToAdd.LevelUp.SkillData, md1);
+                    // skillToAdd.LevelUp.DemonicAffix = SpellPowerDataCalculator.RecalculatePowerAffixesForSkill(PowerTypesEnum.DemonicPower, (SkillCastTypeEnum)skill.CastType, skillToAdd.Data.DemonicAffix.PowerUp, skillToAdd.LevelUp.SkillData, md2);
+                    // skillToAdd.LevelUp.AncestralAffix = SpellPowerDataCalculator.RecalculatePowerAffixesForSkill(PowerTypesEnum.AncestralPower, (SkillCastTypeEnum)skill.CastType, skillToAdd.Data.AncestralAffix.PowerUp, skillToAdd.LevelUp.SkillData, md3);
+                    
+                    // skillToAdd.Data.Tier = skillTier;
+                    // skillToAdd.Data.Level = skillLevel;
                     skills.Skills.Add(skillToAdd);
                     skillCount++;
                 }
@@ -73,18 +77,20 @@ namespace D4ST_Api.Controllers
         }
 
         [HttpPost]
-        [Route("{id}")]
-        public IActionResult LevelUp([FromBody]SkillDTO data, [FromQuery]int id) {
-            var levelValid = data.SkillData.Level > 0 && data.SkillData.Level < _MAX;
+        public IActionResult LevelUp([FromBody]SkillDTO data) {
+            var id = data.Id;
+            var sd = data.SkillData.PowerData;
+            var su = data.SkillData.PowerUp;
+            var levelValid = sd.Level > 0 && sd.Level < _MAX;
             if (!levelValid)
                 return BadRequest(_LEVEL_INVALID);
             else
             {
-                var level = data.SkillData.Level;
-                data.SkillData.Level = level + 1;
-                var scs = new SkillCostStat(){ CD = data.SkillData.CD, Cost = data.SkillData.Cost, Charges = data.SkillData.Charges };
+                var level = sd.Level;
+                sd.Level = level + 1;
+                var scs = new SkillCostStat(sd);
                 var skillData = new Skill(id, data.Name, data.SkillData, scs);
-                data.SkillData.Level = level + 2;
+                sd.Level = level + 2;
                 var nextLvlSkillData = new Skill(id, data.Name, data.SkillData, scs);
                 if (level == _MAX)
                     nextLvlSkillData = skillData;
@@ -95,16 +101,17 @@ namespace D4ST_Api.Controllers
         [HttpPost]
         [Route("{id}")]
         public IActionResult PowerUp([FromBody]SkillDTO data, [FromQuery]int id, [FromQuery]int powerType) {
-            var levelValid = data.SkillData.Level > 0 && data.SkillData.Level < _MAX;
+            var sd = data.SkillData.PowerData;
+            var levelValid = sd.Level >= 0 && sd.Level < _MAX;
             if (!levelValid)
                 return BadRequest(_LEVEL_INVALID);
             else
             {
-                var level = data.SkillData.Level;
-                data.SkillData.Level = level + 1;
-                var scs = new SkillCostStat(){ CD = data.SkillData.CD, Cost = data.SkillData.Cost, Charges = data.SkillData.Charges };
+                var level = sd.Level;
+                data.SkillData.PowerData.Level = level + 1;
+                var scs = new SkillCostStat(sd);
                 var skillData = new Skill(id, data.Name, data.SkillData, scs);
-                data.SkillData.Level = level + 2;
+                data.SkillData.PowerData.Level = level + 2;
                 var nextLvlSkillData = new Skill(id, data.Name, data.SkillData, scs);
                 if (level == _MAX)
                     nextLvlSkillData = skillData;
@@ -125,28 +132,5 @@ namespace D4ST_Api.Controllers
             }
             return skillSeedData;
         }
-
-        // private List<List<string>> getClassSkills(ClassTypeEnum classType) {
-        //     var rangedSkills = new List<List<string>> {
-        //         new List<string> { "Lightning", "Arc Lash", "Frost Bolt", "Fire bolt", "Ignite" },
-        //     new List<string> { "Flash", "Charged Bolts", "Glacial spike", "Ice Shards", "Blazing pyre" },
-        //     new List<string> { "Frozen Orb", "Frost Nova", "Firewall", "Hydra", "Chain lightning" },
-        //     new List<string> { "Archon", "Meteor", "Conduit", "Deep Freeze", "Tesla Coil" }};
-
-        //     var meleeSkills = new List<List<string>> {
-        //         new List<string> { "Bash", "Cleave", "Lunging strike", "Frenzy", "Double strike" },
-        //     new List<string> { "Rend", "Leaping strike", "Rupture", "Upheaval", "Weapon Throw" },
-        //     new List<string> { "Ground Stomp", "Overpower", "Ancient Spear", "Charge", "Double Swing" },
-        //     new List<string> { "Execute", "Hammer of the Ancients", "Wrath of the Berserker", "Call of the Ancients", "Iron Maelstrom" }};
-
-        //     var alternateSkills = new List<List<string>>{
-        //         new List<string> { "Earthspike", "Sunder", "Shred", "Storm Strike", "Maul"},
-        //         new List<string> { "Wind Shear", "Pulverize", "Landslide", "Tornado", "Cyclone Armor"},
-        //         new List<string> { "Earthen Bulwark", "Trample", "Debilitating Roar", "Ravenous Bite", "Hurricane"},
-        //         new List<string> { "Boulder", "Vine Creeper", "Cataclysm", "Grizzly Rage", "Petrify" }
-        //     };
-
-        //     return classType == ClassTypeEnum.Ranged ? rangedSkills : classType == ClassTypeEnum.Melee ? meleeSkills : alternateSkills;
-        // }
     }
 }

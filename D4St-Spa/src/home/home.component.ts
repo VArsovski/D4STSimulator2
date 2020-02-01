@@ -49,7 +49,7 @@ export class HomeComponent implements OnInit, OnChanges {
     });
 
     this.skillsModel.skills.forEach(element => {
-      this.skillTiers[(element.tier || element.skillData.tier) - 1].skills.push(element);
+      this.skillTiers[(element.tier || element.data.tier) - 1].skills.push(element);
     });
   }
 

@@ -1,9 +1,8 @@
-import { ISkillPowerDetailDTO } from './ISkillPowerDetailDTO';
+import { ISkillPowerDataDTO } from './ISkillPowerDataDTO';
 import { ISkillAffixDetail } from './ISkillAffixDetail';
-import { SkillPowerDetailDTO } from './SkillPowerDetailDTO';
 import { SkillAffixDetail } from './SkillAffixDetail';
 
-export class PowerDetailVM implements ISkillPowerDetailDTO {
+export class PowerDetailVM implements ISkillPowerDataDTO {
     description: string;
     powerData: ISkillAffixDetail;
     powerUp: ISkillAffixDetail;

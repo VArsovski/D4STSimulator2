@@ -5,13 +5,12 @@ import { ISkillDTO } from './DTOs/ISkillDTO';
 import { IImageUrl } from './DTOs/IImageUrl';
 import { SafeUrl, SafeStyle } from '@angular/platform-browser';
 import { SkillWithImageDTO } from './DTOs/SkillWithImageDTO';
-import { ISkillPowerDetailDTO } from './DTOs/ISkillPowerDetailDTO';
+import { ISkillPowerDataDTO } from './DTOs/ISkillPowerDataDTO';
 
 export class SkillWithImageVM extends SkillVM implements IImageUrl {
     imageUrl: SafeUrl;
     imageStyle: SafeStyle;
-    skillData: ISkillDTO;
-    skillLvlUpData: ISkillDTO;
+    data: ISkillDTO;
     id: number;
     name: string;
     level: number;
@@ -19,17 +18,16 @@ export class SkillWithImageVM extends SkillVM implements IImageUrl {
 
     skillWithImgData: ISkillWithImageDTO;
 
-    constructor(sd: ISkillWithImageDTO = null, su: ISkillWithImageDTO = null, data:SkillVM = null, imageUrl:SafeUrl = null, imageStyle:SafeUrl = null) {
+    constructor(sd: ISkillWithImageDTO = null, data:SkillVM = null, imageUrl:SafeUrl = null, imageStyle:SafeUrl = null) {
         var supVM = super();
-        if (sd || su)
+        if (sd)
         {
             this.id = sd.id;
             this.name = sd.name;
             this.level = sd.level;
             this.tier = sd.tier;
-            var svm = new SkillVM(sd.skillData, su.skillData);
-            this.skillData = sd;
-            this.skillLvlUpData = su;
+            var svm = new SkillVM(sd.skillData.powerData, sd.skillData.powerUp);
+            this.data = sd;
             this.imageUrl = imageUrl;
             this.imageStyle = imageStyle;
             this.skillWithImgData = new SkillWithImageDTO(sd);
@@ -40,16 +38,14 @@ export class SkillWithImageVM extends SkillVM implements IImageUrl {
             this.name = data.name;
             this.level = data.level;
             this.tier = data.tier;
-            this.skillData = data.skillData;
-            this.skillLvlUpData = data.skillLvlUpData;
+            this.data = data.data;
             this.imageUrl = imageUrl;
             this.imageStyle = imageStyle;
-            this.skillWithImgData = new SkillWithImageDTO(null, data.skillData);
+            this.skillWithImgData = new SkillWithImageDTO(null, data.data);
         }
         else {
             var svm = new SkillVM();
-            this.skillData = svm.skillData;
-            this.skillLvlUpData = svm.skillLvlUpData;
+            this.data = svm.data;
             this.imageUrl = imageUrl;
             this.imageStyle = imageStyle;
             // this.name = nameOpt;
@@ -67,7 +63,7 @@ export class SkillWithImageVM extends SkillVM implements IImageUrl {
     }
 
     // TODO: See if somehow possible to use the other method from SkillVM
-    getAffixPowerData(pd: ISkillPowerDetailDTO, powerType: number): ISkillPowerDetailDTO {
+    getAffixPowerData(pd: ISkillPowerDataDTO, powerType: number): ISkillPowerDataDTO {
         return super.getAffixPowerData(pd, powerType);
     }
 }

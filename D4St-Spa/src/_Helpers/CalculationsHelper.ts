@@ -10,6 +10,7 @@ import { AngelicPowerAffixes } from 'src/Models/AngelicPowerAffixes';
 import { DemonicPowerAffixes } from 'src/Models/DemonicPowerAffixes';
 import { AncestralPowerAffixes } from 'src/Models/AncestralPowerAffixes';
 import { SkillDTO } from 'src/Models/DTOs/SkillDTO';
+import { SkillDamageDataDTO } from 'src/Models/DTOs/SkillDamageDataDTO';
 
 export class CalculationsHelper {
   public static calculateChangeDetails(change: BasicStatsVM, orig: BasicStatsVM) {
@@ -28,17 +29,18 @@ export class CalculationsHelper {
     var changedData = new SkillDTO();
     var cd = changedData;
 
-    cd = Helpers.getNumericDifferences<SkillDTO>(change, orig);
-    cd.skillData = Helpers.getNumericDifferences<ISkillDetailDTO>(change.skillData, orig.skillData);
+    cd.skillData = new SkillDamageDataDTO();
+    cd.skillData.powerData = Helpers.getNumericDifferences<ISkillDetailDTO>(change.skillData.powerUp, orig.skillData.powerData);
+    cd.skillData.powerUp = Helpers.getNumericDifferences<ISkillDetailDTO>(change.skillData.powerUp, orig.skillData.powerData);    
     cd.angelicAffix = new SkillPowerDetailDTO();
-    cd.angelicAffix.powerData = this.calculateSkillAffixDetails(change.angelicAffix.powerData, orig.angelicAffix.powerData);
-    cd.angelicAffix.powerUp = this.calculateSkillAffixDetails(change.angelicAffix.powerUp, orig.angelicAffix.powerUp);
+    cd.angelicAffix.powerData = this.calculateSkillAffixDetails(change.angelicAffix.powerUp, orig.angelicAffix.powerData);
+    cd.angelicAffix.powerUp = this.calculateSkillAffixDetails(change.angelicAffix.powerUp, orig.angelicAffix.powerData);
     cd.demonicAffix = new SkillPowerDetailDTO();
-    cd.demonicAffix.powerData = this.calculateSkillAffixDetails(change.demonicAffix.powerData, orig.demonicAffix.powerData);
-    cd.demonicAffix.powerUp = this.calculateSkillAffixDetails(change.demonicAffix.powerUp, orig.demonicAffix.powerUp);
+    cd.demonicAffix.powerData = this.calculateSkillAffixDetails(change.demonicAffix.powerUp, orig.demonicAffix.powerData);
+    cd.demonicAffix.powerUp = this.calculateSkillAffixDetails(change.demonicAffix.powerUp, orig.demonicAffix.powerData);
     cd.ancestralAffix = new SkillPowerDetailDTO();
-    cd.ancestralAffix.powerData = this.calculateSkillAffixDetails(change.ancestralAffix.powerData, orig.ancestralAffix.powerData);
-    cd.ancestralAffix.powerUp = this.calculateSkillAffixDetails(change.ancestralAffix.powerUp, orig.ancestralAffix.powerUp);
+    cd.ancestralAffix.powerData = this.calculateSkillAffixDetails(change.ancestralAffix.powerUp, orig.ancestralAffix.powerData);
+    cd.ancestralAffix.powerUp = this.calculateSkillAffixDetails(change.ancestralAffix.powerUp, orig.ancestralAffix.powerData);
 
     changedData = cd;
     return changedData;
@@ -71,7 +73,7 @@ export class CalculationsHelper {
 
             description = PoD
               ? startStr + pd.SelectedAffix
-              : (startStr + " has a " + pd.ProcChance + "% chance ") + " to " + pd.SelectedAffix;
+              : (startStr + " has " + pd.ProcChance + "% chance ") + " to " + pd.SelectedAffix;
         }
         else if (pd.ProcChance) {
             description = "Gains " + pd.ProcChance + " chance to " + pd.SelectedAffix;

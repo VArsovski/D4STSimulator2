@@ -7,12 +7,12 @@ export class SkillDetailDTO implements ISkillDetailDTO {
     cost: number;
     charges: number;
 
-    constructor() {
+    constructor(data:ISkillDetailDTO = null) {
         // Prevent Undefined, hard to find after
-        this.from = 0;
-        this.to = 0;
-        this.cd = 0;
-        this.cost = 0;
-        this.charges = 0;
+        this.from = (data || {from:0}).from;
+        this.to =  (data || {to:0}).to;
+        this.cd =  (data || {cd:0}).cd;
+        this.cost =  (data || {cost:0}).cost;
+        this.charges =  (data || {charges:1}).charges;
     }
 }

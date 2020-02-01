@@ -1,49 +1,49 @@
 <div class="row customHeaderFont">
   <div class="col">
-    <div class="row" *ngIf="model.skillData.skillData">
+    <div class="row" *ngIf="model.data.skillData">
       <div class="col-2 offset-2 text-left">
         <label class="clearfix" *ngIf="this.model.level && this.model.level != 0">[Level {{model.level}}]</label>
         <div class="row"><div class="col">
-          <label class="clearfix" *ngIf="this.model.skillData.skillData && model.skillData.skillData.from != 0">
-            {{"Damage (" + model.skillData.skillData.from + " - " + model.skillData.skillData.to + ")" }}</label>
-          <label class="clearfix" *ngIf="this.previewChanges.skillData && this.previewChanges.skillData.from != 0">
-            {{"+(" + previewChanges.skillData.from + " - " + previewChanges.skillData.to + ")" }}</label>
+          <label class="clearfix" *ngIf="this.model.data.skillData && model.data.skillData.powerData.from != 0">
+            {{"Damage (" + model.data.skillData.powerData.from + " - " + model.data.skillData.powerData.to + ")" }}</label>
+          <label class="clearfix" *ngIf="this.previewChanges.skillData && this.previewChanges.skillData.powerData.from != 0">
+            {{"+(" + previewChanges.skillData.powerData.from + " - " + previewChanges.skillData.powerData.to + ")" }}</label>
         </div></div>
       </div>
       <div class="col-1">
         <div class="row"><div class="col">
-          <label class="clearfix" *ngIf="model.skillData.skillData">{{"Cost: " + model.skillData.skillData.cost }}</label>
-          <label class="clearfix" *ngIf="this.previewChanges.skillData && previewChanges.skillData.cost != 0">
-            {{"+(" + previewChanges.skillData.cost+ ")" }}</label>
+          <label class="clearfix" *ngIf="model.data.angelicAffix.powerData.SelectedAffix">{{"Cost: " + model.data.skillData.powerData.cost }}</label>
+          <label class="clearfix" *ngIf="this.previewChanges.skillData && previewChanges.skillData.powerData.cost != 0">
+            {{"+(" + previewChanges.skillData.powerData.cost+ ")" }}</label>
         </div></div>
         <div class="row"><div class="col">
-          <label class="clearfix" *ngIf="model.skillData.skillData">CD: {{ model.skillData.skillData.cd }}</label>
+          <label class="clearfix" *ngIf="model.data.angelicAffix.powerData.SelectedAffix">CD: {{ model.data.skillData.powerData.cd }}</label>
         </div></div>
         <div class="row"><div class="col">
-          <label class="clearfix" *ngIf="model.skillData.skillData">{{ model.skillData.skillData.charges > 1 ? model.skillData.skillData.charges + " charges" : "" }}</label>
+          <label class="clearfix" *ngIf="model.data.skillData">{{ model.data.skillData.powerData.charges > 1 ? model.data.skillData.powerData.charges + " charges" : "" }}</label>
         </div></div>
       </div>
       <div class="col-1">
-        <div *ngIf="model.skillData">
+        <div *ngIf="model.data.skillData.powerData.from">
           <a (click)="LevelUpSkill(this.model)" (mouseover)="LevelUpPreview()" (mouseout)="LevelUpCancel()" class="sizeSmall ornament blueGlow redGlowHover"><img src="../_Resources/img/selectors/skull-1.png" alt="LevelUp">+1</a>
           <a (click)="EquipSkill(this.model)" class="sizeSmall ornament purpleGlow redGlowHover"><img src="../_Resources/img/selectors/skull-1.png" alt="Equip">Equip</a>
         </div>
       </div>
       <div class="col">
-        <div class="row" *ngIf="model.skillData.angelicAffix">
+        <div class="row" *ngIf="model.data.angelicAffix.powerData.SelectedAffix">
           <!-- Angelic: -->
           <div class="col-1"><a tooltip="+1" class="sizeSmall ornament yellowGlow blueGlowHover" (mouseover)="PreviewEmpower(1)" (mouseout)="CancelPreview(1)" (click)="EmpowerAffix(1,1)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a></div>
-          <div class="col"><label class="clearfix">{{ model.skillData.angelicAffix.powerData.Description }}</label></div>
+          <div class="col"><label class="clearfix">{{ model.data.angelicAffix.powerData.Description }}</label></div>
         </div>
-        <div class="row" *ngIf="model.skillData.demonicAffix">
+        <div class="row" *ngIf="model.data.demonicAffix.powerData.SelectedAffix">
           <!-- Demonic: -->
           <div class="col-1"><a tooltip="+1" class="sizeSmall ornament redGlow blueGlowHover" (mouseover)="PreviewEmpower(2)" (mouseout)="CancelPreview(2)" (click)="EmpowerAffix(2,1)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a></div>
-          <div class="col"><label class="clearfix">{{ model.skillData.demonicAffix.powerData.Description }}</label></div>
+          <div class="col"><label class="clearfix">{{ model.data.demonicAffix.powerData.Description }}</label></div>
         </div>
-        <div class="row" *ngIf="model.skillData.ancestralAffix">
+        <div class="row" *ngIf="model.data.ancestralAffix.powerData.SelectedAffix">
           <!-- Ancestral: -->
           <div class="col-1"><a tooltip="+1" class="sizeSmall ornament purpleGlow blueGlowHover" (mouseover)="PreviewEmpower(3)" (mouseout)="CancelPreview(3)" (click)="EmpowerAffix(3,1)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a></div>
-          <div class="col"><label class="clearfix">{{ model.skillData.ancestralAffix.powerData.Description }}</label></div>
+          <div class="col"><label class="clearfix">{{ model.data.ancestralAffix.powerData.Description }}</label></div>
         </div>
       </div>
     </div>
