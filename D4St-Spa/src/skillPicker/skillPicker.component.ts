@@ -2,10 +2,8 @@ import { Component, OnInit, OnChanges, SimpleChanges, Input, SecurityContext, Ou
 import { SkillListVM } from 'src/Models/SkillListVM';
 // import { DomSanitizer, SafeStyle } from "@angular/platform-browser";
 import { SkillListWithImagesVM } from 'src/Models/SkillListWithImagesVM';
-import { SkillVM } from 'src/Models/SkillVM';
 import { IDropdownImageItem } from 'src/Models/_Common/IDropdownImageItem';
 import { SkillWithImageVM } from 'src/Models/SkillWithImageVM';
-import { ISkillWithImageDTO } from 'src/Models/DTOs/ISkillWithImageDTO';
 
 @Component({
   selector: "app-skillPicker",
@@ -17,7 +15,7 @@ export class SkillPickerComponent implements OnInit, OnChanges {
     if (changes["model"]) {
       var updatedModel = changes["model"].currentValue;
       var imagesModel = new SkillListWithImagesVM(updatedModel);
-      imagesModel.skills.forEach(u => { u["detail"] =  'Level ' + u.level + ', Gen '+ u.generatedByGen; });
+      imagesModel.skills.forEach(u => { u["detail"] =  'Level ' + u.level });// + ', G-'+ u.generatedByGen; });
       this.skillsPerTier = imagesModel.skills as any;
     }
   }
@@ -31,6 +29,7 @@ export class SkillPickerComponent implements OnInit, OnChanges {
   constructor() {
     //private sanitizer: DomSanitizer) {
     this.model = new SkillListVM();
+    this.skillsPerTier = new Array<IDropdownImageItem>();
     // this.dropdownModel = new SkillListWithImagesVM(this.model);
     this.caption = "Select a skill";
   }
@@ -39,12 +38,12 @@ export class SkillPickerComponent implements OnInit, OnChanges {
     // this.safeImage = this.sanitizer.bypassSecurityTrustStyle(`url(../${this.model.skills[0].imageUrl})`);
   }
 
-  SelectSkill(ss: any) {
-    // var skillImgVM = new SkillWithImageVM(null, new SkillVM(ss.id, ss.name, ss.level, ss.tier, ss.skillData, ss.powerData));
-    // skillImgVM.imageUrl = ss.imageUrl;
-    // skillImgVM.imageStyle = ss.imageStyle;
-    var skillImgVM = ss as ISkillWithImageDTO;
-    this.model.selectedSkill = skillImgVM;
+  SelectSkill(data: any) {//ISkillWithImageDTO) {
+    var ss = this.model.skills.filter(x => { return x.id == data.id; })[0];
+    // var pd = new SkillDTO(ss.skillData.skillData, ss.skillData.angelicAffix, ss.skillData.demonicAffix, ss.skillData.ancestralAffix);
+    // var pu = new SkillDTO(ss.skillLvlUpData.skillData, ss.skillLvlUpData.angelicAffix, ss.skillLvlUpData.demonicAffix, ss.skillLvlUpData.ancestralAffix);
+    // var newData = new SkillVM(ss.skillData.skillData, ss.skillLvlUpData.skillData, pd, pu);
+    this.model.selectedSkill = new SkillWithImageVM(null, null, ss, data.imageUrl, data.imageStyle);
   }
 
   public async EquipSkillHandler(data: SkillWithImageVM) {

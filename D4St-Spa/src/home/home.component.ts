@@ -14,14 +14,15 @@ import { BasicStatDifferencesVM } from 'src/Models/BasicStatDifferencesVM';
 export class HomeComponent implements OnInit, OnChanges {
   async ngOnChanges(changes: SimpleChanges) {
     if (changes["skillsModel"]) {
+      var updatedChanges = changes["skillsModel"].currentValue;
       await this.initSkillTiers();
     }
   }
 
   @Input() initializeChildren: boolean;
   @Input() model: BasicStatsVM;
-  @Input() levelUpCalculations: BasicStatDifferencesVM;
-  @Input() powerUpCalculations: BasicStatDifferencesVM;
+  @Input() levelUpCalculations: BasicStatDifferencesVM<BasicStatsVM>;
+  @Input() powerUpCalculations: BasicStatDifferencesVM<BasicStatsVM>;
   @Input() skillsModel: SkillListVM;
   @Output() skillEquipModel: SkillEquipVM;
   @Output() skillTiers: SkillListVM[];
@@ -48,7 +49,7 @@ export class HomeComponent implements OnInit, OnChanges {
     });
 
     this.skillsModel.skills.forEach(element => {
-      this.skillTiers[element.tier - 1].skills.push(element);
+      this.skillTiers[(element.tier || element.skillData.tier) - 1].skills.push(element);
     });
   }
 
@@ -76,17 +77,17 @@ export class HomeComponent implements OnInit, OnChanges {
 
   //# region PREVIEW
 
-  public async LevelUpPreviewHandler(data: BasicStatDifferencesVM) {
-    var acknowledgeEmitFn = async (data: BasicStatDifferencesVM) => {
-      this.powerUpCalculations = new BasicStatDifferencesVM(data.statsData, data.showData);
+  public async LevelUpPreviewHandler(data: BasicStatDifferencesVM<BasicStatsVM>) {
+    var acknowledgeEmitFn = async (data: BasicStatDifferencesVM<BasicStatsVM>) => {
+      this.powerUpCalculations = new BasicStatDifferencesVM<BasicStatsVM>(data.data, data.show);
     };
 
     await acknowledgeEmitFn(data);
   }
 
-  public async PowerUpPreviewHandler(data: BasicStatDifferencesVM) {
-    var acknowledgeEmitFn = async (data: BasicStatDifferencesVM) => {
-      this.levelUpCalculations = new BasicStatDifferencesVM(data.statsData, data.showData);
+  public async PowerUpPreviewHandler(data: BasicStatDifferencesVM<BasicStatsVM>) {
+    var acknowledgeEmitFn = async (data: BasicStatDifferencesVM<BasicStatsVM>) => {
+      this.levelUpCalculations = new BasicStatDifferencesVM(data.data, data.show);
     };
 
     await acknowledgeEmitFn(data);

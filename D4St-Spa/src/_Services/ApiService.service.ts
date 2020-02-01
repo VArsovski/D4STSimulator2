@@ -9,10 +9,10 @@ import { Helpers } from '../_Helpers/helpers';
 import { BasicCharStats } from 'src/Models/BasicCharStats';
 import { LevelUpStatsVM } from 'src/Models/LevelUpStatsVM';
 import { ISkillAffixDetail } from 'src/Models/DTOs/ISkillAffixDetail';
-import { PowerDetailVM } from 'src/Models/DTOs/PowerDetailVM';
 import { SkillAffixDetail } from 'src/Models/DTOs/SkillAffixDetail';
-import { ISkillPowerDetailDTO } from 'src/Models/DTOs/ISkillPowerDetailDTO';
 import { SkillPowerDetailDTO } from 'src/Models/DTOs/SkillPowerDetailDTO';
+import { ISkillDTO } from 'src/Models/DTOs/ISkillDTO';
+import { SkillDTO } from 'src/Models/DTOs/SkillDTO';
 
 @Injectable({
   providedIn: "root"
@@ -113,26 +113,13 @@ export class ApiServiceService {
             responseData.forEach(element => {
               var skill = new SkillVM();
               skill.id = element.id;
-              skill.level = element.skillData.level;
               skill.name = element.name;
-              skill.tier = element.skillData.tier;
-              skill.skillData.from = element.skillData.from;
-              skill.skillData.to = element.skillData.to;
-              skill.skillData.cd = element.skillData.cd;
-              skill.skillData.cost = element.skillData.cost;
-              skill.skillData.charges = element.skillData.charges;
+              skill.skillData = this.extractSkillDTOFromResponse(element.data);
+              skill.skillLvlUpData = this.extractSkillDTOFromResponse(element.levelUp);
 
-              skill.angelicAffix = new SkillPowerDetailDTO();
-              skill.demonicAffix = new SkillPowerDetailDTO();
-              skill.ancestralAffix = new SkillPowerDetailDTO();
-              skill.angelicAffix.powerData = this.extractSkillDetailsFromResponse(element.angelicAffix.powerData, 1);
-              skill.angelicAffix.powerUp = this.extractSkillDetailsFromResponse(element.angelicAffix.powerUp, 1);
-              skill.demonicAffix.powerData = this.extractSkillDetailsFromResponse(element.demonicAffix.powerData, 2);
-              skill.demonicAffix.powerUp = this.extractSkillDetailsFromResponse(element.demonicAffix.powerUp, 2);
-              skill.ancestralAffix.powerData = this.extractSkillDetailsFromResponse(element.ancestralAffix.powerData, 3);
-              skill.ancestralAffix.powerUp = this.extractSkillDetailsFromResponse(element.ancestralAffix.powerUp, 3);
-              skill.generatedByGen = element.generatedByGen;
-              skill.affixMetadata = element.affixMetadata;
+              // TODO: Fix on API (if possible without Overchanging stuff)
+              skill.level = element.level || element.data.skillData.level;
+              skill.tier = element.tier || element.data.skillData.tier;
 
               this.SkillsVM.skills.push(skill);
             });
@@ -199,5 +186,31 @@ export class ApiServiceService {
     data.Stackable = element.stackable;
     data.Description = element.description;
     return data;
+  }
+
+  extractSkillDTOFromResponse(element: any): ISkillDTO {
+    var skill = new SkillDTO();
+    skill.id = element.id;
+    skill.level = element.skillData.level;
+    skill.name = element.name;
+    skill.tier = element.skillData.tier;
+    skill.skillData.from = element.skillData.from;
+    skill.skillData.to = element.skillData.to;
+    skill.skillData.cd = element.skillData.cd;
+    skill.skillData.cost = element.skillData.cost;
+    skill.skillData.charges = element.skillData.charges;
+
+    // skill.angelicAffix = new SkillPowerDetailDTO();
+    // skill.demonicAffix = new SkillPowerDetailDTO();
+    // skill.ancestralAffix = new SkillPowerDetailDTO();
+    skill.angelicAffix.powerData = this.extractSkillDetailsFromResponse(element.angelicAffix.powerData, 1);
+    skill.angelicAffix.powerUp = this.extractSkillDetailsFromResponse(element.angelicAffix.powerUp, 1);
+    skill.demonicAffix.powerData = this.extractSkillDetailsFromResponse(element.demonicAffix.powerData, 2);
+    skill.demonicAffix.powerUp = this.extractSkillDetailsFromResponse(element.demonicAffix.powerUp, 2);
+    skill.ancestralAffix.powerData = this.extractSkillDetailsFromResponse(element.ancestralAffix.powerData, 3);
+    skill.ancestralAffix.powerUp = this.extractSkillDetailsFromResponse(element.ancestralAffix.powerUp, 3);
+    skill.generatedByGen = element.generatedByGen;
+    skill.affixMetadata = element.affixMetadata;
+    return skill;
   }
 }

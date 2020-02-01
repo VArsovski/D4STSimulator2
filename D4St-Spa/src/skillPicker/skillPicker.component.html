@@ -6,6 +6,6 @@
     <label class="h4"><div class="ml-5">TIER {{this.model.tier}} {{this.model.tierName}}</div></label>
   </div> -->
   <div class="col h4">
-    <app-skills [(model)]=this.model.selectedSkill (equipSkillEmitter)="EquipSkillHandler($event)"></app-skills>
+    <app-skills [(model)]=this.model.selectedSkill [(levelUpModel)]="this.model.selectedSkillLvlUp" (equipSkillEmitter)="EquipSkillHandler($event)"></app-skills>
   </div>
 </div>

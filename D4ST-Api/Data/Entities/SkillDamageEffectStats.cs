@@ -1,5 +1,5 @@
 using D4St_Api.Data.Entities.Interfaces;
-using D4St_Api.Models.Enums;
+using D4ST_Api.Models.Enums;
 
 namespace D4St_Api.Data.Entities
 {

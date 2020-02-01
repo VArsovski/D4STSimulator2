@@ -6,7 +6,7 @@ export class SkillEquipVM {
     position: number;
 
     constructor(data: SkillWithImageVM = null, position:number = null) {
-        this.skillData = data || new SkillWithImageVM(null, new SkillVM());
+        this.skillData = data || new SkillWithImageVM(null, null, new SkillVM());
         this.position = position || 0;
     }
 }

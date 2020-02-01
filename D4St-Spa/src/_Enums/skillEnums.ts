@@ -1,9 +1,15 @@
 export class SkillEnums {
+    // public static SkillMetadataEnum:any = {
+    //     IncreaseAS: 0, IncreaseMS: 1, IncreaseArmor: 2, IncreaseProcReturn: 3, AddElementalDamage: 4,
+    //     // DecrDamageTakenOfType: 5, -> in Debuffs
+    //     GainDamageAgainstMonsterType: 5, IncrRandomRes: 6, IncrAllRes: 7, ReturnStamina: 8,
+    //     IncrRadius: 9, IncrDoT: 10, Pierce_IfProjectile: 11, DamageTwice_IfProjectile: 12
+    // }
+
     public static AffixMetadataEnum:any = {
-        IncreaseAS: 0, IncreaseMS: 1, IncreaseArmor: 2, IncreaseProcReturn: 3, AddElementalDamage: 4,
-        // DecrDamageTakenOfType: 5, -> in Debuffs
-        GainDamageAgainstMonsterType: 5, IncrRandomRes: 6, IncrAllRes: 7, ReturnStamina: 8,
-        IncrRadius: 9, IncrDoT: 10, Pierce_IfProjectile: 11, DamageTwice_IfProjectile: 12
+        HitProc: 0, ProcsOnDeath: 1, HighDamage: 2, HighProcRate: 3, CC: 4, Curse: 5, BuffDebuff: 6,
+        Melee: 7, AoE: 8, Projectile: 9, ProjectileCharacter: 10, DoA: 11, HasDoT: 12, Summon: 13,
+        HighCost_Spender: 14, HighCD: 15, Ultimate: 16, BannerOrTotem: 17, Stackable: 18
     }
 
     public static AffixTypeEnum:any = {

@@ -4,6 +4,7 @@ import { SkillBarVM } from 'src/Models/SkillBarVM';
 import { SkillEquipVM } from 'src/Models/SkillEquipVM';
 import { ISkillWithImageDTO } from 'src/Models/DTOs/ISkillWithImageDTO';
 import { SafeUrl, SafeStyle } from '@angular/platform-browser';
+import { SkillWithImageVM } from 'src/Models/SkillWithImageVM';
 
 @Component({
   selector: "app-skillBar",
@@ -57,7 +58,7 @@ export class SkillBarComponent implements OnInit, OnChanges {
       this.model.positionSelected = position;
 
       // Save current
-      var selectedItem = (this.model["skill" + position] as ISkillWithImageDTO);
+      var selectedItem = (this.model["skill" + position] as SkillWithImageVM);
       var dataToSend = new SkillEquipVM(selectedItem, position);
       // Remember old image data in case of cancel
       this.currentSkillImage = dataToSend.skillData.imageUrl;
@@ -76,7 +77,7 @@ export class SkillBarComponent implements OnInit, OnChanges {
   }
 
   async EquipSkill(data: SkillEquipVM) {
-    (this.model["skill" + data.position] as ISkillWithImageDTO) = data.skillData;
+    (this.model["skill" + data.position] as SkillWithImageVM) = data.skillData;
     this.model.positionSelected = -1
   }
 }

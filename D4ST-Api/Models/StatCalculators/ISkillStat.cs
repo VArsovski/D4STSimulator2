@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using D4St_Api.Models.Enums;
 using D4ST_Api.Models.Enums;
 
 namespace D4ST_Api.Models.StatCalculators
@@ -10,6 +7,7 @@ namespace D4ST_Api.Models.StatCalculators
         PowerTypesEnum PowerType { get; set; }
         decimal ProcChance { get; set; }
         decimal ProcAmount { get; set; }
+        bool ProcsOnDeath { get; set; }
         decimal Duration { get; set; }
         string SelectedAffix { get; set; }
         bool Stackable { get; set; }

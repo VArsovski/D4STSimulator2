@@ -1,43 +1,49 @@
 <div class="row customHeaderFont">
   <div class="col">
-    <div class="row">
-      <div *ngIf="model.skillData?.from" class="col-2 offset-1 text-left">
-        <!-- <label class="h4"><div class="ml-5">TIER {{this.model.tier}}</div></label> -->
-        <!-- {{model.name || "Select a skill"}} -->
-        [Level {{model.level}}]
-        <div class="row"><div class="col"><label class="clearfix" *ngIf="this.model.skillData.from">{{"Damage (" + model.skillData.from + " - " + model.skillData.to + ")" }}</label></div></div>
-        <div class="row"><div class="col"><label class="clearfix" *ngIf="model.skillData.cost">{{"  Cost: " + model.skillData.cost }}</label></div></div>
-        <div class="row"><div class="col"><label class="clearfix" *ngIf="model.skillData.cd">CD: {{ model.skillData.cd }}</label></div></div>
-        <div class="row"><div class="col"><label class="clearfix" *ngIf="model.skillData.charges > 1">({{ model.skillData.charges }} charges)</label></div></div>
+    <div class="row" *ngIf="model.skillData.skillData">
+      <div class="col-2 offset-2 text-left">
+        <label class="clearfix" *ngIf="this.model.level && this.model.level != 0">[Level {{model.level}}]</label>
+        <div class="row"><div class="col">
+          <label class="clearfix" *ngIf="this.model.skillData.skillData && model.skillData.skillData.from != 0">
+            {{"Damage (" + model.skillData.skillData.from + " - " + model.skillData.skillData.to + ")" }}</label>
+          <label class="clearfix" *ngIf="this.previewChanges.skillData && this.previewChanges.skillData.from != 0">
+            {{"+(" + previewChanges.skillData.from + " - " + previewChanges.skillData.to + ")" }}</label>
+        </div></div>
       </div>
-      <div class="col-2">
-        <div *ngIf="model.level">
-          <a (click)="LevelUpSkill(this.model)" class="sizeSmall ornament blueGlow redGlowHover">+1<img src="../_Resources/img/selectors/skull-1.png" alt="LevelUp"></a>
-          <a (click)="EquipSkill(this.model)" class="sizeSmall ornament purpleGlow redGlowHover">Equip<img src="../_Resources/img/selectors/skull-1.png" alt="Equip"></a>
+      <div class="col-1">
+        <div class="row"><div class="col">
+          <label class="clearfix" *ngIf="model.skillData.skillData">{{"Cost: " + model.skillData.skillData.cost }}</label>
+          <label class="clearfix" *ngIf="this.previewChanges.skillData && previewChanges.skillData.cost != 0">
+            {{"+(" + previewChanges.skillData.cost+ ")" }}</label>
+        </div></div>
+        <div class="row"><div class="col">
+          <label class="clearfix" *ngIf="model.skillData.skillData">CD: {{ model.skillData.skillData.cd }}</label>
+        </div></div>
+        <div class="row"><div class="col">
+          <label class="clearfix" *ngIf="model.skillData.skillData">{{ model.skillData.skillData.charges > 1 ? model.skillData.skillData.charges + " charges" : "" }}</label>
+        </div></div>
+      </div>
+      <div class="col-1">
+        <div *ngIf="model.skillData">
+          <a (click)="LevelUpSkill(this.model)" (mouseover)="LevelUpPreview()" (mouseout)="LevelUpCancel()" class="sizeSmall ornament blueGlow redGlowHover"><img src="../_Resources/img/selectors/skull-1.png" alt="LevelUp">+1</a>
+          <a (click)="EquipSkill(this.model)" class="sizeSmall ornament purpleGlow redGlowHover"><img src="../_Resources/img/selectors/skull-1.png" alt="Equip">Equip</a>
         </div>
       </div>
       <div class="col">
-        <div class="row">
-          <div class="col" *ngIf="model.angelicAffix">
-            <div class="row">
-            <!-- Angelic: -->
-            <div class="col-1"><a tooltip="+1" class="sizeSmall ornament yellowGlow blueGlowHover" (mouseover)="PreviewEmpower(1)" (mouseout)="CancelPreview(1)" (click)="EmpowerAffix(1,1)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a></div>
-            <div class="col"><label class="clearfix">{{ model.angelicAffix.powerData.Description }}</label></div>
-          </div>
-          <div class="col">
-            <div class="row" *ngIf="model.demonicAffix">
-              <!-- Demonic: -->
-              <div class="col-1"><a tooltip="+1" class="sizeSmall ornament redGlow blueGlowHover" (mouseover)="PreviewEmpower(2)" (mouseout)="CancelPreview(2)" (click)="EmpowerAffix(2,1)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a></div>
-              <div class="col"><label class="clearfix">{{ model.demonicAffix.powerData.Description }}</label></div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="row" *ngIf="model.ancestralAffix">
-              <!-- Ancestral: -->
-              <div class="col-1"><a tooltip="+1" class="sizeSmall ornament purpleGlow blueGlowHover" (mouseover)="PreviewEmpower(3)" (mouseout)="CancelPreview(3)" (click)="EmpowerAffix(3,1)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a></div>
-              <div class="col"><label class="clearfix">{{ model.ancestralAffix.powerData.Description }}</label></div>
-            </div>
-          </div>
+        <div class="row" *ngIf="model.skillData.angelicAffix">
+          <!-- Angelic: -->
+          <div class="col-1"><a tooltip="+1" class="sizeSmall ornament yellowGlow blueGlowHover" (mouseover)="PreviewEmpower(1)" (mouseout)="CancelPreview(1)" (click)="EmpowerAffix(1,1)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a></div>
+          <div class="col"><label class="clearfix">{{ model.skillData.angelicAffix.powerData.Description }}</label></div>
+        </div>
+        <div class="row" *ngIf="model.skillData.demonicAffix">
+          <!-- Demonic: -->
+          <div class="col-1"><a tooltip="+1" class="sizeSmall ornament redGlow blueGlowHover" (mouseover)="PreviewEmpower(2)" (mouseout)="CancelPreview(2)" (click)="EmpowerAffix(2,1)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a></div>
+          <div class="col"><label class="clearfix">{{ model.skillData.demonicAffix.powerData.Description }}</label></div>
+        </div>
+        <div class="row" *ngIf="model.skillData.ancestralAffix">
+          <!-- Ancestral: -->
+          <div class="col-1"><a tooltip="+1" class="sizeSmall ornament purpleGlow blueGlowHover" (mouseover)="PreviewEmpower(3)" (mouseout)="CancelPreview(3)" (click)="EmpowerAffix(3,1)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a></div>
+          <div class="col"><label class="clearfix">{{ model.skillData.ancestralAffix.powerData.Description }}</label></div>
         </div>
       </div>
     </div>

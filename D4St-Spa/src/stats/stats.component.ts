@@ -12,9 +12,9 @@ import { BasicStatDifferencesVM } from 'src/Models/BasicStatDifferencesVM';
 export class StatsComponent implements OnInit, OnChanges {
   async ngOnChanges(changes: SimpleChanges) {
     if (changes["previewModel"]) {
-      var newValue = changes["previewModel"].currentValue;
-      var compareModel = newValue.statsData || new BasicStatsVM();
-      this.previewChanges = newValue.showData ? CalculationsHelper.calculateChangeDetails(compareModel, this.model) : new BasicStatsVM();
+      var newValue = changes["previewModel"].currentValue as BasicStatDifferencesVM<BasicStatsVM>;
+      var compareModel = newValue.data || new BasicStatsVM();
+      this.previewChanges = newValue.show ? CalculationsHelper.calculateChangeDetails(compareModel, this.model) : new BasicStatsVM();
     }
     if (changes["initialized"]) {
       if (changes["initialized"].currentValue)
@@ -41,10 +41,10 @@ export class StatsComponent implements OnInit, OnChanges {
   // This is used for Hover Info
   levelUpModel: BasicStatsVM;
   @Input() initialized: boolean;
-  @Input() previewModel: BasicStatDifferencesVM;
+  @Input() previewModel: BasicStatDifferencesVM<BasicStatsVM>;
   previewChanges: BasicStatsVM;
   @Output() levelUpEmitter = new EventEmitter<BasicStatsVM>(true);
-  @Output() levelUpPreviewEmitter = new EventEmitter<BasicStatDifferencesVM>(true);
+  @Output() levelUpPreviewEmitter = new EventEmitter<BasicStatDifferencesVM<BasicStatsVM>>(true);
   isMaxxed: boolean;
 
   constructor(private apiService: ApiServiceService) {
@@ -71,11 +71,11 @@ export class StatsComponent implements OnInit, OnChanges {
 
   async LevelUpPreview() {
     this.previewChanges = CalculationsHelper.calculateChangeDetails(this.levelUpModel, this.model);
-    this.levelUpPreviewEmitter.emit(new BasicStatDifferencesVM(this.levelUpModel, true));
+    this.levelUpPreviewEmitter.emit(new BasicStatDifferencesVM<BasicStatsVM>(this.levelUpModel, true));
   }
 
   async LevelUpPreviewCancel() {
     this.previewChanges = new BasicStatsVM();
-    this.levelUpPreviewEmitter.emit(new BasicStatDifferencesVM(this.model, false));
+    this.levelUpPreviewEmitter.emit(new BasicStatDifferencesVM<BasicStatsVM>(this.model, false));
   }
 }

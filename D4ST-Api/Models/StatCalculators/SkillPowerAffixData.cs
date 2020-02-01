@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using D4ST_Api.Models.Enums;
-using D4ST_Api.Models.StatCalculators;
 
-namespace D4St_Api.Models.StatCalculators
+namespace D4ST_Api.Models.StatCalculators
 {
     public class SkillPowerAffixData: ISkillPowerAffixData
     {

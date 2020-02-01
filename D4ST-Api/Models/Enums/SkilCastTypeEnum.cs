@@ -1,4 +1,4 @@
-namespace D4St_Api.Models.Enums
+namespace D4ST_Api.Models.Enums
 {
     public enum SkillCastTypeEnum {
         OnHit = 0,

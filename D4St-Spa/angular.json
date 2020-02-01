@@ -60,7 +60,9 @@
                 }
               ]
             }
-          }
+          },
+          // CustomlyInserted
+          "showCircularDependencies": false
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",

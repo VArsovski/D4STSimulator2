@@ -12,8 +12,8 @@ import { BasicStatDifferencesVM } from 'src/Models/BasicStatDifferencesVM';
 export class PowersComponent implements OnInit, OnChanges {
   async ngOnChanges(changes: SimpleChanges) {
     if (changes["previewModel"]) {
-      var newValue = changes["previewModel"].currentValue as BasicStatDifferencesVM;
-      this.previewChanges = newValue.showData ? CalculationsHelper.calculateChangeDetails(this.previewModel.statsData, this.model) : new BasicStatsVM();
+      var newValue = changes["previewModel"].currentValue as BasicStatDifferencesVM<BasicStatsVM>;
+      this.previewChanges = newValue.data ? CalculationsHelper.calculateChangeDetails(this.previewModel.data, this.model) : new BasicStatsVM();
     }
     if (changes["initialized"]) {
       if (changes["initialized"].currentValue) await this.PowerUp(0, 0);
@@ -42,9 +42,9 @@ export class PowersComponent implements OnInit, OnChanges {
   poweredUpModelAng: BasicStatsVM;
   poweredUpModelDem: BasicStatsVM;
   poweredUpModelAnc: BasicStatsVM;
-  @Input() previewModel: BasicStatDifferencesVM;
+  @Input() previewModel: BasicStatDifferencesVM<BasicStatsVM>;
   @Output() powerUpEmitter = new EventEmitter<BasicStatsVM>(true);
-  @Output() powerUpPreviewEmitter = new EventEmitter<BasicStatDifferencesVM>(true);
+  @Output() powerUpPreviewEmitter = new EventEmitter<BasicStatDifferencesVM<BasicStatsVM>>(true);
 
   constructor(private apiService: ApiServiceService) {}
 

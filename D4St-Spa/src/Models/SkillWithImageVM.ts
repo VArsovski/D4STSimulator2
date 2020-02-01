@@ -1,40 +1,38 @@
 import { ISkillWithImageDTO } from './DTOs/ISkillWithImageDTO';
-import { ISkillDetailDTO } from './DTOs/ISkillDetailDTO';
-import { SafeUrl, SafeStyle } from '@angular/platform-browser';
-import { SkillDetailVM } from './SkillDetailVM';
 import { Helpers } from 'src/_Helpers/helpers';
 import { SkillVM } from './SkillVM';
+import { ISkillDTO } from './DTOs/ISkillDTO';
+import { IImageUrl } from './DTOs/IImageUrl';
+import { SafeUrl, SafeStyle } from '@angular/platform-browser';
+import { SkillWithImageDTO } from './DTOs/SkillWithImageDTO';
 import { ISkillPowerDetailDTO } from './DTOs/ISkillPowerDetailDTO';
-import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 
-export class SkillWithImageVM implements ISkillWithImageDTO {
+export class SkillWithImageVM extends SkillVM implements IImageUrl {
+    imageUrl: SafeUrl;
+    imageStyle: SafeStyle;
+    skillData: ISkillDTO;
+    skillLvlUpData: ISkillDTO;
     id: number;
     name: string;
     level: number;
     tier: number;
-    skillData: ISkillDetailDTO;
-    angelicAffix: ISkillPowerDetailDTO;
-    demonicAffix: ISkillPowerDetailDTO;
-    ancestralAffix: ISkillPowerDetailDTO;
-    affixMetadata: number[];
-    generatedByGen: number;
-    imageUrl: SafeUrl;
-    imageStyle: SafeStyle;
 
-    constructor(dataFromItf: ISkillWithImageDTO = null, data:SkillVM = null, nameOpt: string = "", levelOpt: number = 1) {
-        if (dataFromItf)
+    skillWithImgData: ISkillWithImageDTO;
+
+    constructor(sd: ISkillWithImageDTO = null, su: ISkillWithImageDTO = null, data:SkillVM = null, imageUrl:SafeUrl = null, imageStyle:SafeUrl = null) {
+        var supVM = super();
+        if (sd || su)
         {
-            this.id = dataFromItf.id;
-            this.name = dataFromItf.name;
-            this.level = dataFromItf.level;
-            this.tier = dataFromItf.tier;
-            this.skillData = dataFromItf.skillData;
-            this.angelicAffix = dataFromItf.angelicAffix;
-            this.demonicAffix = dataFromItf.demonicAffix;
-            this.ancestralAffix = dataFromItf.ancestralAffix;
-            this.imageUrl = dataFromItf.imageUrl;
-            this.imageStyle = dataFromItf.imageStyle;
-            this.generatedByGen = dataFromItf.generatedByGen;
+            this.id = sd.id;
+            this.name = sd.name;
+            this.level = sd.level;
+            this.tier = sd.tier;
+            var svm = new SkillVM(sd.skillData, su.skillData);
+            this.skillData = sd;
+            this.skillLvlUpData = su;
+            this.imageUrl = imageUrl;
+            this.imageStyle = imageStyle;
+            this.skillWithImgData = new SkillWithImageDTO(sd);
         }
         else if (data)
         {
@@ -43,32 +41,33 @@ export class SkillWithImageVM implements ISkillWithImageDTO {
             this.level = data.level;
             this.tier = data.tier;
             this.skillData = data.skillData;
-            this.generatedByGen = data.generatedByGen;
+            this.skillLvlUpData = data.skillLvlUpData;
+            this.imageUrl = imageUrl;
+            this.imageStyle = imageStyle;
+            this.skillWithImgData = new SkillWithImageDTO(null, data.skillData);
         }
         else {
-            this.skillData = new SkillDetailVM();
-            this.name = nameOpt;
-            this.level = levelOpt;
+            var svm = new SkillVM();
+            this.skillData = svm.skillData;
+            this.skillLvlUpData = svm.skillLvlUpData;
+            this.imageUrl = imageUrl;
+            this.imageStyle = imageStyle;
+            // this.name = nameOpt;
+            // this.level = levelOpt;
         }
-        // var pd = (new SkillVM()).powerData;
-        if (data || dataFromItf) {
-            var pd = data || dataFromItf || new SkillVM();
-            if (pd.angelicAffix) pd.angelicAffix.powerData.Description = CalculationsHelper.GetSkillAffixDescription(pd.angelicAffix.powerData, pd.affixMetadata || [], 1);
-            if (pd.demonicAffix) pd.demonicAffix.powerData.Description = CalculationsHelper.GetSkillAffixDescription(pd.demonicAffix.powerData, pd.affixMetadata || [], 2);
-            if (pd.ancestralAffix) pd.ancestralAffix.powerData.Description = CalculationsHelper.GetSkillAffixDescription(pd.ancestralAffix.powerData, pd.affixMetadata || [], 3);
-            if (pd.angelicAffix) pd.angelicAffix.powerUp.Description = CalculationsHelper.GetSkillAffixDescription(pd.angelicAffix.powerUp, pd.affixMetadata || [], 1);
-            if (pd.demonicAffix) pd.demonicAffix.powerUp.Description = CalculationsHelper.GetSkillAffixDescription(pd.demonicAffix.powerUp, pd.affixMetadata || [], 2);
-            if (pd.ancestralAffix) pd.ancestralAffix.powerUp.Description = CalculationsHelper.GetSkillAffixDescription(pd.ancestralAffix.powerUp, pd.affixMetadata || [], 3);
-            this.angelicAffix = pd.angelicAffix;
-            this.demonicAffix = pd.demonicAffix;
-            this.ancestralAffix = pd.ancestralAffix;
+        
+        if (!this.imageUrl) {
+            var rand = Helpers.getRandom(1, 29);
+            var imageSrc = "_Resources/img/icons/ph-" + rand + ".png"; //"../_Resources/img/placeholders/ph-" + rand + ".png";
+            this.imageUrl = imageSrc;
+    
+            // Use this property to show in dropdown
+            this.imageStyle = "background-image: url('" + imageSrc + "')";
         }
+    }
 
-        var rand = Helpers.getRandom(1, 29);
-        var imageSrc = "_Resources/img/icons/ph-" + rand + ".png"; //"../_Resources/img/placeholders/ph-" + rand + ".png";
-        this.imageUrl = imageSrc;
-
-        // Use this property to show in dropdown
-        this.imageStyle = "background-image: url('" + imageSrc + "')";
+    // TODO: See if somehow possible to use the other method from SkillVM
+    getAffixPowerData(pd: ISkillPowerDetailDTO, powerType: number): ISkillPowerDetailDTO {
+        return super.getAffixPowerData(pd, powerType);
     }
 }

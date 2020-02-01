@@ -45,28 +45,24 @@ namespace D4ST_Api.Models.StatCalculators
 
         public static List<ISkillDamageStat> CalculateSkillDamageLevels(ISkillDamageStat startStats) {
             var sampleData = new List<ISkillDamageStat>() { startStats };
-            var stats = new DamageSkillStat(startStats.From, startStats.To, startStats.Level, startStats.Tier);
+            var stats = startStats;
+            var tier = startStats.Tier;
 
-            var tier = stats.Tier;
-            var level = stats.Level;
-            var from = stats.From;
-            var to = stats.To;
-
-            for (int lvl = 1; lvl < 20; lvl++) {
+            for (int lvl = stats.Level; lvl <= 20; lvl++) {
                 stats.Level = lvl;
-                    
-                var data = lvl >= 6  + tier*2 || lvl <= 14-tier ? CalculateSkillPower2(stats) : CalculateSkillPower1(stats);
-                if (data.From == sampleData[sampleData.Count - 1].From)
-                    data.From = data.From + 1;
-                if (data.From == data.To)
-                    data.To = data.To + 1;
 
-                data.Level = stats.Level;
-                data.Tier = stats.Tier;
-                sampleData.Add(data);
+                var data = stats;
+                stats = lvl >= 6  + tier*2 || lvl <= 14-tier ? CalculateSkillPower2(data) : CalculateSkillPower1(data);
+                if (stats.From == data.From)
+                    stats.From = data.From + 1;
+                if (stats.From == stats.To)
+                    stats.To = stats.From + 1;
+                if (stats.To == data.To)
+                    stats.To = stats.To + 1;
 
-                stats.From = data.From;
-                stats.To = data.To;
+                stats.Level = lvl+1;
+                stats.Tier = tier;
+                sampleData.Add(stats);
             }
 
             return sampleData;
@@ -89,10 +85,6 @@ namespace D4ST_Api.Models.StatCalculators
             skillDamageStat.Level = classInfo.Level;
 
             return skillDamageStat;
-        }
-
-        public static DamageSkillStat  CalculateSkillData(ISkillDamageStat stat) {
-            return (stat as DamageSkillStat).CalculateSkillPower(stat.Level).CalculateSkillCosts(stat.Level);
         }
 
         public static List<ISkillDamageStat> CalculateHitDamageLevels(IClassDefinition classInfo) {
