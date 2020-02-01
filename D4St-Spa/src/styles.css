@@ -164,10 +164,10 @@ body img {
 
 .wrap{
 	display:table;
-	height:56%;
-	width:85%;
-    max-width:85%;
-	max-height:56%;
+	height:65%;
+	width:75%;
+    max-width:75%;
+	max-height:65%;
     margin:auto;
     position:absolute;
     top: -36vh;

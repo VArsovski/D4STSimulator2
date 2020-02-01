@@ -49,9 +49,9 @@ namespace D4ST_Api.Controllers
                     var PoDDem = SkillStatHelper.GetRNG(PowerTypesEnum.DemonicPower).Next(1, 18) % 4 == 0;
                     var PoDAnc = SkillStatHelper.GetRNG(PowerTypesEnum.AncestralPower).Next(1, 18) % 3 == 0;
 
-                    var md1 = skillMetadata;
-                    var md2 = skillMetadata;
-                    var md3 = skillMetadata;
+                    var md1 = new List<AffixMetadataEnum>(); md1.AddRange(skillMetadata);
+                    var md2 = new List<AffixMetadataEnum>(); md2.AddRange(skillMetadata);
+                    var md3 = new List<AffixMetadataEnum>(); md3.AddRange(skillMetadata);
                     if (PoDAng) md1.Add(AffixMetadataEnum.ProcsOnDeath);
                     if (PoDDem) md2.Add(AffixMetadataEnum.ProcsOnDeath);
                     if (PoDAnc) md3.Add(AffixMetadataEnum.ProcsOnDeath);
