@@ -5,6 +5,7 @@ import { SkillListVM } from 'src/Models/SkillListVM';
 import { SkillWithImageVM } from 'src/Models/SkillWithImageVM';
 import { SkillEquipVM } from 'src/Models/SkillEquipVM';
 import { BasicStatDifferencesVM } from 'src/Models/BasicStatDifferencesVM';
+import { SkillVM } from 'src/Models/SkillVM';
 
 @Component({
   selector: "app-home",
@@ -24,11 +25,13 @@ export class HomeComponent implements OnInit, OnChanges {
   @Input() levelUpCalculations: BasicStatDifferencesVM<BasicStatsVM>;
   @Input() powerUpCalculations: BasicStatDifferencesVM<BasicStatsVM>;
   @Input() skillsModel: SkillListVM;
+  @Input() allSkills: SkillVM[];
   @Output() skillEquipModel: SkillEquipVM;
   @Output() skillTiers: SkillListVM[];
 
   constructor(private apiService: ApiServiceService) {
     this.skillTiers = [];
+    this.allSkills = [];
     this.levelUpCalculations = new BasicStatDifferencesVM(new BasicStatsVM());
     this.powerUpCalculations = new BasicStatDifferencesVM(new BasicStatsVM());
     this.skillEquipModel = new SkillEquipVM();

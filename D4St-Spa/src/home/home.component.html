@@ -1,24 +1,31 @@
-  <div class="row titleRowCustom">
-      <div class="col text-center jumbotron jumbotron-transparentCustom">
-          <h2 class="display-4 customHeaderFont">Our Mother blessed you with gifts</h2>
+<ul class="wrapHolder">
+  <li class="wrapperLeft">
+    <div class="row titleRowCustom">
+      <div class="col jumbotron jumbotron-transparentCustom">
+          <h2 class="display-4 customHeaderFontLeftTop text-left">Our Mother blessed you with gifts (and powers)</h2>
       </div>
-  </div>
-  <div class="row statsRowCustom">
-    <div class="col" id="statsContainer">
-    <!--TODO: See into the following problem: -->
-    <!-- IDK WHY BUT MOUSEOVER AND MOUSEOUT BEHAVE REVERSE FOR THIS ONE -->
-      <app-stats  [(model)]="model" [initialized]="initializeChildren" [previewModel]="levelUpCalculations" (levelUpEmitter)="LevelUpHandler($event)" (levelUpPreviewEmitter)="LevelUpPreviewHandler($event)"></app-stats>
     </div>
-  <!-- </div>
-  <div class="row rowPowersCustom"> -->
-    <div class="col mb-4" id="powersContainer">
-      <app-powers [(model)]="model" [initialized]="initializeChildren" [previewModel]="powerUpCalculations" (powerUpEmitter)="PowerUpHandler($event)" (powerUpPreviewEmitter)="PowerUpPreviewHandler($event)"></app-powers>
+    <div class="row statsRowCustom">
+      <div class="col" id="statsContainer">
+      <!--TODO: See into the following problem: -->
+      <!-- IDK WHY BUT MOUSEOVER AND MOUSEOUT BEHAVE REVERSE FOR THIS ONE -->
+        <app-stats  [(model)]="model" [initialized]="initializeChildren" [previewModel]="levelUpCalculations" (levelUpEmitter)="LevelUpHandler($event)" (levelUpPreviewEmitter)="LevelUpPreviewHandler($event)"></app-stats>
+      </div>
+      <!-- </div>
+      <div class="row rowPowersCustom"> -->
+      <div class="col mb-4" id="powersContainer">
+        <app-powers [(model)]="model" [initialized]="initializeChildren" [previewModel]="powerUpCalculations" (powerUpEmitter)="PowerUpHandler($event)" (powerUpPreviewEmitter)="PowerUpPreviewHandler($event)"></app-powers>
+      </div>
     </div>
-  </div>
-  <div class="row rowGiftsCustom" id="giftsContainer">
-    <div class="col-1 customHeaderFont h2">SKILLS:</div>
-    <app-skillBar [(equippedModel)]="this.skillEquipModel" (selectEquipEmitter)="SkillSelectHandler($event)"></app-skillBar>
-  </div>
-  <div *ngFor="let skillTier of this.skillTiers">
-    <app-skillPicker [(model)]="skillTier" (skillEquippedEmitter)="EquipSkillHandler($event)"></app-skillPicker>
-  </div>
+    <div class="row rowGiftsCustom" id="giftsContainer">
+      <div class="col-1 customHeaderFont h2">SKILLS:</div>
+      <app-skillBar [(equippedModel)]="this.skillEquipModel" (selectEquipEmitter)="SkillSelectHandler($event)"></app-skillBar>
+    </div>
+    <div *ngFor="let skillTier of this.skillTiers">
+      <app-skillPicker [(model)]="skillTier" (skillEquippedEmitter)="EquipSkillHandler($event)"></app-skillPicker>
+    </div>
+  </li>
+  <li class="wrapperRight">
+      <app-item-generator [skills]="this.allSkills" [BasicData]="this.model.BasicData"></app-item-generator>
+  </li>
+</ul>

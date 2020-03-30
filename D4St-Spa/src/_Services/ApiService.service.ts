@@ -123,15 +123,18 @@ export class ApiServiceService {
     })
   }
   
-  getSkills = (classType: number): Promise<any> => {
+  getSkills = (classType?: number): Promise<any> => {
     return new Promise((resolve, reject) => {
+      var url = classType ? this.baseUrl + "SkillBar/" + classType : this.baseUrl + "SkillBar/0";
       this.http
-        .get(this.baseUrl + "SkillBar/" + classType, this.requestOptions)
+        .get(url, this.requestOptions)
         .pipe(
           map((response: any) => {
             const responseData = response.skills;
             responseData.forEach(element => {
               var skill = new SkillVM();
+              skill.classId = element.classId;
+              skill.className = element.className;
               skill.id = element.id;
               skill.name = element.name;
               skill.data = this.extractSkillDTOFromResponse(element.data);

@@ -14,11 +14,11 @@ namespace D4ST_Api.Models.HitEffects
         public ResourceReturnHitProc CalculateProcAmount(IClassDefinition classInfo) {
             var mainDps = new DamagePerHit(classInfo);
 
-            var baseProcPerc = classInfo.ClassType == Enums.ClassTypeEnum.Melee ? 0.05m : 0.03m;
+            var baseProcPerc = classInfo.ClassType == Enums.ClassTypeEnum.Barbarian ? 0.05m : 0.03m;
             var procPercAdditives = classInfo.DemonicPower * 0.15 + classInfo.AncestralPower * 0.55;
             var bonusMultiplier = 0.35 * (Math.Pow(1.04, procPercAdditives));
             var bonusProcPerc = DecimalHelper.RoundToDecimals(bonusMultiplier * procPercAdditives / 100, 3);
-            var baseProcRate = classInfo.ClassType == Enums.ClassTypeEnum.Melee ? 0.08m : 0.10m;
+            var baseProcRate = classInfo.ClassType == Enums.ClassTypeEnum.Barbarian ? 0.08m : 0.10m;
             var bonusProcRate = 0.66m * DecimalHelper.RoundToDecimals((classInfo.DemonicPower * 1.4) / 100, 3);
 
             var average = DecimalHelper.RoundToDecimals((mainDps.CalculateMinBase(classInfo) + mainDps.CalculateMaxBase(classInfo))/2, 3);

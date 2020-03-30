@@ -1,0 +1,38 @@
+<div class="row titleRowCustom itemGeneratorBorder">
+    <div class="col jumbotron jumbotron-transparentCustom itemGeneratorBorder">
+        <h2 class="display-4 customHeaderFontLeftTop">Try our Item Generator</h2>
+    </div>
+</div>
+<div class="row">
+    <div class="itemGenerator">
+        <div class="row"><div class="col"><app-DemoDropdownCustomHtml [items]="this.categories" [caption]="this.itemCategoriesCaption" (itemSelectedEventAsync)="SelectCategoryHandler($event)"></app-DemoDropdownCustomHtml></div></div>
+        <div class="row"><div class="col"><app-DemoDropdownCustomHtml [items]="this.items" [caption]="this.itemTypesCaption" (itemSelectedEventAsync)="SelectTypeHandler($event)"></app-DemoDropdownCustomHtml></div></div>
+        <div class="row"><div class="col"><app-DemoDropdownCustomHtml [items]="this.rarities" [caption]="this.rarityTypesCaption" (itemSelectedEventAsync)="SelectRarityHandler($event)"></app-DemoDropdownCustomHtml></div></div>
+        <div class="row"><div class="col-2" style="cursor: pointer;">
+            <a class="sizeBar" (click)="Generate($event)"><div class="row"><div class="col"><img src="../../_Resources/img/selectors/OrnamentRedone.png" />
+            <!-- <label class="h3">Generate</label> -->
+            </div></div></a>
+        </div></div>
+    </div>
+
+    <div class="itemGenerator">
+        <div class="col jumbotron jumbotron-transparentCustom itemGeneratorBorder">
+            <div style="width: 200%;" class="row" *ngFor="let affix of this.generatedAffixes">
+                <div class="col h3 customFontRed" *ngIf="(affix.Condition != null && affix.Condition?.Condition > this.BasicData.AngelicPower && affix.Condition.ConditionPowerType == 1)">{{affix.GetAffixDescription(this.skills)}}</div>
+                <div class="col h3 customFontRed" *ngIf="(affix.Condition != null && affix.Condition?.Condition > this.BasicData.DemonicPower && affix.Condition.ConditionPowerType == 2)">{{affix.GetAffixDescription(this.skills)}}</div>
+                <div class="col h3 customFontRed" *ngIf="(affix.Condition != null && affix.Condition?.Condition > this.BasicData.AncestralPower && affix.Condition.ConditionPowerType == 3)">{{affix.GetAffixDescription(this.skills)}}</div>
+                <div class="col h3 customFontGreen" *ngIf="(affix.Condition != null && affix.Condition?.Condition < this.BasicData.AngelicPower && affix.Condition.ConditionPowerType == 1)">{{affix.GetAffixDescription(this.skills)}}</div>
+                <div class="col h3 customFontGreen" *ngIf="(affix.Condition != null && affix.Condition?.Condition < this.BasicData.DemonicPower && affix.Condition.ConditionPowerType == 2)">{{affix.GetAffixDescription(this.skills)}}</div>
+                <div class="col h3 customFontGreen" *ngIf="(affix.Condition != null && affix.Condition?.Condition < this.BasicData.AncestralPower && affix.Condition.ConditionPowerType == 3)">{{affix.GetAffixDescription(this.skills)}}</div>
+                <div class="col h3 customFontGreen" *ngIf="affix.Condition == null">{{affix.GetAffixDescription()}}</div>
+            </div>
+            <div class="row">
+                <div class="col sizeThumbnail">
+                    <label *ngIf="this.levelRequirement > this.BasicData.Level" class="customFontRed h3">Level requirement {{this.levelRequirement}}</label>
+                    <label *ngIf="this.levelRequirement <= this.BasicData.Level" class="customFontGreen h3">Level requirement {{this.levelRequirement}}</label>
+                    <img class="thumnbnail imgThumbnail" [id]="'item-img-detail'" class="dropdownItemImg" [src]="this.GetImgSrc()" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

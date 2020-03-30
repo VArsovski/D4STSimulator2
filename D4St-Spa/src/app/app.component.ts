@@ -2,6 +2,7 @@ import { Component, Output, Input, EventEmitter } from '@angular/core';
 import { ApiServiceService } from 'src/_Services/ApiService.service';
 import { SkillListVM } from 'src/Models/SkillListVM';
 import { LevelUpStatsVM } from 'src/Models/LevelUpStatsVM';
+import { SkillVM } from 'src/Models/SkillVM';
 
 @Component({
   selector: "app-root",
@@ -18,7 +19,7 @@ export class AppComponent {
   @Output() model: LevelUpStatsVM;
   @Output() skillsModel: SkillListVM;
   @Output() initializeChildren: boolean;
-
+  @Output() allSkills: SkillVM[];
 
   async ngOnInit() {
     await this.initCharacter();
@@ -38,11 +39,17 @@ export class AppComponent {
     await initValueFn(result);
   }
 
-  async getSkills(classType: any) {
+  async getSkills(classType?: any) {
     const result = await this.apiService.getSkills(classType); // as Promise<SkillBarVM>;
     const initValueFn = async (data: SkillListVM) => {
       this.skillsModel = data;
     };
     await initValueFn(result);
+
+    const result1 = await this.apiService.getSkills(); // as Promise<SkillListVM>;
+    const initValueFn1 = async (data: SkillListVM) => {
+      this.allSkills = data.skills;
+    };
+    await initValueFn1(result1);
   }
 }

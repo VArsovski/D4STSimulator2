@@ -2,8 +2,9 @@ namespace D4ST_Api.Models.Enums
 {
     public enum ClassTypeEnum
     {
-        Melee = 1,
-        Ranged = 2,
-        Alternate = 3
+        Barbarian = 1,  //Melee
+        Sorceress = 2,  //Ranged
+        Druid = 3,      //Alternate
+        Kheshig = 4     //Imperial Guard
     }
 }

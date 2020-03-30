@@ -8,6 +8,8 @@ import { SkillPowerDetailDTO } from './DTOs/SkillPowerDetailDTO';
 import { SkillDamageDataDTO } from './DTOs/SkillDamageDataDTO';
 
 export class SkillVM {
+    classId: number;
+    className:string;
     id: number;
     name: string;
     level: number;
@@ -35,6 +37,11 @@ export class SkillVM {
         if (aa) this.data.angelicAffix = this.getAffixPowerData(aa, 1);
         if (da) this.data.demonicAffix = this.getAffixPowerData(da, 2);
         if (ca) this.data.ancestralAffix = this.getAffixPowerData(ca, 3);
+    }
+
+    setClassDetails(classId:number, className:string) {
+        this.classId = classId;
+        this.className = className;
     }
 
     getAffixPowerData(pd:ISkillPowerDataDTO, powerType: number): ISkillPowerDataDTO {

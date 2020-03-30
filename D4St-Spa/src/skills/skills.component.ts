@@ -39,7 +39,6 @@ export class SkillsComponent implements OnInit, OnChanges {
   ngOnInit() {}
 
   async LevelUpSkill(data: SkillWithImageVM) {
-    debugger;
     var skillData = await this.apiService.LevelUpSkill(data.data);
   }
   async LevelUpPreview() {

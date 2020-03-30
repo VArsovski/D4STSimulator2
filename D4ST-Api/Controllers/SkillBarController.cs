@@ -25,7 +25,7 @@ namespace D4ST_Api.Controllers
             var skills = new SkillList();
             // var selectedSkillset = getClassSkills((ClassTypeEnum)classType);
             var skillSeedData = this.getSkillData();
-            var selectedSkillset = skillSeedData.Where(s => s.ClassType == classType).GroupBy(t => t.SkillData.Tier);
+            var selectedSkillset = classType != 0 ? skillSeedData.Where(s => s.ClassType == classType).GroupBy(t => t.SkillData.Tier) : skillSeedData.GroupBy(t => t.SkillData.Tier);
 
             var tier = 0;
             var skillCount = 0;
@@ -57,6 +57,8 @@ namespace D4ST_Api.Controllers
                     if (PoDDem) md2.Add(AffixMetadataEnum.ProcsOnDeath);
                     if (PoDAnc) md3.Add(AffixMetadataEnum.ProcsOnDeath);
 
+                    skillToAdd.ClassId = skill.ClassType;// classType;
+                    skillToAdd.ClassName = EnumHelper.GetName<ClassTypeEnum>((ClassTypeEnum)skill.ClassType);
                     skillToAdd.Data.AngelicAffix = SpellPowerDataCalculator.GetPowerAffixesForSkill(PowerTypesEnum.AngelicPower, (SkillCastTypeEnum)skill.CastType, skillToAdd.Data.SkillData.PowerData, md1);
                     skillToAdd.Data.DemonicAffix = SpellPowerDataCalculator.GetPowerAffixesForSkill(PowerTypesEnum.DemonicPower, (SkillCastTypeEnum)skill.CastType, skillToAdd.Data.SkillData.PowerData, md2);
                     skillToAdd.Data.AncestralAffix = SpellPowerDataCalculator.GetPowerAffixesForSkill(PowerTypesEnum.AncestralPower, (SkillCastTypeEnum)skill.CastType, skillToAdd.Data.SkillData.PowerData, md3);

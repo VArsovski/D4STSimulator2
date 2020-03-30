@@ -77,7 +77,7 @@ namespace D4ST_Api.Models.StatCalculators
             var from = fibonacciLine.IndexOf(fibonacciLine.FirstOrDefault(c => c > classInfo.Level));
             var skillBonus = Convert.ToInt32(Math.Sqrt(squareRootLine.IndexOf(squareRootLine.FirstOrDefault(c => c > classInfo.Level))));
 
-            if (classInfo.ClassType == ClassTypeEnum.Ranged)
+            if (classInfo.ClassType == ClassTypeEnum.Sorceress)
                 skillBonus += Convert.ToInt32(Math.Sqrt(1 + skillBonus));
 
             skillDamageStat.From = from;

@@ -1,3 +1,5 @@
+import { debug } from 'util';
+
 export class Helpers {
     // min and max included
     public static getRandom(min:number, max:number): number {
@@ -41,6 +43,19 @@ export class Helpers {
 
         return dict;
     }
+
+    public static getPropertyByValue(obj:any, searched:any):string {
+        var selected = null;
+        Object.keys(obj).forEach(key => {
+            var value = obj[key];
+            if (obj[key] == searched)
+            {
+                selected = key;
+                // break;
+            }
+        });
+        return selected;
+    }    
 
     private static isObject(o: any) {
         return o instanceof Object && o.constructor === Object;

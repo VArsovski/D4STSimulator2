@@ -1,7 +1,5 @@
-export class PowerEnums {
-    public static PowerTypesEnum:any = {
-        AngelicPower: 1,
-        DemonicPower: 2,
-        AncestralPower: 3
-    }    
+export enum PowerTypesEnum {
+    Angelic= 1,
+    Demonic= 2,
+    Ancestral= 3
 }

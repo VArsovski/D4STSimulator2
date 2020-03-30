@@ -18,7 +18,7 @@ namespace D4ST_Api.Models.MainStats
 
         public Life(IClassDefinition classInfo)
         {
-            var baseAmt = (classInfo.ClassType == ClassTypeEnum.Ranged ? 45 : 55);
+            var baseAmt = (classInfo.ClassType == ClassTypeEnum.Sorceress ? 45 : 55);
             BasicAmount = baseAmt + classInfo.Level * 1;
             BonusAmount = classInfo.AngelicPower * 3;
             TotalAmount = CalculateAmount(classInfo);

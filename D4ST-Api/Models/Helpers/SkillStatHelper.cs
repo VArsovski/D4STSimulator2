@@ -49,7 +49,7 @@ namespace D4ST_Api.Models.Helpers
             var isHighCd = DecimalHelper.RoundToDecimals(skillData.CD / skillData.Charges, 2) >= skillData.Tier + 2;
             var isHighCost = DecimalHelper.RoundToDecimals(skillData.Cost / skillData.Charges, 2) >= 2*skillData.Tier + 3;
             var isHit = skillStat.CastType == SkillCastTypeEnum.OnHit;
-            var isProjectile = classType != ClassTypeEnum.Ranged ? new List<SkillCastTypeEnum>{ SkillCastTypeEnum.Projectile, SkillCastTypeEnum.Melee }.Contains(skillStat.CastType)
+            var isProjectile = classType != ClassTypeEnum.Sorceress ? new List<SkillCastTypeEnum>{ SkillCastTypeEnum.Projectile, SkillCastTypeEnum.Melee }.Contains(skillStat.CastType)
                                             : skillStat.CastType == SkillCastTypeEnum.Projectile;
             var isCharacterProjectile = skillStat.CastType == SkillCastTypeEnum.ProjectileCharacter;
             var isStrong = (skillData.From + skillData.Tier / 2) > skillData.Tier * 4;
