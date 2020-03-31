@@ -1,6 +1,6 @@
 import { IDescribable } from '../IDescribable';
 import { IPowerUp } from '../IPowerUp';
-import { ItemArmorTypesEnum, ArmorTypesEnum } from 'src/_Enums/itemAffixEnums';
+import { ItemArmorTypesEnum, ArmorTypesEnum, CCEffectTypesEnum } from 'src/_Enums/itemAffixEnums';
 import { Helpers } from 'src/_Helpers/helpers';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 
@@ -10,26 +10,32 @@ export class ItemArmorStats implements IDescribable, IPowerUp {
     private MaxArmor: number;
     private ArmorType: ArmorTypesEnum;
     private PowerLevel: any;
+    private selectedCCTypes: CCEffectTypesEnum[];
+    private ReducePercentage: number;
+    private Level: number;    
 
-    constructor(itemType?: ItemArmorTypesEnum, minArmor?: number, maxArmor?: number, armorType?: ArmorTypesEnum) {
+    constructor(level:number, itemType?: ItemArmorTypesEnum, minArmor?: number, maxArmor?: number, armorType?: ArmorTypesEnum) {
         this.PowerLevel = 0;
+        this.Level = level;
         this.ItemType = itemType;
         this.MinArmor = minArmor;
         this.MaxArmor = maxArmor;
         this.ArmorType = armorType;
+
+        this.selectedCCTypes = [];
+        this.SetCCTypes();
     }
 
     PowerUp() {
         this.PowerLevel++;
     }
     GetData() {
+        this.ReducePercentage = new CalculationsHelper().getBasicStatEmpowerAmount(this.Level, this.PowerLevel);
         this.MinArmor = new CalculationsHelper().getEmpoweredValue(this.MinArmor, this.PowerLevel);
         this.MaxArmor = new CalculationsHelper().getEmpoweredValue(this.MinArmor, this.PowerLevel);
+        this.SetCCTypes();
         return this;
     }
-
-    SetLevel(level: number) { this.Level = level; }
-    Level: number;
 
     // Stats for level1, calculate for other levels
     private GetLevel1Data() {
@@ -62,6 +68,35 @@ export class ItemArmorStats implements IDescribable, IPowerUp {
         var data = this.GetData();
         var amount = Helpers.getRandom(data.MinArmor, data.MaxArmor);
         var empoweredStr = new CalculationsHelper().getEmpoweredStr("*", this.PowerLevel);
-        return amount + " " + Helpers.getPropertyByValue(ArmorTypesEnum, this.ArmorType) + " armor" + empoweredStr;
+
+        var reductionStr = "(Reduce CCTypes by " + data.ReducePercentage + "%)";
+        if (amount || 0 == 0) {
+            debugger;
+        }
+
+        var basicDataStr = amount ? amount + " " + Helpers.getPropertyByValue(ArmorTypesEnum, data.ArmorType) + " armor" + empoweredStr + "\n": "";
+        return basicDataStr + reductionStr;
+    }
+
+    private SetCCTypes() {
+        if (this.ArmorType)
+        if (this.ArmorType == ArmorTypesEnum.Heavy) {
+            this.selectedCCTypes.push(CCEffectTypesEnum.ReduceArmor);
+            this.selectedCCTypes.push(CCEffectTypesEnum.Bleed);
+            this.selectedCCTypes.push(CCEffectTypesEnum.Knockback);
+            this.selectedCCTypes.push(CCEffectTypesEnum.Stun);
+        }
+        if (this.ArmorType == ArmorTypesEnum.Light) {
+            this.selectedCCTypes.push(CCEffectTypesEnum.Root);
+            this.selectedCCTypes.push(CCEffectTypesEnum.Wither);
+            this.selectedCCTypes.push(CCEffectTypesEnum.Blind);
+            this.selectedCCTypes.push(CCEffectTypesEnum.Burn);
+        }
+        if (this.ArmorType == ArmorTypesEnum.Mystic) {
+            this.selectedCCTypes.push(CCEffectTypesEnum.Burn);
+            this.selectedCCTypes.push(CCEffectTypesEnum.Curse);
+            this.selectedCCTypes.push(CCEffectTypesEnum.Freeze);
+            this.selectedCCTypes.push(CCEffectTypesEnum.Bleed);
+        }
     }
 }

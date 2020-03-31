@@ -46,7 +46,7 @@ export class ItemAffixGenerator {
         affixesList.forEach(a => a.ItemCategory = ItemCategoriesEnum.Weapon);
         affixesList = this.AddCategoryToAffixes(level, affixesList, rarity);
 
-        var selectedDamage = new ItemDamageStats(ItemWeaponTypesEnum.Axe).GetBasicWeaponStats(itemType, level);
+        var selectedDamage = new ItemDamageStats(level, ItemWeaponTypesEnum.Axe).GetBasicWeaponStats(itemType, Helpers.getRandom(1, 6));
         affixesList.forEach(a => {
             if (a.AffixCategory == AffixCategoryEnum.PrimaryDamage)
                 a.Contents.damageStat = selectedDamage;
@@ -127,16 +127,15 @@ export class ItemAffixGenerator {
         this.skillPool.forEach(s => { if (tiersToInclude.indexOf(s.tier) != -1) availableSkills.push(s); });
         affixesList.forEach(affix => {
             if (affix.AffixCategory == AffixCategoryEnum.PrimaryDamage) {
-                affix.Contents = new ItemAffixEnumsHelper(availableSkills).GetPrimaryItemAffix(ItemCategoriesEnum.Weapon, rarity, affix.AffixType, affix.PowerLevel);
+                affix.Contents = new ItemAffixEnumsHelper(availableSkills).GetPrimaryItemAffix(level, ItemCategoriesEnum.Weapon, rarity, affix.AffixType, affix.PowerLevel);
             }
             else if (affix.AffixCategory == AffixCategoryEnum.PrimaryArmor) {
-                affix.Contents = new ItemAffixEnumsHelper(availableSkills).GetPrimaryItemAffix(ItemCategoriesEnum.Armor, rarity, affix.AffixType, affix.PowerLevel);
+                affix.Contents = new ItemAffixEnumsHelper(availableSkills).GetPrimaryItemAffix(level, ItemCategoriesEnum.Armor, rarity, affix.AffixType, affix.PowerLevel);
             }
             else {
-                affix.Contents = new ItemAffixEnumsHelper(availableSkills).GetRandomTypeByIndex(affix.ItemCategory, rarity, affix.AffixType, affix.PowerLevel);
+                affix.Contents = new ItemAffixEnumsHelper(availableSkills).GetRandomTypeByIndex(level, affix.ItemCategory, rarity, affix.AffixType, affix.PowerLevel);
             }
             
-
             affix.AffixCategory = affix.Contents.categoryStat;
         });
 
@@ -148,41 +147,55 @@ export class ItemAffixGenerator {
     private GenerateMagicBlueprint(itemCategory:ItemCategoriesEnum, omitConditional?: boolean): ItemAffixBlueprint[] {
         var affixesBlueprint:ItemAffixBlueprint[] = [];
 
+        var rand = Helpers.getRandom(1, 100);
+        var empowerCond = rand % 5 == 0;
+        var empowerUnc = rand % 7 == 0;
+
         // switch(itemCategory) {
         if (itemCategory ==  ItemCategoriesEnum.Armor) {
             // 2 Basic stats, 2 Defensive stats; 1 Conditional each
             affixesBlueprint.push(new ItemAffixBlueprint(ItemAffixTypeEnum.BasicStat, false))
             affixesBlueprint.push(new ItemAffixBlueprint(ItemAffixTypeEnum.Defensive, false));
+            if (empowerUnc)
+                affixesBlueprint[Helpers.getRandom(0,1)].PowerUp();
 
             if (!omitConditional) {
                 affixesBlueprint.push(new ItemAffixBlueprint(ItemAffixTypeEnum.BasicStat, true));
                 affixesBlueprint.push(new ItemAffixBlueprint(ItemAffixTypeEnum.Defensive, true));
+                if (empowerCond)
+                    affixesBlueprint[Helpers.getRandom(2,3)].PowerUp();
             }
         }
         else if (itemCategory ==  ItemCategoriesEnum.Weapon) {
             // 2 Ofensive stats, 2 random, 1 conditional each
-            var rand = Helpers.getRandom(1, 100);
             var selectedSecondary = rand % 3 == 0 ? ItemAffixTypeEnum.Damage : rand % 3 == 1 ? ItemAffixTypeEnum.TriggerEffect : ItemAffixTypeEnum.PowerUpSkill;
             affixesBlueprint.push(new ItemAffixBlueprint(ItemAffixTypeEnum.Offensive, false))
             affixesBlueprint.push(new ItemAffixBlueprint(selectedSecondary, false));
+            if (empowerUnc)
+                affixesBlueprint[Helpers.getRandom(0,1)].PowerUp();
 
             if (!omitConditional) {
                 affixesBlueprint.push(new ItemAffixBlueprint(ItemAffixTypeEnum.Offensive, true))
                 affixesBlueprint.push(new ItemAffixBlueprint(selectedSecondary, true));
+                if (empowerCond)
+                    affixesBlueprint[Helpers.getRandom(2,3)].PowerUp();
             }
         }
         else {
-            var rand = Helpers.getRandom(1, 100);
             // 2 PowerUpOrBasic stats, 2 random, 1 conditional each
             var selectedPrimary = rand % 2 == 0 ? ItemAffixTypeEnum.BasicStat : ItemAffixTypeEnum.PowerUpSkill;
             var selectedSecondary = rand % 3 == 0 ? ItemAffixTypeEnum.TriggerEffect : rand % 3 == 1 ? ItemAffixTypeEnum.Offensive : ItemAffixTypeEnum.Defensive;
 
             affixesBlueprint.push(new ItemAffixBlueprint(selectedPrimary, false));
             affixesBlueprint.push(new ItemAffixBlueprint(selectedSecondary, false))
+            if (empowerUnc)
+                affixesBlueprint[Helpers.getRandom(0,1)].PowerUp();
 
             if (!omitConditional) {
                 affixesBlueprint.push(new ItemAffixBlueprint(selectedPrimary, true));
                 affixesBlueprint.push(new ItemAffixBlueprint(selectedSecondary, true))
+                if (empowerCond)
+                    affixesBlueprint[Helpers.getRandom(0,1)].PowerUp();
             }
         }
 

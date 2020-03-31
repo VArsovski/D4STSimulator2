@@ -3,10 +3,11 @@ import { IDropdownImageItem } from 'src/Models/_Common/IDropdownImageItem';
 import { DropdownImageItem } from 'src/Models/_Common/DropdownImageItem';
 import { Helpers } from 'src/_Helpers/helpers';
 import { ItemAffixGenerator } from 'src/Models/ItemAffixes/ItemAffixGenerator';
-import { ItemCategoriesEnum } from 'src/_Enums/itemAffixEnums';
+import { ItemCategoriesEnum, CCEffectTypesEnum, ArmorTypesEnum, DamageTypesEnum, ItemWeaponTypesEnum } from 'src/_Enums/itemAffixEnums';
 import { ItemAffix } from 'src/Models/ItemAffixes/ItemAffix';
 import { BasicCharStats } from 'src/Models/BasicCharStats';
 import { SkillVM } from 'src/Models/SkillVM';
+import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 
 @Component({
   selector: 'app-item-generator',
@@ -51,7 +52,7 @@ export class ItemGeneratorComponent implements OnInit {
       var selection = count == 1 ? this.armors : count == 2 ? this.weapons : this.jewelries;
       var randType = Helpers.getRandom(1, selection.length);
       var randImg = Helpers.getRandom(1, 2);
-      var imgSrc = "_Resources\\img\\items\\" + element[0] + selection[randType-1][0] + randImg + ".png";
+      var imgSrc = "_Resources\\img\\items\\" + element[0] + selection[randType-1][0] + selection[randType-1][1] + randImg + ".png";
       data.push(new DropdownImageItem(count, element, "", imgSrc, ""));
       count++;
     });
@@ -63,9 +64,9 @@ export class ItemGeneratorComponent implements OnInit {
     var data = new Array<IDropdownImageItem>();
     var count = 1;
     elements.forEach(element => {
-      var randType = Helpers.getRandom(1, elements.length);
+      // var randType = Helpers.getRandom(1, elements.length);
       var randImg = Helpers.getRandom(1, 2);
-      var imgSrc = "_Resources\\img\\items\\" + category[0] + element[0] + randImg + ".png";
+      var imgSrc = "_Resources\\img\\items\\" + category[0] + element[0] + element[1] + randImg + ".png";
       data.push(new DropdownImageItem(count, element, "", imgSrc, ""));
       count++;
     });
@@ -77,7 +78,7 @@ export class ItemGeneratorComponent implements OnInit {
     var data = new Array<IDropdownImageItem>();
     var count = 1;
     elements.forEach(element => {
-      var imgSrc = "_Resources\\img\\items\\" + category[0] + type[0] + count + ".png";
+      var imgSrc = "_Resources\\img\\items\\" + category[0] + type[0] + type[1] + count + ".png";
       data.push(new DropdownImageItem(count, element, "", imgSrc, ""));
       count++;
     });
@@ -104,24 +105,33 @@ export class ItemGeneratorComponent implements OnInit {
 
   async Generate() {
     var generator = new ItemAffixGenerator(this.skills);
-    // Function<,ItemAffix[]> selectedFn = () => {}
-    var itemAffixes:ItemAffix[] = [];
-    if (this.selectedCategory.id == ItemCategoriesEnum.Armor)
-      itemAffixes = generator.GenerateArmorAffixes(this.BasicData.Level, this.selectedType.id, this.selectedRarity.id);
-    else if (this.selectedCategory.id == ItemCategoriesEnum.Weapon)
-      itemAffixes = generator.GenerateWeaponAffixes(this.BasicData.Level, this.selectedType.id, this.selectedRarity.id);
-    else
-      itemAffixes = generator.GenerateJewelryAffixes(this.BasicData.Level, this.selectedType.id, this.selectedRarity.id);
-    
-    this.generatedAffixes = itemAffixes;
     this.levelRequirement = null;
     this.SetItemLvl();
+    // Function<,ItemAffix[]> selectedFn = () => {}
+    var itemAffixes:ItemAffix[] = [];
+
+    if (this.selectedCategory.id == ItemCategoriesEnum.Armor)
+      itemAffixes = generator.GenerateArmorAffixes(this.levelRequirement, this.selectedType.id, this.selectedRarity.id);
+    else if (this.selectedCategory.id == ItemCategoriesEnum.Weapon)
+      itemAffixes = generator.GenerateWeaponAffixes(this.levelRequirement, this.selectedType.id, this.selectedRarity.id);
+    else
+      itemAffixes = generator.GenerateJewelryAffixes(this.levelRequirement, this.selectedType.id, this.selectedRarity.id);
+    
+    this.generatedAffixes = itemAffixes;
   }
 
+  protected GetDamageTypesInfo():string[] {
+    return new CalculationsHelper().GetDamageTypesInfo();
+  }
+
+  protected GetArmorTypesInfo():string[] {
+    return new CalculationsHelper().GetArmorTypesInfo();
+  }
+  
   protected GetImgSrc():string {
     var srcEmpty = "_Resources\\img\\borders\\border.png";
     var filtersSelected = this.selectedCategory && this.selectedType && this.selectedRarity;
-    return filtersSelected ? "_Resources\\img\\items\\" + this.selectedCategory.name[0] + this.selectedType.name[0] + this.selectedRarity.id + ".png" : srcEmpty;
+    return filtersSelected ? "_Resources\\img\\items\\" + this.selectedCategory.name[0] + this.selectedType.name[0] + this.selectedType.name[1] + this.selectedRarity.id + ".png" : srcEmpty;
   }
 
   protected levelRequirement?: number;

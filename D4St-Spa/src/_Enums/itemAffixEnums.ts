@@ -20,17 +20,6 @@ export enum ResistanceTypesEnum {
     Spell = 6
 }
 
-export enum CCEffectTypesEnum {
-    Stun = 1,
-    Root = 2,
-    Knockback = 3,
-    Freeze = 4,
-    Burn = 5,
-    Wither = 6,
-    Bleed = 7,
-    Curse = 8
-}
-
 export enum ItemArmorTypesEnum {
     Chest=1,
     Pants=2,
@@ -45,7 +34,8 @@ export enum ItemWeaponTypesEnum {
     Hammer=3,
     Sword=4,
     Wand=5,
-    Javelin=6
+    Javelin=6,
+    Staff=7
 }
 
 export enum ItemJewelryTypesEnum {
@@ -80,21 +70,35 @@ export enum AttackTypesEnum {
 }
 
 export enum DamageTypesEnum {
-    Physical= 1,
-    FreezeStun = 2,
-    BleedOrArmorReduction = 3,
-    PoisonOrBurn = 4,
-    KnockbackOrRoot = 5,
-    ChainOrPierceAttack = 6,
-    SpellOrSummon = 7
+    BleedOrArmorReduction = 1,
+    PoisonOrBurn = 2,
+    KnockbackOrRoot = 3,
+    CleaveOrAoE = 4,
+    ChainOrPierceAttack = 5,
+    ProjectileOrSummon = 6,
+    FreezeOrStun = 7,
+    Physical= 8
 }
 
-export enum CCEffectTypesEnum {
-    FreezeStun = 1,
+export enum CCEffectGroupsEnum {
+    FreezeOrStun = 1,
     BleedOrArmorReduction = 2,
     PoisonOrBurn = 3,
     KnockbackOrRoot = 4,
     CurseOrBlind = 5
+}
+
+export enum CCEffectTypesEnum {
+    ReduceArmor = 1,    //Axe
+    Bleed = 2,          //Axe
+    Burn = 3,           //Bow
+    Wither = 4,         //Bow
+    Root = 5,           //Hammer
+    Knockback = 6,      //Hammer
+    Blind = 7,          //Javelin
+    Curse = 8,          //Wand
+    Stun = 9,           //Staff
+    Freeze = 10         //Staff
 }
 
 export enum ArmorTypesEnum {
@@ -164,14 +168,21 @@ export enum AdditionalTriggerStatsEnum {
     TriggerEffectsRepeatable = 6,
 }
 
+// Axe= 1,
+// Bow= 2,
+// Hammer= 3,
+// Sword= 4,
+// Wand= 5,
+// Javelin= 6,
+// CastAndProjectileRange= 7,
 export enum OfensiveStatsEnum {
-    CleaveAndAoE= 1,
+    ArmorReductionAndBleed= 1,
     PoisonAndBurn= 2,
-    ArmorReductionAndBleed= 3,
-    FreezeAndStun= 4,
-    KnockbackAndRoot= 5,
+    KnockbackAndRoot= 3,
+    CleaveAndAoE= 4,
+    CastAndProjectileRange= 5,
     ChainAndPierce= 6,
-    CastAndProjectileRange= 7,
+    FreezeAndStun= 7,
     Socket = 8
 }
 

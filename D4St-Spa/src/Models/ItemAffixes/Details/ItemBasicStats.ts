@@ -18,10 +18,12 @@ export class ItemBasicStats implements IDescribable, IPowerUp {
     private Socket:number;
     private selectedStat:string;
     private PowerLevel: any;
+    private Level: number;
 
-    constructor() {
+    constructor(level:number) {
         this.Socket = 0;
         this.PowerLevel = 0;
+        this.Level = level;
     }
 
     public SetPowers(amount:number, type:PowerTypesEnum) {
@@ -110,8 +112,6 @@ export class ItemBasicStats implements IDescribable, IPowerUp {
         }
         return this;
     }
-    SetLevel(level: number) { this.Level = level; }
-    Level: number;    
 }
 
 export class ItemBasicStatsDetail implements IDescribable {

@@ -11,6 +11,7 @@ import { DemonicPowerAffixes } from 'src/Models/DemonicPowerAffixes';
 import { AncestralPowerAffixes } from 'src/Models/AncestralPowerAffixes';
 import { SkillDTO } from 'src/Models/DTOs/SkillDTO';
 import { SkillDamageDataDTO } from 'src/Models/DTOs/SkillDamageDataDTO';
+import { ArmorTypesEnum, CCEffectTypesEnum, ItemWeaponTypesEnum, CCEffectGroupsEnum, DamageTypesEnum } from 'src/_Enums/itemAffixEnums';
 
 export class CalculationsHelper {
   public static calculateChangeDetails(change: BasicStatsVM, orig: BasicStatsVM) {
@@ -102,8 +103,8 @@ export class CalculationsHelper {
   public getEmpoweredValue(value:number, powerLevel:number):number {
     for (let i = 0; i < powerLevel; i++) {
       var variance = Helpers.getRandom(115, 130)/100;
-      if (i < 10) {
-        value += Helpers.getRandom(1, 3);
+      if (i < 15) {
+        value += Helpers.getRandom(2, 4);
       }
       else {
         value*= variance;
@@ -117,4 +118,57 @@ export class CalculationsHelper {
     for (let i = 0; i < powerLevel; i++) { str+=sign; }
     return str;
   }
+
+  public getBasicStatEmpowerAmount(level: number, powerLevel: number): number {
+    return Math.round((this.getEmpoweredValue(Helpers.getRandom(2, 6), powerLevel) + 6 + level/4) * 10) /10    
+  }
+
+  public GetArmorTypesInfo():string[] {
+    var armorTypesList = [ArmorTypesEnum.Heavy, ArmorTypesEnum.Light, ArmorTypesEnum.Mystic];
+    var data:string[] = [];
+
+    armorTypesList.forEach(armorType => {
+      var selectedCCTypes:CCEffectTypesEnum[] = [];
+      if (armorType == ArmorTypesEnum.Heavy) {
+        selectedCCTypes.push(CCEffectTypesEnum.ReduceArmor);
+        selectedCCTypes.push(CCEffectTypesEnum.Bleed);
+        selectedCCTypes.push(CCEffectTypesEnum.Knockback);
+        selectedCCTypes.push(CCEffectTypesEnum.Stun);
+      }
+      if (armorType == ArmorTypesEnum.Light) {
+          selectedCCTypes.push(CCEffectTypesEnum.Root);
+          selectedCCTypes.push(CCEffectTypesEnum.Wither);
+          selectedCCTypes.push(CCEffectTypesEnum.Blind);
+          selectedCCTypes.push(CCEffectTypesEnum.Burn);
+      }
+      if (armorType == ArmorTypesEnum.Mystic) {
+          selectedCCTypes.push(CCEffectTypesEnum.Burn);
+          selectedCCTypes.push(CCEffectTypesEnum.Curse);
+          selectedCCTypes.push(CCEffectTypesEnum.Freeze);
+          selectedCCTypes.push(CCEffectTypesEnum.Bleed);
+      }
+
+      var typeNames:string[] = [];
+      selectedCCTypes.forEach(type => {
+        typeNames.push(Helpers.getPropertyByValue(CCEffectTypesEnum, type));
+      });
+
+      data.push(Helpers.getPropertyByValue(ArmorTypesEnum , armorType) + " : " + typeNames.join(", "));
+    });
+
+    return data;
+  }
+
+  public GetDamageTypesInfo():string[] {
+    var data:string[] = [];
+    data.push(Helpers.getPropertyByValue(ItemWeaponTypesEnum, ItemWeaponTypesEnum.Axe)       + " : " + Helpers.getPropertyByValue(DamageTypesEnum, DamageTypesEnum.BleedOrArmorReduction));
+    data.push(Helpers.getPropertyByValue(ItemWeaponTypesEnum, ItemWeaponTypesEnum.Bow)       + " : " + Helpers.getPropertyByValue(DamageTypesEnum, DamageTypesEnum.PoisonOrBurn));
+    data.push(Helpers.getPropertyByValue(ItemWeaponTypesEnum, ItemWeaponTypesEnum.Hammer)    + " : " + Helpers.getPropertyByValue(DamageTypesEnum, DamageTypesEnum.KnockbackOrRoot));
+    data.push(Helpers.getPropertyByValue(ItemWeaponTypesEnum, ItemWeaponTypesEnum.Sword)     + " : " + Helpers.getPropertyByValue(DamageTypesEnum, DamageTypesEnum.CleaveOrAoE));
+    data.push(Helpers.getPropertyByValue(ItemWeaponTypesEnum, ItemWeaponTypesEnum.Javelin)   + " : " + Helpers.getPropertyByValue(DamageTypesEnum, DamageTypesEnum.ChainOrPierceAttack));
+    data.push(Helpers.getPropertyByValue(ItemWeaponTypesEnum, ItemWeaponTypesEnum.Wand)      + " : " + Helpers.getPropertyByValue(DamageTypesEnum, DamageTypesEnum.ProjectileOrSummon));
+    data.push(Helpers.getPropertyByValue(ItemWeaponTypesEnum, ItemWeaponTypesEnum.Staff)     + " : " + Helpers.getPropertyByValue(DamageTypesEnum, DamageTypesEnum.FreezeOrStun));
+
+    return data;
+  }  
 }
