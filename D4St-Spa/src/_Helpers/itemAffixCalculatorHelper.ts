@@ -14,7 +14,7 @@ export class ItemAffixEnumsHelper {
         this.skillPool = skillPool || [];
     }
 
-    public GetRandomTypeByIndex(itemCategory:ItemCategoriesEnum, rarity:ItemRarityTypesEnum, affixType:ItemAffixTypeEnum):ItemAffixOutput {
+    public GetRandomTypeByIndex(itemCategory:ItemCategoriesEnum, rarity:ItemRarityTypesEnum, affixType:ItemAffixTypeEnum, powerLevel:number):ItemAffixOutput {
 
         // 1, 4, 6, [L14]
         var basicStatAffixesCategory = [AffixCategoryEnum.IncreaseBasicStat
@@ -73,12 +73,14 @@ export class ItemAffixEnumsHelper {
         {
             affixData.categoryStat = damageAffixesCategory[Helpers.getRandom(0, damageAffixesCategory.length-1)];
             affixData.damageStat =  new DamageAffixHelper().GetByIndex(Helpers.getRandom(1, 7), rarity).damageStat;
+            for (let i = 0; i < powerLevel; i++) { affixData.damageStat.PowerUp(); }
         }
 
         if (affixType == ItemAffixTypeEnum.Armor)
         {
             affixData.categoryStat = damageAffixesCategory[Helpers.getRandom(0, damageAffixesCategory.length-1)];
             affixData.armorStat =  new ArmorAffixHelper().GetByIndex(Helpers.getRandom(1, 5), rarity).armorStat;
+            for (let i = 0; i < powerLevel; i++) { affixData.armorStat.PowerUp(); }
         }
 
         if (affixType == ItemAffixTypeEnum.PowerUpSkill)
@@ -86,49 +88,66 @@ export class ItemAffixEnumsHelper {
             affixData.categoryStat = AffixCategoryEnum.IncreaseSkillStat;
             var basicAffix = new ItemBasicStats();
             basicAffix.SetSkill(this.skillPool[Helpers.getRandom(0, this.skillPool.length -1)]);
+            for (let i = 0; i < powerLevel; i++) { basicAffix.PowerUp(); }
             affixData.basicStat = basicAffix;
         }
         else if (affixType == ItemAffixTypeEnum.BasicStat)
         {
             affixData.categoryStat = basicStatAffixesCategory[Helpers.getRandom(0, basicStatAffixesCategory.length-1)];
             affixData.basicStat = new BasicAffixHelper().GetByIndex(Helpers.getRandom(1, 7), rarity).basicStat;
+            for (let i = 0; i < powerLevel; i++) { affixData.basicStat.PowerUp(); }
         }
         
         if (affixType == ItemAffixTypeEnum.Offensive || affixType == ItemAffixTypeEnum.Defensive)
         {
             affixData.categoryStat = defensiveOrOfensiveStatAffixesCategory[Helpers.getRandom(0, defensiveOrOfensiveStatAffixesCategory.length-1)];
-            if (affixType == ItemAffixTypeEnum.Offensive)
+            if (affixType == ItemAffixTypeEnum.Offensive) {
                 affixData.ofensiveStat = new OfensiveAffixHelper().GetByIndex(Helpers.getRandom(1, 8), rarity).ofensiveStat;
-            if (affixType == ItemAffixTypeEnum.Defensive)
+                for (let i = 0; i < powerLevel; i++) { affixData.ofensiveStat.PowerUp(); }
+            }
+            if (affixType == ItemAffixTypeEnum.Defensive) {
                 affixData.defensiveStat = new DefensiveAffixHelper().GetByIndex(Helpers.getRandom(1, 8), rarity).defensiveStat;
+                for (let i = 0; i < powerLevel; i++) { affixData.defensiveStat.PowerUp(); }
+            }
         }
         if (affixType == ItemAffixTypeEnum.TriggerEffect)
         {
             affixData.categoryStat = triggerAffixesCategory[Helpers.getRandom(0, triggerAffixesCategory.length-1)];
             affixData.triggerStat = new TriggerAffixHelper().GetByIndex(Helpers.getRandom(1, 6), rarity).triggerStat;
+            // // TODO: Next make Trigger Stats calculate properly
+            // for (let i = 0; i < powerLevel; i++) { affixData.triggerStat.PowerUp(); }
         }
         if (affixType == ItemAffixTypeEnum.Legendary)
         {
             affixData.categoryStat = legendaryAffixesCategory[Helpers.getRandom(0, legendaryAffixesCategory.length-1)];
             affixData.legendaryStat = new LegendaryAffixHelper().GetByIndex(Helpers.getRandom(1, 12), rarity).legendaryStat;
+            // // TODO: Next make Trigger Stats calculate properly
+            // for (let i = 0; i < powerLevel; i++) { affixData.legendaryStat.PowerUp(); }
         }
     
         return affixData;
     }
 
-    public GetPrimaryItemAffix(itemCategory:ItemCategoriesEnum, rarity:ItemRarityTypesEnum, affixType:ItemAffixTypeEnum):ItemAffixOutput {
+    public GetPrimaryItemAffix(itemCategory:ItemCategoriesEnum, rarity:ItemRarityTypesEnum, affixType:ItemAffixTypeEnum, powerLevel:number):ItemAffixOutput {
         var affixData = new ItemAffixOutput();
         if (affixType == ItemAffixTypeEnum.Armor)
         {
             affixData.categoryStat = AffixCategoryEnum.PrimaryArmor;
             affixData.armorStat = new BasicAffixHelper().GetByIndex(2, rarity).armorStat;
+            for (let i = 0; i < powerLevel; i++) {
+                affixData.armorStat.PowerUp();
+            }
         }
         if (affixType == ItemAffixTypeEnum.Damage)
         {
             affixData.categoryStat = AffixCategoryEnum.PrimaryDamage;
             var damageStat = new DamageAffixHelper().GetByIndex(Helpers.getRandom(1, 6), rarity).damageStat;
             affixData.damageStat = damageStat;
+            for (let i = 0; i < powerLevel; i++) {
+                affixData.damageStat.PowerUp();
+            }
         }
+
         return affixData;
     }
 }
@@ -298,7 +317,6 @@ export class DefensiveAffixHelper {
         var amount = rand % 2 == 0 ? amountVariance : 0;
         var amountPercentage = rand % 2 != 0 ? percentageVariance : 0;
         var defensiveStatsData = new ItemDefensiveStats(amount, amountPercentage, chance, duration, selected);
-       
         
         // defensiveStatsData.PowerUp();
 

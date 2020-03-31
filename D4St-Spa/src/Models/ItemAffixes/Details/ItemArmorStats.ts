@@ -2,6 +2,7 @@ import { IDescribable } from '../IDescribable';
 import { IPowerUp } from '../IPowerUp';
 import { ItemArmorTypesEnum, ArmorTypesEnum } from 'src/_Enums/itemAffixEnums';
 import { Helpers } from 'src/_Helpers/helpers';
+import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 
 export class ItemArmorStats implements IDescribable, IPowerUp {
     private ItemType: ItemArmorTypesEnum;
@@ -11,6 +12,7 @@ export class ItemArmorStats implements IDescribable, IPowerUp {
     private PowerLevel: any;
 
     constructor(itemType?: ItemArmorTypesEnum, minArmor?: number, maxArmor?: number, armorType?: ArmorTypesEnum) {
+        this.PowerLevel = 0;
         this.ItemType = itemType;
         this.MinArmor = minArmor;
         this.MaxArmor = maxArmor;
@@ -21,9 +23,8 @@ export class ItemArmorStats implements IDescribable, IPowerUp {
         this.PowerLevel++;
     }
     GetData() {
-        var varianceToEmpower = (100 + Helpers.getRandom(120, 140))/100;
-        this.MinArmor *= Math.pow(varianceToEmpower, this.PowerLevel);
-        this.MaxArmor *= Math.pow(varianceToEmpower, this.PowerLevel);
+        this.MinArmor = new CalculationsHelper().getEmpoweredValue(this.MinArmor, this.PowerLevel);
+        this.MaxArmor = new CalculationsHelper().getEmpoweredValue(this.MinArmor, this.PowerLevel);
         return this;
     }
 
@@ -58,7 +59,9 @@ export class ItemArmorStats implements IDescribable, IPowerUp {
     }
 
     public GetDescription():string {
-        var amount = Helpers.getRandom(this.MinArmor, this.MaxArmor);
-        return amount + " " + Helpers.getPropertyByValue(ArmorTypesEnum, this.ArmorType) + " armor";
+        var data = this.GetData();
+        var amount = Helpers.getRandom(data.MinArmor, data.MaxArmor);
+        var empoweredStr = new CalculationsHelper().getEmpoweredStr("*", this.PowerLevel);
+        return amount + " " + Helpers.getPropertyByValue(ArmorTypesEnum, this.ArmorType) + " armor" + empoweredStr;
     }
 }

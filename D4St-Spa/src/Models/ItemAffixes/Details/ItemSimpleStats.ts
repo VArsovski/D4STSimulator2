@@ -3,6 +3,7 @@ import { PowerTypesEnum } from 'src/_Enums/powerTypesEnum';
 import { Helpers } from 'src/_Helpers/helpers';
 import { ResistanceTypesEnum } from 'src/_Enums/itemAffixEnums';
 import { IPowerUp } from '../IPowerUp';
+import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 
 export class ItemBasicPowersDetail implements IDescribable, IPowerUp {
     Amount: number;
@@ -16,7 +17,7 @@ export class ItemBasicPowersDetail implements IDescribable, IPowerUp {
         this.Amount = amount;
         this.Type = type;
     }
-    PowerUp(powerLevel: number) {
+    PowerUp() {
         this.PowerLevel++;
     }
     SetLevel(level: number) {
@@ -24,13 +25,14 @@ export class ItemBasicPowersDetail implements IDescribable, IPowerUp {
     }
     public GetData()
     {
-        var varianceToEmpower = (100 + Helpers.getRandom(120, 140))/100;
-        this.Amount *= Math.pow(varianceToEmpower, this.PowerLevel);
+        this.Amount = new CalculationsHelper().getEmpoweredValue(this.Amount, this.PowerLevel);
         return this;
     }
 
     public GetDescription():string {
-        return this.Amount + " " + Helpers.getPropertyByValue(PowerTypesEnum, this.Type) + " power";
+        var data = this.GetData();
+        var empoweredStr = new CalculationsHelper().getEmpoweredStr("*", this.PowerLevel);
+        return data.Amount + " " + Helpers.getPropertyByValue(PowerTypesEnum, this.Type) + " power" + empoweredStr;
     }
 }
 
@@ -48,7 +50,7 @@ export class ItemBasicResistanceStatsDetail implements IDescribable, IPowerUp {
     public GetDescription():string {
         return this.Amount + " " + Helpers.getPropertyByValue(ResistanceTypesEnum, this.Type) + "% resistance"
     }
-    PowerUp(powerLevel: number) {
+    PowerUp() {
         this.PowerLevel++;
     }
     SetLevel(level: number) {
@@ -56,8 +58,7 @@ export class ItemBasicResistanceStatsDetail implements IDescribable, IPowerUp {
     }
     public GetData()
     {
-        var varianceToEmpower = (100 + Helpers.getRandom(120, 140))/100;
-        this.Amount *= Math.pow(varianceToEmpower, this.PowerLevel);
+        this.Amount = new CalculationsHelper().getEmpoweredValue(this.Amount, this.PowerLevel);
         return this;
     }
 }

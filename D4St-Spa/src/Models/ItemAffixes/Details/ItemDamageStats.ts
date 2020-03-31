@@ -2,6 +2,7 @@ import { IDescribable } from '../IDescribable';
 import { IPowerUp } from '../IPowerUp';
 import { ItemWeaponTypesEnum, DamageTypesEnum } from 'src/_Enums/itemAffixEnums';
 import { Helpers } from 'src/_Helpers/helpers';
+import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 
 export class ItemDamageStats implements IDescribable, IPowerUp {
     WeaponType: ItemWeaponTypesEnum;
@@ -11,6 +12,7 @@ export class ItemDamageStats implements IDescribable, IPowerUp {
     private PowerLevel: number;
 
     constructor(weaponType: ItemWeaponTypesEnum, damageType?: DamageTypesEnum,  minDamage?: number, maxDamage?: number) {
+        this.PowerLevel = 0;
         this.WeaponType = weaponType;
         this.MainDamageType = damageType;
         this.MinDamage = minDamage;
@@ -21,9 +23,8 @@ export class ItemDamageStats implements IDescribable, IPowerUp {
         this.PowerLevel++;
     }
     GetData() {
-        var varianceToEmpower = (100 + Helpers.getRandom(120, 140))/100;
-        this.MinDamage *= Math.pow(varianceToEmpower, this.PowerLevel);
-        this.MaxDamage *= Math.pow(varianceToEmpower, this.PowerLevel);
+        this.MinDamage = new CalculationsHelper().getEmpoweredValue(this.MinDamage, this.PowerLevel);
+        this.MaxDamage = new CalculationsHelper().getEmpoweredValue(this.MaxDamage, this.PowerLevel);
         return this;
     }
     SetLevel(level: number) { this.Level = level; }
@@ -59,6 +60,8 @@ export class ItemDamageStats implements IDescribable, IPowerUp {
     }
 
     GetDescription():string {
-        return this.MinDamage + " - " + this.MaxDamage + " " + Helpers.getPropertyByValue(DamageTypesEnum, this.MainDamageType) + " damage";
+        var data = this.GetData();
+        var empoweredStr = new CalculationsHelper().getEmpoweredStr("*", this.PowerLevel);
+        return data.MinDamage + " - " + data.MaxDamage + " " + Helpers.getPropertyByValue(DamageTypesEnum, this.MainDamageType) + " damage" + empoweredStr;
     }
 }

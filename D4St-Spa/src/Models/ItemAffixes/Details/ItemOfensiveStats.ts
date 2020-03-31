@@ -2,6 +2,7 @@ import { IDescribable } from '../IDescribable';
 import { OfensiveStatCategoryEnum, OfensiveStatsEnum } from 'src/_Enums/itemAffixEnums';
 import { Helpers } from 'src/_Helpers/helpers';
 import { IPowerUp } from '../IPowerUp';
+import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 
 export class ItemOfensiveStatsDetail implements IDescribable {
     private Amount?:number;
@@ -64,16 +65,18 @@ export class ItemOfensiveStats implements IDescribable, IPowerUp {
     SetLevel(level: number) { this.Level = level; }
 
     GetDescription(): string {
-        var descr1 = (this.CleaveAndAoE) ? this.CleaveAndAoE.GetDescription() : "";
-        var descr2 = (this.PoisonAndBurn) ? this.PoisonAndBurn.GetDescription() : "";
-        var descr3 = (this.ArmorReductionAndBleed) ? this.ArmorReductionAndBleed.GetDescription() : "";
-        var descr4 = (this.FreezeAndStun) ? this.FreezeAndStun.GetDescription() : "";
-        var descr5 = (this.KnockbackAndRoot) ? this.KnockbackAndRoot.GetDescription() : "";
-        var descr6 = (this.ChainAndPierce) ? this.ChainAndPierce.GetDescription() : "";
-        var descr7 = (this.CastAndProjectileRange) ? this.CastAndProjectileRange.GetDescription() : "";
-        var descr8 = (this.Socket) ? "Socket" : "";
+        var data = this.GetData();
+        var descr1 = (this.CleaveAndAoE) ? data.CleaveAndAoE.GetDescription() : "";
+        var descr2 = (this.PoisonAndBurn) ? data.PoisonAndBurn.GetDescription() : "";
+        var descr3 = (this.ArmorReductionAndBleed) ? data.ArmorReductionAndBleed.GetDescription() : "";
+        var descr4 = (this.FreezeAndStun) ? data.FreezeAndStun.GetDescription() : "";
+        var descr5 = (this.KnockbackAndRoot) ? data.KnockbackAndRoot.GetDescription() : "";
+        var descr6 = (this.ChainAndPierce) ? data.ChainAndPierce.GetDescription() : "";
+        var descr7 = (this.CastAndProjectileRange) ? data.CastAndProjectileRange.GetDescription() : "";
+        var descr8 = this.Socket != 0 ? "Socket/s " + data.Socket: "";
 
-        return descr1 + descr2 + descr3 + descr4 + descr5 + descr6 + descr7 + descr8;
+        var empoweredStr = new CalculationsHelper().getEmpoweredStr("*", this.PowerLevel);
+        return descr1 + descr2 + descr3 + descr4 + descr5 + descr6 + descr7 + descr8 + empoweredStr;
     }
 
     constructor(amount:number, amountPercentage:number, type:OfensiveStatsEnum, affectedCategories?:OfensiveStatCategoryEnum[]) {
@@ -161,12 +164,11 @@ export class ItemOfensiveStats implements IDescribable, IPowerUp {
     }
 
     GetData() {
-        var varianceToEmpower = (100 + Helpers.getRandom(120, 140))/100;
         if (this.selectedStat)
         {
             if (this.selectedStat != "Socket") {
-                this[this.selectedStat].Amount *= Math.pow(varianceToEmpower, this.PowerLevel);
-                this[this.selectedStat].AmountPercentage *= Math.pow(varianceToEmpower, this.PowerLevel);
+                this[this.selectedStat].Amount = new CalculationsHelper().getEmpoweredValue(this[this.selectedStat].Amount, this.PowerLevel);
+                this[this.selectedStat].AmountPercentage = new CalculationsHelper().getEmpoweredValue(this[this.selectedStat].AmountPercentage, this.PowerLevel);
             }
             else this.Socket++;
         }

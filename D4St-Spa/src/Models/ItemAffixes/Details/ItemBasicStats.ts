@@ -5,6 +5,7 @@ import { SkillVM } from 'src/Models/SkillVM';
 import { PowerTypesEnum } from 'src/_Enums/powerTypesEnum';
 import { BasicStatsEnum, ResistanceTypesEnum } from 'src/_Enums/itemAffixEnums';
 import { Helpers } from 'src/_Helpers/helpers';
+import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 
 export class ItemBasicStats implements IDescribable, IPowerUp {
     private PowerStats:ItemBasicPowersDetail;
@@ -20,6 +21,7 @@ export class ItemBasicStats implements IDescribable, IPowerUp {
 
     constructor() {
         this.Socket = 0;
+        this.PowerLevel = 0;
     }
 
     public SetPowers(amount:number, type:PowerTypesEnum) {
@@ -60,21 +62,26 @@ export class ItemBasicStats implements IDescribable, IPowerUp {
     }
 
     GetDescription(): string {
+        var data = this.GetData();
         
-        var descr1 = ""; if (this.PowerStats) descr1 = this.PowerStats.GetDescription();
-        var descr2 = ""; if (this.StatNumbers) descr2 = this.StatNumbers.GetDescription();
-        var descr3 = ""; if (this.StatRegen) descr3 = this.StatRegen.GetDescription();
-        var descr4 = ""; if (this.StatPercentage) descr4 = this.StatPercentage.GetDescription();
-        var descr5 = ""; if (this.StatPercentageRegen) descr5 = this.StatPercentageRegen.GetDescription();
-        var descr6 = ""; if (this.Resistance) descr6 = this.Resistance.GetDescription();
+        var descr1 = ""; if (this.PowerStats) descr1 = data.PowerStats.GetDescription();
+        var descr2 = ""; if (this.StatNumbers) descr2 = data.StatNumbers.GetDescription();
+        var descr3 = ""; if (this.StatRegen) descr3 = data.StatRegen.GetDescription();
+        var descr4 = ""; if (this.StatPercentage) descr4 = data.StatPercentage.GetDescription();
+        var descr5 = ""; if (this.StatPercentageRegen) descr5 = data.StatPercentageRegen.GetDescription();
+        var descr6 = ""; if (this.Resistance) descr6 = data.Resistance.GetDescription();
         var descr7 = "";
         
-        if (this.SkillEmpower)
-            descr7 += this.SkillEmpower.level + " to " + this.SkillEmpower.name + " (" + this.SkillEmpower.className + " only)";
+        if (data.SkillEmpower)
+            descr7 += data.SkillEmpower.level + " to " + data.SkillEmpower.name + " (" + data.SkillEmpower.className + " only)";
 
-        var descr8 = this.Socket != 0 ? "Socket": "";
+        var descr8 = data.Socket != 0 ? "Socket/s " + data.Socket: "";
 
         var descr = descr1 + descr2 + descr3 + descr4 + descr5 + descr6 + descr7 + descr8;
+
+        var empoweredStr = new CalculationsHelper().getEmpoweredStr("*", this.PowerLevel);
+        descr+= empoweredStr;
+
         if (descr.startsWith("NaN") || descr.startsWith("0"))
             console.log(this);
 
@@ -86,20 +93,19 @@ export class ItemBasicStats implements IDescribable, IPowerUp {
     }
 
     GetData() {
-        var varianceToEmpower = (100 + Helpers.getRandom(120, 140))/100;
         if (this.selectedStat)
         {
             if (this.selectedStat == "PowerStats")
-                this.PowerStats.Amount *= Math.pow(varianceToEmpower, this.PowerLevel);
+                this.PowerStats.Amount = new CalculationsHelper().getEmpoweredValue(this.PowerStats.Amount, this.PowerLevel);
             if (["StatNumbers", "StatRegen", "StatPercentage", "StatPercentageRegen" ].indexOf(this.selectedStat) != -1)
             {
                 // Should contain only one, DW :P
-                this[this.selectedStat].Amount *= Math.pow(varianceToEmpower, this.PowerLevel);
-                this[this.selectedStat].AmountPercentage *= Math.pow(varianceToEmpower, this.PowerLevel);
+                this[this.selectedStat].Amount = new CalculationsHelper().getEmpoweredValue(this[this.selectedStat].Amount, this.PowerLevel);
+                this[this.selectedStat].AmountPercentage = new CalculationsHelper().getEmpoweredValue(this[this.selectedStat].AmountPercentage, this.PowerLevel);
             }
-            if (this.selectedStat = "SkillEmpower")
+            if (this.selectedStat == "SkillEmpower")
                 this.SkillEmpower.level += this.PowerLevel;
-            if (this.selectedStat = "Socket")
+            if (this.selectedStat == "Socket")
                 this.Socket++;
         }
         return this;

@@ -98,4 +98,23 @@ export class CalculationsHelper {
 
     return description;
   }
+
+  public getEmpoweredValue(value:number, powerLevel:number):number {
+    for (let i = 0; i < powerLevel; i++) {
+      var variance = Helpers.getRandom(115, 130)/100;
+      if (i < 10) {
+        value += Helpers.getRandom(1, 3);
+      }
+      else {
+        value*= variance;
+      }
+    }
+    return value;
+  }
+  
+  public getEmpoweredStr(sign:string, powerLevel:number):any {
+    var str = "";
+    for (let i = 0; i < powerLevel; i++) { str+=sign; }
+    return str;
+  }
 }

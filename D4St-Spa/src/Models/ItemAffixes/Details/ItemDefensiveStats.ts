@@ -2,6 +2,7 @@ import { IDescribable } from '../IDescribable';
 import { DefensiveStatCategoryEnum, DefensiveStatsEnum, DamageTypesEnum, AttackTypesEnum, CCEffectTypesEnum, ResistanceTypesEnum } from 'src/_Enums/itemAffixEnums';
 import { Helpers } from 'src/_Helpers/helpers';
 import { IPowerUp } from '../IPowerUp';
+import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 
 export class ItemDefensiveStatsDetail implements IDescribable {
     private Amount?:number;
@@ -11,6 +12,7 @@ export class ItemDefensiveStatsDetail implements IDescribable {
     private DefensiveAffixStatCategories:DefensiveStatCategoryEnum[];
     private Type:DefensiveStatsEnum;
     private selectedStat:string;
+    private Socket:number;
 
     GetDescription(): string {
         var str = "";
@@ -79,13 +81,14 @@ export class ItemDefensiveStatsDetail implements IDescribable {
                 str += this.Chance + "% chance " + " of " +  attackType + " attacks to return as " + Helpers.getPropertyByValue(DefensiveStatsEnum, this.Type);
         }
         if (this.Type == DefensiveStatsEnum.Socket)
-            str += "Socket";
+            str += this.Socket != 0 ? "Socket/s " + this.Socket: "";
 
         return str;
     }
 
     constructor(amount:number, amountPercentage:number, chance:number, duration:number, type: DefensiveStatsEnum, defensiveStatCategories: DefensiveStatCategoryEnum[]) {
-        
+        this.Socket = 0;
+
         this.Amount = amount;
         this.AmountPercentage = amountPercentage;
         this.Chance = chance;
@@ -108,20 +111,21 @@ export class ItemDefensiveStats implements IDescribable, IPowerUp {
     private selectedStat:string;
 
     GetDescription(): string {
-        var descr1 = (this.CCDamageAndDurationReduced) ? this.CCDamageAndDurationReduced.GetDescription() : "";
-        var descr2 = (this.PotionAndGlobeBonus) ? this.PotionAndGlobeBonus.GetDescription() : "";
-        var descr3 = (this.DamageTypeTakenReduced) ? this.DamageTypeTakenReduced.GetDescription() : "";
-        var descr4 = (this.AttackTypeTakenReduced) ? this.AttackTypeTakenReduced.GetDescription() : "";
-        var descr5 = (this.ThornsDamage) ? this.ThornsDamage.GetDescription() : "";
-        var descr6 = (this.DamageStaggered) ? this.DamageStaggered.GetDescription() : "";
-        var descr7 = (this.LifestealOrShielding) ? this.LifestealOrShielding.GetDescription() : "";
-        var descr8 = (this.Socket) ? "Socket" : "";
+        var data = this.GetData();
+        var descr1 = (this.CCDamageAndDurationReduced) ? data.CCDamageAndDurationReduced.GetDescription() : "";
+        var descr2 = (this.PotionAndGlobeBonus) ? data.PotionAndGlobeBonus.GetDescription() : "";
+        var descr3 = (this.DamageTypeTakenReduced) ? data.DamageTypeTakenReduced.GetDescription() : "";
+        var descr4 = (this.AttackTypeTakenReduced) ? data.AttackTypeTakenReduced.GetDescription() : "";
+        var descr5 = (this.ThornsDamage) ? data.ThornsDamage.GetDescription() : "";
+        var descr6 = (this.DamageStaggered) ? data.DamageStaggered.GetDescription() : "";
+        var descr7 = (this.LifestealOrShielding) ? data.LifestealOrShielding.GetDescription() : "";
+        var descr8 = this.Socket != 0 ? "Socket/s " + data.Socket: "";
 
-        return descr1 + descr2 + descr3 + descr4 + descr5 + descr6 + descr7 + descr8;
+        var empoweredStr = new CalculationsHelper().getEmpoweredStr("*", this.PowerLevel);
+        return descr1 + descr2 + descr3 + descr4 + descr5 + descr6 + descr7 + descr8 + empoweredStr;
     }
 
     constructor(amount:number, amountPercentage:number, chance:number, duration:number, type:DefensiveStatsEnum, affectedCategories?:DefensiveStatCategoryEnum[]) {
-
         this.Socket = 0;
         this.PowerLevel = 0;
         this.Level = 1;
@@ -208,12 +212,11 @@ export class ItemDefensiveStats implements IDescribable, IPowerUp {
     }
 
     GetData() {
-        var varianceToEmpower = (100 + Helpers.getRandom(120, 140))/100;
         if (this.selectedStat)
         {
             if (this.selectedStat != "Socket") {
-                this[this.selectedStat].Amount *= Math.pow(varianceToEmpower, this.PowerLevel);
-                this[this.selectedStat].AmountPercentage *= Math.pow(varianceToEmpower, this.PowerLevel);
+                this[this.selectedStat].Amount = new CalculationsHelper().getEmpoweredValue(this[this.selectedStat].Amount, this.PowerLevel);
+                this[this.selectedStat].AmountPercentage = new CalculationsHelper().getEmpoweredValue(this[this.selectedStat].AmountPercentage, this.PowerLevel);
             }
             else this.Socket++;
         }
