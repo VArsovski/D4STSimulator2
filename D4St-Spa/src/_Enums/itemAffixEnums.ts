@@ -1,8 +1,8 @@
 export enum BasicStatsEnum {
     HP = 1,
     Resource = 2,
-    Stamina = 4,
-    Armor = 4
+    Stamina = 3
+    // Armor = 4
 }
 
 export enum ItemCategoriesEnum {
@@ -17,7 +17,7 @@ export enum ResistanceTypesEnum {
     Cold = 3,
     Lightning = 4,
     Poison = 5,
-    Spell = 6
+    All = 6
 }
 
 export enum ItemArmorTypesEnum {

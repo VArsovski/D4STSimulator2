@@ -138,12 +138,10 @@ export class ItemGeneratorComponent implements OnInit {
   private SetItemLvl():number {
     if (!this.levelRequirement && this.BasicData.Level)
     {
-      // var variationPerc = Helpers.getRandom(-20, 20);
-      // var level = parseInt((this.BasicData.Level * (100+variationPerc)/100).toString(), 10);
       var variation = this.BasicData.Level < 10 ? 2 : this.BasicData.Level < 20 ? 3 : 4;
       var level = parseInt((this.BasicData.Level + Helpers.getRandom(-variation, variation)).toString(), 10);
       if (level < 0) level = 1;
-      if (level > 40) level == 40;// this.BasicData.MaxLevel)
+      if (level > 40) level = 40;// this.BasicData.MaxLevel)
       this.levelRequirement = (level || 0) != 0 ? level: 1;
     }
 

@@ -3,7 +3,7 @@ import { ItemArmorStats } from './ItemArmorStats';
 import { ItemDamageStats } from './ItemDamageStats';
 import { ItemBasicStats } from './ItemBasicStats';
 import { ItemOfensiveStats } from './ItemOfensiveStats';
-import { ItemDefensiveStats } from './ItemDefensiveStats';
+import { ItemDefenseStats } from './ItemDefensiveStats';
 
 export class ItemAffixOutput {
     categoryStat?: AffixCategoryEnum;
@@ -11,7 +11,7 @@ export class ItemAffixOutput {
     damageStat?: ItemDamageStats;
     basicStat?: ItemBasicStats;
     ofensiveStat?: ItemOfensiveStats;
-    defensiveStat?: ItemDefensiveStats;
+    defensiveStat?: ItemDefenseStats;
     triggerStat?: TriggerStatsEnum;
     legendaryStat?: LegendaryStatsEnum;
 
@@ -20,7 +20,7 @@ export class ItemAffixOutput {
         damageStat?: ItemDamageStats,
         basicStat?: ItemBasicStats,
         ofensiveStat?: ItemOfensiveStats,
-        defensiveStat?: ItemDefensiveStats,
+        defensiveStat?: ItemDefenseStats,
         triggerStat?: TriggerStatsEnum,
         legendaryStat?: LegendaryStatsEnum) {
         this.categoryStat = categoryStat;

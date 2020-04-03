@@ -3,14 +3,14 @@
         <h2 class="display-4 customHeaderFontLeftTop">Try the Item Generator</h2>
     </div>
 </div>
-<label class="customFontGreen h3">Weapon type bonuses</label>
+<label class="customHeaderFont h3">Weapon type bonuses</label>
 <div class="row" *ngFor="let info of this.GetDamageTypesInfo()">
     <div class="col">
         <div><label class="customFontGreen h3">{{info}}</label></div>
     </div>
 </div>
 
-<label class="customFontGreen h3">Armor reduction bonuses</label>
+<label class="customHeaderFont h3">Armor reduction bonuses</label>
 <div class="row" *ngFor="let info of this.GetArmorTypesInfo()">
     <div class="col">
         <div><label class="customFontGreen h3">{{info}}</label></div>
@@ -31,14 +31,14 @@
 
     <div class="itemGenerator">
         <div class="col jumbotron jumbotron-transparentCustom itemGeneratorBorder">
-            <div style="width: 200%; transform: translate(-60%, -15%);" class="row text-left">
+            <div style="width: 200%; transform: translate(-60%, 10%);" class="row text-left">
                 <div class="col sizeThumbnail">
                     <label *ngIf="this.levelRequirement > this.BasicData.Level" class="customFontRed h3">Level requirement {{this.levelRequirement}}</label>
                     <label *ngIf="this.levelRequirement <= this.BasicData.Level" class="customFontGreen h3">Level requirement {{this.levelRequirement}}</label>
                     <img class="thumnbnail imgThumbnail" [id]="'item-img-detail'" class="dropdownItemImg" [src]="this.GetImgSrc()" />
                 </div>
             </div>
-            <div style="width: 200%; transform: translate(-60%, -15%);" class="row text-left" *ngFor="let affix of this.generatedAffixes; let i = index">
+            <div style="width: 200%; transform: translate(-60%, 10%);" class="row text-left" *ngFor="let affix of this.generatedAffixes; let i = index">
                 <div class="col h3 customFontRed" *ngIf="(affix.Condition != null && affix.Condition?.Condition > this.BasicData.AngelicPower && affix.Condition.ConditionPowerType == 1)">{{affix.GetAffixDescription(this.skills)}}</div>
                 <div class="col h3 customFontRed" *ngIf="(affix.Condition != null && affix.Condition?.Condition > this.BasicData.DemonicPower && affix.Condition.ConditionPowerType == 2)">{{affix.GetAffixDescription(this.skills)}}</div>
                 <div class="col h3 customFontRed" *ngIf="(affix.Condition != null && affix.Condition?.Condition > this.BasicData.AncestralPower && affix.Condition.ConditionPowerType == 3)">{{affix.GetAffixDescription(this.skills)}}</div>

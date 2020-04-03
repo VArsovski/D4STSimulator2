@@ -7,7 +7,7 @@ import { PowerTypesEnum } from 'src/_Enums/powerTypesEnum';
 import { SkillVM } from '../SkillVM';
 import { ItemArmorStats } from './Details/ItemArmorStats';
 import { ItemDamageStats } from './Details/ItemDamageStats';
-import { ItemAffixEnumsHelper } from 'src/_Helpers/itemAffixCalculatorHelper';
+import { ItemAffixEnumsHelper } from './AffixHelpers/ItemAffixEnumsHelper';
 
 export class ItemAffixGenerator {
     skillPool: SkillVM[];
@@ -25,7 +25,8 @@ export class ItemAffixGenerator {
         affixesList.forEach(a => a.ItemCategory = ItemCategoriesEnum.Armor);
         affixesList = this.AddCategoryToAffixes(level, affixesList, rarity);
     
-        var selectedArmor = new ItemArmorStats(itemType).GetBasicArmorStats(itemType, Helpers.getRandom(1,3), level);
+        var powerLevelDefault = 0;
+        var selectedArmor = new ItemArmorStats(level, powerLevelDefault, itemType).GetBasicArmorStats(itemType, Helpers.getRandom(1,3), level);
 
         // console.clear();
         // console.log(affixesList);
@@ -46,7 +47,8 @@ export class ItemAffixGenerator {
         affixesList.forEach(a => a.ItemCategory = ItemCategoriesEnum.Weapon);
         affixesList = this.AddCategoryToAffixes(level, affixesList, rarity);
 
-        var selectedDamage = new ItemDamageStats(level, ItemWeaponTypesEnum.Axe).GetBasicWeaponStats(itemType, Helpers.getRandom(1, 6));
+        var powerLevelDefault = 0;
+        var selectedDamage = new ItemDamageStats(level, powerLevelDefault, ItemWeaponTypesEnum.Axe).GetBasicWeaponStats(itemType, Helpers.getRandom(1, 6));
         affixesList.forEach(a => {
             if (a.AffixCategory == AffixCategoryEnum.PrimaryDamage)
                 a.Contents.damageStat = selectedDamage;
@@ -99,9 +101,9 @@ export class ItemAffixGenerator {
             if (element.IsConditional)
             {
                 // level:number, condition:number, conditionPowerType:PowerTypesEnum
-                var rand1 = Helpers.getRandom(25, 55);
+                var rand1 = Helpers.getRandom(35, 60);
                 var rand2 = Helpers.getRandom(87, 114);
-                var conditionNum = Math.floor(Math.floor(level * 3 * rand1)/100 * rand2/100);
+                var conditionNum = Math.min(level * 3, Math.floor(Math.floor(level * 3 * rand1)/100 * rand2/100));
                 if (level < 3)
                     conditionNum += level*2;
 
@@ -127,13 +129,13 @@ export class ItemAffixGenerator {
         this.skillPool.forEach(s => { if (tiersToInclude.indexOf(s.tier) != -1) availableSkills.push(s); });
         affixesList.forEach(affix => {
             if (affix.AffixCategory == AffixCategoryEnum.PrimaryDamage) {
-                affix.Contents = new ItemAffixEnumsHelper(availableSkills).GetPrimaryItemAffix(level, ItemCategoriesEnum.Weapon, rarity, affix.AffixType, affix.PowerLevel);
+                affix.Contents = new ItemAffixEnumsHelper(availableSkills).GetPrimaryItemAffix(level, affix.PowerLevel, ItemCategoriesEnum.Weapon, rarity, affix.AffixType);
             }
             else if (affix.AffixCategory == AffixCategoryEnum.PrimaryArmor) {
-                affix.Contents = new ItemAffixEnumsHelper(availableSkills).GetPrimaryItemAffix(level, ItemCategoriesEnum.Armor, rarity, affix.AffixType, affix.PowerLevel);
+                affix.Contents = new ItemAffixEnumsHelper(availableSkills).GetPrimaryItemAffix(level, affix.PowerLevel, ItemCategoriesEnum.Armor, rarity, affix.AffixType);
             }
             else {
-                affix.Contents = new ItemAffixEnumsHelper(availableSkills).GetRandomTypeByIndex(level, affix.ItemCategory, rarity, affix.AffixType, affix.PowerLevel);
+                affix.Contents = new ItemAffixEnumsHelper(availableSkills).GetRandomTypeByIndex(level, affix.PowerLevel, affix.ItemCategory, rarity, affix.AffixType);
             }
             
             affix.AffixCategory = affix.Contents.categoryStat;

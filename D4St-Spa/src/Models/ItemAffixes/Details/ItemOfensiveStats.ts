@@ -1,10 +1,9 @@
 import { IDescribable } from '../IDescribable';
 import { OfensiveStatCategoryEnum, OfensiveStatsEnum } from 'src/_Enums/itemAffixEnums';
 import { Helpers } from 'src/_Helpers/helpers';
-import { IPowerUp } from '../IPowerUp';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 
-export class ItemOfensiveStats implements IDescribable, IPowerUp {
+export class ItemOfensiveStats implements IDescribable {
     private CleaveAndAoE?:ItemOfensiveStatsDetail;
     private PoisonAndBurn?:ItemOfensiveStatsDetail;
     private ArmorReductionAndBleed?:ItemOfensiveStatsDetail;
@@ -28,15 +27,15 @@ export class ItemOfensiveStats implements IDescribable, IPowerUp {
         var descr5 = (this.KnockbackAndRoot) ? data.KnockbackAndRoot.GetDescription() : "";
         var descr6 = (this.ChainAndPierce) ? data.ChainAndPierce.GetDescription() : "";
         var descr7 = (this.CastAndProjectileRange) ? data.CastAndProjectileRange.GetDescription() : "";
-        var descr8 = this.Socket != 0 ? "Ofensive Socket empowered by " + socketPowerPercentage + "%": "";
+        var descr8 = this.Socket != 0 ? "Ofensive Sockets empowered by " + socketPowerPercentage + "%": "";
 
         var empoweredStr = new CalculationsHelper().getEmpoweredStr("*", this.PowerLevel);
         return descr1 + descr2 + descr3 + descr4 + descr5 + descr6 + descr7 + descr8 + empoweredStr;
     }
 
-    constructor(level:number, amount:number, amountPercentage:number, type:OfensiveStatsEnum, affectedCategories?:OfensiveStatCategoryEnum[]) {
+    constructor(level:number, powerLevel:number, amount:number, amountPercentage:number, type:OfensiveStatsEnum, affectedCategories?:OfensiveStatCategoryEnum[]) {
         this.Socket = 0;
-        this.PowerLevel = 0;
+        this.PowerLevel = powerLevel;
         this.Level = level;
 
         var appropriateCategories = affectedCategories ? affectedCategories : this.GenerateAppropriateCategoriesByType(type);
@@ -114,10 +113,6 @@ export class ItemOfensiveStats implements IDescribable, IPowerUp {
         return categories;
     }
 
-    PowerUp(){
-        this.PowerLevel++;
-    }
-
     GetData() {
         if (this.selectedStat)
         {
@@ -179,12 +174,6 @@ export class ItemOfensiveStatsDetail implements IDescribable {
     constructor(amount:number, amountPercentage:number, type: OfensiveStatsEnum, ofensiveStatCategories: OfensiveStatCategoryEnum[]) {
         this.Amount = amount;
         this.AmountPercentage = amountPercentage;
-
-        // !@#$!@#$!@#$!@#$ Doesn't seem to be an issue, think Angular crash screws the Model.. :/ so will manually do the check above
-        if (this.Amount || 0 != 0 && this.AmountPercentage || 0 != 0) {
-            debugger;
-        }
-        
         this.Type = type;
         this.OfensiveAffixStatCategories = ofensiveStatCategories;
     }

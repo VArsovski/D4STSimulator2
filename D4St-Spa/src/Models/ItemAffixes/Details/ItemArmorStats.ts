@@ -1,10 +1,9 @@
 import { IDescribable } from '../IDescribable';
-import { IPowerUp } from '../IPowerUp';
 import { ItemArmorTypesEnum, ArmorTypesEnum, CCEffectTypesEnum } from 'src/_Enums/itemAffixEnums';
 import { Helpers } from 'src/_Helpers/helpers';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 
-export class ItemArmorStats implements IDescribable, IPowerUp {
+export class ItemArmorStats implements IDescribable {
     private ItemType: ItemArmorTypesEnum;
     private MinArmor: number;
     private MaxArmor: number;
@@ -12,51 +11,54 @@ export class ItemArmorStats implements IDescribable, IPowerUp {
     private PowerLevel: any;
     private selectedCCTypes: CCEffectTypesEnum[];
     private ReducePercentage: number;
-    private Level: number;    
+    private Level: number;
+    private SelectedAmount:number;
 
-    constructor(level:number, itemType?: ItemArmorTypesEnum, minArmor?: number, maxArmor?: number, armorType?: ArmorTypesEnum) {
-        this.PowerLevel = 0;
-        this.Level = level;
+    constructor(level:number, powerLevel:number, itemType: ItemArmorTypesEnum, minArmor?: number, maxArmor?: number, selectedAmount?:number, armorType?: ArmorTypesEnum, reducePercentage?:number) {
+        this.Level = level || 1;
+        this.PowerLevel = powerLevel;
         this.ItemType = itemType;
-        this.MinArmor = minArmor;
-        this.MaxArmor = maxArmor;
-        this.ArmorType = armorType;
+        this.MinArmor = minArmor || 0;
+        this.MaxArmor = maxArmor || 0;
+        this.SelectedAmount = selectedAmount;
+        this.ArmorType = armorType || Helpers.getRandom(1, 3);
+        this.ReducePercentage = reducePercentage || 0;
 
         this.selectedCCTypes = [];
         this.SetCCTypes();
     }
 
-    PowerUp() {
-        this.PowerLevel++;
-    }
     GetData() {
-        this.ReducePercentage = new CalculationsHelper().getBasicStatEmpowerAmount(this.Level, this.PowerLevel);
-        this.MinArmor = new CalculationsHelper().getEmpoweredValue(this.MinArmor, this.PowerLevel);
-        this.MaxArmor = new CalculationsHelper().getEmpoweredValue(this.MinArmor, this.PowerLevel);
-        this.SetCCTypes();
-        return this;
+        // var minArmor = new CalculationsHelper().getEmpoweredValue(new CalculationsHelper().getArmorStatForLevel(this.MinArmor, this.Level), this.PowerLevel);
+        // var maxArmor = new CalculationsHelper().getEmpoweredValue(new CalculationsHelper().getArmorStatForLevel(this.MinArmor, this.Level), this.PowerLevel);
+        var calculatedData = new CalculationsHelper().getArmorCalculatedData(this.Level, this.PowerLevel, this.MinArmor, this.MaxArmor);
+        var selectedAmount = calculatedData[0];
+        var reducePercentage = calculatedData[1];
+        var data = new ItemArmorStats(this.Level, this.PowerLevel, this.ItemType, this.MinArmor, this.MaxArmor, selectedAmount, this.ArmorType, reducePercentage);
+        return data;
     }
 
     // Stats for level1, calculate for other levels
-    private GetLevel1Data() {
+    private GetLevelData(level:number) {
         var basicArmorTypes:ItemArmorStats[] = [];
-        basicArmorTypes.push(new ItemArmorStats(ItemArmorTypesEnum.Boots, 1, 2));
-        basicArmorTypes.push(new ItemArmorStats(ItemArmorTypesEnum.Chest, 3, 5));
-        basicArmorTypes.push(new ItemArmorStats(ItemArmorTypesEnum.Gloves, 1, 3));
-        basicArmorTypes.push(new ItemArmorStats(ItemArmorTypesEnum.Helm, 2, 5));
-        basicArmorTypes.push(new ItemArmorStats(ItemArmorTypesEnum.Pants, 1, 4));
+        basicArmorTypes.push(new ItemArmorStats(level, 0, ItemArmorTypesEnum.Boots, 3, 4));
+        basicArmorTypes.push(new ItemArmorStats(level, 0, ItemArmorTypesEnum.Chest, 7, 10));
+        basicArmorTypes.push(new ItemArmorStats(level, 0, ItemArmorTypesEnum.Gloves, 3, 5));
+        basicArmorTypes.push(new ItemArmorStats(level, 0, ItemArmorTypesEnum.Helm, 5, 7));
+        basicArmorTypes.push(new ItemArmorStats(level, 0, ItemArmorTypesEnum.Pants, 6, 8));
+        
         return basicArmorTypes;
     }
 
-    public GetBasicArmorStats(type?:ItemArmorTypesEnum, armorType?:ArmorTypesEnum, level?:number) {
-        var level1Data = this.GetLevel1Data();
+    public GetBasicArmorStats(type:ItemArmorTypesEnum, armorType:ArmorTypesEnum, level:number) {
+        var levelData = this.GetLevelData(level);
         var selected = type != null ?
-        type == ItemArmorTypesEnum.Boots ? level1Data[0]
-        : type == ItemArmorTypesEnum.Chest ? level1Data[1]
-        : type == ItemArmorTypesEnum.Gloves ? level1Data[2]
-        : type == ItemArmorTypesEnum.Helm ? level1Data[3]
-        : level1Data[4]
-        : level1Data[Helpers.getRandom(0, 4)];
+        type == ItemArmorTypesEnum.Boots ? levelData[0]
+        : type == ItemArmorTypesEnum.Chest ? levelData[1]
+        : type == ItemArmorTypesEnum.Gloves ? levelData[2]
+        : type == ItemArmorTypesEnum.Helm ? levelData[3]
+        : levelData[4]
+        : levelData[Helpers.getRandom(0, 4)];
 
         if (armorType)
             selected.ArmorType = armorType;
@@ -65,16 +67,11 @@ export class ItemArmorStats implements IDescribable, IPowerUp {
     }
 
     public GetDescription():string {
+        this.SetCCTypes();
         var data = this.GetData();
-        var amount = Helpers.getRandom(data.MinArmor, data.MaxArmor);
-        var empoweredStr = new CalculationsHelper().getEmpoweredStr("*", this.PowerLevel);
-
+        var empoweredStr = new CalculationsHelper().getEmpoweredStr("*", data.PowerLevel);
         var reductionStr = "(Reduce CCTypes by " + data.ReducePercentage + "%)";
-        if (amount || 0 == 0) {
-            debugger;
-        }
-
-        var basicDataStr = amount ? amount + " " + Helpers.getPropertyByValue(ArmorTypesEnum, data.ArmorType) + " armor" + empoweredStr + "\n": "";
+        var basicDataStr = data.SelectedAmount ? data.SelectedAmount + " " + Helpers.getPropertyByValue(ArmorTypesEnum, data.ArmorType) + " armor" + empoweredStr + "\n": "";
         return basicDataStr + reductionStr;
     }
 

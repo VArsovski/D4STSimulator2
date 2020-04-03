@@ -222,7 +222,7 @@ body img {
 
 .wrapperLeft {
 	display:table;
-    transform: translate(-5%, -25%);
+    transform: translate(10%, -25%);
 	width:62%;
     max-width:62%;
     margin:auto;
@@ -232,7 +232,7 @@ body img {
 
 .wrapperRight {
     display:table;
-    transform: translate(5%, -21%);
+    transform: translate(80%, -21%);
 	width:25%;
     max-width:25%;
     margin:auto;
@@ -243,7 +243,7 @@ body img {
 .itemGenerator {
     width: 30vw;
     height: 65vh;
-    transform: translate(100%, -100%);
+    transform: translate(100%, -110%);
     border-image: url("_Resources/img/borders/border.png") 25 30 10 20 repeat stretch;
     /* border-image-slice: 20px;
     border-image-width: 20px; */

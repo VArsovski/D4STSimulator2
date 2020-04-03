@@ -5,6 +5,7 @@ import { Helpers } from 'src/_Helpers/helpers';
 import { PowerTypesEnum } from 'src/_Enums/powerTypesEnum';
 import { SkillVM } from '../SkillVM';
 import { ItemAffixOutput } from './Details/ItemAffixOutput';
+import { debug } from 'util';
 
 export class ItemAffix implements IItemAffix {
     Index: number;

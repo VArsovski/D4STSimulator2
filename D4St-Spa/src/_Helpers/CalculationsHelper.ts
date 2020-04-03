@@ -11,7 +11,8 @@ import { DemonicPowerAffixes } from 'src/Models/DemonicPowerAffixes';
 import { AncestralPowerAffixes } from 'src/Models/AncestralPowerAffixes';
 import { SkillDTO } from 'src/Models/DTOs/SkillDTO';
 import { SkillDamageDataDTO } from 'src/Models/DTOs/SkillDamageDataDTO';
-import { ArmorTypesEnum, CCEffectTypesEnum, ItemWeaponTypesEnum, CCEffectGroupsEnum, DamageTypesEnum } from 'src/_Enums/itemAffixEnums';
+import { ArmorTypesEnum, CCEffectTypesEnum, ItemWeaponTypesEnum, CCEffectGroupsEnum, DamageTypesEnum, ResistanceTypesEnum } from 'src/_Enums/itemAffixEnums';
+import { PowerTypesEnum } from 'src/_Enums/powerTypesEnum';
 
 export class CalculationsHelper {
   public static calculateChangeDetails(change: BasicStatsVM, orig: BasicStatsVM) {
@@ -102,7 +103,7 @@ export class CalculationsHelper {
 
   public getEmpoweredValue(value:number, powerLevel:number):number {
     for (let i = 0; i < powerLevel; i++) {
-      var variance = Helpers.getRandom(115, 130)/100;
+      var variance = Helpers.getRandom(115, 125)/100;
       if (i < 15) {
         value += Helpers.getRandom(2, 4);
       }
@@ -110,7 +111,7 @@ export class CalculationsHelper {
         value*= variance;
       }
     }
-    return value;
+    return Math.round(value);
   }
   
   public getEmpoweredStr(sign:string, powerLevel:number):any {
@@ -119,8 +120,98 @@ export class CalculationsHelper {
     return str;
   }
 
-  public getBasicStatEmpowerAmount(level: number, powerLevel: number): number {
-    return Math.round((this.getEmpoweredValue(Helpers.getRandom(2, 6), powerLevel) + 6 + level/4) * 10) /10    
+  public getArmorCalculatedData(level: number, powerLevel: number, min:number, max:number): number[] {
+    var stats:number[] = [];
+    var stat = Helpers.getRandom(5,7);
+    var amount = this.getArmorStatForLevel(Helpers.getRandom(min, max), level);
+    var minCalc = this.getArmorStatForLevel(min, level);
+    var maxCalc = this.getArmorStatForLevel(max, level);
+    stats.push(amount);
+
+    var rollLuck = Math.abs(2 - amount/(minCalc+maxCalc)); //max should be ~2
+    var compensationFactor = Helpers.getRandom(25, 30)/10 - rollLuck; //max compensation = 3x
+    stats.push(Math.round(this.getEmpoweredValue((level/10 + stat)*compensationFactor, powerLevel)));
+    return stats;
+  }
+
+  public getDamageCalculatedData(level: number, powerLevel: number, min:number, max:number): number[] {
+    var stats:number[] = [];
+    var stat = Helpers.getRandom(8,10);
+    var minCalculated = this.getDamageStatForLevel(min, level);
+    var maxCalculated = this.getDamageStatForLevel(max, level);
+    stats.push(Math.min(minCalculated, maxCalculated));
+    stats.push(Math.max(minCalculated, maxCalculated));
+
+    var rollLuck = Math.round(this.getDamageStatForLevel((min + max)/2, level)/((minCalculated + maxCalculated)/2) * 100)/ 100; //calculated-aveerage/average-of-calculated
+    var levelReductionMultiplier = Math.round(((240-level)/240) * 100)/100;
+    // var maxAllowed = Math.round(this.getEmpoweredValue(Helpers.getRandom(13, 15), powerLevel) + level/4);
+
+    stats.push(Math.round(this.getEmpoweredValue((levelReductionMultiplier * stat)/rollLuck, powerLevel)/2));
+    return stats;
+  }
+
+  public getArmorStatForLevel(stat: number, level: number): number {
+    //var varianceEmpower = Math.round((Helpers.getRandom(124, 128)/100) * 100)/100;
+    var lvlCoeff = level/4;
+    var basicStat = stat * (1 + Helpers.getRandom(1, lvlCoeff)/stat);
+    return Math.round(lvlCoeff + basicStat * Math.pow(Math.round((Helpers.getRandom(126, 130)/100) * 100)/100, lvlCoeff));
+  }
+  
+  public getDamageStatForLevel(stat: number, level: number): number {
+    var varianceEmpower = Math.round((Helpers.getRandom(106, 108)/100) * 100)/100;
+    return Math.round(stat * Math.pow(varianceEmpower, level));
+  }
+
+  public getBasicPowerForLevel(stat: number, level: number, type:PowerTypesEnum): number {
+    var powerLevel = Math.round(Math.max(0, (level-stat)/4)* 10)/10;
+    stat = Math.round(this.getEmpoweredValue(stat, powerLevel)* 10)/10;
+    var compensationFactor = level > 24 ? (level - 24)/2 : 0;
+    stat = Math.round((stat + compensationFactor)*(Helpers.getRandom(60,80)/100)*10)/10;
+    if (type == PowerTypesEnum.All) {
+      stat = Math.round((stat * Helpers.getRandom(60,80)/100)*10)/10;
+    }
+    return Math.round(stat);
+  }
+
+  public getResistancesForLevel(stat: number, level: number, type:ResistanceTypesEnum): number {
+    var powerLevel = Math.round(Math.max(0, (level-stat)/4)* 10)/10;
+    stat = Math.round(this.getEmpoweredValue(stat, powerLevel)* 10)/10;
+    var compensationFactor = level > 24 ? (level - 24)/2 : 0;
+    stat = Math.round((stat + compensationFactor)*(Helpers.getRandom(60,80)/100)*10)/10;
+    if (type == ResistanceTypesEnum.All) {
+      stat = Math.round(stat * Helpers.getRandom(45,65)/100);
+    }
+    return Math.round(stat);
+  }
+
+  public getBasicStatForLevel(type:number, stat: number, level: number): number {
+    var delimiter = 6;
+    if (type % delimiter == 1) {
+      // Powers
+      stat += Math.round((level || 1) * Helpers.getRandom(30, 50)/100 * 10)/10;
+    }
+    if (type % delimiter == 2) {
+        // HP/Mana
+        stat += Math.round((level || 1) * Helpers.getRandom(60, 90)/100 * 10)/10;
+    }
+    if (type % delimiter == 3) {
+        // HP/Mana regen
+        var regenFactor = Math.round(level / 8);
+        var bonus = Math.max(1, regenFactor * (1 + Helpers.getRandom(-30, +30)/100));
+        stat+= bonus;
+    }
+    if (type % delimiter == 4) {
+        // Resistance
+        var resusFactor = Math.round((level / 4) * 10)/10;
+        var bonus = resusFactor * (Helpers.getRandom(50, 75)/100);
+        if (isNaN(bonus)) bonus = 0;
+        var selectedRes = Helpers.getRandom(1,6);
+        if (selectedRes == 6)
+            bonus *= Helpers.getRandom(50, 75)/100;
+        stat += bonus;
+    }
+
+    return Math.round(stat);
   }
 
   public GetArmorTypesInfo():string[] {
@@ -153,7 +244,7 @@ export class CalculationsHelper {
         typeNames.push(Helpers.getPropertyByValue(CCEffectTypesEnum, type));
       });
 
-      data.push(Helpers.getPropertyByValue(ArmorTypesEnum , armorType) + " : " + typeNames.join(", "));
+      data.push(Helpers.getPropertyByValue(ArmorTypesEnum , armorType) + " armor reduces : " + typeNames.join(", "));
     });
 
     return data;
@@ -170,5 +261,5 @@ export class CalculationsHelper {
     data.push(Helpers.getPropertyByValue(ItemWeaponTypesEnum, ItemWeaponTypesEnum.Staff)     + " : " + Helpers.getPropertyByValue(DamageTypesEnum, DamageTypesEnum.FreezeOrStun));
 
     return data;
-  }  
+  }
 }

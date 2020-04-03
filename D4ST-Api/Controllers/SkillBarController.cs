@@ -67,7 +67,7 @@ namespace D4ST_Api.Controllers
                     // skillToAdd.LevelUp.AngelicAffix = SpellPowerDataCalculator.RecalculatePowerAffixesForSkill(PowerTypesEnum.AngelicPower, (SkillCastTypeEnum)skill.CastType, skillToAdd.Data.AngelicAffix.PowerUp, skillToAdd.LevelUp.SkillData, md1);
                     // skillToAdd.LevelUp.DemonicAffix = SpellPowerDataCalculator.RecalculatePowerAffixesForSkill(PowerTypesEnum.DemonicPower, (SkillCastTypeEnum)skill.CastType, skillToAdd.Data.DemonicAffix.PowerUp, skillToAdd.LevelUp.SkillData, md2);
                     // skillToAdd.LevelUp.AncestralAffix = SpellPowerDataCalculator.RecalculatePowerAffixesForSkill(PowerTypesEnum.AncestralPower, (SkillCastTypeEnum)skill.CastType, skillToAdd.Data.AncestralAffix.PowerUp, skillToAdd.LevelUp.SkillData, md3);
-                    
+
                     // skillToAdd.Data.Tier = skillTier;
                     // skillToAdd.Data.Level = skillLevel;
                     skills.Skills.Add(skillToAdd);

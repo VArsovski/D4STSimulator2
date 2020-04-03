@@ -44,6 +44,15 @@ export class Helpers {
         return dict;
     }
 
+    public static extractEnum(obj:any):{name:string, value:any}[] {
+        var dict = Object.keys(obj).map(
+            key => ({
+            name: key,
+            value: obj[key],
+        }));
+        return dict;
+    }
+
     public static getPropertyByValue(obj:any, searched:any):string {
         var selected = null;
         Object.keys(obj).forEach(key => {
@@ -55,7 +64,7 @@ export class Helpers {
             }
         });
         return selected;
-    }    
+    }
 
     private static isObject(o: any) {
         return o instanceof Object && o.constructor === Object;

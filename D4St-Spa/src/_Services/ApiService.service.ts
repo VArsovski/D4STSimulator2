@@ -114,7 +114,7 @@ export class ApiServiceService {
       var url = this.baseUrl + "SkillBar/LevelUp";
       this.http.post(url, model, this.headerDict)
       .pipe(map((response:any) => {
-        debugger;
+        // debugger;
       }))
       .subscribe(() => {
         resolve(this.LevelUpSkillVM);

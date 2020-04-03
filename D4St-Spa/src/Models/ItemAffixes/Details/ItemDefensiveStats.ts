@@ -1,10 +1,9 @@
 import { IDescribable } from '../IDescribable';
 import { DefensiveStatCategoryEnum, DefensiveStatsEnum, DamageTypesEnum, AttackTypesEnum, CCEffectTypesEnum, ResistanceTypesEnum } from 'src/_Enums/itemAffixEnums';
 import { Helpers } from 'src/_Helpers/helpers';
-import { IPowerUp } from '../IPowerUp';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 
-export class ItemDefensiveStats implements IDescribable, IPowerUp {
+export class ItemDefenseStats implements IDescribable {
     CCDamageAndDurationReduced?:ItemDefensiveStatsDetail;
     PotionAndGlobeBonus?:ItemDefensiveStatsDetail;
     DamageTypeTakenReduced?:ItemDefensiveStatsDetail;
@@ -12,29 +11,29 @@ export class ItemDefensiveStats implements IDescribable, IPowerUp {
     ThornsDamage?:ItemDefensiveStatsDetail;
     DamageStaggered?:ItemDefensiveStatsDetail;
     LifestealOrShielding?:ItemDefensiveStatsDetail;
-    Socket:number;
+    Socket:ItemDefensiveStatsDetail;
     private PowerLevel: number;
     private selectedStat:string;
 
     GetDescription(): string {
         var data = this.GetData();
-        var socketPowerPercentage = (new CalculationsHelper().getEmpoweredValue(Helpers.getRandom(20, 30) + Helpers.getRandom(-5, 5), this.PowerLevel) + (10 - this.Level/4)).toFixed(0);
-        var descr1 = (this.CCDamageAndDurationReduced) ? data.CCDamageAndDurationReduced.GetDescription() : "";
-        var descr2 = (this.PotionAndGlobeBonus) ? data.PotionAndGlobeBonus.GetDescription() : "";
-        var descr3 = (this.DamageTypeTakenReduced) ? data.DamageTypeTakenReduced.GetDescription() : "";
-        var descr4 = (this.AttackTypeTakenReduced) ? data.AttackTypeTakenReduced.GetDescription() : "";
-        var descr5 = (this.ThornsDamage) ? data.ThornsDamage.GetDescription() : "";
-        var descr6 = (this.DamageStaggered) ? data.DamageStaggered.GetDescription() : "";
-        var descr7 = (this.LifestealOrShielding) ? data.LifestealOrShielding.GetDescription() : "";
-        var descr8 = this.Socket != 0 ? "Defensive Sockets empowered by " + socketPowerPercentage + "%": "";
+        var socketPowerPercentage = (new CalculationsHelper().getEmpoweredValue(Helpers.getRandom(20, 30) + Helpers.getRandom(-5, 5), data.PowerLevel) + (10 - data.Level/4)).toFixed(0);
+        var descr1 = (data.CCDamageAndDurationReduced) ? data.CCDamageAndDurationReduced.GetDescription() : "";
+        var descr2 = (data.PotionAndGlobeBonus) ? data.PotionAndGlobeBonus.GetDescription() : "";
+        var descr3 = (data.DamageTypeTakenReduced) ? data.DamageTypeTakenReduced.GetDescription() : "";
+        var descr4 = (data.AttackTypeTakenReduced) ? data.AttackTypeTakenReduced.GetDescription() : "";
+        var descr5 = (data.ThornsDamage) ? data.ThornsDamage.GetDescription() : "";
+        var descr6 = (data.DamageStaggered) ? data.DamageStaggered.GetDescription() : "";
+        var descr7 = (data.LifestealOrShielding) ? data.LifestealOrShielding.GetDescription() : "";
+        var descr8 = data.Socket.Amount != 0 ? "Defensive Sockets empowered by " + socketPowerPercentage + "%": "";
 
-        var empoweredStr = new CalculationsHelper().getEmpoweredStr("*", this.PowerLevel);
+        var empoweredStr = new CalculationsHelper().getEmpoweredStr("*", data.PowerLevel);
         return descr1 + descr2 + descr3 + descr4 + descr5 + descr6 + descr7 + descr8 + empoweredStr;
     }
 
-    constructor(level:number, amount:number, amountPercentage:number, chance:number, duration:number, type:DefensiveStatsEnum, affectedCategories?:DefensiveStatCategoryEnum[]) {
-        this.Socket = 0;
-        this.PowerLevel = 0;
+    constructor(level:number, powerLevel:number, amount:number, amountPercentage:number, chance:number, duration:number, type:DefensiveStatsEnum, affectedCategories?:DefensiveStatCategoryEnum[]) {
+        this.Socket = new ItemDefensiveStatsDetail(0, 0, 0, 0, DefensiveStatsEnum.Socket, []);
+        this.PowerLevel = powerLevel;
         this.Level = level;
         var appropriateCategories = affectedCategories ? affectedCategories : this.GenerateAppropriateCategoriesByType(type);
 
@@ -80,7 +79,7 @@ export class ItemDefensiveStats implements IDescribable, IPowerUp {
         }
         if (type == DefensiveStatsEnum.Socket)
         {
-            this.Socket++;
+            this.Socket.Amount++;
             this.selectedStat = "Socket";
         }
     }
@@ -114,27 +113,27 @@ export class ItemDefensiveStats implements IDescribable, IPowerUp {
         return categories;
     }
 
-    PowerUp(){
-        this.PowerLevel++;
-    }
-
     GetData() {
-        if (this.selectedStat)
+        var data = new ItemDefenseStats(this.Level, this.PowerLevel, this[this.selectedStat].Amount, this[this.selectedStat].AmountPercentage, this[this.selectedStat].Chance, this[this.selectedStat].Duration, this[this.selectedStat].Type, null); //No biggie, categories will recreate themselves from type
+        data.selectedStat = this.selectedStat;
+
+        if (data.selectedStat)
         {
-            if (this.selectedStat != "Socket") {
-                this[this.selectedStat].Amount = new CalculationsHelper().getEmpoweredValue(this[this.selectedStat].Amount, this.PowerLevel);
-                this[this.selectedStat].AmountPercentage = new CalculationsHelper().getEmpoweredValue(this[this.selectedStat].AmountPercentage, this.PowerLevel);
+            if (data.selectedStat != "Socket") {
+                data[data.selectedStat].Amount = new CalculationsHelper().getEmpoweredValue(data[data.selectedStat].Amount, data.PowerLevel);
+                data[data.selectedStat].AmountPercentage = new CalculationsHelper().getEmpoweredValue(data[data.selectedStat].AmountPercentage, data.PowerLevel);
             }
-            else this.Socket++;
+            else data[data.selectedStat].Amount++;
         }
-        return this;
+        // var data = new ItemDefenseStats(this.Level, this[this.selectedStat].Amount, this[this.selectedStat].AmountPercentage, this[this.selectedStat].Chance, this[this.selectedStat].Duration, this[this.selectedStat].Type, null); //No biggie, categories will recreate themselves from type
+        return data;
     }
     SetLevel(level: number) { this.Level = level; }
     Level: number;    
 }
 
 export class ItemDefensiveStatsDetail implements IDescribable {
-    private Amount?:number;
+    Amount?:number;
     private AmountPercentage?:number;
     private Duration?:number;
     private Chance?: number;
@@ -221,12 +220,6 @@ export class ItemDefensiveStatsDetail implements IDescribable {
 
     constructor(amount:number, amountPercentage:number, chance:number, duration:number, type: DefensiveStatsEnum, defensiveStatCategories: DefensiveStatCategoryEnum[]) {
         this.Socket = 0;
-
-        // !@#$!@#$!@#$!@#$ Doesn't seem to be an issue, think Angular crash screws the Model.. :/ so will manually do the check above
-        if (this.Amount || 0 != 0 && this.AmountPercentage || 0 != 0) {
-            debugger;
-        }
-
         this.Amount = amount;
         this.AmountPercentage = amountPercentage;
         this.Chance = chance;
