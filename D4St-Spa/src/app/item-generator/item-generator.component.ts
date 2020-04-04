@@ -3,7 +3,7 @@ import { IDropdownImageItem } from 'src/Models/_Common/IDropdownImageItem';
 import { DropdownImageItem } from 'src/Models/_Common/DropdownImageItem';
 import { Helpers } from 'src/_Helpers/helpers';
 import { ItemAffixGenerator } from 'src/Models/ItemAffixes/ItemAffixGenerator';
-import { ItemCategoriesEnum, CCEffectTypesEnum, ArmorTypesEnum, DamageTypesEnum, ItemWeaponTypesEnum } from 'src/_Enums/itemAffixEnums';
+import { ItemCategoriesEnum } from 'src/_Enums/itemAffixEnums';
 import { ItemAffix } from 'src/Models/ItemAffixes/ItemAffix';
 import { BasicCharStats } from 'src/Models/BasicCharStats';
 import { SkillVM } from 'src/Models/SkillVM';

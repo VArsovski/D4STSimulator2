@@ -1,5 +1,4 @@
 import { BasicStatsVM } from 'src/Models/BasicStatsVM';
-import { SkillEnums } from 'src/_Enums/skillEnums';
 import { SkillAffixDetail } from 'src/Models/DTOs/SkillAffixDetail';
 import { ISkillAffixDetail } from 'src/Models/DTOs/ISkillAffixDetail';
 import { SkillPowerDetailDTO } from 'src/Models/DTOs/SkillPowerDetailDTO';
@@ -11,10 +10,13 @@ import { DemonicPowerAffixes } from 'src/Models/DemonicPowerAffixes';
 import { AncestralPowerAffixes } from 'src/Models/AncestralPowerAffixes';
 import { SkillDTO } from 'src/Models/DTOs/SkillDTO';
 import { SkillDamageDataDTO } from 'src/Models/DTOs/SkillDamageDataDTO';
-import { ArmorTypesEnum, CCEffectTypesEnum, ItemWeaponTypesEnum, CCEffectGroupsEnum, DamageTypesEnum, ResistanceTypesEnum } from 'src/_Enums/itemAffixEnums';
+import { ArmorTypesEnum, ItemWeaponTypesEnum, DamageTypesEnum, ResistanceTypesEnum } from 'src/_Enums/itemAffixEnums';
 import { PowerTypesEnum } from 'src/_Enums/powerTypesEnum';
+import { TriggerStatsEnum, CCEffectTypesEnum } from 'src/_Enums/triggerAffixEnums';
+import { AffixMetadataEnum } from 'src/_Enums/skillEnums';
 
 export class CalculationsHelper {
+
   public static calculateChangeDetails(change: BasicStatsVM, orig: BasicStatsVM) {
     var changedData = new BasicStatsVM();
     var cd = changedData;
@@ -69,8 +71,8 @@ export class CalculationsHelper {
         if (hasProcChance)
         {
             var startStr = PoD ? "Monster death causes "
-            : md.indexOf(SkillEnums.AffixMetadataEnum.HitProc) != -1 ? "Hit"
-            : md.indexOf(SkillEnums.AffixMetadataEnum.Summon) != -1 ? "Summon"
+            : md.indexOf(AffixMetadataEnum.HitProc) != -1 ? "Hit"
+            : md.indexOf(AffixMetadataEnum.Summon) != -1 ? "Summon"
             : "Cast" ;
 
             description = PoD
@@ -81,13 +83,13 @@ export class CalculationsHelper {
             description = "Gains " + pd.ProcChance + " chance to " + pd.SelectedAffix;
         }
 
-        if (pd.SelectedAffix && md.indexOf(SkillEnums.AffixMetadataEnum.Curse) != -1) {
+        if (pd.SelectedAffix && md.indexOf(AffixMetadataEnum.Curse) != -1) {
             description += " cast a " + pd.SelectedAffix + " on target";
         }
-        if (pd.SelectedAffix && md.indexOf(SkillEnums.AffixMetadataEnum.CC) != -1) {
+        if (pd.SelectedAffix && md.indexOf(AffixMetadataEnum.CC) != -1) {
             description += pd.SelectedAffix + " target ";
         }
-        if (pd.SelectedAffix && md.indexOf(SkillEnums.AffixMetadataEnum.BuffDebuff) != -1) {
+        if (pd.SelectedAffix && md.indexOf(AffixMetadataEnum.BuffDebuff) != -1) {
             description += " gain buff which allows you to " + pd.SelectedAffix;
         }
         if (pd.SelectedAffix && pd.ProcAmount != 0) {
@@ -105,7 +107,7 @@ export class CalculationsHelper {
     for (let i = 0; i < powerLevel; i++) {
       var variance = Helpers.getRandom(115, 125)/100;
       if (i < 15) {
-        value += Helpers.getRandom(2, 4);
+        value += Helpers.getRandom(2, 3);
       }
       else {
         value*= variance;
@@ -184,6 +186,36 @@ export class CalculationsHelper {
     return Math.round(stat);
   }
 
+  getTriggerChanceForLevel(stat: number, level: number, powerLevel: number) {
+    var statCompensation = Math.round((25 - stat)*Helpers.getRandom(30,60)/100);
+    stat += (statCompensation + level/8);
+    stat = this.getEmpoweredValue(stat, powerLevel);
+
+    return Math.round(stat);
+  }
+
+  public getTriggerStatsForLevel(stat: number, level: number, powerLevel:number, type:TriggerStatsEnum): number {
+    if (type == TriggerStatsEnum.Spellcast) {
+      stat = Helpers.getRandom(1,2);
+    }
+    else
+    {
+      var compensationFactor = level > 24 ? (level - 24)/2 : 0;
+      stat = Math.round((stat + compensationFactor)*(Helpers.getRandom(60,80)/100)*10)/10;
+    }
+    stat = Math.round(this.getEmpoweredValue(stat, powerLevel)* 10)/10;
+
+    return stat;
+  }
+
+  getSecondaryTriggerStatForLevel(stat: number, level: number, powerLevel: number) {
+    var statCompensation = Math.round((40 - stat)*Helpers.getRandom(30,60)/100);
+    stat += (statCompensation + level/8);
+    stat = this.getEmpoweredValue(stat, powerLevel);
+
+    return Math.round(stat);
+  }  
+
   public getBasicStatForLevel(type:number, stat: number, level: number): number {
     var delimiter = 6;
     if (type % delimiter == 1) {
@@ -254,11 +286,11 @@ export class CalculationsHelper {
     var data:string[] = [];
     data.push(Helpers.getPropertyByValue(ItemWeaponTypesEnum, ItemWeaponTypesEnum.Axe)       + " : " + Helpers.getPropertyByValue(DamageTypesEnum, DamageTypesEnum.BleedOrArmorReduction));
     data.push(Helpers.getPropertyByValue(ItemWeaponTypesEnum, ItemWeaponTypesEnum.Bow)       + " : " + Helpers.getPropertyByValue(DamageTypesEnum, DamageTypesEnum.PoisonOrBurn));
-    data.push(Helpers.getPropertyByValue(ItemWeaponTypesEnum, ItemWeaponTypesEnum.Hammer)    + " : " + Helpers.getPropertyByValue(DamageTypesEnum, DamageTypesEnum.KnockbackOrRoot));
+    data.push(Helpers.getPropertyByValue(ItemWeaponTypesEnum, ItemWeaponTypesEnum.Hammer)    + " : " + Helpers.getPropertyByValue(DamageTypesEnum, DamageTypesEnum.KnockbackOrStun));
     data.push(Helpers.getPropertyByValue(ItemWeaponTypesEnum, ItemWeaponTypesEnum.Sword)     + " : " + Helpers.getPropertyByValue(DamageTypesEnum, DamageTypesEnum.CleaveOrAoE));
     data.push(Helpers.getPropertyByValue(ItemWeaponTypesEnum, ItemWeaponTypesEnum.Javelin)   + " : " + Helpers.getPropertyByValue(DamageTypesEnum, DamageTypesEnum.ChainOrPierceAttack));
     data.push(Helpers.getPropertyByValue(ItemWeaponTypesEnum, ItemWeaponTypesEnum.Wand)      + " : " + Helpers.getPropertyByValue(DamageTypesEnum, DamageTypesEnum.ProjectileOrSummon));
-    data.push(Helpers.getPropertyByValue(ItemWeaponTypesEnum, ItemWeaponTypesEnum.Staff)     + " : " + Helpers.getPropertyByValue(DamageTypesEnum, DamageTypesEnum.FreezeOrStun));
+    data.push(Helpers.getPropertyByValue(ItemWeaponTypesEnum, ItemWeaponTypesEnum.Staff)     + " : " + Helpers.getPropertyByValue(DamageTypesEnum, DamageTypesEnum.FreezeOrRoot));
 
     return data;
   }

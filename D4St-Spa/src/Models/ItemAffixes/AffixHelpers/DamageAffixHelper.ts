@@ -1,4 +1,4 @@
-import { ItemWeaponTypesEnum, ResistanceTypesEnum } from 'src/_Enums/itemAffixEnums';
+import { ItemWeaponTypesEnum, ResistanceTypesEnum, DamageTypesEnum } from 'src/_Enums/itemAffixEnums';
 import { ItemAffixOutput } from '../Details/ItemAffixOutput';
 import { ItemDamageStats } from '../Details/ItemDamageStats';
 
@@ -14,16 +14,19 @@ export class DamageAffixHelper {
         : itemType % delimiter == 6 ? ItemWeaponTypesEnum.Wand
         : ItemWeaponTypesEnum.Staff;
 
-        delimiter = 5;
-        var selectedResDamageType = damageType % delimiter == 1 ? ResistanceTypesEnum.Physical
-        : damageType % delimiter == 2 ? ResistanceTypesEnum.Fire
-        : damageType % delimiter == 3 ? ResistanceTypesEnum.Cold
-        : damageType % delimiter == 4 ? ResistanceTypesEnum.Lightning
-        : ResistanceTypesEnum.Poison;
+        delimiter = 8;
+        var selectedDamageType = damageType % delimiter == 1 ? DamageTypesEnum.BleedOrArmorReduction
+        : damageType % delimiter == 2 ? DamageTypesEnum.PoisonOrBurn
+        : damageType % delimiter == 3 ? DamageTypesEnum.KnockbackOrStun
+        : damageType % delimiter == 4 ? DamageTypesEnum.CleaveOrAoE
+        : damageType % delimiter == 5 ? DamageTypesEnum.ChainOrPierceAttack
+        : damageType % delimiter == 6 ? DamageTypesEnum.ProjectileOrSummon
+        : damageType % delimiter == 7 ? DamageTypesEnum.FreezeOrRoot
+        : DamageTypesEnum.Physical;
 
-        var damageAffix = new ItemDamageStats(level, powerLevel, selected, selectedResDamageType);
+        var damageAffix = new ItemDamageStats(level, powerLevel, selected, selectedDamageType);
         if (!omitPrimaryDamage)
-            damageAffix = damageAffix.GetBasicWeaponStats(selected, selectedResDamageType);
+            damageAffix = damageAffix.GetBasicWeaponStats(selected, selectedDamageType);
 
         return new ItemAffixOutput(null, null, damageAffix);
     }

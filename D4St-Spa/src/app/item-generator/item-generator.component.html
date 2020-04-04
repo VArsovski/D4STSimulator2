@@ -3,14 +3,14 @@
         <h2 class="display-4 customHeaderFontLeftTop">Try the Item Generator</h2>
     </div>
 </div>
-<label class="customHeaderFont h3">Weapon type bonuses</label>
+<label class="customHeaderFont h3">Bonus damage per weapon type</label>
 <div class="row" *ngFor="let info of this.GetDamageTypesInfo()">
     <div class="col">
         <div><label class="customFontGreen h3">{{info}}</label></div>
     </div>
 </div>
 
-<label class="customHeaderFont h3">Armor reduction bonuses</label>
+<label class="customHeaderFont h3">CC reduction per armor type</label>
 <div class="row" *ngFor="let info of this.GetArmorTypesInfo()">
     <div class="col">
         <div><label class="customFontGreen h3">{{info}}</label></div>
@@ -42,9 +42,9 @@
                 <div class="col h3 customFontRed" *ngIf="(affix.Condition != null && affix.Condition?.Condition > this.BasicData.AngelicPower && affix.Condition.ConditionPowerType == 1)">{{affix.GetAffixDescription(this.skills)}}</div>
                 <div class="col h3 customFontRed" *ngIf="(affix.Condition != null && affix.Condition?.Condition > this.BasicData.DemonicPower && affix.Condition.ConditionPowerType == 2)">{{affix.GetAffixDescription(this.skills)}}</div>
                 <div class="col h3 customFontRed" *ngIf="(affix.Condition != null && affix.Condition?.Condition > this.BasicData.AncestralPower && affix.Condition.ConditionPowerType == 3)">{{affix.GetAffixDescription(this.skills)}}</div>
-                <div class="col h3 customFontGreen" *ngIf="(affix.Condition != null && affix.Condition?.Condition < this.BasicData.AngelicPower && affix.Condition.ConditionPowerType == 1)">{{affix.GetAffixDescription(this.skills)}}</div>
-                <div class="col h3 customFontGreen" *ngIf="(affix.Condition != null && affix.Condition?.Condition < this.BasicData.DemonicPower && affix.Condition.ConditionPowerType == 2)">{{affix.GetAffixDescription(this.skills)}}</div>
-                <div class="col h3 customFontGreen" *ngIf="(affix.Condition != null && affix.Condition?.Condition < this.BasicData.AncestralPower && affix.Condition.ConditionPowerType == 3)">{{affix.GetAffixDescription(this.skills)}}</div>
+                <div class="col h3 customFontGreen" *ngIf="(affix.Condition != null && affix.Condition?.Condition <= this.BasicData.AngelicPower && affix.Condition.ConditionPowerType == 1)">{{affix.GetAffixDescription(this.skills)}}</div>
+                <div class="col h3 customFontGreen" *ngIf="(affix.Condition != null && affix.Condition?.Condition <= this.BasicData.DemonicPower && affix.Condition.ConditionPowerType == 2)">{{affix.GetAffixDescription(this.skills)}}</div>
+                <div class="col h3 customFontGreen" *ngIf="(affix.Condition != null && affix.Condition?.Condition <= this.BasicData.AncestralPower && affix.Condition.ConditionPowerType == 3)">{{affix.GetAffixDescription(this.skills)}}</div>
                 <div class="col h3 customFontGreen" *ngIf="affix.Condition == null">{{affix.GetAffixDescription()}}</div>
             </div>
         </div>

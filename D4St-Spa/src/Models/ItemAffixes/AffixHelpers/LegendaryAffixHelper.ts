@@ -18,6 +18,6 @@ export class LegendaryAffixHelper {
         : index % delimiter == 11 ? LegendaryStatsEnum.AlternateAttackTypeTaken
         : LegendaryStatsEnum.AlternateLifestealOrShielding;
     
-        return new ItemAffixOutput(null, null, null, null, null, null, null, selected);
+        return new ItemAffixOutput(null, null, null, null, null, null, null, null, selected);
     }
 }

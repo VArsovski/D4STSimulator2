@@ -56,9 +56,9 @@ export enum ItemAffixTypeEnum {
     TriggerEffect = 4,
     Offensive= 5,
     Defensive= 6,
-    Legendary=7,
-    PowerUpSkill= 8,
-    AdditionalTriggers=9
+    PowerUpSkill= 7,
+    SecondaryTriggers=8,
+    Legendary=9,
 }
 
 export enum AttackTypesEnum {
@@ -72,33 +72,12 @@ export enum AttackTypesEnum {
 export enum DamageTypesEnum {
     BleedOrArmorReduction = 1,
     PoisonOrBurn = 2,
-    KnockbackOrRoot = 3,
+    KnockbackOrStun = 3,
     CleaveOrAoE = 4,
     ChainOrPierceAttack = 5,
     ProjectileOrSummon = 6,
-    FreezeOrStun = 7,
+    FreezeOrRoot = 7,
     Physical= 8
-}
-
-export enum CCEffectGroupsEnum {
-    FreezeOrStun = 1,
-    BleedOrArmorReduction = 2,
-    PoisonOrBurn = 3,
-    KnockbackOrRoot = 4,
-    CurseOrBlind = 5
-}
-
-export enum CCEffectTypesEnum {
-    ReduceArmor = 1,    //Axe
-    Bleed = 2,          //Axe
-    Burn = 3,           //Bow
-    Wither = 4,         //Bow
-    Root = 5,           //Hammer
-    Knockback = 6,      //Hammer
-    Blind = 7,          //Javelin
-    Curse = 8,          //Wand
-    Stun = 9,           //Staff
-    Freeze = 10         //Staff
 }
 
 export enum ArmorTypesEnum {
@@ -150,31 +129,6 @@ export enum BasicAffixEnum {
     Socket = 6
 }
 
-export enum TriggerStatsEnum {
-    ProcCleaveOrAoEEffect = 1,
-    ProcPoisonOrBurnEffect = 2,
-    ProcArmorReductionAndBleed = 3,
-    ProcFreezeStunAttack = 4,
-    ProcRandomSpellAttack = 5,
-    ProcChainOrPierceAttack = 6,
-}
-
-export enum AdditionalTriggerStatsEnum {
-    CheatDeath = 1,
-    AllowSkillForUsage = 2,
-    AllowTrapsCastRenewable = 3,
-    AllowCurseCastRenewable = 4,
-    EmpowerAllRegen = 5,
-    TriggerEffectsRepeatable = 6,
-}
-
-// Axe= 1,
-// Bow= 2,
-// Hammer= 3,
-// Sword= 4,
-// Wand= 5,
-// Javelin= 6,
-// CastAndProjectileRange= 7,
 export enum OfensiveStatsEnum {
     ArmorReductionAndBleed= 1,
     PoisonAndBurn= 2,

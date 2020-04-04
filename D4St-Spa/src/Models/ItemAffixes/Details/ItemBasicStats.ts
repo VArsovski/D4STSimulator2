@@ -84,20 +84,22 @@ export class ItemBasicStats implements IDescribable {
     }
 
     GetDescription(): string {
-        var descr1 = ""; if (this.PowerStats) descr1 = this.PowerStats.GetDescription();
-        var descr2 = ""; if (this.StatNumbers) descr2 = this.StatNumbers.GetDescription();
-        var descr3 = ""; if (this.StatRegen) descr3 = this.StatRegen.GetDescription();
-        var descr4 = ""; if (this.StatPercentage) descr4 = this.StatPercentage.GetDescription();
-        var descr5 = ""; if (this.StatPercentageRegen) descr5 = this.StatPercentageRegen.GetDescription();
-        var descr6 = ""; if (this.Resistance) descr6 = this.Resistance.GetDescription();
+        var data = this.GetData();
+        var descr1 = ""; if (this.PowerStats) descr1 = data.PowerStats.GetDescription();
+        var descr2 = ""; if (this.StatNumbers) descr2 = data.StatNumbers.GetDescription();
+        var descr3 = ""; if (this.StatRegen) descr3 = data.StatRegen.GetDescription();
+        var descr4 = ""; if (this.StatPercentage) descr4 = data.StatPercentage.GetDescription();
+        var descr5 = ""; if (this.StatPercentageRegen) descr5 = data.StatPercentageRegen.GetDescription();
+        var descr6 = ""; if (this.Resistance) descr6 = data.Resistance.GetDescription();
         var descr7 = "";
         
-        if (this.SkillEmpower)
-            descr7 += this.SkillEmpower.level + " to " + this.SkillEmpower.name + " (" + this.SkillEmpower.className + " only)";
+        if (this.SkillEmpower) {
+            descr7 += (data.SkillEmpower.level || 1) + " to " + data.SkillEmpower.name + " (" + data.SkillEmpower.className + " only)";
+        }
 
         var descr8 = this.Socket != 0 ? "Socket/s " + this.Socket: "";
 
-        var descr = descr1 + descr2 + descr3 + descr4 + descr5 + descr6 + descr7 + descr8;
+        var descr = "+ " + descr1 + descr2 + descr3 + descr4 + descr5 + descr6 + descr7 + descr8;
 
         var empoweredStr = new CalculationsHelper().getEmpoweredStr("*", this.PowerLevel);
         descr+= empoweredStr;
@@ -109,6 +111,22 @@ export class ItemBasicStats implements IDescribable {
     }
 
     GetData() {
+
+        if (this.PowerStats)
+            this.selectedStat = "PowerStats";
+        if (this.StatNumbers)
+            this.selectedStat = "StatNumbers";
+        if (this.StatRegen)
+            this.selectedStat = "StatRegen";
+        if (this.StatPercentage)
+            this.selectedStat = "StatPercentage";
+        if (this.StatPercentageRegen)
+            this.selectedStat = "StatPercentageRegen";
+        if (this.SkillEmpower)
+            this.selectedStat = "SkillEmpower";
+        if (this.Resistance)
+            this.selectedStat = "Resistance";
+
         if (this.selectedStat)
         {
             var data = new ItemBasicStats(this.Level, this.PowerLevel, this.PowerStats
@@ -120,22 +138,23 @@ export class ItemBasicStats implements IDescribable {
             dict.forEach(d => {if (d.name == data.selectedStat) selectedTypeNum.push(d.value);});
             // var amount = new CalculationsHelper().getBasicStatForLevel(selectedTypeNum[0], data[data.selectedStat].Amount, data.Level);
 
-            if (data.selectedStat == "PowerStats" || data.selectedStat == "Resistance")
-            {
-                debugger;
-                data[data.selectedStat].Amount = new CalculationsHelper().getEmpoweredValue(new CalculationsHelper().getArmorStatForLevel(data[data.selectedStat].Amount, data.Level), data.PowerLevel);
-            }
+            // if (data.selectedStat == "PowerStats" || data.selectedStat == "Resistance")
+            //     data[data.selectedStat].Amount = new CalculationsHelper().getEmpoweredValue(new CalculationsHelper().getArmorStatForLevel(data[data.selectedStat].Amount, data.Level), data.PowerLevel);
             if (["StatNumbers", "StatRegen", "StatPercentage", "StatPercentageRegen" ].indexOf(data.selectedStat) != -1)
             {
                 // Should contain only one, DW :P
                 data[data.selectedStat].Amount = new CalculationsHelper().getEmpoweredValue(new CalculationsHelper().getArmorStatForLevel(data[data.selectedStat].Amount, data.Level), data.PowerLevel);
                 data[data.selectedStat].AmountPercentage = new CalculationsHelper().getEmpoweredValue(new CalculationsHelper().getArmorStatForLevel(data[data.selectedStat].AmountPercentage, data.Level), data.PowerLevel);
             }
-            if (data.selectedStat == "SkillEmpower")
+            if (data.selectedStat == "SkillEmpower") {
+                if (!data.SkillEmpower.level)
+                    data.SkillEmpower.level = 1;
                 data.SkillEmpower.level += data.PowerLevel;
+            }
             if (data.selectedStat == "Socket")
                 data.Socket++;
         }
+        
         return data;
     }
 }

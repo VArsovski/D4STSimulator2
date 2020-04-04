@@ -1,7 +1,8 @@
 import { IDescribable } from '../IDescribable';
-import { DefensiveStatCategoryEnum, DefensiveStatsEnum, DamageTypesEnum, AttackTypesEnum, CCEffectTypesEnum, ResistanceTypesEnum } from 'src/_Enums/itemAffixEnums';
+import { DefensiveStatCategoryEnum, DefensiveStatsEnum, DamageTypesEnum, AttackTypesEnum, ResistanceTypesEnum } from 'src/_Enums/itemAffixEnums';
 import { Helpers } from 'src/_Helpers/helpers';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
+import { CCEffectTypesEnum } from 'src/_Enums/triggerAffixEnums';
 
 export class ItemDefenseStats implements IDescribable {
     CCDamageAndDurationReduced?:ItemDefensiveStatsDetail;

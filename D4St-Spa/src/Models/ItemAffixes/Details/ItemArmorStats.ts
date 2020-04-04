@@ -1,7 +1,8 @@
 import { IDescribable } from '../IDescribable';
-import { ItemArmorTypesEnum, ArmorTypesEnum, CCEffectTypesEnum } from 'src/_Enums/itemAffixEnums';
+import { ItemArmorTypesEnum, ArmorTypesEnum } from 'src/_Enums/itemAffixEnums';
 import { Helpers } from 'src/_Helpers/helpers';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
+import { CCEffectTypesEnum } from 'src/_Enums/triggerAffixEnums';
 
 export class ItemArmorStats implements IDescribable {
     private ItemType: ItemArmorTypesEnum;

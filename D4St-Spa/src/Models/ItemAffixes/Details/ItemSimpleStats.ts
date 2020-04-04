@@ -25,7 +25,7 @@ export class ItemBasicPowersDetail implements IDescribable {
     public GetDescription():string {
         var data = this.GetData();
         var empoweredStr = new CalculationsHelper().getEmpoweredStr("*", this.PowerLevel);
-        return data.Amount + " " + Helpers.getPropertyByValue(PowerTypesEnum, this.Type) + " power" + empoweredStr;
+        return this.Amount + " " + Helpers.getPropertyByValue(PowerTypesEnum, this.Type) + " power" + empoweredStr;
     }
 }
 
@@ -44,7 +44,7 @@ export class ItemBasicResistanceStatsDetail implements IDescribable {
 
     public GetDescription():string {
         var data = this.GetData();
-        return data.Amount + " " + Helpers.getPropertyByValue(ResistanceTypesEnum, data.Type) + "% resistance"
+        return this.Amount + " " + Helpers.getPropertyByValue(ResistanceTypesEnum, this.Type) + "% resistance"
     }
     public GetData()
     {

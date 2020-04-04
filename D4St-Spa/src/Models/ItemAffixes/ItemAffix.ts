@@ -1,11 +1,10 @@
-import { ItemCategoriesEnum, ItemAffixTypeEnum, AffixCategoryEnum, AttackTypesEnum, CastProcTypesEnum, DamageTypesEnum, ItemArmorTypesEnum, BasicAffixEnum, OfensiveStatsEnum, DefensiveStatsEnum, LegendaryStatsEnum, TriggerStatsEnum, ArmorTypesEnum  } from "../../_Enums/itemAffixEnums";
+import { ItemCategoriesEnum, ItemAffixTypeEnum, AffixCategoryEnum, AttackTypesEnum, CastProcTypesEnum, DamageTypesEnum, ItemArmorTypesEnum, BasicAffixEnum, OfensiveStatsEnum, DefensiveStatsEnum, LegendaryStatsEnum  } from "../../_Enums/itemAffixEnums";
 import { IItemAffix } from './IItemAffix';
 import { IItemAffixCondition } from './IItemAffixCondition';
 import { Helpers } from 'src/_Helpers/helpers';
 import { PowerTypesEnum } from 'src/_Enums/powerTypesEnum';
 import { SkillVM } from '../SkillVM';
 import { ItemAffixOutput } from './Details/ItemAffixOutput';
-import { debug } from 'util';
 
 export class ItemAffix implements IItemAffix {
     Index: number;
@@ -62,39 +61,46 @@ export class ItemAffix implements IItemAffix {
         }
         if (this.AffixType == ItemAffixTypeEnum.BasicStat) {
             if (this.Contents.basicStat)
-                statDescr += this.Contents.basicStat.GetDescription();
+                statDescr += this.Contents.basicStat.GetDescription() + " (basic)";
         }
 
         if (this.AffixType == ItemAffixTypeEnum.Offensive) {
             if (this.Contents.ofensiveStat)
-                statDescr += this.Contents.ofensiveStat.GetDescription();
+                statDescr += this.Contents.ofensiveStat.GetDescription() + " (ofensive)";
         }
         if (this.AffixType == ItemAffixTypeEnum.Defensive) {
             if (this.Contents.defensiveStat)
-                statDescr += this.Contents.defensiveStat.GetDescription();
+                statDescr += this.Contents.defensiveStat.GetDescription() + " (defensive)";
         }
         if (this.AffixType == ItemAffixTypeEnum.TriggerEffect) {
             if (this.Contents.triggerStat)
-                statDescr += Helpers.getPropertyByValue(TriggerStatsEnum, this.Contents.triggerStat) + " trigger";
+                statDescr += this.Contents.triggerStat.GetDescription() + " (trigger)";// Helpers.getPropertyByValue(TriggerStatsEnum, this.Contents.triggerStat) + " trigger";
+        }        
+        if (this.AffixType == ItemAffixTypeEnum.SecondaryTriggers) {
+            if (this.Contents.secondaryTriggerStat)
+                statDescr += this.Contents.secondaryTriggerStat.GetDescription() + " (secondary)";
         }        
         if (this.AffixType == ItemAffixTypeEnum.Legendary) {
             if (this.Contents.legendaryStat)
-                statDescr += Helpers.getPropertyByValue(LegendaryStatsEnum, this.Contents.legendaryStat) + " legendary";
+                statDescr += Helpers.getPropertyByValue(LegendaryStatsEnum, this.Contents.legendaryStat) + " (legendary)";
         }
         if (this.AffixType == ItemAffixTypeEnum.PowerUpSkill) {
             if (this.Contents.basicStat)
                 statDescr += this.Contents.basicStat.GetDescription();
         }
-        if (this.AffixType == ItemAffixTypeEnum.AdditionalTriggers) {
-            if (this.Contents.legendaryStat)
-                statDescr += this.Contents.basicStat.GetDescription() + " additional";
+
+        if (!statDescr)
+        {
+            // ExtraDamageEffect, IncreaseDamage, IncreaseTriggerStat, ConditionalProcBasicAffix, ConditionalProcCastAffix, ConditionalSkillTriggerAffix
+            statDescr += " [" + Helpers.getPropertyByValue(AffixCategoryEnum, this.AffixCategory);
+            statDescr += ", " + Helpers.getPropertyByValue(ItemAffixTypeEnum, this.AffixType) + "]";
         }
 
         if (this.Condition) {
             conditionStr = "(requires " + this.Condition.Condition + " " + Helpers.getPropertyByValue(PowerTypesEnum, this.Condition.ConditionPowerType) + ")";
         }
 
-        if (statDescr.startsWith("NaN") || statDescr.startsWith("0") || statDescr.includes("null") || statDescr.replace("*", "").length == 0)
+        if (statDescr.includes("NaN ") || statDescr.startsWith("0") || statDescr.includes("null") || statDescr.replace("*", "").length == 0)
             console.log(this);
 
         return statDescr + " " + conditionStr;
