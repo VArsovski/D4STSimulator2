@@ -58,6 +58,7 @@ export class ItemTriggerStats implements IDescribable {
     }
 
     public GetDescription():string {
+        
         var data = this.GetData();
         var selectedAffixStr = [TriggerAffixTypesEnum.Cleave, TriggerAffixTypesEnum.ChainOrPierce].indexOf(data.AffixType) == -1
             ? Helpers.getPropertyByValue(CCEffectTypesEnum, data.CCType)
@@ -71,6 +72,7 @@ export class ItemTriggerStats implements IDescribable {
         var procStrDescr = selectedAffixStr || Helpers.getPropertyByValue(TriggerAffixTypesEnum, data.AffixType) + " for " + data.Amount;
 
         if (!procStrDescr){
+            console.clear();
             console.log("Error for:");
             console.log(data);
         }
@@ -80,15 +82,25 @@ export class ItemTriggerStats implements IDescribable {
 
     public GetTriggerTypeInfo():string {
         var data = this.GetData();
+        // if (data.AffixType == TriggerAffixTypesEnum.PhysicalAoE)
+        if (!data.CCType)
+            data.CCType = CCEffectTypesEnum.Knockback;
 
-        if (data.AffixType == TriggerAffixTypesEnum.CastSpell)
-            data.AffixType = Helpers.getRandom(1, 6);
-
-        console.log(data);
+        // if (data.Type == TriggerStatsEnum.SpellAttack || data.AffixType == TriggerAffixTypesEnum.CastSpell) {
+        //     data.Type = Helpers.getRandom(1, 4);
+        //     data.AffixType = Helpers.getRandom(1, 6);
+        // }
 
         var selectedAffixStr = [TriggerAffixTypesEnum.Cleave, TriggerAffixTypesEnum.ChainOrPierce].indexOf(data.AffixType) == -1
             ? Helpers.getPropertyByValue(CCEffectTypesEnum, data.CCType)
             : Helpers.getPropertyByValue(TriggerAffixTypesEnum, data.AffixType) || Helpers.getPropertyByValue(TriggerAffixTypesEnum, data.AffixType);
+
+        if (!selectedAffixStr || selectedAffixStr.includes("null")) {
+            console.log("Error:")
+            console.log(data.Type);
+            console.log(data.AffixType);    
+            console.log(data)
+        }
 
         return selectedAffixStr;
     }

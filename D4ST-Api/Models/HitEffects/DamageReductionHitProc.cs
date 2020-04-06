@@ -24,7 +24,7 @@ namespace D4ST_Api.Models.HitEffects
             var bonusDuration = (classInfo.DemonicPower * 6.5) / 100;
 
             var procAmount = DecimalHelper.RoundToDecimals(Convert.ToDouble(baseProcRate + bonusProcRate), 2);
-            var procPerc = Math.Min(0.75m, DecimalHelper.RoundToDecimals(Convert.ToDouble((baseProcPerc + bonusProcPerc)), 2));
+            var procPerc = Math.Min(0.45m, DecimalHelper.RoundToDecimals(Convert.ToDouble((baseProcPerc + bonusProcPerc)), 2));
 
             var dpsRedProc = new DamageReductionHitProc { ProcPercentage = procPerc * 100, ProcAmount = procAmount, Duration = DecimalHelper.RoundToDecimals(basicDuration * (1 + bonusDuration), 2) };
             return dpsRedProc;

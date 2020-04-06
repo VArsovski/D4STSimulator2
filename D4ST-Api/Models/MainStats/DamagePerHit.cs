@@ -20,8 +20,8 @@ namespace D4ST_Api.Models.MainStats
             this.MaxValue = data.To;
 
             // TODO: Return IsMax when Maxxed !!!
-            this.BonusMinValue = Math.Min(40, Convert.ToInt32(classInfo.AncestralPower/2));
-            this.BonusMaxValue = Math.Min(80, classInfo.AncestralPower);
+            this.BonusMinValue = Math.Min(60, Convert.ToInt32(classInfo.AncestralPower/2));
+            this.BonusMaxValue = Math.Min(120, classInfo.AncestralPower);
         }
 
         public int CalculateMinBase(IClassDefinition classInfo)

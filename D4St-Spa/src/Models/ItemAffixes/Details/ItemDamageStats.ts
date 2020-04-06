@@ -88,10 +88,9 @@ export class ItemDamageStats implements IDescribable {
         var empowerTypeStr = this.GetAppropriateEmpoweredType(data);
 
         var primaryStr = data.MinDamage && data.MaxDamage
-            ? damage1 + " - " + damage2 + " " + Helpers.getPropertyByValue(ResistanceTypesEnum, data.ElementType) + " damage" + empoweredStr + ", \n\n"
-            : "";
+            ? damage1 + " - " + damage2 + " " + Helpers.getPropertyByValue(ResistanceTypesEnum, data.ElementType) + " damage" + empoweredStr : "";
 
-        return primaryStr + empowerTypeStr;
+        return primaryStr + (empowerTypeStr ? ", " + empowerTypeStr : "");
     }
 
     GetAppropriateDamageCategories(type: ItemWeaponTypesEnum):DamageTypesEnum[] {
@@ -193,11 +192,14 @@ export class ItemDamageStats implements IDescribable {
     }    
     
     GetAppropriateEmpoweredType(data:ItemDamageStats) {
+        if (!data.EmpowerPercentage)
+            return "";
+
         var appropriateDamageTypes = this.GetAppropriateDamageCategories(data.WeaponType);
         // If appropriate damage type rolled, buff
         if (appropriateDamageTypes.indexOf(data.MainDamageType) != -1) {
             var powerFactor = data.WeaponType == ItemWeaponTypesEnum.Wand || data.WeaponType == ItemWeaponTypesEnum.Staff ? 3 : 1;
-            data.EmpowerPercentage = new CalculationsHelper().getEmpoweredValue(data.EmpowerPercentage, powerFactor);
+            data.EmpowerPercentage = new CalculationsHelper().getWeaponEmpoweredValue(data.EmpowerPercentage, powerFactor);
         }
 
         var avgDamage = data.MinDamage + data.MaxDamage;
@@ -206,6 +208,10 @@ export class ItemDamageStats implements IDescribable {
         compensationFactor = Math.round(compensationFactor * (18-data.Level/4) * 10)/10;
         data.EmpowerPercentage = Math.round((data.EmpowerPercentage + 2*compensationFactor) * 10)/10;
 
-        return Helpers.getPropertyByValue(DamageTypesEnum, data.MainDamageType) + " attacks and abilities deal " + data.EmpowerPercentage + "% more damage";
+        return "Damage of " + Helpers.getPropertyByValue(DamageTypesEnum, data.MainDamageType) + " attacks/abilities increased by " + data.EmpowerPercentage + "%";
+    }
+
+    SetEmpowerPercentage(epc?:number) {
+        this.EmpowerPercentage = epc;
     }
 }

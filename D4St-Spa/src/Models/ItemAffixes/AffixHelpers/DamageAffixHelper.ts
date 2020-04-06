@@ -3,7 +3,7 @@ import { ItemAffixOutput } from '../Details/ItemAffixOutput';
 import { ItemDamageStats } from '../Details/ItemDamageStats';
 
 export class DamageAffixHelper {
-    public GetByIndex(level: number, powerLevel:number, itemType:ItemWeaponTypesEnum, damageType:number, omitPrimaryDamage:boolean):ItemAffixOutput {
+    public GetByIndex(level: number, powerLevel:number, itemType:ItemWeaponTypesEnum, damageType:number, omitPrimaryDamage:boolean, omitDamageEffectEmpower:boolean):ItemAffixOutput {
         var delimiter = 7;
 
         var selected = itemType % delimiter == 1 ? ItemWeaponTypesEnum.Axe
@@ -27,6 +27,8 @@ export class DamageAffixHelper {
         var damageAffix = new ItemDamageStats(level, powerLevel, selected, selectedDamageType);
         if (!omitPrimaryDamage)
             damageAffix = damageAffix.GetBasicWeaponStats(selected, selectedDamageType);
+        if (omitDamageEffectEmpower)
+            damageAffix.GetAppropriateEmpoweredType(new ItemDamageStats(0, 0, 0, 0, 0, 0, 0, null));
 
         return new ItemAffixOutput(null, null, damageAffix);
     }

@@ -115,6 +115,19 @@ export class CalculationsHelper {
     }
     return Math.round(value);
   }
+
+  public getWeaponEmpoweredValue(value:number, powerLevel:number):number {
+    for (let i = 0; i < powerLevel; i++) {
+      var variance = Helpers.getRandom(115, 125)/100;
+      if (i < 28) {
+        value += Helpers.getRandom(1, 3);
+      }
+      else {
+        value*= variance;
+      }
+    }
+    return Math.round(value);
+  }  
   
   public getEmpoweredStr(sign:string, powerLevel:number):any {
     var str = "";

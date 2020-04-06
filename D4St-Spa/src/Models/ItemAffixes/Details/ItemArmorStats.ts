@@ -8,20 +8,20 @@ export class ItemArmorStats implements IDescribable {
     private ItemType: ItemArmorTypesEnum;
     private MinArmor: number;
     private MaxArmor: number;
+    Armor:number;
     private ArmorType: ArmorTypesEnum;
     private PowerLevel: any;
     private selectedCCTypes: CCEffectTypesEnum[];
     private ReducePercentage: number;
     private Level: number;
-    private SelectedAmount:number;
 
-    constructor(level:number, powerLevel:number, itemType: ItemArmorTypesEnum, minArmor?: number, maxArmor?: number, selectedAmount?:number, armorType?: ArmorTypesEnum, reducePercentage?:number) {
+    constructor(level:number, powerLevel:number, itemType: ItemArmorTypesEnum, minArmor?: number, maxArmor?: number, armor?:number, armorType?: ArmorTypesEnum, reducePercentage?:number) {
         this.Level = level || 1;
         this.PowerLevel = powerLevel;
         this.ItemType = itemType;
         this.MinArmor = minArmor || 0;
         this.MaxArmor = maxArmor || 0;
-        this.SelectedAmount = selectedAmount;
+        this.Armor = armor;
         this.ArmorType = armorType || Helpers.getRandom(1, 3);
         this.ReducePercentage = reducePercentage || 0;
 
@@ -72,7 +72,7 @@ export class ItemArmorStats implements IDescribable {
         var data = this.GetData();
         var empoweredStr = new CalculationsHelper().getEmpoweredStr("*", data.PowerLevel);
         var reductionStr = "(Reduce CCTypes by " + data.ReducePercentage + "%)";
-        var basicDataStr = data.SelectedAmount ? data.SelectedAmount + " " + Helpers.getPropertyByValue(ArmorTypesEnum, data.ArmorType) + " armor" + empoweredStr + "\n": "";
+        var basicDataStr = data.Armor ? data.Armor + " " + Helpers.getPropertyByValue(ArmorTypesEnum, data.ArmorType) + " armor" + empoweredStr + "\n": "";
         return basicDataStr + reductionStr;
     }
 

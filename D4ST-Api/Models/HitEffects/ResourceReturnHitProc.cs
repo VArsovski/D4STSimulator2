@@ -24,7 +24,7 @@ namespace D4ST_Api.Models.HitEffects
             var average = DecimalHelper.RoundToDecimals((mainDps.CalculateMinBase(classInfo) + mainDps.CalculateMaxBase(classInfo))/2, 3);
             var procAmountVal = DecimalHelper.RoundToDecimals(Convert.ToDouble(baseProcRate) + Convert.ToDouble(bonusProcRate), 3);
             var procAmount = DecimalHelper.RoundToDecimals(Convert.ToDouble(average) * Convert.ToDouble(procAmountVal), 2);
-            var procPerc = Math.Min(0.75m, DecimalHelper.RoundToDecimals(Convert.ToDouble((baseProcPerc + bonusProcPerc)), 2));
+            var procPerc = Math.Min(0.45m, DecimalHelper.RoundToDecimals(Convert.ToDouble((baseProcPerc + bonusProcPerc)), 2));
 
             var resourceReturnProc = new ResourceReturnHitProc { ProcPercentage = procPerc * 100, ProcAmount = procAmount, Duration = 0 };
             return resourceReturnProc;

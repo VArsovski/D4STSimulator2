@@ -1,4 +1,4 @@
-import { ItemCategoriesEnum, ItemRarityTypesEnum, ItemAffixTypeEnum, AffixCategoryEnum, BasicStatsEnum } from 'src/_Enums/itemAffixEnums';
+import { ItemCategoriesEnum, ItemRarityTypesEnum, ItemAffixTypeEnum, AffixCategoryEnum, BasicStatsEnum, ItemArmorTypesEnum } from 'src/_Enums/itemAffixEnums';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 import { ItemAffixOutput } from '../Details/ItemAffixOutput';
 import { LegendaryAffixHelper } from './LegendaryAffixHelper';
@@ -87,17 +87,18 @@ export class ItemAffixEnumsHelper {
 
         if (affixType == ItemAffixTypeEnum.Damage)
         {
-            var addPrimaryDamageNumbers = affix.ItemCategory != ItemCategoriesEnum.Weapon;
+            var skipPrimaryDamageNumbers = affix.ItemCategory != ItemCategoriesEnum.Weapon;
+            var skipDamageEffectEmpower = affix.ItemCategory == ItemCategoriesEnum.Weapon;
             affixData.categoryStat = damageAffixesCategory[Helpers.getRandom(0, damageAffixesCategory.length-1)];
-            
-            if (affix.ItemCategory != ItemCategoriesEnum.Weapon)
-                affixData.damageStat =  new DamageAffixHelper().GetByIndex(level, powerLevel, Helpers.getRandom(1, 7), Helpers.getRandom(1, 5), addPrimaryDamageNumbers).damageStat;
+            affixData.damageStat =  new DamageAffixHelper().GetByIndex(level, powerLevel, Helpers.getRandom(1, 7), Helpers.getRandom(1, 5), skipPrimaryDamageNumbers, skipDamageEffectEmpower).damageStat;
         }
 
         if (affixType == ItemAffixTypeEnum.Armor)
         {
             affixData.categoryStat = damageAffixesCategory[Helpers.getRandom(0, damageAffixesCategory.length-1)];
             affixData.armorStat =  new ArmorAffixHelper().GetByIndex(level, powerLevel, Helpers.getRandom(1, 5), Helpers.getRandom(1, 3)).armorStat;
+            if (affix.ItemCategory != ItemCategoriesEnum.Armor || affix.AffixCategory != AffixCategoryEnum.PrimaryArmor)
+                affixData.armorStat.Armor = Math.round((Helpers.getRandom(30, 45) + level/8)/100 * affixData.armorStat.Armor);
         }
 
         if (affixType == ItemAffixTypeEnum.PowerUpSkill)
@@ -149,7 +150,7 @@ export class ItemAffixEnumsHelper {
 
             var chanceSec = new CalculationsHelper().getTriggerChanceForLevel(Helpers.getRandom(10,15), level, powerLevel);
             var amountSec = new CalculationsHelper().getSecondaryTriggerStatForLevel(Helpers.getRandom(4, 6), level, powerLevel);
-            var duration = Helpers.getRandom(1, 3);
+            var duration = Helpers.getRandom(3, 5);
             affixData.secondaryTriggerStat = new SecondaryTriggerAffixHelper().GetByIndex(level, powerLevel, amountSec, chanceSec, duration, selectedTrigger, triggerStat).secondaryTriggerStat;
         }
         if (affixType == ItemAffixTypeEnum.Legendary)
@@ -172,7 +173,9 @@ export class ItemAffixEnumsHelper {
         if (affix.AffixType == ItemAffixTypeEnum.Damage)
         {
             affixData.categoryStat = AffixCategoryEnum.PrimaryDamage;
-            var damageStat = new DamageAffixHelper().GetByIndex(level, powerLevel, Helpers.getRandom(1, 7), Helpers.getRandom(1, 5), itemCategory != ItemCategoriesEnum.Weapon).damageStat;
+            var omitPrimaryDamageNumbers = itemCategory != ItemCategoriesEnum.Weapon;
+            var omitEmpowerPercentage = affix.AffixCategory != AffixCategoryEnum.PrimaryDamage;
+            var damageStat = new DamageAffixHelper().GetByIndex(level, powerLevel, Helpers.getRandom(1, 7), Helpers.getRandom(1, 5), omitPrimaryDamageNumbers, omitEmpowerPercentage).damageStat;
             affixData.damageStat = damageStat;
         }
 

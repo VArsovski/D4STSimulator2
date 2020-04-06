@@ -29,29 +29,21 @@ export class ItemSecondaryTriggerStatsDetail implements IDescribable {
         this.Trigger = trigger;
     }
 
-    public
-
     public GetData()
     {
-        // AllowSkillForUsage = 1,       // EmpowerBasicStat = 4,
-        // AllowTrapsCast = 2,           // EmpowerOfenseStat = 5,
-        // AllowCurseCast = 3,           // EmpowerDefenseStat = 6,
-    
         var data = new ItemSecondaryTriggerStatsDetail(this.Level, this.PowerLevel, this.Amount, this.Duration, this.Type, this.Trigger);
+        var levelsToEmpower = this.Type == SecondaryTriggerStatsEnum.EmpowerBasicStat ? Helpers.getRandom(4, 5) : Helpers.getRandom(2, 4);
+        data.Duration = new CalculationsHelper().getEmpoweredValue(data.Duration, levelsToEmpower);
+        data.Amount += data.PowerLevel;
+
         if (this.Type == SecondaryTriggerStatsEnum.AllowSkillForUsage) {
             data.Trigger.SkillStat.level += data.PowerLevel;
-            data.Duration += new CalculationsHelper().getEmpoweredValue(Helpers.getRandom(2, 4), data.PowerLevel);
+            data.Trigger.AffixType = TriggerAffixTypesEnum.CastSpell;
         }
-        if (this.Type == SecondaryTriggerStatsEnum.AllowTrapsCast) {
+        if (this.Type == SecondaryTriggerStatsEnum.AllowTrapsCast)
             data.Trap = Helpers.getRandom(0, 6);
-            data.Amount += data.PowerLevel;
-            data.Duration += new CalculationsHelper().getEmpoweredValue(Helpers.getRandom(2, 4), data.PowerLevel);
-        }
-        if (this.Type == SecondaryTriggerStatsEnum.AllowCurseCast) {
+        if (this.Type == SecondaryTriggerStatsEnum.AllowCurseCast)
             data.Curse = Helpers.getRandom(0, 9);
-            data.Amount += data.PowerLevel;
-            data.Duration += new CalculationsHelper().getEmpoweredValue(Helpers.getRandom(2, 4), data.PowerLevel);
-        }
 
         var levelForBuff = Math.round(Helpers.getRandom(1, data.Level/8));
         var amountForBuff = Math.round(Helpers.getRandom(1, data.Level/4));
@@ -71,7 +63,6 @@ export class ItemSecondaryTriggerStatsDetail implements IDescribable {
                 else amountForBuff = Math.round(amountForBuff* Helpers.getRandom(60, 80));
             }
 
-            data.Duration += new CalculationsHelper().getEmpoweredValue(Helpers.getRandom(5, 8), data.PowerLevel);
             var statRes = statType == 5 ? new ItemBasicResistanceStatsDetail(levelForBuff, data.PowerLevel, amountForBuff, selectedRes) : null;
 
             data.BasicStat = new ItemBasicStats(levelForBuff, data.PowerLevel, statPowers, stat1, stat2, stat3, stat4, statRes);
@@ -90,19 +81,18 @@ export class ItemSecondaryTriggerStatsDetail implements IDescribable {
 
         if (data.Type == SecondaryTriggerStatsEnum.AllowSkillForUsage) {
             data.Trigger.Type = TriggerStatsEnum.Spellcast;
-            str = data.Trigger.GetTriggerTypeInfo();
+            data.Trigger.AffixType = TriggerAffixTypesEnum.CastSpell;
+            str = "cast level " + (data.Trigger.SkillStat.level || 1) + " " + data.Trigger.SkillStat.name;
         }
-        if (this.Type == SecondaryTriggerStatsEnum.AllowTrapsCast) {
-            str = " gain level " + data.Level + " " + Helpers.getPropertyByValue(TrapsEnum, data.Trap);
+        else {
+            if (this.Type == SecondaryTriggerStatsEnum.AllowTrapsCast)
+                str = " gain charge of level " + data.Level + " " + Helpers.getPropertyByValue(TrapsEnum, data.Trap);
+            if (this.Type == SecondaryTriggerStatsEnum.AllowCurseCast)
+                str = " gain charge of level " + data.Level + " " + Helpers.getPropertyByValue(CursesEnum, data.Curse);
+            if (this.Type == SecondaryTriggerStatsEnum.EmpowerBasicStat)
+                str = " gain " + data.BasicStat.GetDescription();
+            str += " for " + data.Duration + " sec";
         }
-        if (this.Type == SecondaryTriggerStatsEnum.AllowCurseCast) {
-            str = " gain level " + data.Level + " " + Helpers.getPropertyByValue(CursesEnum, data.Curse);
-        }
-        if (this.Type == SecondaryTriggerStatsEnum.EmpowerBasicStat) {
-            debugger;
-            str = " gain " + data.BasicStat.GetDescription();
-        }
-        str += " for " + data.Duration + " sec";
 
         var empoweredStr = new CalculationsHelper().getEmpoweredStr("*", this.PowerLevel);
         return str + empoweredStr;
@@ -137,7 +127,7 @@ export class ItemSecondaryTriggerStats implements IDescribable {
     
     public GetData()
     {
-        var data = new ItemSecondaryTriggerStats(this.Level, this.PowerLevel, this.Amount, this.Chance, this.Chance, this.Type, this.Trigger);
+        var data = new ItemSecondaryTriggerStats(this.Level, this.PowerLevel, this.Amount, this.Chance, this.Duration, this.Type, this.Trigger);
         data.Chance = new CalculationsHelper().getEmpoweredValue(new CalculationsHelper().getTriggerStatsForLevel(this.Amount, this.Level, this.PowerLevel, this.Trigger.Type), this.PowerLevel);
         data.Amount = new CalculationsHelper().getEmpoweredValue(new CalculationsHelper().getTriggerStatsForLevel(this.Amount, this.Level, this.PowerLevel, this.Trigger.Type), this.PowerLevel);
         return data;

@@ -22,6 +22,7 @@ export class ItemGeneratorComponent implements OnInit {
   @Input() items: IDropdownImageItem[];
   @Input() rarities: IDropdownImageItem[];
   @Input() skills: SkillVM[];
+  generateRandom:boolean;
   // @Output() SelectCategory = new EventEmitter<IDropdownImageItem>(true);
   // @Output() SelectType = new EventEmitter<IDropdownImageItem>(true);
 
@@ -110,14 +111,27 @@ export class ItemGeneratorComponent implements OnInit {
     // Function<,ItemAffix[]> selectedFn = () => {}
     var itemAffixes:ItemAffix[] = [];
 
-    if (this.selectedCategory.id == ItemCategoriesEnum.Armor)
-      itemAffixes = generator.GenerateArmorAffixes(this.levelRequirement, this.selectedType.id, this.selectedRarity.id);
-    else if (this.selectedCategory.id == ItemCategoriesEnum.Weapon)
-      itemAffixes = generator.GenerateWeaponAffixes(this.levelRequirement, this.selectedType.id, this.selectedRarity.id);
-    else
-      itemAffixes = generator.GenerateJewelryAffixes(this.levelRequirement, this.selectedType.id, this.selectedRarity.id);
-    
-    this.generatedAffixes = itemAffixes;
+    if (this.generateRandom) {
+      var categoryId = Helpers.getRandom(1,3);
+      var itemTypes = categoryId == 0 ? this.armors : categoryId == 1 ? this.weapons : this.jewelries;
+      var selectedTypeId = Helpers.getRandom(1, itemTypes.length);
+      var selectedRarityId = Helpers.getRandom(1,3);
+
+      this.SelectCategoryHandler(this.categories.filter(c => c.id == categoryId)[0]);
+      this.SelectTypeHandler(this.items.filter(t => t.id == selectedTypeId)[0]);
+      this.SelectRarityHandler(this.rarities.filter(r => r.id == selectedRarityId)[0]);
+    }
+
+// For some reason there's delay with Random
+    setTimeout(() => {
+      if (this.selectedCategory.id == ItemCategoriesEnum.Armor)
+        itemAffixes = generator.GenerateArmorAffixes(this.levelRequirement, this.selectedType.id, this.selectedRarity.id);
+      else if (this.selectedCategory.id == ItemCategoriesEnum.Weapon)
+        itemAffixes = generator.GenerateWeaponAffixes(this.levelRequirement, this.selectedType.id, this.selectedRarity.id);
+      else
+        itemAffixes = generator.GenerateJewelryAffixes(this.levelRequirement, this.selectedType.id, this.selectedRarity.id);
+      this.generatedAffixes = itemAffixes;
+    }, this.generateRandom ? 50 : 0);
   }
 
   protected GetDamageTypesInfo():string[] {

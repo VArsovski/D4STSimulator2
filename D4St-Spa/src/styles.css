@@ -158,6 +158,26 @@ body img {
     border-radius: 50%;
 }
 
+.customFontBlue {
+    text-shadow: #5758BB 2px 0 10px;
+    font-family: 'Bebas Neue', cursive;
+    font-weight: bolder;
+    opacity: 1;    
+}
+
+.customFontBlueTooltip {
+    font-family: 'Bebas Neue', cursive;
+    font-weight: 900;
+    text-shadow: #ED4C67 2px 0 10px;
+    text-shadow: #5758BB;
+    line-height: 85%;
+    opacity: 1;
+}
+
+input[type=checkbox] {
+    transform: scale(2.5);
+}
+
 .col4Custom {
     text-align: center;
 }
@@ -330,6 +350,18 @@ body img {
 .menuCustom li a {
     white-space:nowrap;
     width: auto;
+}
+
+#powersContainer {
+    transform: translate(20%, 0);
+}
+
+#powersContainer #powerDetails {
+    transform: translate(-20%, 0);
+}
+
+#statsContainer {
+    transform: scale(140%, 0);
 }
 
 /* first step: remove fixed width from .dropdown ul li a
