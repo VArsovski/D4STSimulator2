@@ -88,7 +88,7 @@ export class ItemAffixEnumsHelper {
         if (affixType == ItemAffixTypeEnum.Damage)
         {
             var skipPrimaryDamageNumbers = affix.ItemCategory != ItemCategoriesEnum.Weapon;
-            var skipDamageEffectEmpower = affix.ItemCategory == ItemCategoriesEnum.Weapon;
+            var skipDamageEffectEmpower = affix.AffixCategory != AffixCategoryEnum.PrimaryDamage;
             affixData.categoryStat = damageAffixesCategory[Helpers.getRandom(0, damageAffixesCategory.length-1)];
             affixData.damageStat =  new DamageAffixHelper().GetByIndex(level, powerLevel, Helpers.getRandom(1, 7), Helpers.getRandom(1, 5), skipPrimaryDamageNumbers, skipDamageEffectEmpower).damageStat;
         }

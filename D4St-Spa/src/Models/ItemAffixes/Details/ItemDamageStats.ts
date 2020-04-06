@@ -27,7 +27,7 @@ export class ItemDamageStats implements IDescribable {
     GetData():ItemDamageStats {
         var hasDamageData = this.MinDamage && this.MaxDamage;
         // Damage modifier rolled on a non-weapon item
-        var empPercAlternate = (!hasDamageData)
+        var empPercAlternate = !(hasDamageData)
             ? Math.round((Helpers.getRandom(7, 9) + this.Level/8)*Helpers.getRandom(80, 120)/100) + Helpers.getRandom(-2, +2)
             : 0;
         
@@ -42,7 +42,8 @@ export class ItemDamageStats implements IDescribable {
         var selectedElement = damageElements[Helpers.getRandom(0, damageElements.length - 1)];
     
         var calculatedData = hasDamageData ? new CalculationsHelper().getDamageCalculatedData(this.Level, this.PowerLevel, this.MinDamage, this.MaxDamage) : [0, 0, empPercAlternate]; // For Effects, not primary damage
-        var data = new ItemDamageStats(this.Level, this.PowerLevel, this.WeaponType, mainDamageType, selectedElement, calculatedData[0], calculatedData[1], calculatedData[2]);
+        var selectedEmpowerPercentage = hasDamageData ? this.EmpowerPercentage : calculatedData[2];// If weapon don't always give the empowerPercentage
+        var data = new ItemDamageStats(this.Level, this.PowerLevel, this.WeaponType, mainDamageType, selectedElement, calculatedData[0], calculatedData[1], selectedEmpowerPercentage);
         return data;
     }
 
@@ -90,7 +91,7 @@ export class ItemDamageStats implements IDescribable {
         var primaryStr = data.MinDamage && data.MaxDamage
             ? damage1 + " - " + damage2 + " " + Helpers.getPropertyByValue(ResistanceTypesEnum, data.ElementType) + " damage" + empoweredStr : "";
 
-        return primaryStr + (empowerTypeStr ? ", " + empowerTypeStr : "");
+        return primaryStr ? primaryStr + (empowerTypeStr ? ", " + empowerTypeStr : "") : empowerTypeStr;
     }
 
     GetAppropriateDamageCategories(type: ItemWeaponTypesEnum):DamageTypesEnum[] {

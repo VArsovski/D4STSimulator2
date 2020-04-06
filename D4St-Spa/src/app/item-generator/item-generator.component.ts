@@ -16,7 +16,7 @@ import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 })
 export class ItemGeneratorComponent implements OnInit {
 
-  constructor() { }
+  constructor() { this.generateRandom = true; }
 
   @Input() categories: IDropdownImageItem[];
   @Input() items: IDropdownImageItem[];
