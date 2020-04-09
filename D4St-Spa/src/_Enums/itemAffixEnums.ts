@@ -21,11 +21,11 @@ export enum ResistanceTypesEnum {
 }
 
 export enum ItemArmorTypesEnum {
-    Chest=1,
-    Pants=2,
+    Boots=1,
+    Chest=2,
     Gloves=3,
-    Boots=4,
-    Helm=5
+    Helm=4,
+    Pants=5
 }
 
 export enum ItemWeaponTypesEnum {
@@ -132,11 +132,11 @@ export enum BasicAffixEnum {
 export enum OfensiveStatsEnum {
     ArmorReductionAndBleed= 1,
     PoisonAndBurn= 2,
-    KnockbackAndRoot= 3,
+    KnockbackAndStun= 3,
     CleaveAndAoE= 4,
     CastAndProjectileRange= 5,
     ChainAndPierce= 6,
-    FreezeAndStun= 7,
+    FreezeAndRoot= 7,
     Socket = 8
 }
 

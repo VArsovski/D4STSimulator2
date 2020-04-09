@@ -24,16 +24,16 @@
         <div class="row"><div class="col"><app-DemoDropdownCustomHtml [items]="this.rarities" [caption]="this.rarityTypesCaption" (itemSelectedEventAsync)="SelectRarityHandler($event)"></app-DemoDropdownCustomHtml></div></div>
         <div class="row">
             <div class="col-2" style="cursor: pointer;">
+                <div class="col-8 customFontBlue">
+                    <label class="h3" for="Random" style="word-wrap:break-word"><input type="checkbox" [(ngModel)]="this.generateRandom" name="Randomize" value="Randomize"/> Random</label>
+                </div>
             <a class="sizeBar" (click)="Generate($event)">
                 <div class="row">
-                    <div class="col-8 customFontBlue">
-                        <label class="h3" for="Random" style="word-wrap:break-word"><input type="checkbox" [(ngModel)]="this.generateRandom" name="Randomize" value="Randomize"/> Random</label>
-                    </div>
                     <div class="col"><img src="../../_Resources/img/selectors/OrnamentRedone.png" /></div>
                 </div>
+                <label class="customFontBlue h3">Generate</label>
             </a>
-        </div></div>
-        <div class="row">
+            </div>
         </div>
     </div>
 
@@ -45,21 +45,22 @@
                     <label *ngIf="this.levelRequirement <= this.BasicData.Level" class="customFontGreen h3">Level requirement {{this.levelRequirement}}</label>
                     <br/>
 
-                    <label *ngIf="this.selectedRarity.id==1" class="h3 customFontBlue"> {{" " + this.selectedType.name}} ({{this.selectedRarity.name}})</label>
-                    <label *ngIf="this.selectedRarity.id==2" class="h3 customFontRed">  {{" " + this.selectedType.name}} ({{this.selectedRarity.name}})</label>
-                    <label *ngIf="this.selectedRarity.id==3" class="h3 customFontGreen">{{" " + this.selectedType.name}} ({{this.selectedRarity.name}})</label>
+                    <label *ngIf="this.selectedType && this.selectedRarity && this.selectedRarity.id==1" class="h3 customFontBlue"> {{" " + this.selectedType.name}} ({{this.selectedRarity.name}})</label>
+                    <label *ngIf="this.selectedType && this.selectedRarity && this.selectedRarity.id==2" class="h3 customFontRed">  {{" " + this.selectedType.name}} ({{this.selectedRarity.name}})</label>
+                    <label *ngIf="this.selectedType && this.selectedRarity && this.selectedRarity.id==3" class="h3 customFontGreen">{{" " + this.selectedType.name}} ({{this.selectedRarity.name}})</label>
 
                     <img class="thumnbnail imgThumbnail" [id]="'item-img-detail'" class="dropdownItemImg" [src]="this.GetImgSrc()" />
+                    <a (click)="EquipItem(this.selectedItem)" class="sizeMid ornament blueGlow redGlowHover customFontBlue h3"><img src="../_Resources/img/selectors/skull-1.png" style="transform: scale(0.5, 0.5);" alt="Equip">Equip</a>
                 </div>
             </div>
             <div style="width: 200%; transform: translate(-60%, 20%);" class="row text-left" *ngFor="let affix of this.generatedAffixes; let i = index">
-                <div class="col h3 customFontRed" *ngIf="(affix.Condition != null && affix.Condition?.Condition > this.BasicData.AngelicPower && affix.Condition.ConditionPowerType == 1)">{{affix.GetAffixDescription(this.skills)}}</div>
-                <div class="col h3 customFontRed" *ngIf="(affix.Condition != null && affix.Condition?.Condition > this.BasicData.DemonicPower && affix.Condition.ConditionPowerType == 2)">{{affix.GetAffixDescription(this.skills)}}</div>
-                <div class="col h3 customFontRed" *ngIf="(affix.Condition != null && affix.Condition?.Condition > this.BasicData.AncestralPower && affix.Condition.ConditionPowerType == 3)">{{affix.GetAffixDescription(this.skills)}}</div>
-                <div class="col h3 customFontGreen" *ngIf="(affix.Condition != null && affix.Condition?.Condition <= this.BasicData.AngelicPower && affix.Condition.ConditionPowerType == 1)">{{affix.GetAffixDescription(this.skills)}}</div>
-                <div class="col h3 customFontGreen" *ngIf="(affix.Condition != null && affix.Condition?.Condition <= this.BasicData.DemonicPower && affix.Condition.ConditionPowerType == 2)">{{affix.GetAffixDescription(this.skills)}}</div>
-                <div class="col h3 customFontGreen" *ngIf="(affix.Condition != null && affix.Condition?.Condition <= this.BasicData.AncestralPower && affix.Condition.ConditionPowerType == 3)">{{affix.GetAffixDescription(this.skills)}}</div>
-                <div class="col h3 customFontGreen" *ngIf="affix.Condition == null">{{affix.GetAffixDescription()}}</div>
+                <div class="col h3 customFontRed" *ngIf="(affix.Condition != null && affix.Condition?.Condition > this.BasicData.AngelicPower && affix.Condition.ConditionPowerType == 1)">{{this.selectedDescriptions[i]}}</div>
+                <div class="col h3 customFontRed" *ngIf="(affix.Condition != null && affix.Condition?.Condition > this.BasicData.DemonicPower && affix.Condition.ConditionPowerType == 2)">{{this.selectedDescriptions[i]}}</div>
+                <div class="col h3 customFontRed" *ngIf="(affix.Condition != null && affix.Condition?.Condition > this.BasicData.AncestralPower && affix.Condition.ConditionPowerType == 3)">{{this.selectedDescriptions[i]}}</div>
+                <div class="col h3 customFontGreen" *ngIf="(affix.Condition != null && affix.Condition?.Condition <= this.BasicData.AngelicPower && affix.Condition.ConditionPowerType == 1)">{{this.selectedDescriptions[i]}}</div>
+                <div class="col h3 customFontGreen" *ngIf="(affix.Condition != null && affix.Condition?.Condition <= this.BasicData.DemonicPower && affix.Condition.ConditionPowerType == 2)">{{this.selectedDescriptions[i]}}</div>
+                <div class="col h3 customFontGreen" *ngIf="(affix.Condition != null && affix.Condition?.Condition <= this.BasicData.AncestralPower && affix.Condition.ConditionPowerType == 3)">{{this.selectedDescriptions[i]}}</div>
+                <div class="col h3 customFontGreen" *ngIf="affix.Condition == null">{{this.selectedDescriptions[i]}}</div>
             </div>
         </div>
     </div>

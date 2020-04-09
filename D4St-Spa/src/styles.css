@@ -1,5 +1,6 @@
 body {
-    background-image: url("_Resources/img/background3.png");
+    /* background-image: url("_Resources/img/background3.png"); */
+    background:linear-gradient(rgba(255,255,255,0.4), rgba(255,255,255,0.4)), url("_Resources/img/background3.png");
     background-size: cover;
     background-repeat: no-repeat;
 }
@@ -267,6 +268,42 @@ input[type=checkbox] {
     border-image: url("_Resources/img/borders/border.png") 25 30 10 20 repeat stretch;
     /* border-image-slice: 20px;
     border-image-width: 20px; */
+}
+
+.armorDisplayHolder {
+    list-style: none;
+    width: 650px;
+    height: 100px;
+    transform: translate(122%, -830%) scale(0.97, 1);
+}
+
+.armorDisplayHolder li {
+    padding-right: 3rem;
+}
+
+.armorDisplayHolder label {
+    transform:translate(10%, -180%);
+}
+
+.attacksDisplayHolder {
+    width: 700px;
+    transform: translate(94%);
+    list-style: none;
+    /* float: left; */
+}
+
+.iconTop {
+    transform: translate(0, -20px);
+}
+
+.inventoryHolder {
+    width: 480px;
+    height: 520px;
+    background-image: url("_Resources/img/Inventory2.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    transform: translate(175%, -140%);
+    opacity: 0.7;
 }
 
 .btnGroupCustom, .btnGroupCustom ul {

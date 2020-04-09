@@ -6,6 +6,7 @@ import { SkillWithImageVM } from 'src/Models/SkillWithImageVM';
 import { SkillEquipVM } from 'src/Models/SkillEquipVM';
 import { BasicStatDifferencesVM } from 'src/Models/BasicStatDifferencesVM';
 import { SkillVM } from 'src/Models/SkillVM';
+import { InventoryVM } from 'src/Models/InventoryVM';
 
 @Component({
   selector: "app-home",
@@ -28,6 +29,7 @@ export class HomeComponent implements OnInit, OnChanges {
   @Input() allSkills: SkillVM[];
   @Output() skillEquipModel: SkillEquipVM;
   @Output() skillTiers: SkillListVM[];
+  @Output() inventoryData:InventoryVM;
 
   constructor(private apiService: ApiServiceService) {
     this.skillTiers = [];
@@ -37,7 +39,7 @@ export class HomeComponent implements OnInit, OnChanges {
     this.skillEquipModel = new SkillEquipVM();
   }
 
-  ngOnInit() {}
+  ngOnInit() { this.inventoryData = new InventoryVM(1, 1, 1); }
 
   async initSkillTiers() {
     var tiersDistinct: any[] = [];
@@ -115,5 +117,58 @@ export class HomeComponent implements OnInit, OnChanges {
 
   public async SkillSelectHandler(data: SkillEquipVM) {
     this.skillEquipModel.position = data.position;
+  }
+
+  public async SetInventoryDataHandler(data: InventoryVM) {
+    //var armorData:string[] = ["Boots","Chest", "Gloves", "Helm", "Pants"];
+    //var invData = new InventoryVM(data.selectedCategory, data.selectedType, data.selectedRarity);
+    this.inventoryData = data;
+    // invData.Amulet = this.inventoryData.Amulet;
+    // invData.Boots = this.inventoryData.Boots;
+    // invData.Chest = this.inventoryData.Chest;
+    // invData.Gloves = this.inventoryData.Gloves;
+    // invData.Helm = this.inventoryData.Helm;
+    // invData.Pants = this.inventoryData.Pants;
+    // invData.Ring1 = this.inventoryData.Ring1;
+    // invData.Ring2 = this.inventoryData.Ring2;
+    // invData.Weapon = this.inventoryData.Weapon;
+
+    // // Problem of changing subValues is doesn't activate "OnChanged" event, need change the whole model
+    // for (let a of armorData) {
+    //   for (let affix of data[a]) {
+    //     if (affix.Contents)
+    //     invData[a] = data[a];
+    //       break;
+    //   };
+    // }
+
+    // for (let a of data.Weapon) {
+    //   if (a.Contents) {
+    //     invData.Weapon = data.Weapon;
+    //     break;
+    //   }
+    // };
+    // for (let a of data.Ring1) {
+    //   if (a.Contents) {
+    //     invData.Ring1 = data.Ring1;
+    //     break;
+    //   }
+    // };
+    // for (let a of data.Ring2) {
+    //   if (a.Contents) {
+    //     invData.Ring2 = data.Ring2;
+    //     break;
+    //   }
+    // };
+    // for (let a of data.Amulet) {
+    //   if (a.Contents) {
+    //     invData.Amulet = data.Amulet;
+    //     break;
+    //   }
+    // };
+    
+    // // THIS should proc the OnChanged event and reflect to the Child control
+    // this.inventoryData = new InventoryVM(data.selectedCategory, data.selectedType, data.selectedRarity);
+    // this.inventoryData = invData;
   }
 }

@@ -10,7 +10,7 @@ export class ItemAffix implements IItemAffix {
     Index: number;
 
     ItemCategory: ItemCategoriesEnum;      // Weapon, Armor, Jewelry
-    ItemType: any;                         // Which W,A,J
+    ItemType: number;                      // Which W,A,J
     AffixType: ItemAffixTypeEnum;          // Basic, Off, Def, Trigger, Legendary
     CastProcType: CastProcTypesEnum;       // OnHit, OnCast, OnDeath
     AttackProcType: AttackTypesEnum;       // Melee, Projectile, AoE, TriggerEffect, Summon
@@ -19,9 +19,6 @@ export class ItemAffix implements IItemAffix {
     // The Basic Data, Function should return formatted text with numbers and set Description
     Contents:ItemAffixOutput;
     Description:string;
-
-    IsPrimaryDamage: boolean;
-    IsSecondaryDamage: boolean;
     Triggers:boolean;
     Triggerable:boolean;
     IsCC:boolean;

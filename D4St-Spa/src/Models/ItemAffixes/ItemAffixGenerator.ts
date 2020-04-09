@@ -266,8 +266,8 @@ export class ItemAffixGenerator {
                 var lastIndex1 = Helpers.getRandom(0, additionalAffixesList.length-2);
                 var lastIndex2 = Helpers.getRandom(0, additionalAffixesList.length-2);
 
-                affixesBlueprint[affixesBlueprint.length-lastIndex1].PowerUp();
-                affixesBlueprint[affixesBlueprint.length-lastIndex2].PowerUp();
+                affixesBlueprint[affixesBlueprint.length-1-lastIndex1].PowerUp();
+                affixesBlueprint[affixesBlueprint.length-1-lastIndex2].PowerUp();
             }
         }
     

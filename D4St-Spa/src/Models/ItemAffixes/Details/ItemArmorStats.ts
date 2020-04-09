@@ -9,11 +9,12 @@ export class ItemArmorStats implements IDescribable {
     private MinArmor: number;
     private MaxArmor: number;
     Armor:number;
-    private ArmorType: ArmorTypesEnum;
+    ArmorType: ArmorTypesEnum;
     private PowerLevel: any;
     private selectedCCTypes: CCEffectTypesEnum[];
     private ReducePercentage: number;
     private Level: number;
+    private statsCalculated:boolean;
 
     constructor(level:number, powerLevel:number, itemType: ItemArmorTypesEnum, minArmor?: number, maxArmor?: number, armor?:number, armorType?: ArmorTypesEnum, reducePercentage?:number) {
         this.Level = level || 1;
@@ -35,7 +36,15 @@ export class ItemArmorStats implements IDescribable {
         var calculatedData = new CalculationsHelper().getArmorCalculatedData(this.Level, this.PowerLevel, this.MinArmor, this.MaxArmor);
         var selectedAmount = calculatedData[0];
         var reducePercentage = calculatedData[1];
-        var data = new ItemArmorStats(this.Level, this.PowerLevel, this.ItemType, this.MinArmor, this.MaxArmor, selectedAmount, this.ArmorType, reducePercentage);
+        var data = new ItemArmorStats(this.Level, this.PowerLevel, this.ItemType, this.MinArmor, this.MaxArmor, this.Armor || selectedAmount, this.ArmorType, this.ReducePercentage || reducePercentage);
+
+        // Set/Initialize the calculated values
+        if (!this.statsCalculated) {
+            this.Armor = data.Armor;
+            this.ReducePercentage = data.ReducePercentage;
+        }
+
+        this.statsCalculated = true;
         return data;
     }
 

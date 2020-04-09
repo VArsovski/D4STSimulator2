@@ -7,13 +7,13 @@ export class OfensiveAffixHelper {
     public GetByIndex(level:number, powerLevel:number, index:number):ItemAffixOutput {
         var delimiter = 8;
 
-        var selected = index % delimiter == 1 ? OfensiveStatsEnum.CleaveAndAoE
+        var selected = index % delimiter == 1 ? OfensiveStatsEnum.ArmorReductionAndBleed
         : index % delimiter == 2 ? OfensiveStatsEnum.PoisonAndBurn
-        : index % delimiter == 3 ? OfensiveStatsEnum.ArmorReductionAndBleed
-        : index % delimiter == 4 ? OfensiveStatsEnum.FreezeAndStun
-        : index % delimiter == 5 ? OfensiveStatsEnum.KnockbackAndRoot
+        : index % delimiter == 3 ? OfensiveStatsEnum.KnockbackAndStun
+        : index % delimiter == 4 ? OfensiveStatsEnum.CleaveAndAoE
+        : index % delimiter == 5 ? OfensiveStatsEnum.CastAndProjectileRange
         : index % delimiter == 6 ? OfensiveStatsEnum.ChainAndPierce
-        : index % delimiter == 7 ? OfensiveStatsEnum.CastAndProjectileRange
+        : index % delimiter == 7 ? OfensiveStatsEnum.FreezeAndRoot
         : OfensiveStatsEnum.Socket;
     
         var rand = Helpers.getRandom(1, 10);

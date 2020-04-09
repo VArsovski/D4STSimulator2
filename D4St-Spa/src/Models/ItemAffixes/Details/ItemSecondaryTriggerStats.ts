@@ -19,6 +19,7 @@ export class ItemSecondaryTriggerStatsDetail implements IDescribable {
     BasicStat:ItemBasicStats;
     // OfenseStat:ItemOfensiveStats;
     // DefenseStat:ItemDefenseStats;
+    private statsCalculated:boolean;
 
     constructor(level:number, powerLevel:number, amount:number, duration:number, type:SecondaryTriggerStatsEnum, trigger:ItemTriggerStats) {
         this.Level = level || 1;
@@ -39,11 +40,20 @@ export class ItemSecondaryTriggerStatsDetail implements IDescribable {
         if (this.Type == SecondaryTriggerStatsEnum.AllowSkillForUsage) {
             data.Trigger.SkillStat.level += data.PowerLevel;
             data.Trigger.AffixType = TriggerAffixTypesEnum.CastSpell;
+            if (!this.statsCalculated) {
+                this.Trigger = data.Trigger;
+            }
         }
-        if (this.Type == SecondaryTriggerStatsEnum.AllowTrapsCast)
+        if (this.Type == SecondaryTriggerStatsEnum.AllowTrapsCast) {
             data.Trap = Helpers.getRandom(0, 6);
-        if (this.Type == SecondaryTriggerStatsEnum.AllowCurseCast)
+            if (!this.statsCalculated)
+                this.Trap = data.Trap;
+        }
+        if (this.Type == SecondaryTriggerStatsEnum.AllowCurseCast) {
             data.Curse = Helpers.getRandom(0, 9);
+            if (!this.statsCalculated)
+                this.Curse = data.Curse;
+        }
 
         var levelForBuff = Math.round(Helpers.getRandom(1, data.Level/8));
         var amountForBuff = Math.round(Helpers.getRandom(1, data.Level/4));
@@ -66,12 +76,17 @@ export class ItemSecondaryTriggerStatsDetail implements IDescribable {
             var statRes = statType == 5 ? new ItemBasicResistanceStatsDetail(levelForBuff, data.PowerLevel, amountForBuff, selectedRes) : null;
 
             data.BasicStat = new ItemBasicStats(levelForBuff, data.PowerLevel, statPowers, stat1, stat2, stat3, stat4, statRes);
+            if (!this.statsCalculated) {
+                this.BasicStat = data.BasicStat;
+            }
         }
         // TODO: Empower Ofense/Defense effects.. (SKIP for now)
         // if (this.Type == SecondaryTriggerStatsEnum.EmpowerOfenseStat) {
         //     var statType = Helpers.getRandom(0, 5);
         // if (this.Type == SecondaryTriggerStatsEnum.EmpowerDefenseStat) {
         //     var statType = Helpers.getRandom(0, 5);
+        
+        this.statsCalculated = true;
         return data;
     }
 

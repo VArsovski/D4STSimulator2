@@ -29,6 +29,7 @@ export class ItemBasicStats implements IDescribable {
     private selectedStat:string;
     private PowerLevel: any;
     private Level: number;
+    private statsCalculated:boolean;
 
     constructor(level:number, powerLevel?:number, powerStats?:ItemBasicPowersDetail
         , statNumbers?:ItemBasicStatsDetail, statRegen?:ItemBasicStatsDetail, statPercentage?:ItemBasicStatsDetail, statRegenPercentage?:ItemBasicStatsDetail
@@ -127,12 +128,12 @@ export class ItemBasicStats implements IDescribable {
         if (this.Resistance)
             this.selectedStat = "Resistance";
 
-        if (this.selectedStat)
-        {
-            var data = new ItemBasicStats(this.Level, this.PowerLevel, this.PowerStats
-                , this.StatNumbers, this.StatRegen, this.StatPercentage, this.StatPercentageRegen
-                , this.Resistance, this.SkillEmpower, this.Socket, this.selectedStat);
+        var data = new ItemBasicStats(this.Level, this.PowerLevel, this.PowerStats
+            , this.StatNumbers, this.StatRegen, this.StatPercentage, this.StatPercentageRegen
+            , this.Resistance, this.SkillEmpower, this.Socket, this.selectedStat);
 
+        if (this.selectedStat && !this.statsCalculated)
+        {
             var dict = Helpers.extractEnum(BasicStatTypesEnum);
             var selectedTypeNum:number[] = [];
             dict.forEach(d => {if (d.name == data.selectedStat) selectedTypeNum.push(d.value);});
@@ -145,16 +146,30 @@ export class ItemBasicStats implements IDescribable {
                 // Should contain only one, DW :P
                 data[data.selectedStat].Amount = new CalculationsHelper().getEmpoweredValue(new CalculationsHelper().getArmorStatForLevel(data[data.selectedStat].Amount, data.Level), data.PowerLevel);
                 data[data.selectedStat].AmountPercentage = new CalculationsHelper().getEmpoweredValue(new CalculationsHelper().getArmorStatForLevel(data[data.selectedStat].AmountPercentage, data.Level), data.PowerLevel);
+                if (!this.statsCalculated) {
+                    this[data.selectedStat].Amount = data[data.selectedStat].Amount;
+                    this[data.selectedStat].AmountPercentage = data[data.selectedStat].AmountPercentage;
+                }
             }
             if (data.selectedStat == "SkillEmpower") {
                 if (!data.SkillEmpower.level)
                     data.SkillEmpower.level = 1;
                 data.SkillEmpower.level += data.PowerLevel;
+                if (!this.statsCalculated) {
+                    this.SkillEmpower.level = data.SkillEmpower.level;
+                }
             }
-            if (data.selectedStat == "Socket")
+            if (data.selectedStat == "Socket") {
                 data.Socket++;
+                if (!this.statsCalculated) {
+                    this.Socket = data.Socket;
+                }
+            }
+
+        // Data is calculated/initialized
+        this.statsCalculated = true;
         }
-        
+
         return data;
     }
 }
@@ -164,6 +179,7 @@ export class ItemBasicStatsDetail implements IDescribable {
     private Type: BasicStatsEnum;
     private Level: number;
     private PowerLevel: number;
+    private statsCalculated:boolean;
 
     constructor(level:number, powerLevel:number, amount:number, type:BasicStatsEnum) {
         this.Level = level || 1;
@@ -175,6 +191,10 @@ export class ItemBasicStatsDetail implements IDescribable {
     GetData() {
         var data = new ItemBasicStatsDetail(this.Level, this.PowerLevel, this.Amount, this.Type);
         data.Amount = new CalculationsHelper().getBasicStatForLevel(this.Type, this.Amount, this.Level);
+        if (!this.statsCalculated)
+            this.Amount = data.Amount;
+            
+        this.statsCalculated = true;
         return data;
     }
 

@@ -19,6 +19,7 @@ import { CustomCompareLabelComponent } from '../_NGXCustom/CustomCompareLabel/Cu
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ItemGeneratorComponent } from './item-generator/item-generator.component';
+import { InventoryComponent } from './inventory/inventory.component';
 
 @NgModule({
    declarations: [
@@ -32,7 +33,8 @@ import { ItemGeneratorComponent } from './item-generator/item-generator.componen
       // SafePipe,
       DemoDropdownCustomHtmlComponent,
       CustomCompareLabelComponent,
-      ItemGeneratorComponent
+      ItemGeneratorComponent,
+      InventoryComponent
    ],
    imports: [
       BrowserModule,

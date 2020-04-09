@@ -24,8 +24,13 @@
     <div *ngFor="let skillTier of this.skillTiers">
       <app-skillPicker [(model)]="skillTier" (skillEquippedEmitter)="EquipSkillHandler($event)"></app-skillPicker>
     </div>
+    <div class="row">
+      <div class="col">
+        <app-inventory [inventoryItem]="this.inventoryData"></app-inventory>
+      </div>
+    </div>
   </li>
-  <li class="wrapperRight">
-      <app-item-generator [skills]="this.allSkills" [BasicData]="this.model.BasicData"></app-item-generator>
+  <li class="wrapperRight" style="z-index: 999;">
+      <app-item-generator [skills]="this.allSkills" [BasicData]="this.model.BasicData" (EquipItemEmiter)="SetInventoryDataHandler($event)"></app-item-generator>
   </li>
 </ul>

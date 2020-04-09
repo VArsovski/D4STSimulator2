@@ -15,6 +15,7 @@ export class ItemDefenseStats implements IDescribable {
     Socket:ItemDefensiveStatsDetail;
     private PowerLevel: number;
     private selectedStat:string;
+    private statsCalculated:boolean;
 
     GetDescription(): string {
         var data = this.GetData();
@@ -118,15 +119,22 @@ export class ItemDefenseStats implements IDescribable {
         var data = new ItemDefenseStats(this.Level, this.PowerLevel, this[this.selectedStat].Amount, this[this.selectedStat].AmountPercentage, this[this.selectedStat].Chance, this[this.selectedStat].Duration, this[this.selectedStat].Type, null); //No biggie, categories will recreate themselves from type
         data.selectedStat = this.selectedStat;
 
-        if (data.selectedStat)
-        {
-            if (data.selectedStat != "Socket") {
-                data[data.selectedStat].Amount = new CalculationsHelper().getEmpoweredValue(data[data.selectedStat].Amount, data.PowerLevel);
-                data[data.selectedStat].AmountPercentage = new CalculationsHelper().getEmpoweredValue(data[data.selectedStat].AmountPercentage, data.PowerLevel);
+        if (!this.statsCalculated) {
+            if (data.selectedStat)
+            {
+                if (data.selectedStat != "Socket") {
+                    data[data.selectedStat].Amount = new CalculationsHelper().getEmpoweredValue(data[data.selectedStat].Amount, data.PowerLevel);
+                    data[data.selectedStat].AmountPercentage = new CalculationsHelper().getEmpoweredValue(data[data.selectedStat].AmountPercentage, data.PowerLevel);
+                }
+                else
+                    data[data.selectedStat].Amount++;
             }
-            else data[data.selectedStat].Amount++;
+            // var data = new ItemDefenseStats(this.Level, this[this.selectedStat].Amount, this[this.selectedStat].AmountPercentage, this[this.selectedStat].Chance, this[this.selectedStat].Duration, this[this.selectedStat].Type, null); //No biggie, categories will recreate themselves from type
+            data[data.selectedStat].Amount = new CalculationsHelper().getEmpoweredValue(data[data.selectedStat].Amount, data.PowerLevel);
+            data[data.selectedStat].AmountPercentage = new CalculationsHelper().getEmpoweredValue(data[data.selectedStat].AmountPercentage, data.PowerLevel);
         }
-        // var data = new ItemDefenseStats(this.Level, this[this.selectedStat].Amount, this[this.selectedStat].AmountPercentage, this[this.selectedStat].Chance, this[this.selectedStat].Duration, this[this.selectedStat].Type, null); //No biggie, categories will recreate themselves from type
+    
+        this.statsCalculated = true;
         return data;
     }
     SetLevel(level: number) { this.Level = level; }

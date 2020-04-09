@@ -41,6 +41,7 @@ export class ItemTriggerStats implements IDescribable {
     SkillStat: SkillVM;
     private PowerLevel: number;
     private Level: number;
+    private statsCalculated: boolean;
 
     //     PhysicalAttack = 1,           //TriggerAffixes [1,2], 4 CCEffectTypesEnum[1,2]
     //     SpellAttack = 1,              //TA[6], CCET[5,6,8,9,10]
@@ -114,6 +115,15 @@ export class ItemTriggerStats implements IDescribable {
         var data = new ItemTriggerStats(this.Level, this.PowerLevel, this.Amount, this.Chance, this.Type, selectedAffix, selectedTriggerEffect, this.SkillStat);
         data.Chance = new CalculationsHelper().getTriggerChanceForLevel(data.Amount, data.Level, data.PowerLevel);
         data.Amount = new CalculationsHelper().getTriggerStatsForLevel(data.Amount, data.Level, data.PowerLevel, data.Type);
+
+        if (!this.statsCalculated) {
+            this.Type = data.Type;
+            this.CCType = data.CCType;
+            this.Chance = data.Chance;
+            this.Amount = data.Amount;
+        }
+
+        this.statsCalculated = true;
         return data;
     }
 

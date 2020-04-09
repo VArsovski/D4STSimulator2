@@ -7,15 +7,15 @@ export class ItemOfensiveStats implements IDescribable {
     private CleaveAndAoE?:ItemOfensiveStatsDetail;
     private PoisonAndBurn?:ItemOfensiveStatsDetail;
     private ArmorReductionAndBleed?:ItemOfensiveStatsDetail;
-    private FreezeAndStun?:ItemOfensiveStatsDetail;
-    private KnockbackAndRoot?:ItemOfensiveStatsDetail;
+    private KnockbackAndStun?:ItemOfensiveStatsDetail;
+    private FreezeAndRoot?:ItemOfensiveStatsDetail;
     private ChainAndPierce?:ItemOfensiveStatsDetail;
     private CastAndProjectileRange?:ItemOfensiveStatsDetail;
     private Socket:number;
     private selectedStat:string;
     private Level: number;
     private PowerLevel:number;
-    SetLevel(level: number) { this.Level = level; }
+    private statsCalculated:boolean;
 
     GetDescription(): string {
         var data = this.GetData();
@@ -23,8 +23,8 @@ export class ItemOfensiveStats implements IDescribable {
         var descr1 = (this.CleaveAndAoE) ? data.CleaveAndAoE.GetDescription() : "";
         var descr2 = (this.PoisonAndBurn) ? data.PoisonAndBurn.GetDescription() : "";
         var descr3 = (this.ArmorReductionAndBleed) ? data.ArmorReductionAndBleed.GetDescription() : "";
-        var descr4 = (this.FreezeAndStun) ? data.FreezeAndStun.GetDescription() : "";
-        var descr5 = (this.KnockbackAndRoot) ? data.KnockbackAndRoot.GetDescription() : "";
+        var descr4 = (this.KnockbackAndStun) ? data.KnockbackAndStun.GetDescription() : "";
+        var descr5 = (this.FreezeAndRoot) ? data.FreezeAndRoot.GetDescription() : "";
         var descr6 = (this.ChainAndPierce) ? data.ChainAndPierce.GetDescription() : "";
         var descr7 = (this.CastAndProjectileRange) ? data.CastAndProjectileRange.GetDescription() : "";
         var descr8 = this.Socket != 0 ? "Ofensive Sockets empowered by " + socketPowerPercentage + "%": "";
@@ -56,15 +56,15 @@ export class ItemOfensiveStats implements IDescribable {
             this.ArmorReductionAndBleed = newOfensiveAffixStats;
             this.selectedStat = "ArmorReductionAndBleed";
         }
-        if (type == OfensiveStatsEnum.FreezeAndStun)
+        if (type == OfensiveStatsEnum.KnockbackAndStun)
         {
-            this.FreezeAndStun = newOfensiveAffixStats;
-            this.selectedStat = "FreezeAndStun";
+            this.KnockbackAndStun = newOfensiveAffixStats;
+            this.selectedStat = "KnockbackAndStun";
         }
-        if (type == OfensiveStatsEnum.KnockbackAndRoot)
+        if (type == OfensiveStatsEnum.FreezeAndRoot)
         {
-            this.KnockbackAndRoot = newOfensiveAffixStats;
-            this.selectedStat = "KnockbackAndRoot";
+            this.FreezeAndRoot = newOfensiveAffixStats;
+            this.selectedStat = "FreezeAndRoot";
         }
         if (type == OfensiveStatsEnum.ChainAndPierce)
         {
@@ -92,10 +92,10 @@ export class ItemOfensiveStats implements IDescribable {
 
         var durationUpgrades = [OfensiveStatsEnum.PoisonAndBurn
             , OfensiveStatsEnum.ArmorReductionAndBleed
-            , OfensiveStatsEnum.FreezeAndStun];
+            , OfensiveStatsEnum.FreezeAndRoot];
 
-        var chanceUpgrades = [OfensiveStatsEnum.FreezeAndStun
-            , OfensiveStatsEnum.KnockbackAndRoot
+        var chanceUpgrades = [OfensiveStatsEnum.FreezeAndRoot
+            , OfensiveStatsEnum.KnockbackAndStun
             , OfensiveStatsEnum.ChainAndPierce];
         
         if (damageUpgrades.indexOf(type) != -1)
@@ -114,15 +114,25 @@ export class ItemOfensiveStats implements IDescribable {
     }
 
     GetData() {
-        if (this.selectedStat)
+        var types = Helpers.extractEnum(OfensiveStatsEnum);
+        var type = types.filter(c => c.name == this.selectedStat)[0].value;
+
+        var data = new ItemOfensiveStats(this.Level, this.PowerLevel, this[this.selectedStat].Amount, this[this.selectedStat].AmountPercentage,
+            type, this.GenerateAppropriateCategoriesByType(type));
+        data.selectedStat = this.selectedStat;
+        
+        if (!this.statsCalculated)
+        if (data.selectedStat)
         {
-            if (this.selectedStat != "Socket") {
-                this[this.selectedStat].Amount = new CalculationsHelper().getEmpoweredValue(this[this.selectedStat].Amount, this.PowerLevel);
-                this[this.selectedStat].AmountPercentage = new CalculationsHelper().getEmpoweredValue(this[this.selectedStat].AmountPercentage, this.PowerLevel);
+            if (data.selectedStat != "Socket") {
+                data[data.selectedStat].Amount = new CalculationsHelper().getEmpoweredValue(data[data.selectedStat].Amount, data.PowerLevel);
+                data[data.selectedStat].AmountPercentage = new CalculationsHelper().getEmpoweredValue(data[data.selectedStat].AmountPercentage, data.PowerLevel);
             }
-            else this.Socket++;
+            else data.Socket++;
         }
-        return this;
+
+        this.statsCalculated = true;
+        return data;
     }
 }
 
@@ -144,29 +154,19 @@ export class ItemOfensiveStatsDetail implements IDescribable {
 
         var quantifier = this.Amount ? this.Amount : this.AmountPercentage + "%";
 
-        if (this.Type == OfensiveStatsEnum.CleaveAndAoE)
-        if (!str)
+        var damageTypes:OfensiveStatsEnum[] = [
+            OfensiveStatsEnum.ArmorReductionAndBleed,
+            OfensiveStatsEnum.PoisonAndBurn,
+            OfensiveStatsEnum.KnockbackAndStun,
+            OfensiveStatsEnum.CleaveAndAoE,
+            OfensiveStatsEnum.ChainAndPierce,
+            OfensiveStatsEnum.FreezeAndRoot
+        ];
+        if (!str && damageTypes.includes(this.Type)) {
             str += "Increase " + Helpers.getPropertyByValue(OfensiveStatsEnum, this.Type) + ofensiveAffixStatCategoryStr + " by " + quantifier;
-        if (this.Type == OfensiveStatsEnum.PoisonAndBurn)
-        if (!str)
-            str += "Increase " + Helpers.getPropertyByValue(OfensiveStatsEnum, this.Type) + ofensiveAffixStatCategoryStr + " by " + quantifier;
-        if (this.Type == OfensiveStatsEnum.ArmorReductionAndBleed)
-        if (!str)
-            str += "Increase " + Helpers.getPropertyByValue(OfensiveStatsEnum, this.Type) + ofensiveAffixStatCategoryStr + " by " + quantifier;
-        if (this.Type == OfensiveStatsEnum.FreezeAndStun)
-        if (!str)
-            str += "Increase " + Helpers.getPropertyByValue(OfensiveStatsEnum, this.Type) + ofensiveAffixStatCategoryStr + " by " + quantifier;
-        if (this.Type == OfensiveStatsEnum.KnockbackAndRoot)
-        if (!str)
-            str += "Increase " + Helpers.getPropertyByValue(OfensiveStatsEnum, this.Type) + ofensiveAffixStatCategoryStr + " by " + quantifier;
-        if (this.Type == OfensiveStatsEnum.ChainAndPierce)
-        if (!str)
-            str += "Increase " + Helpers.getPropertyByValue(OfensiveStatsEnum, this.Type) + ofensiveAffixStatCategoryStr + " by " + quantifier;
-        if (this.Type == OfensiveStatsEnum.CastAndProjectileRange)
-        if (!str)
+        }
+        if (this.Type == OfensiveStatsEnum.CastAndProjectileRange && !str)
             str += "Increase " + Helpers.getPropertyByValue(OfensiveStatsEnum, this.Type) + " by " + quantifier;
-        // if (this.Type == OfensiveStatsEnum.Socket)
-        //     str += "Socket";
 
         return str;
     }

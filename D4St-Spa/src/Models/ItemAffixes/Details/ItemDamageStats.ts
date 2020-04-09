@@ -12,6 +12,7 @@ export class ItemDamageStats implements IDescribable {
     private Level:number;
     private PowerLevel: number;
     private EmpowerPercentage: number;
+    private statsCalculated: boolean;
 
     constructor(level:number, powerLevel:number, weaponType: ItemWeaponTypesEnum, damageType?: DamageTypesEnum, damageElement?:ResistanceTypesEnum,  minDamage?: number, maxDamage?: number, empowerPercentage?:number) {
         this.PowerLevel = powerLevel;
@@ -42,8 +43,16 @@ export class ItemDamageStats implements IDescribable {
         var selectedElement = damageElements[Helpers.getRandom(0, damageElements.length - 1)];
     
         var calculatedData = hasDamageData ? new CalculationsHelper().getDamageCalculatedData(this.Level, this.PowerLevel, this.MinDamage, this.MaxDamage) : [0, 0, empPercAlternate]; // For Effects, not primary damage
-        var selectedEmpowerPercentage = hasDamageData ? this.EmpowerPercentage : calculatedData[2];// If weapon don't always give the empowerPercentage
+        var selectedEmpowerPercentage = hasDamageData ? this.EmpowerPercentage : calculatedData[2];// If weapon, give the empowerPercentage only for PrimaryDamage
         var data = new ItemDamageStats(this.Level, this.PowerLevel, this.WeaponType, mainDamageType, selectedElement, calculatedData[0], calculatedData[1], selectedEmpowerPercentage);
+
+        if (!this.statsCalculated) {
+            this.MinDamage = data.MinDamage;
+            this.MaxDamage = data.MaxDamage;
+            this.EmpowerPercentage = data.EmpowerPercentage;
+        }
+
+        this.statsCalculated = true;
         return data;
     }
 

@@ -3,11 +3,13 @@ import { IDropdownImageItem } from 'src/Models/_Common/IDropdownImageItem';
 import { DropdownImageItem } from 'src/Models/_Common/DropdownImageItem';
 import { Helpers } from 'src/_Helpers/helpers';
 import { ItemAffixGenerator } from 'src/Models/ItemAffixes/ItemAffixGenerator';
-import { ItemCategoriesEnum } from 'src/_Enums/itemAffixEnums';
+import { ItemCategoriesEnum, ItemArmorTypesEnum, ItemJewelryTypesEnum, ItemWeaponTypesEnum } from 'src/_Enums/itemAffixEnums';
 import { ItemAffix } from 'src/Models/ItemAffixes/ItemAffix';
 import { BasicCharStats } from 'src/Models/BasicCharStats';
 import { SkillVM } from 'src/Models/SkillVM';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
+import { IItemAffix } from 'src/Models/ItemAffixes/IItemAffix';
+import { InventoryVM } from 'src/Models/InventoryVM';
 
 @Component({
   selector: 'app-item-generator',
@@ -15,21 +17,24 @@ import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
   styleUrls: ['./item-generator.component.css']
 })
 export class ItemGeneratorComponent implements OnInit {
+  @Output() EquipItemEmiter: EventEmitter<InventoryVM> = new EventEmitter(true);
 
-  constructor() { this.generateRandom = true; }
+  constructor() { this.generateRandom = true; this.selectedDescriptions = []; }
 
   @Input() categories: IDropdownImageItem[];
   @Input() items: IDropdownImageItem[];
   @Input() rarities: IDropdownImageItem[];
   @Input() skills: SkillVM[];
   generateRandom:boolean;
+  selectedItem:IItemAffix[];
+  selectedDescriptions:string[];
   // @Output() SelectCategory = new EventEmitter<IDropdownImageItem>(true);
   // @Output() SelectType = new EventEmitter<IDropdownImageItem>(true);
 
   categoriesStr:string[] = ["Armor", "Weapons", "Jewelry"];
-  armors:string[] = ["Chest", "Pants", "Gloves", "Boots", "Helm"];
-  weapons:string[] = ["Axes", "Bows", "Hammers", "Swords", "Wands", "Javelins"];
-  jewelries:string[] = ["Rings", "Amulets"];
+  armors:string[] = ["Boots","Chest", "Gloves", "Helm", "Pants"];
+  weapons:string[] = ["Axes", "Bows", "Hammers", "Javelins", "Staves", "Swords", "Wands"];
+  jewelries:string[] = ["Amulets", "Rings"];
   raritiesStr:string[] = ["Magic", "Rare", "Legendary"];
 
   itemCategoriesCaption:string = "Item Categories";
@@ -94,10 +99,14 @@ export class ItemGeneratorComponent implements OnInit {
     // this.SelectCategory.emit(item);
   }
 
-  async SelectTypeHandler(item: IDropdownImageItem){
+  async SelectTypeHandler(item: IDropdownImageItem) {
     this.selectedType = item;
-    this.rarities = this.GetRarityData(this.selectedCategory.name, item.name, this.raritiesStr);
-    // this.SelectType.emit(item);
+    if (!item) {
+      setTimeout(() => {
+        this.selectedType = item;
+        this.rarities = this.GetRarityData(this.selectedCategory.name, item.name, this.raritiesStr);
+      }, 75);
+    } else this.rarities = this.GetRarityData(this.selectedCategory.name, item.name, this.raritiesStr);
   }
 
   async SelectRarityHandler(item: IDropdownImageItem){
@@ -122,7 +131,7 @@ export class ItemGeneratorComponent implements OnInit {
       this.SelectRarityHandler(this.rarities.filter(r => r.id == selectedRarityId)[0]);
     }
 
-// For some reason there's delay with Random
+    // For some reason there's delay with Random
     setTimeout(() => {
       if (this.selectedCategory.id == ItemCategoriesEnum.Armor)
         itemAffixes = generator.GenerateArmorAffixes(this.levelRequirement, this.selectedType.id, this.selectedRarity.id);
@@ -131,7 +140,36 @@ export class ItemGeneratorComponent implements OnInit {
       else
         itemAffixes = generator.GenerateJewelryAffixes(this.levelRequirement, this.selectedType.id, this.selectedRarity.id);
       this.generatedAffixes = itemAffixes;
-    }, this.generateRandom ? 50 : 0);
+
+      this.selectedItem = itemAffixes;
+      var skills = this.skills;
+      this.selectedDescriptions = [];
+      this.selectedItem.forEach(a => { this.selectedDescriptions.push(a.GetAffixDescription(skills));});
+
+    }, this.generateRandom ? 75 : 0);
+  }
+
+  async EquipItem(data:IItemAffix[]) {
+    var inventoryData = new InventoryVM(this.selectedCategory.id, this.selectedType.id, this.selectedRarity.id);
+    if (this.selectedCategory.id == 1) {
+      // Armor
+      data.forEach(a => { if (this.selectedType.id == ItemArmorTypesEnum.Boots) { inventoryData.Boots.push(a); }})
+      data.forEach(a => { if (this.selectedType.id == ItemArmorTypesEnum.Chest) { inventoryData.Chest.push(a); }})
+      data.forEach(a => { if (this.selectedType.id == ItemArmorTypesEnum.Gloves) { inventoryData.Gloves.push(a); }})
+      data.forEach(a => { if (this.selectedType.id == ItemArmorTypesEnum.Helm) { inventoryData.Helm.push(a); }})
+      data.forEach(a => { if (this.selectedType.id == ItemArmorTypesEnum.Pants) { inventoryData.Pants.push(a); }})
+    }
+    else if (this.selectedCategory.id == 2) {
+      // Weapon
+      data.forEach(a => { inventoryData.Weapon.push(a); })
+    }
+    else {
+      // Jewelry
+      if (this.selectedType.id == ItemJewelryTypesEnum.Amulet) { inventoryData.Amulet = data; }
+      else inventoryData.Ring1 = data;
+    }
+
+    this.EquipItemEmiter.emit(inventoryData);
   }
 
   protected GetDamageTypesInfo():string[] {
