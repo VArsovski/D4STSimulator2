@@ -4,6 +4,7 @@ import { Helpers } from 'src/_Helpers/helpers';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 
 export class ItemDamageStats implements IDescribable {
+    IsPrimaryDamage: boolean;
     WeaponType: ItemWeaponTypesEnum;
     MainDamageType: DamageTypesEnum;
     ElementType: ResistanceTypesEnum;
@@ -11,10 +12,11 @@ export class ItemDamageStats implements IDescribable {
     MaxDamage: number;
     private Level:number;
     private PowerLevel: number;
-    private EmpowerPercentage: number;
+    EmpowerPercentage: number;
     private statsCalculated: boolean;
 
-    constructor(level:number, powerLevel:number, weaponType: ItemWeaponTypesEnum, damageType?: DamageTypesEnum, damageElement?:ResistanceTypesEnum,  minDamage?: number, maxDamage?: number, empowerPercentage?:number) {
+    constructor(isPrimary:boolean, level:number, powerLevel:number, weaponType: ItemWeaponTypesEnum, damageType?: DamageTypesEnum, damageElement?:ResistanceTypesEnum,  minDamage?: number, maxDamage?: number, empowerPercentage?:number) {
+        this.IsPrimaryDamage = isPrimary;
         this.PowerLevel = powerLevel;
         this.Level = level;
         this.WeaponType = weaponType;
@@ -43,12 +45,28 @@ export class ItemDamageStats implements IDescribable {
         var selectedElement = damageElements[Helpers.getRandom(0, damageElements.length - 1)];
     
         var calculatedData = hasDamageData ? new CalculationsHelper().getDamageCalculatedData(this.Level, this.PowerLevel, this.MinDamage, this.MaxDamage) : [0, 0, empPercAlternate]; // For Effects, not primary damage
-        var selectedEmpowerPercentage = hasDamageData ? this.EmpowerPercentage : calculatedData[2];// If weapon, give the empowerPercentage only for PrimaryDamage
-        var data = new ItemDamageStats(this.Level, this.PowerLevel, this.WeaponType, mainDamageType, selectedElement, calculatedData[0], calculatedData[1], selectedEmpowerPercentage);
+        var selectedEmpowerPercentage = hasDamageData ? (this.EmpowerPercentage || calculatedData[2]) : calculatedData[2];// If weapon, give the empowerPercentage only for PrimaryDamage
+        var data = new ItemDamageStats(this.IsPrimaryDamage, this.Level, this.PowerLevel, this.WeaponType, mainDamageType, selectedElement, calculatedData[0], calculatedData[1], selectedEmpowerPercentage);
 
         if (!this.statsCalculated) {
             this.MinDamage = data.MinDamage;
             this.MaxDamage = data.MaxDamage;
+            this.ElementType = data.ElementType;
+
+            // Initialize EmpowerPercentage Logic
+            var appropriateDamageTypes = this.GetAppropriateDamageCategories(data.WeaponType);
+            if (appropriateDamageTypes.indexOf(data.MainDamageType) != -1) {
+                var powerFactor = data.WeaponType == ItemWeaponTypesEnum.Wand || data.WeaponType == ItemWeaponTypesEnum.Staff ? 3 : 1;
+                data.EmpowerPercentage = new CalculationsHelper().getWeaponEmpoweredValue(data.EmpowerPercentage, powerFactor);
+            }
+    
+            var avgDamage = data.MinDamage + data.MaxDamage;
+    
+            var compensationFactor = avgDamage ? Math.round((data.Level / (avgDamage)) * 10) / 10 : 0;
+            compensationFactor = Math.round(compensationFactor * (18-data.Level/4) * 10)/10;
+            data.EmpowerPercentage = Math.round(data.EmpowerPercentage + 2*compensationFactor);
+    
+            // this.MainDamageType = data.MainDamageType;
             this.EmpowerPercentage = data.EmpowerPercentage;
         }
 
@@ -59,13 +77,13 @@ export class ItemDamageStats implements IDescribable {
     // Stats for level1, calculate for other levels
     private GetLevelData():ItemDamageStats[]{
         var basicDamageTypes:ItemDamageStats[] = [];
-        basicDamageTypes.push(new ItemDamageStats(this.Level, this.PowerLevel, ItemWeaponTypesEnum.Axe,     Helpers.getRandom(1, 6), ResistanceTypesEnum.Physical, 2, 10));
-        basicDamageTypes.push(new ItemDamageStats(this.Level, this.PowerLevel, ItemWeaponTypesEnum.Bow,     Helpers.getRandom(1, 6), ResistanceTypesEnum.Physical, 3, 8));
-        basicDamageTypes.push(new ItemDamageStats(this.Level, this.PowerLevel, ItemWeaponTypesEnum.Hammer,  Helpers.getRandom(1, 6), ResistanceTypesEnum.Physical, 6, 8));
-        basicDamageTypes.push(new ItemDamageStats(this.Level, this.PowerLevel, ItemWeaponTypesEnum.Javelin, Helpers.getRandom(1, 6), ResistanceTypesEnum.Physical, 1, 12));
-        basicDamageTypes.push(new ItemDamageStats(this.Level, this.PowerLevel, ItemWeaponTypesEnum.Sword,   Helpers.getRandom(1, 6), ResistanceTypesEnum.Physical, 4, 9));
-        basicDamageTypes.push(new ItemDamageStats(this.Level, this.PowerLevel, ItemWeaponTypesEnum.Wand,    Helpers.getRandom(1, 6), ResistanceTypesEnum.Physical, 3, 7));
-        basicDamageTypes.push(new ItemDamageStats(this.Level, this.PowerLevel, ItemWeaponTypesEnum.Staff,   Helpers.getRandom(1, 6), ResistanceTypesEnum.Physical, 5, 9));
+        basicDamageTypes.push(new ItemDamageStats(this.IsPrimaryDamage, this.Level, this.PowerLevel, ItemWeaponTypesEnum.Axe,     Helpers.getRandom(1, 6), ResistanceTypesEnum.Physical, 2, 10));
+        basicDamageTypes.push(new ItemDamageStats(this.IsPrimaryDamage, this.Level, this.PowerLevel, ItemWeaponTypesEnum.Bow,     Helpers.getRandom(1, 6), ResistanceTypesEnum.Physical, 3, 8));
+        basicDamageTypes.push(new ItemDamageStats(this.IsPrimaryDamage, this.Level, this.PowerLevel, ItemWeaponTypesEnum.Hammer,  Helpers.getRandom(1, 6), ResistanceTypesEnum.Physical, 6, 8));
+        basicDamageTypes.push(new ItemDamageStats(this.IsPrimaryDamage, this.Level, this.PowerLevel, ItemWeaponTypesEnum.Javelin, Helpers.getRandom(1, 6), ResistanceTypesEnum.Physical, 1, 12));
+        basicDamageTypes.push(new ItemDamageStats(this.IsPrimaryDamage, this.Level, this.PowerLevel, ItemWeaponTypesEnum.Sword,   Helpers.getRandom(1, 6), ResistanceTypesEnum.Physical, 4, 9));
+        basicDamageTypes.push(new ItemDamageStats(this.IsPrimaryDamage, this.Level, this.PowerLevel, ItemWeaponTypesEnum.Wand,    Helpers.getRandom(1, 6), ResistanceTypesEnum.Physical, 3, 7));
+        basicDamageTypes.push(new ItemDamageStats(this.IsPrimaryDamage, this.Level, this.PowerLevel, ItemWeaponTypesEnum.Staff,   Helpers.getRandom(1, 6), ResistanceTypesEnum.Physical, 5, 9));
         return basicDamageTypes;
     };
 
@@ -92,9 +110,10 @@ export class ItemDamageStats implements IDescribable {
         var damage1 = Math.min(data.MinDamage, data.MaxDamage);
         var damage2 = Math.max(data.MinDamage, data.MaxDamage);
         if (damage1 == damage2)    // Just in case if rolls were THAT biased
-            damage2+= (1+ data.Level/2);
+            damage2 += (1+ data.Level/2);
 
         var empoweredStr = new CalculationsHelper().getEmpoweredStr("*", data.PowerLevel);
+        this.statsCalculated = false;
         var empowerTypeStr = this.GetAppropriateEmpoweredType(data);
 
         var primaryStr = data.MinDamage && data.MaxDamage
@@ -204,19 +223,6 @@ export class ItemDamageStats implements IDescribable {
     GetAppropriateEmpoweredType(data:ItemDamageStats) {
         if (!data.EmpowerPercentage)
             return "";
-
-        var appropriateDamageTypes = this.GetAppropriateDamageCategories(data.WeaponType);
-        // If appropriate damage type rolled, buff
-        if (appropriateDamageTypes.indexOf(data.MainDamageType) != -1) {
-            var powerFactor = data.WeaponType == ItemWeaponTypesEnum.Wand || data.WeaponType == ItemWeaponTypesEnum.Staff ? 3 : 1;
-            data.EmpowerPercentage = new CalculationsHelper().getWeaponEmpoweredValue(data.EmpowerPercentage, powerFactor);
-        }
-
-        var avgDamage = data.MinDamage + data.MaxDamage;
-
-        var compensationFactor = avgDamage ? Math.round((data.Level / (avgDamage)) * 10) / 10 : 0;
-        compensationFactor = Math.round(compensationFactor * (18-data.Level/4) * 10)/10;
-        data.EmpowerPercentage = Math.round((data.EmpowerPercentage + 2*compensationFactor) * 10)/10;
 
         return "Damage of " + Helpers.getPropertyByValue(DamageTypesEnum, data.MainDamageType) + " attacks/abilities increased by " + data.EmpowerPercentage + "%";
     }

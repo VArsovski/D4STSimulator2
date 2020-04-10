@@ -175,7 +175,7 @@ export class ItemBasicStats implements IDescribable {
 }
 
 export class ItemBasicStatsDetail implements IDescribable {
-    private Amount: number;
+    Amount: number;
     private Type: BasicStatsEnum;
     private Level: number;
     private PowerLevel: number;

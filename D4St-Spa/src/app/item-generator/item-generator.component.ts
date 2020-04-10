@@ -1,9 +1,9 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, SimpleChanges } from '@angular/core';
 import { IDropdownImageItem } from 'src/Models/_Common/IDropdownImageItem';
 import { DropdownImageItem } from 'src/Models/_Common/DropdownImageItem';
 import { Helpers } from 'src/_Helpers/helpers';
 import { ItemAffixGenerator } from 'src/Models/ItemAffixes/ItemAffixGenerator';
-import { ItemCategoriesEnum, ItemArmorTypesEnum, ItemJewelryTypesEnum, ItemWeaponTypesEnum } from 'src/_Enums/itemAffixEnums';
+import { ItemCategoriesEnum, ItemArmorTypesEnum, ItemJewelryTypesEnum } from 'src/_Enums/itemAffixEnums';
 import { ItemAffix } from 'src/Models/ItemAffixes/ItemAffix';
 import { BasicCharStats } from 'src/Models/BasicCharStats';
 import { SkillVM } from 'src/Models/SkillVM';
@@ -49,6 +49,13 @@ export class ItemGeneratorComponent implements OnInit {
 
   ngOnInit() {
     this.categories = this.GetCategoriesData(this.categoriesStr);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes["BasicData"].currentValue) {
+      var basicData = changes["BasicData"].currentValue;
+      this.RecalculateItemAffixConditions(basicData);
+    }
   }
 
   GetCategoriesData(elements:string[]):DropdownImageItem[] {
@@ -137,14 +144,14 @@ export class ItemGeneratorComponent implements OnInit {
         itemAffixes = generator.GenerateArmorAffixes(this.levelRequirement, this.selectedType.id, this.selectedRarity.id);
       else if (this.selectedCategory.id == ItemCategoriesEnum.Weapon)
         itemAffixes = generator.GenerateWeaponAffixes(this.levelRequirement, this.selectedType.id, this.selectedRarity.id);
-      else
-        itemAffixes = generator.GenerateJewelryAffixes(this.levelRequirement, this.selectedType.id, this.selectedRarity.id);
-      this.generatedAffixes = itemAffixes;
+      else itemAffixes = generator.GenerateJewelryAffixes(this.levelRequirement, this.selectedType.id, this.selectedRarity.id);
 
+      this.generatedAffixes = itemAffixes;
       this.selectedItem = itemAffixes;
       var skills = this.skills;
       this.selectedDescriptions = [];
       this.selectedItem.forEach(a => { this.selectedDescriptions.push(a.GetAffixDescription(skills));});
+      this.RecalculateItemAffixConditions(this.BasicData);
 
     }, this.generateRandom ? 75 : 0);
   }
@@ -198,5 +205,15 @@ export class ItemGeneratorComponent implements OnInit {
     }
 
     return this.levelRequirement;
+  }
+
+  private RecalculateItemAffixConditions(basicData:BasicCharStats) {
+    this.selectedItem.forEach(a => {
+      if (a.Condition) {
+        var selectedPower = a.Condition.ConditionPowerType == 1 ? basicData.AngelicPower
+        : a.Condition.ConditionPowerType == 2 ? basicData.DemonicPower : basicData.AncestralPower
+    a.ConditionSatisfied = selectedPower >= a.Condition.Condition;            
+      }
+    })
   }
 }

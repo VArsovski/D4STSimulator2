@@ -1,8 +1,12 @@
 import { Component, OnInit, Input, Output, SimpleChanges, OnChanges } from '@angular/core';
 import { IItemAffix } from 'src/Models/ItemAffixes/IItemAffix';
-import { AffixCategoryEnum, ArmorTypesEnum } from 'src/_Enums/itemAffixEnums';
+import { AffixCategoryEnum, ArmorTypesEnum, ItemAffixTypeEnum, DamageTypesEnum } from 'src/_Enums/itemAffixEnums';
 import { InventoryVM } from 'src/Models/InventoryVM';
 import { Helpers } from 'src/_Helpers/helpers';
+import { InventoryArmorModel } from 'src/Models/InventoryArmorModel';
+import { InventoryDamageModel } from 'src/Models/InventoryDamageModel';
+import { ItemAffix } from 'src/Models/ItemAffixes/ItemAffix';
+import { InventoryBasicStatsModel } from 'src/Models/InventoryBasicStatsModel';
 
 @Component({
   selector: 'app-inventory',
@@ -15,9 +19,19 @@ export class InventoryComponent implements OnInit, OnChanges {
   @Input()inventoryItem: InventoryVM;
   protected tempInventoryData: InventoryVM;
 
-  protected HeavyArmor:number;
-  protected LightArmor:number;
-  protected MysticArmor:number;
+  protected HeavyArmor:InventoryArmorModel;
+  protected LightArmor:InventoryArmorModel;
+  protected MysticArmor:InventoryArmorModel;
+  protected BleedOrArmorReduction:InventoryDamageModel;
+  protected PoisonOrBurn:InventoryDamageModel;
+  protected CleaveOrAoE:InventoryDamageModel;
+  protected KnockbackOrStun:InventoryDamageModel;
+  protected ChainOrPierceAttack:InventoryDamageModel;
+  protected ProjectileOrSummon:InventoryDamageModel;
+  protected FreezeOrRoot:InventoryDamageModel;
+  protected Physical:InventoryDamageModel;
+  protected BasicStats:InventoryBasicStatsModel;
+
   private armors :string[] = ["Boots","Chest", "Gloves", "Helm", "Pants"];
   private weapons:string[] = ["Axes", "Bows", "Hammers", "Javelins", "Staves", "Swords", "Wands"];
   private jewelries:string[] = ["Amulet", "Ring1", "Ring2"];//["Amulets", "Rings"];
@@ -32,7 +46,20 @@ export class InventoryComponent implements OnInit, OnChanges {
   protected ring1Src:string;
   protected ring2Src:string;
 
-  constructor() { }
+  constructor() {
+    this.HeavyArmor = new InventoryArmorModel();
+    this.LightArmor = new InventoryArmorModel();
+    this.MysticArmor = new InventoryArmorModel();
+    this.BleedOrArmorReduction = new InventoryDamageModel();
+    this.PoisonOrBurn = new InventoryDamageModel();
+    this.CleaveOrAoE = new InventoryDamageModel();
+    this.KnockbackOrStun = new InventoryDamageModel();
+    this.ChainOrPierceAttack = new InventoryDamageModel();
+    this.ProjectileOrSummon = new InventoryDamageModel();
+    this.FreezeOrRoot = new InventoryDamageModel();
+    this.Physical = new InventoryDamageModel();
+    this.BasicStats = new InventoryBasicStatsModel();
+  }
 
   ngOnInit() {
     this.inventoryData = new InventoryVM(1, 1, 1);
@@ -63,10 +90,11 @@ export class InventoryComponent implements OnInit, OnChanges {
           this.imageRaritiesDict["Ring2"] = this.inventoryData.selectedRarity;
         }
 
-        if (this.armors.includes(e) && selectedItem.length != 0)
+        if (selectedItem.length != 0) {
           await this.calculateArmorTypes(selectedItem, e);
-
-        this.UpdateInventoryImages(e);
+          await this.calculateDamageTypes(selectedItem, e);
+        }
+        await this.UpdateInventoryImages(e);
       }
     });
   }
@@ -77,24 +105,71 @@ export class InventoryComponent implements OnInit, OnChanges {
     }
     else this.tempInventoryData[itemType] = itemData;
 
-    var armorData:IItemAffix[][] = [
+    var data:IItemAffix[][] = [
       this.inventoryData.Helm,
       this.inventoryData.Chest,
       this.inventoryData.Pants,
       this.inventoryData.Boots,
-      this.inventoryData.Gloves
+      this.inventoryData.Gloves,
+      this.inventoryData.Amulet,
+      this.inventoryData.Ring1,
+      this.inventoryData.Ring2,
+      this.inventoryData.Weapon
     ];
 
-    this.HeavyArmor = 0;
-    this.LightArmor = 0;
-    this.MysticArmor = 0;
+    this.HeavyArmor = new InventoryArmorModel();
+    this.LightArmor = new InventoryArmorModel();
+    this.MysticArmor = new InventoryArmorModel();
 
-    armorData.forEach(a => {
+    var ccTypesdata = { totalCCPercentageRateHeavy: 0, totalCCPercentageRateLight: 0, totalCCPercentageRateMystic: 0 }
+    data.forEach(a => {
       a.forEach(affix => {
-        if (affix.AffixCategory == AffixCategoryEnum.PrimaryArmor) {
+        if (affix.Contents.armorStat) {
           var armorAffixData = affix.Contents.armorStat;
           var selectedArmor = Helpers.getPropertyByValue(ArmorTypesEnum, armorAffixData.ArmorType);
-          this[selectedArmor + "Armor"] += armorAffixData.Armor;
+          this[selectedArmor + "Armor"].Armor += armorAffixData.Armor;
+          this[selectedArmor + "Armor"].ItemPieces += 1;
+          ccTypesdata["totalCCPercentageRate" + selectedArmor] += armorAffixData.Armor * armorAffixData.ReducePercentage;
+        }
+      })
+    });
+
+    var armorEnumData = Helpers.extractEnum(ArmorTypesEnum).slice(0, 3);
+    armorEnumData.forEach(e => {
+      var value = e.value;
+      if (this[value + "Armor"].Armor != 0)
+      ccTypesdata["totalCCPercentageRate" + value] = Math.round(this[value + "Armor"].ItemPieces * ccTypesdata["totalCCPercentageRate" + value]/this[value + "Armor"].Armor);
+    });
+
+    this.HeavyArmor.CCPercentage = ccTypesdata.totalCCPercentageRateHeavy;
+    this.LightArmor.CCPercentage = ccTypesdata.totalCCPercentageRateLight;
+    this.MysticArmor.CCPercentage = ccTypesdata.totalCCPercentageRateMystic;
+  }
+
+  protected async calculateDamageTypes(itemData:IItemAffix[], itemType:string) {
+    if ((this.inventoryData[itemType] || []).length == 0) {
+      this.inventoryData[itemType] = itemData;
+    }
+    else this.tempInventoryData[itemType] = itemData;
+
+    var itemTypes:string[] = ["Helm","Chest","Pants","Boots","Gloves","Amulet","Ring1","Ring2","Weapon"];
+
+    this.BleedOrArmorReduction = new InventoryDamageModel();
+    this.PoisonOrBurn = new InventoryDamageModel();
+    this.CleaveOrAoE = new InventoryDamageModel();
+    this.KnockbackOrStun = new InventoryDamageModel();
+    this.ChainOrPierceAttack = new InventoryDamageModel();
+    this.ProjectileOrSummon = new InventoryDamageModel();
+    this.FreezeOrRoot = new InventoryDamageModel();
+    this.Physical = new InventoryDamageModel();
+
+    itemTypes.forEach(a => {
+      var affixes:ItemAffix[] = this.inventoryData[a];
+      affixes.forEach(affix => {
+        if (affix.Contents.damageStat) {
+          var affixData = affix.Contents.damageStat;
+          var selected = Helpers.getPropertyByValue(DamageTypesEnum, affixData.MainDamageType);
+          this[selected].Percentage += affixData.EmpowerPercentage;
         }
       })
     });

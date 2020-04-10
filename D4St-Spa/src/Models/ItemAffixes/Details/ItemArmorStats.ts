@@ -12,7 +12,7 @@ export class ItemArmorStats implements IDescribable {
     ArmorType: ArmorTypesEnum;
     private PowerLevel: any;
     private selectedCCTypes: CCEffectTypesEnum[];
-    private ReducePercentage: number;
+    ReducePercentage: number;
     private Level: number;
     private statsCalculated:boolean;
 

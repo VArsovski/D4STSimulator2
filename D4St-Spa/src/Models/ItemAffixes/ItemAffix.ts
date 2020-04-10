@@ -15,6 +15,7 @@ export class ItemAffix implements IItemAffix {
     CastProcType: CastProcTypesEnum;       // OnHit, OnCast, OnDeath
     AttackProcType: AttackTypesEnum;       // Melee, Projectile, AoE, TriggerEffect, Summon
     AffixCategory: AffixCategoryEnum;
+    ConditionSatisfied: boolean;
 
     // The Basic Data, Function should return formatted text with numbers and set Description
     Contents:ItemAffixOutput;
@@ -32,6 +33,8 @@ export class ItemAffix implements IItemAffix {
         this.AffixType = affixType;
         this.Condition = condition;
         this.PowerLevel = powerLevel;
+        if (!this.Condition)
+            this.ConditionSatisfied = true;
 
         // if (affixCategory || {} != {}) {
         this.AffixCategory = affixCategory;
@@ -101,5 +104,8 @@ export class ItemAffix implements IItemAffix {
             console.log(this);
 
         return statDescr + " " + conditionStr;
+    }
+    public SetCondition(ConditionSatisfied:boolean) {
+        this.ConditionSatisfied = ConditionSatisfied;
     }
 }

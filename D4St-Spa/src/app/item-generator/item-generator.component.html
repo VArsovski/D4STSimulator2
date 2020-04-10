@@ -54,12 +54,8 @@
                 </div>
             </div>
             <div style="width: 200%; transform: translate(-60%, 20%);" class="row text-left" *ngFor="let affix of this.generatedAffixes; let i = index">
-                <div class="col h3 customFontRed" *ngIf="(affix.Condition != null && affix.Condition?.Condition > this.BasicData.AngelicPower && affix.Condition.ConditionPowerType == 1)">{{this.selectedDescriptions[i]}}</div>
-                <div class="col h3 customFontRed" *ngIf="(affix.Condition != null && affix.Condition?.Condition > this.BasicData.DemonicPower && affix.Condition.ConditionPowerType == 2)">{{this.selectedDescriptions[i]}}</div>
-                <div class="col h3 customFontRed" *ngIf="(affix.Condition != null && affix.Condition?.Condition > this.BasicData.AncestralPower && affix.Condition.ConditionPowerType == 3)">{{this.selectedDescriptions[i]}}</div>
-                <div class="col h3 customFontGreen" *ngIf="(affix.Condition != null && affix.Condition?.Condition <= this.BasicData.AngelicPower && affix.Condition.ConditionPowerType == 1)">{{this.selectedDescriptions[i]}}</div>
-                <div class="col h3 customFontGreen" *ngIf="(affix.Condition != null && affix.Condition?.Condition <= this.BasicData.DemonicPower && affix.Condition.ConditionPowerType == 2)">{{this.selectedDescriptions[i]}}</div>
-                <div class="col h3 customFontGreen" *ngIf="(affix.Condition != null && affix.Condition?.Condition <= this.BasicData.AncestralPower && affix.Condition.ConditionPowerType == 3)">{{this.selectedDescriptions[i]}}</div>
+                <div class="col h3 customFontRed" *ngIf="(affix.Condition != null && affix.Condition?.Condition && !affix.ConditionSatisfied)">{{this.selectedDescriptions[i]}}</div>
+                <div class="col h3 customFontGreen" *ngIf="(affix.Condition != null && affix.Condition?.Condition && affix.ConditionSatisfied)">{{this.selectedDescriptions[i]}}</div>
                 <div class="col h3 customFontGreen" *ngIf="affix.Condition == null">{{this.selectedDescriptions[i]}}</div>
             </div>
         </div>

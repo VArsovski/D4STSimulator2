@@ -46,14 +46,15 @@ export class ItemAffixGenerator {
         affixesList = this.AddCategoryToAffixes(level, affixesList, rarity);
 
         var powerLevelDefault = 0;
-        var selectedDamage = new ItemDamageStats(level, powerLevelDefault, ItemWeaponTypesEnum.Axe).GetBasicWeaponStats(itemType, Helpers.getRandom(1, 6));
+        // Set primary damage as true for the main damage stat
+        var selectedDamage = new ItemDamageStats(true, level, powerLevelDefault, ItemWeaponTypesEnum.Axe).GetBasicWeaponStats(itemType, Helpers.getRandom(1, 6));
+        selectedDamage.GetData();
         affixesList.forEach(a => {
-            if (a.AffixCategory == AffixCategoryEnum.PrimaryDamage)
+            if (a.AffixCategory == AffixCategoryEnum.PrimaryDamage) {
                 a.Contents.damageStat = selectedDamage;
+            }
         });
     
-        // console.clear();
-        // console.log(affixesList);
         return affixesList;
     }
     

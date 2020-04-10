@@ -1,32 +1,46 @@
+<div class="row basicStatsDisplayHolder">
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><img style="width: 35px; height: 35px;" src="../../_Resources/img/HealthPotion.png"/><label>{{this.BasicStats.HP.Amount + "(" + this.BasicStats.HP.Amount + ")"}}</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><img style="width: 35px; height: 35px;" src="../../_Resources/img/ResourcePotion3.gif"/><label>{{this.BasicStats.Resource.Amount + "(" + this.BasicStats.Resource.Amount + ")"}}</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><img style="width: 35px; height: 35px;" src="../../_Resources/img/StaminaPotion.png"/><label>{{this.BasicStats.Stamina.Amount + "(" + this.BasicStats.Stamina.Amount + ")"}}</label></div>
+</div>
+<div class="row powerStatsDisplayHolder">
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><img style="width: 35px; height: 35px;" src="../../_Resources/img/AngelicPower.png"/><label>{{this.BasicStats.AngelicPower.Amount}}</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><img style="width: 35px; height: 35px;" src="../../_Resources/img/DemonicPower.png"/><label>{{this.BasicStats.DemonicPower.Amount}}</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><img style="width: 35px; height: 35px;" src="../../_Resources/img/AncestralPower.png"/><label>{{this.BasicStats.AncestralPower.Amount}}</label></div>
+</div>
+
 <div class="row attacksDisplayHolder">
-    <div class="customFontBlue h3 sizeCrystal iconTop col">
-        <img src="../../_Resources/img/AttackReduceArmor.png"/><label>R&B</label></div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col">
-        <img src="../../_Resources/img/AttackPoison.png"/><label>P&B</label></div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col">
-        <img src="../../_Resources/img/AttackCleave.png"/><label>C&A</label></div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col">
-        <img src="../../_Resources/img/AttackKnockback.jpg"/><label>K&S</label></div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col">
-        <img src="../../_Resources/img/AttackChain.jfif"/><label>C&P</label></div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col">
-        <img src="../../_Resources/img/AttackProjectile.png"/><label>P&S</label></div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col">
-        <img src="../../_Resources/img/AttackFreeze.png"/><label>F&R</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><img style="width: 35px; height: 35px;" src="../../_Resources/img/AttackPhysical2.png"/><label>{{this.Physical.Percentage + "%"}}</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><img style="width: 35px; height: 35px;" src="../../_Resources/img/AttackReduceArmor.png"/><label>{{this.BleedOrArmorReduction.Percentage + "%"}}</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><img style="width: 35px; height: 35px;" src="../../_Resources/img/AttackPoison.png"/><label>{{this.PoisonOrBurn.Percentage + "%"}}</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><img style="width: 35px; height: 35px;" src="../../_Resources/img/AttackCleave.png"/><label>{{this.CleaveOrAoE.Percentage + "%"}}</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><img style="width: 35px; height: 35px;" src="../../_Resources/img/AttackKnockback.jpg"/><label>{{this.KnockbackOrStun.Percentage + "%"}}</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><img style="width: 35px; height: 35px;" src="../../_Resources/img/AttackChain.jfif"/><label>{{this.ChainOrPierceAttack.Percentage + "%"}}</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><img style="width: 35px; height: 35px;" src="../../_Resources/img/AttackProjectile.png"/><label>{{this.ProjectileOrSummon.Percentage + "%"}}</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><img style="width: 35px; height: 35px;" src="../../_Resources/img/AttackFreeze.png"/><label>{{this.FreezeOrRoot.Percentage + "%"}}</label></div>
+    
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><img style="width: 35px; height: 35px;" src="../../_Resources/img/PhysicalDamage1.png"/><label>{{this.Physical.Percentage + "%"}}</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><img style="width: 35px; height: 35px;" src="../../_Resources/img/FireDamage1.png"/><label>{{this.BleedOrArmorReduction.Percentage + "%"}}</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><img style="width: 35px; height: 35px;" src="../../_Resources/img/PoisonDamage.png"/><label>{{this.Physical.Percentage + "%"}}</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><img style="width: 35px; height: 35px;" src="../../_Resources/img/LightningDamage.jpg"/><label>{{this.BleedOrArmorReduction.Percentage + "%"}}</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><img style="width: 35px; height: 35px;" src="../../_Resources/img/ColdDamage.png"/><label>{{this.PoisonOrBurn.Percentage + "%"}}</label></div>
 </div>
 
 <ul class="armorDisplayHolder">
     <li class="customFontBlue h3"><img src="../../_Resources/img/ArmorHeavy.png"/><label>Heavy</label>
         <br/>
-        <label style="transform: translate(20%, 20%);" class="customFontRed h2">{{this.HeavyArmor}}</label>
+        <label *ngIf="this.HeavyArmor" style="transform: translate(20%, 20%);" class="customFontRed h2">{{this.HeavyArmor.Armor}}</label>
+        <label *ngIf="this.HeavyArmor" style="transform: translate(20%, 20%);" class="customFontRed h2">{{" [" + this.HeavyArmor.CCPercentage + "%]"}}</label>
     </li>
     <li class="customFontBlue h3"><img src="../../_Resources/img/ArmorLight.png"/><label>Light</label>
         <br/>
-        <label style="transform: translate(20%, 20%);" class="customFontRed h2">{{this.LightArmor}}</label>
+        <label *ngIf="this.LightArmor" style="transform: translate(20%, 20%);" class="customFontRed h2">{{this.LightArmor.Armor}}</label>
+        <label *ngIf="this.LightArmor" style="transform: translate(20%, 20%);" class="customFontRed h2">{{" [" + this.LightArmor.CCPercentage + "%]"}}</label>
     </li>
     <li class="customFontBlue h3"><img src="../../_Resources/img/ArmorMystical.png"/><label>Mystic</label>
         <br/>
-        <label style="transform: translate(20%, 20%);" class="customFontRed h2">{{this.MysticArmor}}</label>
+        <label *ngIf="this.MysticArmor" style="transform: translate(20%, 20%);" class="customFontRed h2">{{this.MysticArmor.Armor}}</label>
+        <label *ngIf="this.MysticArmor" style="transform: translate(20%, 20%);" class="customFontRed h2">{{" [" + this.MysticArmor.CCPercentage + "%]"}}</label>
     </li>
 </ul>
 
@@ -36,7 +50,7 @@
             <img id="ABoHolder" style="opacity:1.0; transform: translate(180%, 220%);" [src]=this.bootsSrc>
             <img id="AChHolder" style="opacity:1.0; transform: translate(175%, 20%);" [src]=this.chestSrc>
             <img id="AGlHolder" style="opacity:1.0; transform: translate(305%, 20%);" [src]=this.glovesSrc>
-            <img id="AHeHolder" style="opacity:1.0; transform: translate(-25%, -100%);" [src]=this.helmSrc>
+            <img id="AHeHolder" style="width:75px;height:75px; opacity:1.0; transform: translate(-25%, -150%);" [src]=this.helmSrc>
             <img id="APaHolder" style="opacity:1.0; transform: translate(-25%, 180%);" [src]=this.pantsSrc>
             <img id="WepHolder" style="opacity:1.0; transform: translate(-455%, 15%);" [src]=this.weaponSrc>
             <img id="JAmHolder"  style="width:45px;height:45px; opacity:1.0; transform: translate(700%, -400%);" [src]=this.amuletSrc>

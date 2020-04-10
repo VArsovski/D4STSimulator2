@@ -253,7 +253,7 @@ input[type=checkbox] {
 
 .wrapperRight {
     display:table;
-    transform: translate(80%, -21%);
+    transform: translate(80%, -33%);
 	width:25%;
     max-width:25%;
     margin:auto;
@@ -274,7 +274,7 @@ input[type=checkbox] {
     list-style: none;
     width: 650px;
     height: 100px;
-    transform: translate(122%, -830%) scale(0.97, 1);
+    transform: translate(122%, -930%) scale(0.97, 1);
 }
 
 .armorDisplayHolder li {
@@ -282,14 +282,24 @@ input[type=checkbox] {
 }
 
 .armorDisplayHolder label {
-    transform:translate(10%, -180%);
+    transform:translate(10%, -200%);
 }
 
 .attacksDisplayHolder {
     width: 700px;
-    transform: translate(94%);
+    transform: translate(96%, -30%);
     list-style: none;
     /* float: left; */
+}
+
+.basicStatsDisplayHolder {
+    width:520px;
+    transform:translate(162%,-1380%);
+}
+
+.powerStatsDisplayHolder {
+    width:520px;
+    transform:translate(162%,-1560%);
 }
 
 .iconTop {
@@ -302,7 +312,7 @@ input[type=checkbox] {
     background-image: url("_Resources/img/Inventory2.png");
     background-size: cover;
     background-repeat: no-repeat;
-    transform: translate(175%, -140%);
+    transform: translate(175%, -160%);
     opacity: 0.7;
 }
 

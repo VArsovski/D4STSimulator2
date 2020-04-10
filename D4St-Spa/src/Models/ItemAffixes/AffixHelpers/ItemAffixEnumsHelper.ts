@@ -87,10 +87,11 @@ export class ItemAffixEnumsHelper {
 
         if (affixType == ItemAffixTypeEnum.Damage)
         {
-            var skipPrimaryDamageNumbers = affix.ItemCategory != ItemCategoriesEnum.Weapon;
-            var skipDamageEffectEmpower = affix.AffixCategory != AffixCategoryEnum.PrimaryDamage;
+            // var skipPrimaryDamageNumbers = affix.ItemCategory != ItemCategoriesEnum.Weapon;
+            // var skipDamageEffectEmpower = affix.AffixCategory != AffixCategoryEnum.PrimaryDamage;
+            var isPrimaryDamage = affix.AffixCategory == AffixCategoryEnum.PrimaryDamage;
             affixData.categoryStat = damageAffixesCategory[Helpers.getRandom(0, damageAffixesCategory.length-1)];
-            affixData.damageStat =  new DamageAffixHelper().GetByIndex(level, powerLevel, Helpers.getRandom(1, 7), Helpers.getRandom(1, 5), skipPrimaryDamageNumbers, skipDamageEffectEmpower).damageStat;
+            affixData.damageStat =  new DamageAffixHelper().GetByIndex(level, powerLevel, Helpers.getRandom(1, 7), Helpers.getRandom(1, 5), isPrimaryDamage).damageStat;
         }
 
         if (affixType == ItemAffixTypeEnum.Armor)
@@ -173,9 +174,10 @@ export class ItemAffixEnumsHelper {
         if (affix.AffixType == ItemAffixTypeEnum.Damage)
         {
             affixData.categoryStat = AffixCategoryEnum.PrimaryDamage;
-            var omitPrimaryDamageNumbers = itemCategory != ItemCategoriesEnum.Weapon;
-            var omitEmpowerPercentage = affix.AffixCategory != AffixCategoryEnum.PrimaryDamage;
-            var damageStat = new DamageAffixHelper().GetByIndex(level, powerLevel, Helpers.getRandom(1, 7), Helpers.getRandom(1, 5), omitPrimaryDamageNumbers, omitEmpowerPercentage).damageStat;
+            var isPrimaryDamage = affixData.categoryStat == AffixCategoryEnum.PrimaryDamage;
+            // var omitPrimaryDamageNumbers = itemCategory != ItemCategoriesEnum.Weapon;
+            // var omitEmpowerPercentage = affix.AffixCategory != AffixCategoryEnum.PrimaryDamage;
+            var damageStat = new DamageAffixHelper().GetByIndex(level, powerLevel, Helpers.getRandom(1, 7), Helpers.getRandom(1, 5), isPrimaryDamage).damageStat;
             affixData.damageStat = damageStat;
         }
 
