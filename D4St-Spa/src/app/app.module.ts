@@ -12,10 +12,10 @@ import { StatsComponent } from '../stats/stats.component';
 import { SkillPickerComponent } from '../skillPicker/skillPicker.component';
 import { SkillBarComponent } from '../skillBar/skillBar.component';
 import { DemoDropdownCustomHtmlComponent } from "../_NGXCustom/DemoDropdownCustomHtml/DemoDropdownCustomHtml.component";
-import { CustomCompareLabelComponent } from '../_NGXCustom/CustomCompareLabel/CustomCompareLabel.component';
+import { CustomCompareTooltipComponent } from "../_NGXCustom/CustomCompareTooltip/CustomCompareTooltip.component";
 // import { SafePipe } from './safe.pipe';
 
-// import { TooltipModule } from "ngx-bootstrap/tooltip";
+import { TooltipModule } from "ngx-bootstrap/tooltip";
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ItemGeneratorComponent } from './item-generator/item-generator.component';
@@ -32,7 +32,7 @@ import { InventoryComponent } from './inventory/inventory.component';
       SkillBarComponent,
       // SafePipe,
       DemoDropdownCustomHtmlComponent,
-      CustomCompareLabelComponent,
+      CustomCompareTooltipComponent,
       ItemGeneratorComponent,
       InventoryComponent
    ],
@@ -42,7 +42,8 @@ import { InventoryComponent } from './inventory/inventory.component';
       FormsModule,
       // TooltipModule.forRoot(),
       BsDropdownModule.forRoot(),
-      BrowserAnimationsModule
+      BrowserAnimationsModule,
+      TooltipModule.forRoot()
    ],
    providers: [
       ApiServiceService

@@ -3,19 +3,6 @@
         <h2 class="display-4 customHeaderFontLeftTop">Try the Item Generator</h2>
     </div>
 </div>
-<label class="customHeaderFont h3">Bonus damage per weapon type</label>
-<div class="row" *ngFor="let info of this.GetDamageTypesInfo()">
-    <div class="col">
-        <div><label class="customFontGreen h3">{{info}}</label></div>
-    </div>
-</div>
-
-<label class="customHeaderFont h3">CC reduction per armor type</label>
-<div class="row" *ngFor="let info of this.GetArmorTypesInfo()">
-    <div class="col">
-        <div><label class="customFontGreen h3">{{info}}</label></div>
-    </div>    
-</div>
 
 <div class="row">
     <div class="itemGenerator">
@@ -39,7 +26,7 @@
 
     <div class="itemGenerator">
         <div class="col jumbotron jumbotron-transparentCustom itemGeneratorBorder">
-            <div style="width: 200%; transform: translate(-60%, 10%);" class="row text-left">
+            <div style="width: 200%; transform: translate(-3%, 0);" class="row text-left">
                 <div class="col sizeThumbnail">
                     <label *ngIf="this.levelRequirement > this.BasicData.Level" class="customFontRed h3">Level requirement {{this.levelRequirement}}</label>
                     <label *ngIf="this.levelRequirement <= this.BasicData.Level" class="customFontGreen h3">Level requirement {{this.levelRequirement}}</label>
@@ -53,7 +40,7 @@
                     <a (click)="EquipItem(this.selectedItem)" class="sizeMid ornament blueGlow redGlowHover customFontBlue h3"><img src="../_Resources/img/selectors/skull-1.png" style="transform: scale(0.5, 0.5);" alt="Equip">Equip</a>
                 </div>
             </div>
-            <div style="width: 200%; transform: translate(-60%, 20%);" class="row text-left" *ngFor="let affix of this.generatedAffixes; let i = index">
+            <div style="width: 200%; transform: translate(-3%, 0);" class="row text-left" *ngFor="let affix of this.generatedAffixes; let i = index">
                 <div class="col h3 customFontRed" *ngIf="(affix.Condition != null && affix.Condition?.Condition && !affix.ConditionSatisfied)">{{this.selectedDescriptions[i]}}</div>
                 <div class="col h3 customFontGreen" *ngIf="(affix.Condition != null && affix.Condition?.Condition && affix.ConditionSatisfied)">{{this.selectedDescriptions[i]}}</div>
                 <div class="col h3 customFontGreen" *ngIf="affix.Condition == null">{{this.selectedDescriptions[i]}}</div>

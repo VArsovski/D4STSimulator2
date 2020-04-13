@@ -1,43 +1,47 @@
 <div class="row basicStatsDisplayHolder">
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><img style="width: 35px; height: 35px;" src="../../_Resources/img/HealthPotion.png"/><label>{{this.BasicStats.HP.Amount + "(" + this.BasicStats.HP.Amount + ")"}}</label></div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><img style="width: 35px; height: 35px;" src="../../_Resources/img/ResourcePotion3.gif"/><label>{{this.BasicStats.Resource.Amount + "(" + this.BasicStats.Resource.Amount + ")"}}</label></div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><img style="width: 35px; height: 35px;" src="../../_Resources/img/StaminaPotion.png"/><label>{{this.BasicStats.Stamina.Amount + "(" + this.BasicStats.Stamina.Amount + ")"}}</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/HealthPotion.png" text="HP"></app-CustomCompareTooltip><label>{{this.BasicStats.HP.Amount + "(" + this.BasicStats.HP.Amount + ")"}}</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/ResourcePotion3.gif" text="Resource"></app-CustomCompareTooltip><label>{{this.BasicStats.Resource.Amount + "(" + this.BasicStats.Resource.Amount + ")"}}</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/StaminaPotion.png" text="Stamina"></app-CustomCompareTooltip><label>{{this.BasicStats.Stamina.Amount + "(" + this.BasicStats.Stamina.Amount + ")"}}</label></div>
 </div>
 <div class="row powerStatsDisplayHolder">
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><img style="width: 35px; height: 35px;" src="../../_Resources/img/AngelicPower.png"/><label>{{this.BasicStats.AngelicPower.Amount}}</label></div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><img style="width: 35px; height: 35px;" src="../../_Resources/img/DemonicPower.png"/><label>{{this.BasicStats.DemonicPower.Amount}}</label></div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><img style="width: 35px; height: 35px;" src="../../_Resources/img/AncestralPower.png"/><label>{{this.BasicStats.AncestralPower.Amount}}</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/AngelicPower.png" text="Angelic Power (Empowers self/buff effects)"></app-CustomCompareTooltip><label>{{this.BasicStats.AngelicPower.Amount}}</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/DemonicPower.png" text="Demonic Power (Empowers CC/debuff effects)"></app-CustomCompareTooltip><label>{{this.BasicStats.DemonicPower.Amount}}</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/AncestralPower.png" text="Ancestral Power (Empowers direct combat and frequence of Angelic/Demonic effects)"></app-CustomCompareTooltip><label>{{this.BasicStats.AncestralPower.Amount}}</label></div>
 </div>
 
 <div class="row attacksDisplayHolder">
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><img style="width: 35px; height: 35px;" src="../../_Resources/img/AttackPhysical2.png"/><label>{{this.Physical.Percentage + "%"}}</label></div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><img style="width: 35px; height: 35px;" src="../../_Resources/img/AttackReduceArmor.png"/><label>{{this.BleedOrArmorReduction.Percentage + "%"}}</label></div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><img style="width: 35px; height: 35px;" src="../../_Resources/img/AttackPoison.png"/><label>{{this.PoisonOrBurn.Percentage + "%"}}</label></div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><img style="width: 35px; height: 35px;" src="../../_Resources/img/AttackCleave.png"/><label>{{this.CleaveOrAoE.Percentage + "%"}}</label></div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><img style="width: 35px; height: 35px;" src="../../_Resources/img/AttackKnockback.jpg"/><label>{{this.KnockbackOrStun.Percentage + "%"}}</label></div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><img style="width: 35px; height: 35px;" src="../../_Resources/img/AttackChain.jfif"/><label>{{this.ChainOrPierceAttack.Percentage + "%"}}</label></div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><img style="width: 35px; height: 35px;" src="../../_Resources/img/AttackProjectile.png"/><label>{{this.ProjectileOrSummon.Percentage + "%"}}</label></div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><img style="width: 35px; height: 35px;" src="../../_Resources/img/AttackFreeze.png"/><label>{{this.FreezeOrRoot.Percentage + "%"}}</label></div>
-    
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><img style="width: 35px; height: 35px;" src="../../_Resources/img/PhysicalDamage1.png"/><label>{{this.Physical.Percentage + "%"}}</label></div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><img style="width: 35px; height: 35px;" src="../../_Resources/img/FireDamage1.png"/><label>{{this.BleedOrArmorReduction.Percentage + "%"}}</label></div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><img style="width: 35px; height: 35px;" src="../../_Resources/img/PoisonDamage.png"/><label>{{this.Physical.Percentage + "%"}}</label></div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><img style="width: 35px; height: 35px;" src="../../_Resources/img/LightningDamage.jpg"/><label>{{this.BleedOrArmorReduction.Percentage + "%"}}</label></div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><img style="width: 35px; height: 35px;" src="../../_Resources/img/ColdDamage.png"/><label>{{this.PoisonOrBurn.Percentage + "%"}}</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/AttackPhysical.png" text="Physical attack bonus"></app-CustomCompareTooltip><label>{{this.Physical.Percentage + "%"}}</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/AttackReduceArmor.png" text="BleedOrArmorReduction attack (Highest roll on Axe)"></app-CustomCompareTooltip><label>{{this.BleedOrArmorReduction.Percentage + "%"}}</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/AttackPoison.png" text="Poison or Burn attack (Highest roll on Bows)"></app-CustomCompareTooltip><label>{{this.PoisonOrBurn.Percentage + "%"}}</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/AttackCleave.png" text="Cleave or AoE attack (Highest roll on Sword)"></app-CustomCompareTooltip><label>{{this.CleaveOrAoE.Percentage + "%"}}</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/AttackKnockback.jpg" text="Knockback or Stun attack (Highest roll on Hammer)"></app-CustomCompareTooltip><label>{{this.KnockbackOrStun.Percentage + "%"}}</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/AttackChain.jfif" text="Chain or Pierce attack (Highest roll on Javelin)"></app-CustomCompareTooltip><label>{{this.ChainOrPierceAttack.Percentage + "%"}}</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/AttackProjectile.png" text="Projectile or Spell/Summon attack (Highest roll on Wand)"></app-CustomCompareTooltip><label>{{this.ProjectileOrSummon.Percentage + "%"}}</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/AttackFreeze.png" text="Freeze or Root attack (Highest roll on Staff)"></app-CustomCompareTooltip><label>{{this.FreezeOrRoot.Percentage + "%"}}</label></div>
+</div>
+<div class="row attacksDisplayHolder2">
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/PhysicalDamage1.png" text="Physical damage"></app-CustomCompareTooltip><label>{{ this.PhysicalDamage.AvgDamage ? this.PhysicalDamage.AvgDamage : this.PhysicalDamage.MinDamage + "-" + this.PhysicalDamage.MaxDamage}}</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/FireDamage1.png" text="Fire damage"></app-CustomCompareTooltip><label>{{ this.FireDamage.AvgDamage ? this.FireDamage.AvgDamage : this.FireDamage.MinDamage + "-" + this.FireDamage.MaxDamage}}</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/PoisonDamage.png" text="Poison damage"></app-CustomCompareTooltip><label>{{ this.PhysicalDamage.AvgDamage ? this.PoisonDamage.AvgDamage : this.PoisonDamage.MinDamage + "-" + this.PoisonDamage.MaxDamage}}</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/ColdDamage.png" text="Cold damage"></app-CustomCompareTooltip><label>{{ this.PhysicalDamage.AvgDamage ? this.ColdDamage.AvgDamage : this.ColdDamage.MinDamage + "-" + this.ColdDamage.MaxDamage}}</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/LightningDamage.jpg" text="Lightning damage"></app-CustomCompareTooltip><label>{{ this.LightningDamage.AvgDamage ? this.LightningDamage.AvgDamage : this.LightningDamage.MinDamage + "-" + this.PhysicalDamage.MaxDamage}}</label></div>
 </div>
 
 <ul class="armorDisplayHolder">
-    <li class="customFontBlue h3"><img src="../../_Resources/img/ArmorHeavy.png"/><label>Heavy</label>
+    <li class="customFontBlue h3">
+        <app-CustomCompareTooltip contentImg="../../_Resources/img/ArmorHeavy.png" contentLabel="Heavy" text="Heavy armor good against: ReduceArmor, Bleed, Knockback, Stun (reduced effect powers and duration)"></app-CustomCompareTooltip>
         <br/>
         <label *ngIf="this.HeavyArmor" style="transform: translate(20%, 20%);" class="customFontRed h2">{{this.HeavyArmor.Armor}}</label>
         <label *ngIf="this.HeavyArmor" style="transform: translate(20%, 20%);" class="customFontRed h2">{{" [" + this.HeavyArmor.CCPercentage + "%]"}}</label>
     </li>
-    <li class="customFontBlue h3"><img src="../../_Resources/img/ArmorLight.png"/><label>Light</label>
+    <li class="customFontBlue h3">
+        <app-CustomCompareTooltip contentImg="../../_Resources/img/ArmorLight.png" contentLabel="Light" text="Light armor good against: Root, Wither, Blind, Burn (reduced effect powers and duration)"></app-CustomCompareTooltip>
         <br/>
         <label *ngIf="this.LightArmor" style="transform: translate(20%, 20%);" class="customFontRed h2">{{this.LightArmor.Armor}}</label>
         <label *ngIf="this.LightArmor" style="transform: translate(20%, 20%);" class="customFontRed h2">{{" [" + this.LightArmor.CCPercentage + "%]"}}</label>
     </li>
-    <li class="customFontBlue h3"><img src="../../_Resources/img/ArmorMystical.png"/><label>Mystic</label>
+    <li class="customFontBlue h3">
+        <app-CustomCompareTooltip contentImg="../../_Resources/img/ArmorMystical.png" contentLabel="Mystic" text="Mystic armor good against: Burn, Curse, Freeze, Bleed (reduced effect powers and duration)"></app-CustomCompareTooltip>
         <br/>
         <label *ngIf="this.MysticArmor" style="transform: translate(20%, 20%);" class="customFontRed h2">{{this.MysticArmor.Armor}}</label>
         <label *ngIf="this.MysticArmor" style="transform: translate(20%, 20%);" class="customFontRed h2">{{" [" + this.MysticArmor.CCPercentage + "%]"}}</label>
@@ -47,15 +51,15 @@
 <div class="inventoryHolder">
     <div class="row">
         <div class="col customFontBlue sizeThumbnail">
-            <img id="ABoHolder" style="opacity:1.0; transform: translate(180%, 220%);" [src]=this.bootsSrc>
-            <img id="AChHolder" style="opacity:1.0; transform: translate(175%, 20%);" [src]=this.chestSrc>
-            <img id="AGlHolder" style="opacity:1.0; transform: translate(305%, 20%);" [src]=this.glovesSrc>
-            <img id="AHeHolder" style="width:75px;height:75px; opacity:1.0; transform: translate(-25%, -150%);" [src]=this.helmSrc>
-            <img id="APaHolder" style="opacity:1.0; transform: translate(-25%, 180%);" [src]=this.pantsSrc>
-            <img id="WepHolder" style="opacity:1.0; transform: translate(-455%, 15%);" [src]=this.weaponSrc>
-            <img id="JAmHolder"  style="width:45px;height:45px; opacity:1.0; transform: translate(700%, -400%);" [src]=this.amuletSrc>
-            <img id="JRi1Holder" style="width:45px;height:45px; opacity:1.0; transform: translate(60%, 80%);" [src]=this.ring1Src>
-            <img id="JRi2Holder" style="width:45px;height:45px; opacity:1.0; transform: translate(620%, 80%);" [src]=this.ring2Src>
+            <div id="ABoHolder" class="bootsItem"><app-CustomCompareTooltip class="itemTooltip" contentImg={{this.bootsSrc}} text={{this.BootsDescription}}></app-CustomCompareTooltip></div>
+            <div id="AChHolder" class="chestItem"><app-CustomCompareTooltip class="itemTooltip" contentImg={{this.chestSrc}} text={{this.ChestDescription}}></app-CustomCompareTooltip></div>
+            <div id="AGlHolder" class="glovesItem"><app-CustomCompareTooltip class="itemTooltip" contentImg={{this.glovesSrc}} text={{this.GlovesDescription}}></app-CustomCompareTooltip></div>
+            <div id="AHeHolder" class="helmItem"><app-CustomCompareTooltip class="itemTooltip" width="75px" height="75px" contentImg={{this.helmSrc}} text={{this.HelmDescription}}></app-CustomCompareTooltip></div>
+            <div id="APaHolder" class="pantsItem"><app-CustomCompareTooltip class="itemTooltip" contentImg={{this.pantsSrc}} text={{this.PantsDescription}}></app-CustomCompareTooltip></div>
+            <div id="WepHolder" [class]=this.WeaponCss><app-CustomCompareTooltip class="itemTooltip" contentImg={{this.weaponSrc}} text={{this.WeaponDescription}}></app-CustomCompareTooltip></div>
+            <div id="JAmHolder" [class]=this.AmuletCss><app-CustomCompareTooltip class="itemTooltip" width="45px" height="45px" contentImg={{this.amuletSrc}} text={{this.AmuletDescription}}></app-CustomCompareTooltip></div>
+            <div id="JRi1Holder" [class]=this.Ring1Css><app-CustomCompareTooltip class="itemTooltip" width="45px" height="45px" contentImg={{this.ring1Src}} text={{this.Ring1Description}}></app-CustomCompareTooltip></div>
+            <div id="JRi2Holder" [class]=this.Ring2Css><app-CustomCompareTooltip class="itemTooltip" width="45px" height="45px" contentImg={{this.ring2Src}} text={{this.Ring2Description}}></app-CustomCompareTooltip></div>
         </div>
     </div>
 </div>

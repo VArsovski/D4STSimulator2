@@ -52,7 +52,7 @@ export class ItemGeneratorComponent implements OnInit {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes["BasicData"].currentValue) {
+    if (changes["BasicData"]) {
       var basicData = changes["BasicData"].currentValue;
       this.RecalculateItemAffixConditions(basicData);
     }
@@ -110,7 +110,10 @@ export class ItemGeneratorComponent implements OnInit {
     this.selectedType = item;
     if (!item) {
       setTimeout(() => {
-        this.selectedType = item;
+        if (!item && this.generateRandom) {
+          var generateSeed = this.selectedCategory.id == ItemCategoriesEnum.Armor ? 5 : this.selectedCategory.id == ItemCategoriesEnum.Weapon ? 7 : 3;
+          if (!this.selectedType) this.selectedType = new DropdownImageItem(generateSeed, "", "", null, null);
+        }
         this.rarities = this.GetRarityData(this.selectedCategory.name, item.name, this.raritiesStr);
       }, 75);
     } else this.rarities = this.GetRarityData(this.selectedCategory.name, item.name, this.raritiesStr);
@@ -140,6 +143,10 @@ export class ItemGeneratorComponent implements OnInit {
 
     // For some reason there's delay with Random
     setTimeout(() => {
+      if (this.generateRandom) {
+        var generateSeed = this.selectedCategory.id == ItemCategoriesEnum.Armor ? 5 : this.selectedCategory.id == ItemCategoriesEnum.Weapon ? 7 : 3;
+        if (!this.selectedType) this.selectedType = new DropdownImageItem(generateSeed, "", "", null, null);
+      }
       if (this.selectedCategory.id == ItemCategoriesEnum.Armor)
         itemAffixes = generator.GenerateArmorAffixes(this.levelRequirement, this.selectedType.id, this.selectedRarity.id);
       else if (this.selectedCategory.id == ItemCategoriesEnum.Weapon)
@@ -165,15 +172,19 @@ export class ItemGeneratorComponent implements OnInit {
       data.forEach(a => { if (this.selectedType.id == ItemArmorTypesEnum.Gloves) { inventoryData.Gloves.push(a); }})
       data.forEach(a => { if (this.selectedType.id == ItemArmorTypesEnum.Helm) { inventoryData.Helm.push(a); }})
       data.forEach(a => { if (this.selectedType.id == ItemArmorTypesEnum.Pants) { inventoryData.Pants.push(a); }})
+
+      // this[this.armors[this.selectedType.id - 1] + "Description"] = inventoryData[this.armors[this.selectedType.id - 1]].GetAffixDescription();
     }
     else if (this.selectedCategory.id == 2) {
       // Weapon
       data.forEach(a => { inventoryData.Weapon.push(a); })
+      // this.WeaponDescription = inventoryData[this.selectedType.id - 1].GetAffixDescription();
     }
     else {
       // Jewelry
       if (this.selectedType.id == ItemJewelryTypesEnum.Amulet) { inventoryData.Amulet = data; }
       else inventoryData.Ring1 = data;
+      // this[this.jewelries[this.selectedType.id - 1] + "Description"] = inventoryData[this.jewelries[this.selectedType.id - 1]].GetAffixDescription();
     }
 
     this.EquipItemEmiter.emit(inventoryData);
@@ -208,11 +219,12 @@ export class ItemGeneratorComponent implements OnInit {
   }
 
   private RecalculateItemAffixConditions(basicData:BasicCharStats) {
-    this.selectedItem.forEach(a => {
-      if (a.Condition) {
-        var selectedPower = a.Condition.ConditionPowerType == 1 ? basicData.AngelicPower
-        : a.Condition.ConditionPowerType == 2 ? basicData.DemonicPower : basicData.AncestralPower
-    a.ConditionSatisfied = selectedPower >= a.Condition.Condition;            
+    if (this.selectedItem)
+      this.selectedItem.forEach(a => {
+        if (a.Condition) {
+          var selectedPower = a.Condition.ConditionPowerType == 1 ? basicData.AngelicPower
+          : a.Condition.ConditionPowerType == 2 ? basicData.DemonicPower : basicData.AncestralPower
+        a.ConditionSatisfied = selectedPower >= a.Condition.Condition;            
       }
     })
   }
