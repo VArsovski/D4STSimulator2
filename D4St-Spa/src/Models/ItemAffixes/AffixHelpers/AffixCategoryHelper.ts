@@ -3,10 +3,10 @@ import { ItemAffixOutput } from '../Details/ItemAffixOutput';
 
 export class AffixCategoryHelper {
     public GetByIndex(index:number, rarity:ItemRarityTypesEnum):ItemAffixOutput {
-        var result = null;
         var delimiter = rarity == ItemRarityTypesEnum.Legendary ? 19 : 13;
     
-        var selected = index % delimiter == 1 ? AffixCategoryEnum.IncreaseBasicStat
+        var selected =
+          index % delimiter == 1 ? AffixCategoryEnum.IncreaseBasicStat
         : index % delimiter == 2 ? AffixCategoryEnum.IncreaseCastAffixStat
         : index % delimiter == 3 ? AffixCategoryEnum.IncreaseTriggerStat
         : index % delimiter == 4 ? AffixCategoryEnum.IncreaseSkillStat

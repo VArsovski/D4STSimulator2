@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, SimpleChanges, OnChanges } from '@angular/core';
 import { IItemAffix } from 'src/Models/ItemAffixes/IItemAffix';
-import { ArmorTypesEnum, DamageTypesEnum, ItemCategoriesEnum } from 'src/_Enums/itemAffixEnums';
+import { ArmorTypesEnum, DamageTypesEnum, ItemCategoriesEnum, AffixCategoryEnum } from 'src/_Enums/itemAffixEnums';
 import { InventoryVM } from 'src/Models/InventoryVM';
 import { Helpers } from 'src/_Helpers/helpers';
 import { InventoryArmorModel } from 'src/Models/InventoryArmorModel';
@@ -103,18 +103,11 @@ export class InventoryComponent implements OnInit, OnChanges {
         this.inventoryData.selectedCategory = changes["inventoryItem"].currentValue["selectedCategory"];
         this.inventoryData.selectedType = changes["inventoryItem"].currentValue["selectedType"];
         this.inventoryData.selectedRarity = changes["inventoryItem"].currentValue["selectedRarity"];
+        
         var selectedItem:IItemAffix[] = changes["inventoryItem"].currentValue[e];
-
-        // Logic for already equipped.. [for 2nd ring]
+        // var slotAlreadyEquipped = (this.inventoryData[e] || []).length != 0;
         this.inventoryData[e] = selectedItem;
-        var slotAlreadyEquipped = (this.inventoryData[e] || []).length != 0;
         this.imageRaritiesDict[e] = this.inventoryData.selectedRarity;
-
-        // 2nd Ring
-        if (slotAlreadyEquipped && e.startsWith("Ring")) {
-          this.inventoryData["Ring2"] = selectedItem;
-          this.imageRaritiesDict["Ring2"] = this.inventoryData.selectedRarity;
-        }
 
         if (selectedItem.length != 0) {
           await this.calculateArmorTypes(selectedItem, e);
@@ -124,6 +117,7 @@ export class InventoryComponent implements OnInit, OnChanges {
 
         var affixDescriptions:string[] = [];
         selectedItem.forEach(a => affixDescriptions.push(a.GetAffixDescription(this.skillData)));
+
         this[e + "Description"] = affixDescriptions.join('<br/>');
       }
     });
@@ -199,8 +193,8 @@ export class InventoryComponent implements OnInit, OnChanges {
       affixes.forEach(affix => {
         if (affix.Contents.damageStat) {
           var affixData = affix.Contents.damageStat;
-          var selected = Helpers.getPropertyByValue(DamageTypesEnum, affixData.MainDamageType);
-          this[selected].Percentage += affixData.EmpowerPercentage;
+          var selected = Helpers.getPropertyByValue(DamageTypesEnum, affixData.DamageData.MainDamageType);
+          this[selected].Percentage += affixData.DamageData.EmpowerPercentage;
         }
       })
     });
@@ -281,9 +275,6 @@ export class InventoryComponent implements OnInit, OnChanges {
         if (weaponEquipped)
           classStr+="WithWeapon";
 
-        console.log(Helpers.getPropertyByValue(ItemCategoriesEnum, this.inventoryData.selectedCategory));
-        console.log(classStr);
-    
         var variableItems = [];
         this.jewelries.forEach(j => {variableItems.push(j)});
         variableItems.push("Weapon");

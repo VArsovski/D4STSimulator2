@@ -5,7 +5,8 @@ export class LegendaryAffixHelper {
     public GetByIndex(level:number, powerLevel:number, index:number):ItemAffixOutput {
         var delimiter = 12;
 
-        var selected = index % delimiter == 1 ? LegendaryStatsEnum.AlternateCleaveOrAoEEffect
+        var selected =
+          index % delimiter == 1 ? LegendaryStatsEnum.AlternateCleaveOrAoEEffect
         : index % delimiter == 2 ? LegendaryStatsEnum.AlternatePoisonOrBurnEffect
         : index % delimiter == 3 ? LegendaryStatsEnum.AlternateArmorReductionAndBleed
         : index % delimiter == 4 ? LegendaryStatsEnum.AlternateFreezeStunAttack

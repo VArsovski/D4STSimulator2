@@ -7,7 +7,8 @@ export class OfensiveAffixHelper {
     public GetByIndex(level:number, powerLevel:number, index:number):ItemAffixOutput {
         var delimiter = 8;
 
-        var selected = index % delimiter == 1 ? OfensiveStatsEnum.ArmorReductionAndBleed
+        var selected =
+          index % delimiter == 1 ? OfensiveStatsEnum.ArmorReductionAndBleed
         : index % delimiter == 2 ? OfensiveStatsEnum.PoisonAndBurn
         : index % delimiter == 3 ? OfensiveStatsEnum.KnockbackAndStun
         : index % delimiter == 4 ? OfensiveStatsEnum.CleaveAndAoE

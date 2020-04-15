@@ -10,10 +10,12 @@ import { DemonicPowerAffixes } from 'src/Models/DemonicPowerAffixes';
 import { AncestralPowerAffixes } from 'src/Models/AncestralPowerAffixes';
 import { SkillDTO } from 'src/Models/DTOs/SkillDTO';
 import { SkillDamageDataDTO } from 'src/Models/DTOs/SkillDamageDataDTO';
-import { ArmorTypesEnum, ItemWeaponTypesEnum, DamageTypesEnum, ResistanceTypesEnum } from 'src/_Enums/itemAffixEnums';
+import { ArmorTypesEnum, ItemWeaponTypesEnum, DamageTypesEnum, ResistanceTypesEnum, AffixCategoryEnum } from 'src/_Enums/itemAffixEnums';
 import { PowerTypesEnum } from 'src/_Enums/powerTypesEnum';
 import { TriggerStatsEnum, CCEffectTypesEnum } from 'src/_Enums/triggerAffixEnums';
 import { AffixMetadataEnum } from 'src/_Enums/skillEnums';
+import { SkillVM } from 'src/Models/SkillVM';
+import { IItemAffix } from 'src/Models/ItemAffixes/IItemAffix';
 
 export class CalculationsHelper {
 
@@ -166,7 +168,6 @@ export class CalculationsHelper {
   }
 
   public getArmorStatForLevel(stat: number, level: number): number {
-    //var varianceEmpower = Math.round((Helpers.getRandom(124, 128)/100) * 100)/100;
     var lvlCoeff = level/4;
     var basicStat = stat * (1 + Helpers.getRandom(1, lvlCoeff)/stat);
     return Math.round(lvlCoeff + basicStat * Math.pow(Math.round((Helpers.getRandom(126, 130)/100) * 100)/100, lvlCoeff));
@@ -227,7 +228,7 @@ export class CalculationsHelper {
     stat = this.getEmpoweredValue(stat, powerLevel);
 
     return Math.round(stat);
-  }  
+  }
 
   public getBasicStatForLevel(type:number, stat: number, level: number): number {
     var delimiter = 6;
@@ -241,7 +242,7 @@ export class CalculationsHelper {
     }
     if (type % delimiter == 3) {
         // HP/Mana regen
-        var regenFactor = Math.round(level / 8);
+        var regenFactor = Math.round((level / 8)*10)/10;
         var bonus = Math.max(1, regenFactor * (1 + Helpers.getRandom(-30, +30)/100));
         stat+= bonus;
     }
@@ -306,5 +307,15 @@ export class CalculationsHelper {
     data.push(Helpers.getPropertyByValue(ItemWeaponTypesEnum, ItemWeaponTypesEnum.Staff)     + " : " + Helpers.getPropertyByValue(DamageTypesEnum, DamageTypesEnum.FreezeOrRoot));
 
     return data;
+  }
+
+  public LogAffixData(affixData:IItemAffix[], affixCategory:AffixCategoryEnum, skillData:SkillVM[]) {
+    console.log("ItemAffixes affixes for type: " + Helpers.getPropertyByValue(AffixCategoryEnum, affixCategory));
+    affixData.forEach(a => {
+      if (a.AffixCategory == affixCategory) {
+        console.log(JSON.stringify(a.Contents));
+        console.log(JSON.stringify(a.GetAffixDescription(skillData)));
+      }
+    });
   }
 }

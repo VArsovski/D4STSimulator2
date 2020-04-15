@@ -439,13 +439,14 @@ third step: add .mainNav li a {white-space:nowrap;} */
     opacity:1.0; transform: translate(55%, -220%);
 }
 .weaponItem, .weaponWithWeaponItem {
-    opacity:1.0; transform: translate(4%, -125%);
+    opacity:1.0; transform: translate(5%, -125%);
 }
 .weaponWithArmorItem, .weaponWithArmorWithWeaponItem {
-    opacity:1.0; transform: translate(4%, -460%);
+    width: 100px;
+    opacity:1.0; transform: translate(18%, -460%);
 }
 .weaponWithJewelryItem {
-    opacity:1.0; transform: translate(4%, -460%);
+    opacity:1.0; transform: translate(5%, -460%);
 }
 .amuletItem {
     width:45px; height:45px; opacity:1.0; transform: translate(650%, -565%);
@@ -484,5 +485,5 @@ third step: add .mainNav li a {white-space:nowrap;} */
     width:45px; height:45px; opacity:1.0; transform: translate(800%, -1600%);
 }
 .itemTooltip {
-    width: 25rem;
+    width: 30rem;
 }

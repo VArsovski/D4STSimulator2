@@ -44,6 +44,18 @@ export class ItemBasicStats implements IDescribable {
         this.Resistance = resistance;
         this.SkillEmpower = skillEmpower;
         this.selectedStat = selectedStat;
+
+        if (!this.statsCalculated && this.selectedStat) {
+            this.statsCalculated = true;
+            var selectedStat = this.GetSelectedStat();
+            var data = this.GetCalculatedData(this, selectedStat);
+            this.PowerStats = data.PowerStats;
+            this.StatNumbers = data.StatNumbers;
+            this.StatRegen = data.StatRegen;
+            this.StatPercentage = data.StatPercentage;
+            this.Resistance = data.Resistance;
+            this.SkillEmpower = data.SkillEmpower;
+        }
     }
 
     public SetPowers(level:number, powerLevel:number, amount:number, type:PowerTypesEnum) {
@@ -85,54 +97,51 @@ export class ItemBasicStats implements IDescribable {
     }
 
     GetDescription(): string {
-        var data = this.GetData();
-        var descr1 = ""; if (this.PowerStats) descr1 = data.PowerStats.GetDescription();
-        var descr2 = ""; if (this.StatNumbers) descr2 = data.StatNumbers.GetDescription();
-        var descr3 = ""; if (this.StatRegen) descr3 = data.StatRegen.GetDescription();
-        var descr4 = ""; if (this.StatPercentage) descr4 = data.StatPercentage.GetDescription();
-        var descr5 = ""; if (this.StatPercentageRegen) descr5 = data.StatPercentageRegen.GetDescription();
-        var descr6 = ""; if (this.Resistance) descr6 = data.Resistance.GetDescription();
+        var descr1 = ""; if (this.PowerStats) descr1 = this.PowerStats.GetDescription();
+        var descr2 = ""; if (this.StatNumbers) descr2 = this.StatNumbers.GetDescription();
+        var descr3 = ""; if (this.StatRegen) descr3 = this.StatRegen.GetDescription();
+        var descr4 = ""; if (this.StatPercentage) descr4 = this.StatPercentage.GetDescription();
+        var descr5 = ""; if (this.StatPercentageRegen) descr5 = this.StatPercentageRegen.GetDescription();
+        var descr6 = ""; if (this.Resistance) descr6 = this.Resistance.GetDescription();
         var descr7 = "";
         
-        if (this.SkillEmpower) {
-            descr7 += (data.SkillEmpower.level || 1) + " to " + data.SkillEmpower.name + " (" + data.SkillEmpower.className + " only)";
-        }
+        if (this.SkillEmpower)
+            descr7 += (this.SkillEmpower.level || 1) + " to " + this.SkillEmpower.name + " (" + this.SkillEmpower.className + " only)";
 
+        // TODO: Research when/Why Socket/s get added in middle of an affix
         var descr8 = this.Socket != 0 ? "Socket/s " + this.Socket: "";
-
         var descr = "+ " + descr1 + descr2 + descr3 + descr4 + descr5 + descr6 + descr7 + descr8;
-
         var empoweredStr = new CalculationsHelper().getEmpoweredStr("*", this.PowerLevel);
-        descr+= empoweredStr;
-
-        if (descr.startsWith("NaN") || descr.startsWith("0"))
-            console.log(this);
+        descr += empoweredStr;
 
         return descr;
     }
 
-    GetData() {
-
+    private GetSelectedStat():string {
+        var selectedStat:string = null;
         if (this.PowerStats)
-            this.selectedStat = "PowerStats";
+            selectedStat = "PowerStats";
         if (this.StatNumbers)
-            this.selectedStat = "StatNumbers";
+            selectedStat = "StatNumbers";
         if (this.StatRegen)
-            this.selectedStat = "StatRegen";
+            selectedStat = "StatRegen";
         if (this.StatPercentage)
-            this.selectedStat = "StatPercentage";
+            selectedStat = "StatPercentage";
         if (this.StatPercentageRegen)
-            this.selectedStat = "StatPercentageRegen";
+            selectedStat = "StatPercentageRegen";
         if (this.SkillEmpower)
-            this.selectedStat = "SkillEmpower";
+            selectedStat = "SkillEmpower";
         if (this.Resistance)
-            this.selectedStat = "Resistance";
+            selectedStat = "Resistance";
+        return selectedStat;
+    }
 
-        var data = new ItemBasicStats(this.Level, this.PowerLevel, this.PowerStats
-            , this.StatNumbers, this.StatRegen, this.StatPercentage, this.StatPercentageRegen
-            , this.Resistance, this.SkillEmpower, this.Socket, this.selectedStat);
+    private GetCalculatedData(data:ItemBasicStats, selectedStat:string) {
+        // var data = new ItemBasicStats(this.Level, this.PowerLevel, this.PowerStats
+        //     , this.StatNumbers, this.StatRegen, this.StatPercentage, this.StatPercentageRegen
+        //     , this.Resistance, this.SkillEmpower, this.Socket, selectedStat);
 
-        if (this.selectedStat && !this.statsCalculated)
+        if (selectedStat && !this.statsCalculated)
         {
             var dict = Helpers.extractEnum(BasicStatTypesEnum);
             var selectedTypeNum:number[] = [];
@@ -165,9 +174,6 @@ export class ItemBasicStats implements IDescribable {
                     this.Socket = data.Socket;
                 }
             }
-
-        // Data is calculated/initialized
-        this.statsCalculated = true;
         }
 
         return data;
@@ -186,20 +192,14 @@ export class ItemBasicStatsDetail implements IDescribable {
         this.PowerLevel = powerLevel;
         this.Amount = amount;
         this.Type = type;
-    }
 
-    GetData() {
-        var data = new ItemBasicStatsDetail(this.Level, this.PowerLevel, this.Amount, this.Type);
-        data.Amount = new CalculationsHelper().getBasicStatForLevel(this.Type, this.Amount, this.Level);
-        if (!this.statsCalculated)
-            this.Amount = data.Amount;
-            
-        this.statsCalculated = true;
-        return data;
+        if (!this.statsCalculated) {
+            this.Amount = new CalculationsHelper().getBasicStatForLevel(this.Type, amount, this.Level);
+            this.statsCalculated = true;
+        }
     }
 
     GetDescription(): string {
-        var data = this.GetData();
-        return data.Amount + " " + Helpers.getPropertyByValue(BasicStatsEnum, this.Type);
+        return this.Amount + " " + Helpers.getPropertyByValue(BasicStatsEnum, this.Type);
     }
 }

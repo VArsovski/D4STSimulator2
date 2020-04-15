@@ -16,23 +16,16 @@ export class ItemBasicPowersDetail implements IDescribable {
         this.PowerLevel = powerLevel;
         this.Amount = amount;
         this.Type = type;
-    }
-    public GetData()
-    {
-        var data = new ItemBasicPowersDetail(this.Level, this.PowerLevel, this.Amount, this.Type);
-        if (!this.statsCalculated) {
-            data.Amount = new CalculationsHelper().getBasicPowerForLevel(this.Amount, this.Level, this.Type);
-            this.Amount = data.Amount;
-        }
 
-        this.statsCalculated = true;
-        return data;
+        if (!this.statsCalculated) {
+            this.Amount = new CalculationsHelper().getBasicPowerForLevel(this.Amount, this.Level, this.Type);
+            this.statsCalculated = true;
+        }
     }
 
     public GetDescription():string {
-        var data = this.GetData();
-        var empoweredStr = new CalculationsHelper().getEmpoweredStr("*", data.PowerLevel);
-        return data.Amount + " " + Helpers.getPropertyByValue(PowerTypesEnum, data.Type) + " power" + empoweredStr;
+        var empoweredStr = new CalculationsHelper().getEmpoweredStr("*", this.PowerLevel);
+        return this.Amount + " " + Helpers.getPropertyByValue(PowerTypesEnum, this.Type) + " power" + empoweredStr;
     }
 }
 
@@ -48,22 +41,14 @@ export class ItemBasicResistanceStatsDetail implements IDescribable {
         this.PowerLevel = powerLevel;
         this.Amount = amount;
         this.Type = type;
+
+        if (!this.statsCalculated) {
+            this.Amount = new CalculationsHelper().getEmpoweredValue(new CalculationsHelper().getResistancesForLevel(this.Amount, this.Level, this.Type), this.PowerLevel);
+            this.statsCalculated = true;
+        }
     }
 
     public GetDescription():string {
-        var data = this.GetData();
         return this.Amount + " " + Helpers.getPropertyByValue(ResistanceTypesEnum, this.Type) + "% resistance"
-    }
-    public GetData()
-    {
-        var data = new ItemBasicResistanceStatsDetail(this.Level, this.PowerLevel, this.PowerLevel, this.Type);
-        data.Amount = new CalculationsHelper().getEmpoweredValue(new CalculationsHelper().getResistancesForLevel(this.Amount, this.Level, this.Type), this.PowerLevel);
-
-        if (!this.statsCalculated) {
-            this.Amount = data.Amount;
-        }
-
-        this.statsCalculated = true;
-        return data;
     }
 }

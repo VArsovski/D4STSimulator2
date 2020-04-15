@@ -1,12 +1,12 @@
 <div class="row basicStatsDisplayHolder">
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/HealthPotion.png" text="HP"></app-CustomCompareTooltip><label>{{this.BasicStats.HP.Amount + "(" + this.BasicStats.HP.Amount + ")"}}</label></div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/ResourcePotion3.gif" text="Resource"></app-CustomCompareTooltip><label>{{this.BasicStats.Resource.Amount + "(" + this.BasicStats.Resource.Amount + ")"}}</label></div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/StaminaPotion.png" text="Stamina"></app-CustomCompareTooltip><label>{{this.BasicStats.Stamina.Amount + "(" + this.BasicStats.Stamina.Amount + ")"}}</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/HealthPotion.png" text="HP (lose it all and you die)"></app-CustomCompareTooltip><label>{{this.BasicStats.HP.Amount + "(" + this.BasicStats.HP.Amount + ")"}}</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/ResourcePotion3.gif" text="Resource (required for casting impactful abilities)"></app-CustomCompareTooltip><label>{{this.BasicStats.Resource.Amount + "(" + this.BasicStats.Resource.Amount + ")"}}</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/StaminaPotion.png" text="Stamina (endurance in direct combat)"></app-CustomCompareTooltip><label>{{this.BasicStats.Stamina.Amount + "(" + this.BasicStats.Stamina.Amount + ")"}}</label></div>
 </div>
 <div class="row powerStatsDisplayHolder">
     <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/AngelicPower.png" text="Angelic Power (Empowers self/buff effects)"></app-CustomCompareTooltip><label>{{this.BasicStats.AngelicPower.Amount}}</label></div>
     <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/DemonicPower.png" text="Demonic Power (Empowers CC/debuff effects)"></app-CustomCompareTooltip><label>{{this.BasicStats.DemonicPower.Amount}}</label></div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/AncestralPower.png" text="Ancestral Power (Empowers direct combat and frequence of Angelic/Demonic effects)"></app-CustomCompareTooltip><label>{{this.BasicStats.AncestralPower.Amount}}</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/AncestralPower.png" text="Ancestral Power (Empowers direct combat and frequency of Angelic/Demonic effects)"></app-CustomCompareTooltip><label>{{this.BasicStats.AncestralPower.Amount}}</label></div>
 </div>
 
 <div class="row attacksDisplayHolder">
@@ -51,11 +51,11 @@
 <div class="inventoryHolder">
     <div class="row">
         <div class="col customFontBlue sizeThumbnail">
-            <div id="ABoHolder" class="bootsItem"><app-CustomCompareTooltip class="itemTooltip" contentImg={{this.bootsSrc}} text={{this.BootsDescription}}></app-CustomCompareTooltip></div>
-            <div id="AChHolder" class="chestItem"><app-CustomCompareTooltip class="itemTooltip" contentImg={{this.chestSrc}} text={{this.ChestDescription}}></app-CustomCompareTooltip></div>
-            <div id="AGlHolder" class="glovesItem"><app-CustomCompareTooltip class="itemTooltip" contentImg={{this.glovesSrc}} text={{this.GlovesDescription}}></app-CustomCompareTooltip></div>
-            <div id="AHeHolder" class="helmItem"><app-CustomCompareTooltip class="itemTooltip" width="75px" height="75px" contentImg={{this.helmSrc}} text={{this.HelmDescription}}></app-CustomCompareTooltip></div>
-            <div id="APaHolder" class="pantsItem"><app-CustomCompareTooltip class="itemTooltip" contentImg={{this.pantsSrc}} text={{this.PantsDescription}}></app-CustomCompareTooltip></div>
+            <div id="ABoHolder" class="bootsItem"><app-CustomCompareTooltip      class="itemTooltip" contentImg={{this.bootsSrc}} text={{this.BootsDescription}}></app-CustomCompareTooltip></div>
+            <div id="AChHolder" class="chestItem"><app-CustomCompareTooltip      class="itemTooltip" contentImg={{this.chestSrc}} text={{this.ChestDescription}}></app-CustomCompareTooltip></div>
+            <div id="AGlHolder" class="glovesItem"><app-CustomCompareTooltip     class="itemTooltip" contentImg={{this.glovesSrc}} text={{this.GlovesDescription}}></app-CustomCompareTooltip></div>
+            <div id="AHeHolder" class="helmItem"><app-CustomCompareTooltip       class="itemTooltip" width="75px" height="75px" contentImg={{this.helmSrc}} text={{this.HelmDescription}}></app-CustomCompareTooltip></div>
+            <div id="APaHolder" class="pantsItem"><app-CustomCompareTooltip      class="itemTooltip" contentImg={{this.pantsSrc}} text={{this.PantsDescription}}></app-CustomCompareTooltip></div>
             <div id="WepHolder" [class]=this.WeaponCss><app-CustomCompareTooltip class="itemTooltip" contentImg={{this.weaponSrc}} text={{this.WeaponDescription}}></app-CustomCompareTooltip></div>
             <div id="JAmHolder" [class]=this.AmuletCss><app-CustomCompareTooltip class="itemTooltip" width="45px" height="45px" contentImg={{this.amuletSrc}} text={{this.AmuletDescription}}></app-CustomCompareTooltip></div>
             <div id="JRi1Holder" [class]=this.Ring1Css><app-CustomCompareTooltip class="itemTooltip" width="45px" height="45px" contentImg={{this.ring1Src}} text={{this.Ring1Description}}></app-CustomCompareTooltip></div>

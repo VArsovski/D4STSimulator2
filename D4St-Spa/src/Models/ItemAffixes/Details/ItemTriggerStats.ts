@@ -44,8 +44,8 @@ export class ItemTriggerStats implements IDescribable {
     private statsCalculated: boolean;
 
     //     PhysicalAttack = 1,           //TriggerAffixes [1,2], 4 CCEffectTypesEnum[1,2]
-    //     SpellAttack = 1,              //TA[6], CCET[5,6,8,9,10]
-    //     PhysicalAoE = 2,              //TriggerAffixes [3, 6], 3 CCEffectTypesEnum[4,7]
+    //     SpellAttack = 2,              //TA[6], CCET[5,6,8,9,10]
+    //     PhysicalAoE = 3,              //TriggerAffixes [3, 6], 3 CCEffectTypesEnum[4,7]
     //     CCPhysical = 4,               //TA[3], CCET[3,4,7]
     //     Spellcast = 5,                //Cast a spell
     constructor(level:number, powerLevel:number, amount:number, chance:number, type:TriggerStatsEnum, triggerAffixType:TriggerAffixTypesEnum, ccEffectType:CCEffectTypesEnum, skillStat: SkillVM) {
@@ -56,75 +56,69 @@ export class ItemTriggerStats implements IDescribable {
         this.AffixType = triggerAffixType;
         this.CCType = ccEffectType;
         this.SkillStat = skillStat;
+
+        // TODO: Seems like Knockback/Cleave doesn't get found
+        // if (this.Type == TriggerStatsEnum.PhysicalAoE) {
+        //     console.log(this);
+        //     debugger;
+        // }
+
+        if (!this.statsCalculated) {
+            var appropriateTriggerAffixes = this.GetAppropriateAffixesForTrigger(this.Type);
+            var selectedAffix = appropriateTriggerAffixes[Helpers.getRandom(0, appropriateTriggerAffixes.length-1)];
+            if (!selectedAffix)
+                this.AffixType = selectedAffix;
+
+            var appropriateEffects = this.GetAppropriateEffectsForAffix(selectedAffix);
+            var selectedTriggerEffect = appropriateEffects[Helpers.getRandom(0, appropriateEffects.length - 1)];
+            this.Chance = new CalculationsHelper().getTriggerChanceForLevel(this.Amount, this.Level, this.PowerLevel);
+            this.Amount = new CalculationsHelper().getTriggerStatsForLevel(this.Amount, this.Level, this.PowerLevel, this.Type);
+            this.CCType = selectedTriggerEffect;
+            this.statsCalculated = true;
+        }
     }
 
     public GetDescription():string {
         
-        var data = this.GetData();
-        var selectedAffixStr = [TriggerAffixTypesEnum.Cleave, TriggerAffixTypesEnum.ChainOrPierce].indexOf(data.AffixType) == -1
-            ? Helpers.getPropertyByValue(CCEffectTypesEnum, data.CCType)
-            : Helpers.getPropertyByValue(TriggerAffixTypesEnum, data.AffixType);
+        var selectedAffixStr = [TriggerAffixTypesEnum.Cleave, TriggerAffixTypesEnum.ChainOrPierce].indexOf(this.AffixType) == -1
+            ? Helpers.getPropertyByValue(CCEffectTypesEnum, this.CCType)
+            : Helpers.getPropertyByValue(TriggerAffixTypesEnum, this.AffixType);
 
-        var procEffects = [CCEffectTypesEnum.Bleed, CCEffectTypesEnum.CriticalHit, CCEffectTypesEnum.CrushingBlow].indexOf(data.CCType) != -1;
+        var procEffects = [CCEffectTypesEnum.Bleed, CCEffectTypesEnum.CriticalHit, CCEffectTypesEnum.CrushingBlow].indexOf(this.CCType) != -1;
 
-        var selectedSkill = this.Type == TriggerStatsEnum.Spellcast ? data.SkillStat : null;
-        var selectedActionStr = selectedSkill ? " to cast " : procEffects || data.AffixType == TriggerAffixTypesEnum.ChainOrPierce ? " to proc " : " to ";
-        var skillStrDescr = selectedSkill ? " level " + data.Amount + " " + selectedSkill.name : "";
-        var procStrDescr = selectedAffixStr || Helpers.getPropertyByValue(TriggerAffixTypesEnum, data.AffixType) + " for " + data.Amount;
+        var selectedSkill = this.Type == TriggerStatsEnum.Spellcast ? this.SkillStat : null;
+        var selectedActionStr = selectedSkill ? " to cast " : procEffects || this.AffixType == TriggerAffixTypesEnum.ChainOrPierce ? " to proc " : " to ";
+        var skillStrDescr = selectedSkill ? " level " + this.Amount + " " + selectedSkill.name : "";
+        var procStrDescr = selectedAffixStr || Helpers.getPropertyByValue(TriggerAffixTypesEnum, this.AffixType) + " for " + this.Amount;
 
-        if (!procStrDescr){
-            console.clear();
-            console.log("Error for:");
-            console.log(data);
-        }
+        if (!procStrDescr)
+            console.log(this);
 
-        return data.Chance + "% chance " + selectedActionStr + (skillStrDescr || procStrDescr);
+        return this.Chance + "% chance " + selectedActionStr + (skillStrDescr || procStrDescr || Helpers.getPropertyByValue(TriggerStatsEnum, this.Type));
     }
 
     public GetTriggerTypeInfo():string {
-        var data = this.GetData();
-        // if (data.AffixType == TriggerAffixTypesEnum.PhysicalAoE)
-        if (!data.CCType)
-            data.CCType = CCEffectTypesEnum.Knockback;
+        // if (this.AffixType == TriggerAffixTypesEnum.PhysicalAoE)
+        if (!this.CCType)
+            this.CCType = CCEffectTypesEnum.Knockback;
 
         // if (data.Type == TriggerStatsEnum.SpellAttack || data.AffixType == TriggerAffixTypesEnum.CastSpell) {
         //     data.Type = Helpers.getRandom(1, 4);
         //     data.AffixType = Helpers.getRandom(1, 6);
         // }
 
-        var selectedAffixStr = [TriggerAffixTypesEnum.Cleave, TriggerAffixTypesEnum.ChainOrPierce].indexOf(data.AffixType) == -1
-            ? Helpers.getPropertyByValue(CCEffectTypesEnum, data.CCType)
-            : Helpers.getPropertyByValue(TriggerAffixTypesEnum, data.AffixType) || Helpers.getPropertyByValue(TriggerAffixTypesEnum, data.AffixType);
+        var selectedAffixStr = [TriggerAffixTypesEnum.Cleave, TriggerAffixTypesEnum.ChainOrPierce].indexOf(this.AffixType) == -1
+            ? Helpers.getPropertyByValue(CCEffectTypesEnum, this.CCType)
+            : Helpers.getPropertyByValue(TriggerAffixTypesEnum, this.AffixType) || Helpers.getPropertyByValue(TriggerAffixTypesEnum, this.AffixType);
 
         if (!selectedAffixStr || selectedAffixStr.includes("null")) {
             console.log("Error:")
-            console.log(data.Type);
-            console.log(data.AffixType);    
-            console.log(data)
+            console.log(this.Type);
+            console.log(this.AffixType);    
+            console.log(this)
         }
 
         return selectedAffixStr;
-    }
-    
-    public GetData()
-    {
-        var appropriateTriggerAffixes = this.GetAppropriateAffixesForTrigger(this.Type);
-        var selectedAffix = appropriateTriggerAffixes[Helpers.getRandom(0, appropriateTriggerAffixes.length-1)];
-        var appropriateEffects = this.GetAppropriateEffectsForAffix(selectedAffix);
-        var selectedTriggerEffect = appropriateEffects[Helpers.getRandom(0, appropriateEffects.length - 1)];
-        var data = new ItemTriggerStats(this.Level, this.PowerLevel, this.Amount, this.Chance, this.Type, selectedAffix, selectedTriggerEffect, this.SkillStat);
-        data.Chance = new CalculationsHelper().getTriggerChanceForLevel(data.Amount, data.Level, data.PowerLevel);
-        data.Amount = new CalculationsHelper().getTriggerStatsForLevel(data.Amount, data.Level, data.PowerLevel, data.Type);
-
-        if (!this.statsCalculated) {
-            this.Type = data.Type;
-            this.CCType = data.CCType;
-            this.Chance = data.Chance;
-            this.Amount = data.Amount;
-        }
-
-        this.statsCalculated = true;
-        return data;
     }
 
     private GetAppropriateAffixesForTrigger(type:TriggerStatsEnum): TriggerAffixTypesEnum[] {

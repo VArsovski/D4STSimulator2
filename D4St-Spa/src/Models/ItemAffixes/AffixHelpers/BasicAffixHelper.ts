@@ -33,7 +33,7 @@ export class BasicAffixHelper {
         }
         if (index % delimiter == 5) {
             selected = BasicAffixEnum.IncreaseSkillStat;
-            basicAffix.SetSkill(level, skillData);
+            basicAffix.SetSkill(level, skillData, powerLevel);
         }
         if (index % delimiter == 0) {
             selected = BasicAffixEnum.Socket;

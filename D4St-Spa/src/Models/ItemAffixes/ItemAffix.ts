@@ -100,8 +100,8 @@ export class ItemAffix implements IItemAffix {
             conditionStr = "(requires " + this.Condition.Condition + " " + Helpers.getPropertyByValue(PowerTypesEnum, this.Condition.ConditionPowerType) + ")";
         }
 
-        if (statDescr.includes("NaN ") || statDescr.startsWith("0") || statDescr.includes("null") || statDescr.replace("*", "").length == 0)
-            console.log(this);
+        // if (statDescr.includes("NaN ") || statDescr.startsWith("0") || statDescr.includes("null") || statDescr.replace("*", "").length == 0)
+        //     console.log(this);
 
         return statDescr + " " + conditionStr;
     }

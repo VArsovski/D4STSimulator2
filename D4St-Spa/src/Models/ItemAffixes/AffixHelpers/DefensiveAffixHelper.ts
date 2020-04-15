@@ -7,10 +7,11 @@ export class DefensiveAffixHelper {
     public GetByIndex(level:number, powerLevel:number, index:number):ItemAffixOutput {
         var delimiter = 8;
 
-        var selected = index % delimiter == 1 ? DefensiveStatsEnum.CCEffects //Chance%Duration
-        : index % delimiter == 2 ? DefensiveStatsEnum.PotionAndGlobe //Bonus
+        var selected =
+          index % delimiter == 1 ? DefensiveStatsEnum.CCEffects    //Chance%Duration
+        : index % delimiter == 2 ? DefensiveStatsEnum.PotionAndGlobeBonus       //Bonus
         : index % delimiter == 3 ? DefensiveStatsEnum.DamageTaken    //Reduction
-        : index % delimiter == 4 ? DefensiveStatsEnum.AttacksTaken   //Reduction
+        : index % delimiter == 4 ? DefensiveStatsEnum.AttacksTaken    //Reduction
         : index % delimiter == 5 ? DefensiveStatsEnum.ThornsDamage
         : index % delimiter == 6 ? DefensiveStatsEnum.DamageStaggered
         : index % delimiter == 7 ? DefensiveStatsEnum.LifestealOrShielding

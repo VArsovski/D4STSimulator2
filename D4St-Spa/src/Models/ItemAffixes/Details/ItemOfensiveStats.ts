@@ -11,75 +11,55 @@ export class ItemOfensiveStats implements IDescribable {
     private FreezeAndRoot?:ItemOfensiveStatsDetail;
     private ChainAndPierce?:ItemOfensiveStatsDetail;
     private CastAndProjectileRange?:ItemOfensiveStatsDetail;
-    private Socket:number;
+    private Socket:ItemOfensiveStatsDetail;
     private selectedStat:string;
     private Level: number;
     private PowerLevel:number;
     private statsCalculated:boolean;
+    private SocketPowerPercentage:number;
 
     GetDescription(): string {
-        var data = this.GetData();
-        var socketPowerPercentage = (new CalculationsHelper().getEmpoweredValue(Helpers.getRandom(20, 30) + Helpers.getRandom(-5, 5), this.PowerLevel) + (10 - this.Level/4)).toFixed(0);
-        var descr1 = (this.CleaveAndAoE) ? data.CleaveAndAoE.GetDescription() : "";
-        var descr2 = (this.PoisonAndBurn) ? data.PoisonAndBurn.GetDescription() : "";
-        var descr3 = (this.ArmorReductionAndBleed) ? data.ArmorReductionAndBleed.GetDescription() : "";
-        var descr4 = (this.KnockbackAndStun) ? data.KnockbackAndStun.GetDescription() : "";
-        var descr5 = (this.FreezeAndRoot) ? data.FreezeAndRoot.GetDescription() : "";
-        var descr6 = (this.ChainAndPierce) ? data.ChainAndPierce.GetDescription() : "";
-        var descr7 = (this.CastAndProjectileRange) ? data.CastAndProjectileRange.GetDescription() : "";
-        var descr8 = this.Socket != 0 ? "Ofensive Sockets empowered by " + socketPowerPercentage + "%": "";
+        var descr1 = (this.CleaveAndAoE) ? this.CleaveAndAoE.GetDescription() : "";
+        var descr2 = (this.PoisonAndBurn) ? this.PoisonAndBurn.GetDescription() : "";
+        var descr3 = (this.ArmorReductionAndBleed) ? this.ArmorReductionAndBleed.GetDescription() : "";
+        var descr4 = (this.KnockbackAndStun) ? this.KnockbackAndStun.GetDescription() : "";
+        var descr5 = (this.FreezeAndRoot) ? this.FreezeAndRoot.GetDescription() : "";
+        var descr6 = (this.ChainAndPierce) ? this.ChainAndPierce.GetDescription() : "";
+        var descr7 = (this.CastAndProjectileRange) ? this.CastAndProjectileRange.GetDescription() : "";
+        var descr8 = this.Socket.Amount != 0 ? "Ofensive Sockets empowered by " + this.SocketPowerPercentage + "%": "";
 
         var empoweredStr = new CalculationsHelper().getEmpoweredStr("*", this.PowerLevel);
         return descr1 + descr2 + descr3 + descr4 + descr5 + descr6 + descr7 + descr8 + empoweredStr;
     }
 
     constructor(level:number, powerLevel:number, amount:number, amountPercentage:number, type:OfensiveStatsEnum, affectedCategories?:OfensiveStatCategoryEnum[]) {
-        this.Socket = 0;
+        this.Socket = new ItemOfensiveStatsDetail(0, 0, OfensiveStatsEnum.Socket, []);
         this.PowerLevel = powerLevel;
         this.Level = level;
 
         var appropriateCategories = affectedCategories ? affectedCategories : this.GenerateAppropriateCategoriesByType(type);
-
         var newOfensiveAffixStats = new ItemOfensiveStatsDetail(amount, amountPercentage, type, appropriateCategories);
-        if (type == OfensiveStatsEnum.CleaveAndAoE)
-        {
-            this.CleaveAndAoE = newOfensiveAffixStats;
-            this.selectedStat = "CleaveAndAoE";
-        }
-        if (type == OfensiveStatsEnum.PoisonAndBurn)
-        {
-            this.PoisonAndBurn = newOfensiveAffixStats;
-            this.selectedStat = "PoisonAndBurn";
-        }
-        if (type == OfensiveStatsEnum.ArmorReductionAndBleed)
-        {
-            this.ArmorReductionAndBleed = newOfensiveAffixStats;
-            this.selectedStat = "ArmorReductionAndBleed";
-        }
-        if (type == OfensiveStatsEnum.KnockbackAndStun)
-        {
-            this.KnockbackAndStun = newOfensiveAffixStats;
-            this.selectedStat = "KnockbackAndStun";
-        }
-        if (type == OfensiveStatsEnum.FreezeAndRoot)
-        {
-            this.FreezeAndRoot = newOfensiveAffixStats;
-            this.selectedStat = "FreezeAndRoot";
-        }
-        if (type == OfensiveStatsEnum.ChainAndPierce)
-        {
-            this.ChainAndPierce = newOfensiveAffixStats;
-            this.selectedStat = "ChainAndPierce";
-        }
-        if (type == OfensiveStatsEnum.CastAndProjectileRange)
-        {
-            this.CastAndProjectileRange = newOfensiveAffixStats;
-            this.selectedStat = "CastAndProjectileRange";
-        }
+
+        var selectedStat = Helpers.getPropertyByValue(OfensiveStatsEnum, type);
+        this[selectedStat] = newOfensiveAffixStats;
+        this.selectedStat = selectedStat;
+
         if (type == OfensiveStatsEnum.Socket)
         {
-            this.Socket++;
+            this.Socket.Amount = 1;
             this.selectedStat = "Socket";
+        }
+
+        if (!this.statsCalculated) {
+            if (this.selectedStat) {
+                if (this.selectedStat != "Socket") {
+                    this[this.selectedStat].Amount = new CalculationsHelper().getEmpoweredValue(this[this.selectedStat].Amount, this.PowerLevel);
+                    this[this.selectedStat].AmountPercentage = new CalculationsHelper().getEmpoweredValue(this[this.selectedStat].AmountPercentage, this.PowerLevel);
+                }
+                else this.Socket.Amount+=this.PowerLevel;
+                this.SocketPowerPercentage = Math.round(new CalculationsHelper().getEmpoweredValue(Helpers.getRandom(20, 30) + Helpers.getRandom(-5, 5), this.PowerLevel) + (10 - this.Level/4));
+            }
+            this.statsCalculated = true;
         }
     }
 
@@ -112,33 +92,11 @@ export class ItemOfensiveStats implements IDescribable {
 
         return categories;
     }
-
-    GetData() {
-        var types = Helpers.extractEnum(OfensiveStatsEnum);
-        var type = types.filter(c => c.name == this.selectedStat)[0].value;
-
-        var data = new ItemOfensiveStats(this.Level, this.PowerLevel, this[this.selectedStat].Amount, this[this.selectedStat].AmountPercentage,
-            type, this.GenerateAppropriateCategoriesByType(type));
-        data.selectedStat = this.selectedStat;
-        
-        if (!this.statsCalculated)
-        if (data.selectedStat)
-        {
-            if (data.selectedStat != "Socket") {
-                data[data.selectedStat].Amount = new CalculationsHelper().getEmpoweredValue(data[data.selectedStat].Amount, data.PowerLevel);
-                data[data.selectedStat].AmountPercentage = new CalculationsHelper().getEmpoweredValue(data[data.selectedStat].AmountPercentage, data.PowerLevel);
-            }
-            else data.Socket++;
-        }
-
-        this.statsCalculated = true;
-        return data;
-    }
 }
 
 export class ItemOfensiveStatsDetail implements IDescribable {
-    private Amount?:number;
-    private AmountPercentage?:number;
+    Amount?:number;
+    AmountPercentage?:number;
     private OfensiveAffixStatCategories:OfensiveStatCategoryEnum[];
     private Type:OfensiveStatsEnum;
 

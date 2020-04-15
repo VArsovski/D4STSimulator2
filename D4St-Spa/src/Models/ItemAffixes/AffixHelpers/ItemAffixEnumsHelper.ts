@@ -20,7 +20,7 @@ export class ItemAffixEnumsHelper {
         this.skillPool = skillPool || [];
     }
 
-    public GetRandomTypeByIndex(level: number, powerLevel:number, rarity:ItemRarityTypesEnum, affix:ItemAffix):ItemAffixOutput {
+    public GetRandomTypeByIndex(itemType:ItemCategoriesEnum, level: number, powerLevel:number, rarity:ItemRarityTypesEnum, affix:ItemAffix):ItemAffixOutput {
 
         // 1, 4, 6, [L14]
         var basicStatAffixesCategory = [AffixCategoryEnum.IncreaseBasicStat
@@ -89,7 +89,7 @@ export class ItemAffixEnumsHelper {
         {
             // var skipPrimaryDamageNumbers = affix.ItemCategory != ItemCategoriesEnum.Weapon;
             // var skipDamageEffectEmpower = affix.AffixCategory != AffixCategoryEnum.PrimaryDamage;
-            var isPrimaryDamage = affix.AffixCategory == AffixCategoryEnum.PrimaryDamage;
+            var isPrimaryDamage = itemType == ItemCategoriesEnum.Weapon && affix.AffixCategory == AffixCategoryEnum.PrimaryDamage;
             affixData.categoryStat = damageAffixesCategory[Helpers.getRandom(0, damageAffixesCategory.length-1)];
             affixData.damageStat =  new DamageAffixHelper().GetByIndex(level, powerLevel, Helpers.getRandom(1, 7), Helpers.getRandom(1, 5), isPrimaryDamage).damageStat;
         }
@@ -159,6 +159,7 @@ export class ItemAffixEnumsHelper {
             affixData.categoryStat = legendaryAffixesCategory[Helpers.getRandom(0, legendaryAffixesCategory.length-1)];
             affixData.legendaryStat = new LegendaryAffixHelper().GetByIndex(level, powerLevel, Helpers.getRandom(1, 12)).legendaryStat;
             // // TODO: Next make Legendary Stats calculate properly
+            affixData.legendaryStat = new SecondaryTriggerAffixHelper().GetByIndex(level, powerLevel, amountSec, chanceSec, duration, selectedTrigger, triggerStat).legendaryStat;
         }
     
         return affixData;

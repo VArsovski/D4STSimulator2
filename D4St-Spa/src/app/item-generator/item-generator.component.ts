@@ -3,7 +3,7 @@ import { IDropdownImageItem } from 'src/Models/_Common/IDropdownImageItem';
 import { DropdownImageItem } from 'src/Models/_Common/DropdownImageItem';
 import { Helpers } from 'src/_Helpers/helpers';
 import { ItemAffixGenerator } from 'src/Models/ItemAffixes/ItemAffixGenerator';
-import { ItemCategoriesEnum, ItemArmorTypesEnum, ItemJewelryTypesEnum } from 'src/_Enums/itemAffixEnums';
+import { ItemCategoriesEnum, ItemArmorTypesEnum, ItemJewelryTypesEnum, AffixCategoryEnum } from 'src/_Enums/itemAffixEnums';
 import { ItemAffix } from 'src/Models/ItemAffixes/ItemAffix';
 import { BasicCharStats } from 'src/Models/BasicCharStats';
 import { SkillVM } from 'src/Models/SkillVM';
@@ -111,10 +111,14 @@ export class ItemGeneratorComponent implements OnInit {
     if (!item) {
       setTimeout(() => {
         if (!item && this.generateRandom) {
-          var generateSeed = this.selectedCategory.id == ItemCategoriesEnum.Armor ? 5 : this.selectedCategory.id == ItemCategoriesEnum.Weapon ? 7 : 3;
-          if (!this.selectedType) this.selectedType = new DropdownImageItem(generateSeed, "", "", null, null);
+          if (!this.selectedType) {
+            debugger;
+            var generateSeed = this.selectedCategory.id == ItemCategoriesEnum.Armor ? 5 : this.selectedCategory.id == ItemCategoriesEnum.Weapon ? 7 : 3;
+            this.selectedType = new DropdownImageItem(generateSeed, "", "", null, null);
+            this.rarities = this.GetRarityData(this.selectedCategory.name, this.selectedType.name, this.raritiesStr);
+          }
         }
-        this.rarities = this.GetRarityData(this.selectedCategory.name, item.name, this.raritiesStr);
+        else this.rarities = this.GetRarityData(this.selectedCategory.name, item.name, this.raritiesStr);
       }, 75);
     } else this.rarities = this.GetRarityData(this.selectedCategory.name, item.name, this.raritiesStr);
   }
@@ -138,6 +142,10 @@ export class ItemGeneratorComponent implements OnInit {
 
       this.SelectCategoryHandler(this.categories.filter(c => c.id == categoryId)[0]);
       this.SelectTypeHandler(this.items.filter(t => t.id == selectedTypeId)[0]);
+
+      if (!this.rarities)
+        this.rarities = this.GetRarityData(Helpers.getPropertyByValue(ItemCategoriesEnum, categoryId), Helpers.getPropertyByValue(itemTypes, selectedTypeId), this.raritiesStr);
+
       this.SelectRarityHandler(this.rarities.filter(r => r.id == selectedRarityId)[0]);
     }
 
@@ -155,17 +163,17 @@ export class ItemGeneratorComponent implements OnInit {
 
       this.generatedAffixes = itemAffixes;
       this.selectedItem = itemAffixes;
-      var skills = this.skills;
       this.selectedDescriptions = [];
-      this.selectedItem.forEach(a => { this.selectedDescriptions.push(a.GetAffixDescription(skills));});
+      this.selectedItem.forEach(a => { this.selectedDescriptions.push(a.GetAffixDescription(this.skills));});
       this.RecalculateItemAffixConditions(this.BasicData);
 
+      //////// new CalculationsHelper().LogAffixData(this.selectedItem, AffixCategoryEnum.PrimaryDamage, this.skills);
     }, this.generateRandom ? 75 : 0);
   }
 
   async EquipItem(data:IItemAffix[]) {
     var inventoryData = new InventoryVM(this.selectedCategory.id, this.selectedType.id, this.selectedRarity.id);
-    if (this.selectedCategory.id == 1) {
+    if (this.selectedCategory.id == ItemCategoriesEnum.Armor) {
       // Armor
       data.forEach(a => { if (this.selectedType.id == ItemArmorTypesEnum.Boots) { inventoryData.Boots.push(a); }})
       data.forEach(a => { if (this.selectedType.id == ItemArmorTypesEnum.Chest) { inventoryData.Chest.push(a); }})
@@ -175,7 +183,7 @@ export class ItemGeneratorComponent implements OnInit {
 
       // this[this.armors[this.selectedType.id - 1] + "Description"] = inventoryData[this.armors[this.selectedType.id - 1]].GetAffixDescription();
     }
-    else if (this.selectedCategory.id == 2) {
+    else if (this.selectedCategory.id == ItemCategoriesEnum.Weapon) {
       // Weapon
       data.forEach(a => { inventoryData.Weapon.push(a); })
       // this.WeaponDescription = inventoryData[this.selectedType.id - 1].GetAffixDescription();
@@ -183,10 +191,13 @@ export class ItemGeneratorComponent implements OnInit {
     else {
       // Jewelry
       if (this.selectedType.id == ItemJewelryTypesEnum.Amulet) { inventoryData.Amulet = data; }
-      else inventoryData.Ring1 = data;
-      // this[this.jewelries[this.selectedType.id - 1] + "Description"] = inventoryData[this.jewelries[this.selectedType.id - 1]].GetAffixDescription();
+      else {
+        debugger;
+        inventoryData["Ring" + this.getLastRingEquipped()] = data;
+      }
     }
 
+    //////// new CalculationsHelper().LogAffixData(inventoryData.Weapon, AffixCategoryEnum.PrimaryDamage, this.skills);
     this.EquipItemEmiter.emit(inventoryData);
   }
 
@@ -228,4 +239,12 @@ export class ItemGeneratorComponent implements OnInit {
       }
     })
   }
+
+  private lre:boolean;
+  private getLastRingEquipped():number {
+    var result = !(this.lre) ? 1 : 2;
+    this.lre = !(this.lre);
+
+    return result;
+  };
 }

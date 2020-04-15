@@ -7,29 +7,29 @@ import { CCEffectTypesEnum } from 'src/_Enums/triggerAffixEnums';
 export class ItemDefenseStats implements IDescribable {
     CCDamageAndDurationReduced?:ItemDefensiveStatsDetail;
     PotionAndGlobeBonus?:ItemDefensiveStatsDetail;
-    DamageTypeTakenReduced?:ItemDefensiveStatsDetail;
-    AttackTypeTakenReduced?:ItemDefensiveStatsDetail;
+    DamageTaken?:ItemDefensiveStatsDetail;
+    AttacksTaken?:ItemDefensiveStatsDetail;
     ThornsDamage?:ItemDefensiveStatsDetail;
     DamageStaggered?:ItemDefensiveStatsDetail;
     LifestealOrShielding?:ItemDefensiveStatsDetail;
     Socket:ItemDefensiveStatsDetail;
+    private Level:number;
     private PowerLevel: number;
     private selectedStat:string;
     private statsCalculated:boolean;
+    private SocketPowerPercentage:number;
 
     GetDescription(): string {
-        var data = this.GetData();
-        var socketPowerPercentage = (new CalculationsHelper().getEmpoweredValue(Helpers.getRandom(20, 30) + Helpers.getRandom(-5, 5), data.PowerLevel) + (10 - data.Level/4)).toFixed(0);
-        var descr1 = (data.CCDamageAndDurationReduced) ? data.CCDamageAndDurationReduced.GetDescription() : "";
-        var descr2 = (data.PotionAndGlobeBonus) ? data.PotionAndGlobeBonus.GetDescription() : "";
-        var descr3 = (data.DamageTypeTakenReduced) ? data.DamageTypeTakenReduced.GetDescription() : "";
-        var descr4 = (data.AttackTypeTakenReduced) ? data.AttackTypeTakenReduced.GetDescription() : "";
-        var descr5 = (data.ThornsDamage) ? data.ThornsDamage.GetDescription() : "";
-        var descr6 = (data.DamageStaggered) ? data.DamageStaggered.GetDescription() : "";
-        var descr7 = (data.LifestealOrShielding) ? data.LifestealOrShielding.GetDescription() : "";
-        var descr8 = data.Socket.Amount != 0 ? "Defensive Sockets empowered by " + socketPowerPercentage + "%": "";
+        var descr1 = (this.CCDamageAndDurationReduced) ? this.CCDamageAndDurationReduced.GetDescription() : "";
+        var descr2 = (this.PotionAndGlobeBonus) ? this.PotionAndGlobeBonus.GetDescription() : "";
+        var descr3 = (this.DamageTaken) ? this.DamageTaken.GetDescription() : "";
+        var descr4 = (this.AttacksTaken) ? this.AttacksTaken.GetDescription() : "";
+        var descr5 = (this.ThornsDamage) ? this.ThornsDamage.GetDescription() : "";
+        var descr6 = (this.DamageStaggered) ? this.DamageStaggered.GetDescription() : "";
+        var descr7 = (this.LifestealOrShielding) ? this.LifestealOrShielding.GetDescription() : "";
+        var descr8 = this.Socket.Amount != 0 ? "Defensive Sockets empowered by " + this.SocketPowerPercentage + "%": "";
 
-        var empoweredStr = new CalculationsHelper().getEmpoweredStr("*", data.PowerLevel);
+        var empoweredStr = new CalculationsHelper().getEmpoweredStr("*", this.PowerLevel);
         return descr1 + descr2 + descr3 + descr4 + descr5 + descr6 + descr7 + descr8 + empoweredStr;
     }
 
@@ -41,48 +41,29 @@ export class ItemDefenseStats implements IDescribable {
 
         // Instead of adressing this relatively weaker stat from outside we address it here..
         if (type == DefensiveStatsEnum.DamageStaggered && amount && !amountPercentage)
-            amount *= 2.5;
+            amount = Math.round(amount * 2.5);
 
-        var newDefensiveAffixStats = new ItemDefensiveStatsDetail(amount, amountPercentage, chance, duration, type, appropriateCategories);
-        if (type == DefensiveStatsEnum.CCEffects)
-        {
-            this.CCDamageAndDurationReduced = newDefensiveAffixStats;
-            this.selectedStat = "CCDamageAndDurationReduced";
-        }
-        if (type == DefensiveStatsEnum.PotionAndGlobe)
-        {
-            this.PotionAndGlobeBonus = newDefensiveAffixStats;
-            this.selectedStat = "PotionAndGlobeBonus";
-        }
-        if (type == DefensiveStatsEnum.DamageTaken)
-        {
-            this.DamageTypeTakenReduced = newDefensiveAffixStats;
-            this.selectedStat = "DamageTypeTakenReduced";
-        }
-        if (type == DefensiveStatsEnum.AttacksTaken)
-        {
-            this.AttackTypeTakenReduced = newDefensiveAffixStats;
-            this.selectedStat = "AttackTypeTakenReduced";
-        }
-        if (type == DefensiveStatsEnum.ThornsDamage)
-        {
-            this.ThornsDamage = newDefensiveAffixStats;
-            this.selectedStat = "ThornsDamage";
-        }
-        if (type == DefensiveStatsEnum.DamageStaggered)
-        {
-            this.DamageStaggered = newDefensiveAffixStats;
-            this.selectedStat = "DamageStaggered";
-        }
-        if (type == DefensiveStatsEnum.LifestealOrShielding)
-        {
-            this.LifestealOrShielding = newDefensiveAffixStats;
-            this.selectedStat = "LifestealOrShielding";
-        }
+        var selectedStat = Helpers.getPropertyByValue(DefensiveStatsEnum, type);
+        this.selectedStat = selectedStat;
         if (type == DefensiveStatsEnum.Socket)
         {
-            this.Socket.Amount++;
+            this.Socket.Amount = 1;
             this.selectedStat = "Socket";
+        }
+
+        if (!this.statsCalculated) {
+            if (this.selectedStat) {
+                var newDefensiveAffixStats = new ItemDefensiveStatsDetail(amount, amountPercentage, chance, duration, type, appropriateCategories);
+                this[selectedStat] = newDefensiveAffixStats;
+        
+                if (this.selectedStat != "Socket") {
+                    this[this.selectedStat].Amount = new CalculationsHelper().getEmpoweredValue(this[this.selectedStat].Amount, this.PowerLevel);
+                    this[this.selectedStat].AmountPercentage = new CalculationsHelper().getEmpoweredValue(this[this.selectedStat].AmountPercentage, this.PowerLevel);
+                }
+                else this.Socket.Amount += this.PowerLevel;
+                this.SocketPowerPercentage = Math.round(new CalculationsHelper().getEmpoweredValue(Helpers.getRandom(20, 30) + Helpers.getRandom(-5, 5), this.PowerLevel) + (10 - this.Level/4));
+            }
+            this.statsCalculated = true;
         }
     }
 
@@ -101,7 +82,7 @@ export class ItemDefenseStats implements IDescribable {
         if (quantifier)
             chanceUpgrades.push(DefensiveStatsEnum.CCEffects);
 
-        var bonusUpgrades = [DefensiveStatsEnum.PotionAndGlobe];
+        var bonusUpgrades = [DefensiveStatsEnum.PotionAndGlobeBonus];
         
         if (damageUpgrades.indexOf(type) != -1)
             categories.push(DefensiveStatCategoryEnum.Damage);
@@ -114,31 +95,6 @@ export class ItemDefenseStats implements IDescribable {
 
         return categories;
     }
-
-    GetData() {
-        var data = new ItemDefenseStats(this.Level, this.PowerLevel, this[this.selectedStat].Amount, this[this.selectedStat].AmountPercentage, this[this.selectedStat].Chance, this[this.selectedStat].Duration, this[this.selectedStat].Type, null); //No biggie, categories will recreate themselves from type
-        data.selectedStat = this.selectedStat;
-
-        if (!this.statsCalculated) {
-            if (data.selectedStat)
-            {
-                if (data.selectedStat != "Socket") {
-                    data[data.selectedStat].Amount = new CalculationsHelper().getEmpoweredValue(data[data.selectedStat].Amount, data.PowerLevel);
-                    data[data.selectedStat].AmountPercentage = new CalculationsHelper().getEmpoweredValue(data[data.selectedStat].AmountPercentage, data.PowerLevel);
-                }
-                else
-                    data[data.selectedStat].Amount++;
-            }
-            // var data = new ItemDefenseStats(this.Level, this[this.selectedStat].Amount, this[this.selectedStat].AmountPercentage, this[this.selectedStat].Chance, this[this.selectedStat].Duration, this[this.selectedStat].Type, null); //No biggie, categories will recreate themselves from type
-            data[data.selectedStat].Amount = new CalculationsHelper().getEmpoweredValue(data[data.selectedStat].Amount, data.PowerLevel);
-            data[data.selectedStat].AmountPercentage = new CalculationsHelper().getEmpoweredValue(data[data.selectedStat].AmountPercentage, data.PowerLevel);
-        }
-    
-        this.statsCalculated = true;
-        return data;
-    }
-    SetLevel(level: number) { this.Level = level; }
-    Level: number;    
 }
 
 export class ItemDefensiveStatsDetail implements IDescribable {
@@ -148,6 +104,10 @@ export class ItemDefensiveStatsDetail implements IDescribable {
     private Chance?: number;
     private DefensiveAffixStatCategories:DefensiveStatCategoryEnum[];
     private Type:DefensiveStatsEnum;
+
+    private DamageType:DamageTypesEnum;
+    private AttackType:AttackTypesEnum;
+    private CCType:CCEffectTypesEnum;
     // private selectedStat:string;
     private Socket:number;
 
@@ -161,9 +121,9 @@ export class ItemDefensiveStatsDetail implements IDescribable {
             else defensiveAffixStatCategoryStr += " and " + Helpers.getPropertyByValue(DefensiveStatCategoryEnum, element);
         });
 
-        var damageType = Helpers.getPropertyByValue(DamageTypesEnum, Helpers.getRandom(1 ,8));
-        var attackType = Helpers.getPropertyByValue(AttackTypesEnum, Helpers.getRandom(1 ,5));
-        var ccType = Helpers.getPropertyByValue(CCEffectTypesEnum, Helpers.getRandom(1 ,5));
+        var damageType = Helpers.getPropertyByValue(DamageTypesEnum, this.DamageType);
+        var attackType = Helpers.getPropertyByValue(AttackTypesEnum, this.AttackType);
+        var ccType = Helpers.getPropertyByValue(CCEffectTypesEnum, this.CCType);
 
         if (this.Type == DefensiveStatsEnum.CCEffects)
         {
@@ -173,7 +133,7 @@ export class ItemDefensiveStatsDetail implements IDescribable {
             if (this.Amount)
                 str += this.Amount + "%" + " less stamina per " + ccType + Helpers.getPropertyByValue(DefensiveStatsEnum, this.Type) + " suffered";
         }
-        if (this.Type == DefensiveStatsEnum.PotionAndGlobe)
+        if (this.Type == DefensiveStatsEnum.PotionAndGlobeBonus)
         {
             if (this.AmountPercentage)
                 str += "Increase " + Helpers.getPropertyByValue(DefensiveStatsEnum, this.Type) + defensiveAffixStatCategoryStr + " by " + this.AmountPercentage;
@@ -235,5 +195,13 @@ export class ItemDefensiveStatsDetail implements IDescribable {
         this.Duration = duration;
         this.Type = type;
         this.DefensiveAffixStatCategories = defensiveStatCategories;
+
+        var damageType = Helpers.getRandom(1 ,8);
+        var attackType = Helpers.getRandom(1 ,5);
+        var ccType = Helpers.getRandom(1 ,5);
+
+        this.DamageType = damageType;
+        this.AttackType = attackType;
+        this.CCType = ccType;
     }
 }

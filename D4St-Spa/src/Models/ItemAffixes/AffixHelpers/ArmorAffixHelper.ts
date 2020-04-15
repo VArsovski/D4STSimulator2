@@ -6,7 +6,8 @@ export class ArmorAffixHelper {
     public GetByIndex(level:number, powerLevel:number, itemType:ItemArmorTypesEnum, armorType:ArmorTypesEnum):ItemAffixOutput {
 
         var delimiter = 5;
-        var selected = itemType % delimiter == 1 ? ItemArmorTypesEnum.Boots
+        var selected =
+          itemType % delimiter == 1 ? ItemArmorTypesEnum.Boots
         : itemType % delimiter == 2 ? ItemArmorTypesEnum.Chest
         : itemType % delimiter == 3 ? ItemArmorTypesEnum.Gloves
         : itemType % delimiter == 4 ? ItemArmorTypesEnum.Helm
@@ -17,7 +18,7 @@ export class ArmorAffixHelper {
         : armorType % delimiter == 2 ? ArmorTypesEnum.Light
         : ArmorTypesEnum.Mystic;
     
-        var armorStat = new ItemArmorStats(level, powerLevel, selected, null, null, selectedType).GetBasicArmorStats(selected, selectedType, level);
+        var armorStat = new ItemArmorStats(level, powerLevel, selected, selectedType);
         return new ItemAffixOutput(null, armorStat);
     }
 }

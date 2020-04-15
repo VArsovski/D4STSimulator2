@@ -156,7 +156,7 @@ export enum DefensiveStatCategoryEnum {
 
 export enum DefensiveStatsEnum {
     CCEffects= 1,
-    PotionAndGlobe= 2,
+    PotionAndGlobeBonus= 2,
     DamageTaken= 3,
     AttacksTaken= 4,
     ThornsDamage= 5,

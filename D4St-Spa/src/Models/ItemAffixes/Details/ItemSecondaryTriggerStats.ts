@@ -28,40 +28,43 @@ export class ItemSecondaryTriggerStatsDetail implements IDescribable {
         this.Duration = duration;
         this.Type = type;
         this.Trigger = trigger;
+        if (!this.statsCalculated) {
+            this.SetCalculatedData();
+            this.statsCalculated = true;
+        }
     }
 
-    public GetData()
+    private SetCalculatedData()
     {
-        var data = new ItemSecondaryTriggerStatsDetail(this.Level, this.PowerLevel, this.Amount, this.Duration, this.Type, this.Trigger);
         var levelsToEmpower = this.Type == SecondaryTriggerStatsEnum.EmpowerBasicStat ? Helpers.getRandom(4, 5) : Helpers.getRandom(2, 4);
-        data.Duration = new CalculationsHelper().getEmpoweredValue(data.Duration, levelsToEmpower);
-        data.Amount += data.PowerLevel;
+        this.Duration = new CalculationsHelper().getEmpoweredValue(this.Duration, levelsToEmpower);
+        this.Amount += this.PowerLevel;
 
         if (this.Type == SecondaryTriggerStatsEnum.AllowSkillForUsage) {
-            data.Trigger.SkillStat.level += data.PowerLevel;
-            data.Trigger.AffixType = TriggerAffixTypesEnum.CastSpell;
+            this.Trigger.SkillStat.level += this.PowerLevel;
+            this.Trigger.AffixType = TriggerAffixTypesEnum.CastSpell;
             if (!this.statsCalculated) {
-                this.Trigger = data.Trigger;
+                this.Trigger = this.Trigger;
             }
         }
         if (this.Type == SecondaryTriggerStatsEnum.AllowTrapsCast) {
-            data.Trap = Helpers.getRandom(0, 6);
+            this.Trap = Helpers.getRandom(0, 6);
             if (!this.statsCalculated)
-                this.Trap = data.Trap;
+                this.Trap = this.Trap;
         }
         if (this.Type == SecondaryTriggerStatsEnum.AllowCurseCast) {
-            data.Curse = Helpers.getRandom(0, 9);
+            this.Curse = Helpers.getRandom(0, 9);
             if (!this.statsCalculated)
-                this.Curse = data.Curse;
+                this.Curse = this.Curse;
         }
 
-        var levelForBuff = Math.round(Helpers.getRandom(1, data.Level/8));
-        var amountForBuff = Math.round(Helpers.getRandom(1, data.Level/4));
+        var levelForBuff = Math.round(Helpers.getRandom(1, this.Level/8));
+        var amountForBuff = Math.round(Helpers.getRandom(1, this.Level/4));
 
         if (this.Type == SecondaryTriggerStatsEnum.EmpowerBasicStat) {
             var statType = Helpers.getRandom(0, 5);
-            var statData:ItemBasicStatsDetail = new ItemBasicStatsDetail(levelForBuff, data.PowerLevel, data.Amount, statType);
-            var statPowers = statType == 0 ? new ItemBasicPowersDetail(levelForBuff, data.PowerLevel, amountForBuff, Helpers.getRandom(1,3)) : null;
+            var statData:ItemBasicStatsDetail = new ItemBasicStatsDetail(levelForBuff, this.PowerLevel, this.Amount, statType);
+            var statPowers = statType == 0 ? new ItemBasicPowersDetail(levelForBuff, this.PowerLevel, amountForBuff, Helpers.getRandom(1,3)) : null;
             var stat1 = statType == 1 ? statData : null;
             var stat2 = statType == 2 ? statData : null;
             var stat3 = statType == 3 ? statData : null;
@@ -73,40 +76,33 @@ export class ItemSecondaryTriggerStatsDetail implements IDescribable {
                 else amountForBuff = Math.round(amountForBuff* Helpers.getRandom(60, 80));
             }
 
-            var statRes = statType == 5 ? new ItemBasicResistanceStatsDetail(levelForBuff, data.PowerLevel, amountForBuff, selectedRes) : null;
+            var statRes = statType == 5 ? new ItemBasicResistanceStatsDetail(levelForBuff, this.PowerLevel, amountForBuff, selectedRes) : null;
 
-            data.BasicStat = new ItemBasicStats(levelForBuff, data.PowerLevel, statPowers, stat1, stat2, stat3, stat4, statRes);
-            if (!this.statsCalculated) {
-                this.BasicStat = data.BasicStat;
-            }
+            this.BasicStat = new ItemBasicStats(levelForBuff, this.PowerLevel, statPowers, stat1, stat2, stat3, stat4, statRes);
         }
         // TODO: Empower Ofense/Defense effects.. (SKIP for now)
         // if (this.Type == SecondaryTriggerStatsEnum.EmpowerOfenseStat) {
         //     var statType = Helpers.getRandom(0, 5);
         // if (this.Type == SecondaryTriggerStatsEnum.EmpowerDefenseStat) {
         //     var statType = Helpers.getRandom(0, 5);
-        
-        this.statsCalculated = true;
-        return data;
     }
 
     public GetDescription():string {
-        var data = this.GetData();
         var str = "";
 
-        if (data.Type == SecondaryTriggerStatsEnum.AllowSkillForUsage) {
-            data.Trigger.Type = TriggerStatsEnum.Spellcast;
-            data.Trigger.AffixType = TriggerAffixTypesEnum.CastSpell;
-            str = "cast level " + (data.Trigger.SkillStat.level || 1) + " " + data.Trigger.SkillStat.name;
+        if (this.Type == SecondaryTriggerStatsEnum.AllowSkillForUsage) {
+            this.Trigger.Type = TriggerStatsEnum.Spellcast;
+            this.Trigger.AffixType = TriggerAffixTypesEnum.CastSpell;
+            str = "cast level " + (this.Trigger.SkillStat.level || 1) + " " + this.Trigger.SkillStat.name;
         }
         else {
             if (this.Type == SecondaryTriggerStatsEnum.AllowTrapsCast)
-                str = " gain charge of level " + data.Level + " " + Helpers.getPropertyByValue(TrapsEnum, data.Trap);
+                str = " gain charge of level " + this.Level + " " + Helpers.getPropertyByValue(TrapsEnum, this.Trap);
             if (this.Type == SecondaryTriggerStatsEnum.AllowCurseCast)
-                str = " gain charge of level " + data.Level + " " + Helpers.getPropertyByValue(CursesEnum, data.Curse);
+                str = " gain charge of level " + this.Level + " " + Helpers.getPropertyByValue(CursesEnum, this.Curse);
             if (this.Type == SecondaryTriggerStatsEnum.EmpowerBasicStat)
-                str = " gain " + data.BasicStat.GetDescription();
-            str += " for " + data.Duration + " sec";
+                str = " gain " + this.BasicStat.GetDescription();
+            str += " for " + this.Duration + " sec";
         }
 
         var empoweredStr = new CalculationsHelper().getEmpoweredStr("*", this.PowerLevel);
@@ -122,6 +118,9 @@ export class ItemSecondaryTriggerStats implements IDescribable {
     Type:SecondaryTriggerStatsEnum;
     private PowerLevel: number;
     private Level: number;
+    private statsCalculated:boolean;
+    private LevelToBuff: number;
+    private TriggerDetails:ItemSecondaryTriggerStatsDetail;
 
     constructor(level:number, powerLevel:number, amount:number, chance:number, duration:number, type:SecondaryTriggerStatsEnum, trigger:ItemTriggerStats) {
         this.Level = level || 1;
@@ -131,20 +130,24 @@ export class ItemSecondaryTriggerStats implements IDescribable {
         this.Duration = duration;
         this.Type = type;
         this.Trigger = trigger;
+        
+        if (!this.statsCalculated) {
+            if (!this.Trigger)
+                console.log(this);
+
+            this.Chance = new CalculationsHelper().getEmpoweredValue(new CalculationsHelper().getTriggerStatsForLevel(this.Amount, this.Level, this.PowerLevel, this.Trigger.Type), this.PowerLevel);
+            this.Amount = new CalculationsHelper().getEmpoweredValue(new CalculationsHelper().getTriggerStatsForLevel(this.Amount, this.Level, this.PowerLevel, this.Trigger.Type), this.PowerLevel);
+
+            if (!this.LevelToBuff)
+                this.LevelToBuff = Math.round(Helpers.getRandom(1, this.Level/4));
+                
+            this.TriggerDetails = new ItemSecondaryTriggerStatsDetail(this.LevelToBuff, this.PowerLevel, this.Amount, this.Duration, this.Type, this.Trigger)
+            this.statsCalculated = true;
+        }
     }
 
     public GetDescription():string {
-        var data = this.GetData();
-        var levelToBuff = Math.round(Helpers.getRandom(1, this.Level/4));
-        var secondaryTypeStr = new ItemSecondaryTriggerStatsDetail(levelToBuff, data.PowerLevel, data.Amount, data.Duration, data.Type, data.Trigger).GetDescription();
-        return data.Trigger.GetTriggerTypeInfo() + " has a " + data.Chance + " % chance to " + secondaryTypeStr;// + " for " + data.Duration;
-    }
-    
-    public GetData()
-    {
-        var data = new ItemSecondaryTriggerStats(this.Level, this.PowerLevel, this.Amount, this.Chance, this.Duration, this.Type, this.Trigger);
-        data.Chance = new CalculationsHelper().getEmpoweredValue(new CalculationsHelper().getTriggerStatsForLevel(this.Amount, this.Level, this.PowerLevel, this.Trigger.Type), this.PowerLevel);
-        data.Amount = new CalculationsHelper().getEmpoweredValue(new CalculationsHelper().getTriggerStatsForLevel(this.Amount, this.Level, this.PowerLevel, this.Trigger.Type), this.PowerLevel);
-        return data;
+        var secondaryTypeStr = this.TriggerDetails.GetDescription();
+        return this.Trigger.GetTriggerTypeInfo() + " has a " + this.Chance + " % chance to " + secondaryTypeStr;// + " for " + this.Duration;
     }
 }

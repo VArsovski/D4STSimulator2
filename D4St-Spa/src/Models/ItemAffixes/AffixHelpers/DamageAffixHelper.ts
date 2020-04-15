@@ -6,7 +6,8 @@ export class DamageAffixHelper {
     public GetByIndex(level: number, powerLevel:number, itemType:ItemWeaponTypesEnum, damageType:number, isPrimary:boolean):ItemAffixOutput {
         var delimiter = 7;
 
-        var selected = itemType % delimiter == 1 ? ItemWeaponTypesEnum.Axe
+        var selected =
+          itemType % delimiter == 1 ? ItemWeaponTypesEnum.Axe
         : itemType % delimiter == 2 ? ItemWeaponTypesEnum.Bow
         : itemType % delimiter == 3 ? ItemWeaponTypesEnum.Hammer
         : itemType % delimiter == 4 ? ItemWeaponTypesEnum.Sword
@@ -15,7 +16,8 @@ export class DamageAffixHelper {
         : ItemWeaponTypesEnum.Staff;
 
         delimiter = 8;
-        var selectedDamageType = damageType % delimiter == 1 ? DamageTypesEnum.BleedOrArmorReduction
+        var selectedDamageType =
+          damageType % delimiter == 1 ? DamageTypesEnum.BleedOrArmorReduction
         : damageType % delimiter == 2 ? DamageTypesEnum.PoisonOrBurn
         : damageType % delimiter == 3 ? DamageTypesEnum.KnockbackOrStun
         : damageType % delimiter == 4 ? DamageTypesEnum.CleaveOrAoE

@@ -18,10 +18,11 @@ export function getAlertConfig(): TooltipConfig {
   styles: [
     `
       ::ng-deep .tooltip .tooltip-inner {
-        max-width: 26rem;
-        min-width: 26rem;
+        max-width: 31rem;
+        min-width: 17rem;
         opacity: 0.7;
         font-weight:bold;
+        /* text-align:left; */
       }
       :host >>> .tooltip-inner {
         color: #fff;
@@ -31,7 +32,7 @@ export function getAlertConfig(): TooltipConfig {
       :host >>> .tooltip.top .tooltip-arrow {
         border-top-color: #009688;
         cursor:pointer;
-        width:25rem;
+        width:30rem;
       }
     `]
 })
