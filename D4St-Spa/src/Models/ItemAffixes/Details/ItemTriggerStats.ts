@@ -49,6 +49,8 @@ export class ItemTriggerStats implements IDescribable {
     //     CCPhysical = 4,               //TA[3], CCET[3,4,7]
     //     Spellcast = 5,                //Cast a spell
     constructor(level:number, powerLevel:number, amount:number, chance:number, type:TriggerStatsEnum, triggerAffixType:TriggerAffixTypesEnum, ccEffectType:CCEffectTypesEnum, skillStat: SkillVM) {
+
+        this.Amount = -1; // Just make sure it's not 0, (again) for outside check
         this.Level = level || 1;
         this.PowerLevel = powerLevel;
         this.Amount = amount;
@@ -57,23 +59,20 @@ export class ItemTriggerStats implements IDescribable {
         this.CCType = ccEffectType;
         this.SkillStat = skillStat;
 
-        // TODO: Seems like Knockback/Cleave doesn't get found
-        // if (this.Type == TriggerStatsEnum.PhysicalAoE) {
-        //     console.log(this);
-        //     debugger;
-        // }
-
         if (!this.statsCalculated) {
             var appropriateTriggerAffixes = this.GetAppropriateAffixesForTrigger(this.Type);
             var selectedAffix = appropriateTriggerAffixes[Helpers.getRandom(0, appropriateTriggerAffixes.length-1)];
-            if (!selectedAffix)
+            if (!this.AffixType)
                 this.AffixType = selectedAffix;
 
             var appropriateEffects = this.GetAppropriateEffectsForAffix(selectedAffix);
             var selectedTriggerEffect = appropriateEffects[Helpers.getRandom(0, appropriateEffects.length - 1)];
             this.Chance = new CalculationsHelper().getTriggerChanceForLevel(this.Amount, this.Level, this.PowerLevel);
             this.Amount = new CalculationsHelper().getTriggerStatsForLevel(this.Amount, this.Level, this.PowerLevel, this.Type);
-            this.CCType = selectedTriggerEffect;
+
+            if (!this.CCType)
+                this.CCType = selectedTriggerEffect;
+
             this.statsCalculated = true;
         }
     }
@@ -85,16 +84,19 @@ export class ItemTriggerStats implements IDescribable {
             : Helpers.getPropertyByValue(TriggerAffixTypesEnum, this.AffixType);
 
         var procEffects = [CCEffectTypesEnum.Bleed, CCEffectTypesEnum.CriticalHit, CCEffectTypesEnum.CrushingBlow].indexOf(this.CCType) != -1;
-
         var selectedSkill = this.Type == TriggerStatsEnum.Spellcast ? this.SkillStat : null;
         var selectedActionStr = selectedSkill ? " to cast " : procEffects || this.AffixType == TriggerAffixTypesEnum.ChainOrPierce ? " to proc " : " to ";
         var skillStrDescr = selectedSkill ? " level " + this.Amount + " " + selectedSkill.name : "";
-        var procStrDescr = selectedAffixStr || Helpers.getPropertyByValue(TriggerAffixTypesEnum, this.AffixType) + " for " + this.Amount;
+        var procStrDescr = (selectedAffixStr || Helpers.getPropertyByValue(TriggerAffixTypesEnum, this.AffixType)) + " for " + this.Amount;
 
-        if (!procStrDescr)
-            console.log(this);
+        var withChanceStr = this.Chance + "% chance " + selectedActionStr + (skillStrDescr || procStrDescr || Helpers.getPropertyByValue(TriggerStatsEnum, this.Type));
+        var withoutChanceStr = "Effects of type " + (selectedAffixStr || Helpers.getPropertyByValue(TriggerAffixTypesEnum, this.AffixType)) + " do additional " + this.Amount + "% damage";
 
-        return this.Chance + "% chance " + selectedActionStr + (skillStrDescr || procStrDescr || Helpers.getPropertyByValue(TriggerStatsEnum, this.Type));
+        if (!this.Chance) {
+            debugger;
+        }
+
+        return this.Chance ? withChanceStr : withoutChanceStr;
     }
 
     public GetTriggerTypeInfo():string {
@@ -110,13 +112,6 @@ export class ItemTriggerStats implements IDescribable {
         var selectedAffixStr = [TriggerAffixTypesEnum.Cleave, TriggerAffixTypesEnum.ChainOrPierce].indexOf(this.AffixType) == -1
             ? Helpers.getPropertyByValue(CCEffectTypesEnum, this.CCType)
             : Helpers.getPropertyByValue(TriggerAffixTypesEnum, this.AffixType) || Helpers.getPropertyByValue(TriggerAffixTypesEnum, this.AffixType);
-
-        if (!selectedAffixStr || selectedAffixStr.includes("null")) {
-            console.log("Error:")
-            console.log(this.Type);
-            console.log(this.AffixType);    
-            console.log(this)
-        }
 
         return selectedAffixStr;
     }

@@ -7,7 +7,7 @@ import { SkillVM } from '../SkillVM';
 import { ItemAffixOutput } from './Details/ItemAffixOutput';
 
 export class ItemAffix implements IItemAffix {
-    Index: number;
+    ItemId: number;
 
     ItemCategory: ItemCategoriesEnum;      // Weapon, Armor, Jewelry
     ItemType: number;                      // Which W,A,J
@@ -28,8 +28,7 @@ export class ItemAffix implements IItemAffix {
     skillData: SkillVM[];
     PowerLevel: number;
 
-    constructor(index:number, affixType: ItemAffixTypeEnum, condition?:IItemAffixCondition, affixCategory?: AffixCategoryEnum, powerLevel?:number, attacProckType?: AttackTypesEnum, castProcType?: CastProcTypesEnum) {
-        this.Index = index;
+    constructor(affixType: ItemAffixTypeEnum, condition?:IItemAffixCondition, affixCategory?: AffixCategoryEnum, powerLevel?:number, attacProckType?: AttackTypesEnum, castProcType?: CastProcTypesEnum) {
         this.AffixType = affixType;
         this.Condition = condition;
         this.PowerLevel = powerLevel;
@@ -50,61 +49,70 @@ export class ItemAffix implements IItemAffix {
         if (this.AffixType == ItemAffixTypeEnum.Damage) {
             if (this.Contents.damageStat)
                 statDescr += this.Contents.damageStat.GetDescription();
-            if (this.AffixCategory == AffixCategoryEnum.PrimaryDamage)
-                statDescr += " (primary)";
+            // if (this.AffixCategory == AffixCategoryEnum.PrimaryDamage)
+            //     statDescr += " (primary)";
         }
         if (this.AffixType == ItemAffixTypeEnum.Armor) {
             if (this.Contents.armorStat)
                 statDescr +=  this.Contents.armorStat.GetDescription();
-            if (this.AffixCategory == AffixCategoryEnum.PrimaryArmor)
-                statDescr += " (primary)";
+            // if (this.AffixCategory == AffixCategoryEnum.PrimaryArmor)
+            //     statDescr += " (primary)";
         }
         if (this.AffixType == ItemAffixTypeEnum.BasicStat) {
             if (this.Contents.basicStat)
-                statDescr += this.Contents.basicStat.GetDescription() + " (basic)";
+                statDescr += this.Contents.basicStat.GetDescription();// + " (basic)";
         }
 
         if (this.AffixType == ItemAffixTypeEnum.Offensive) {
             if (this.Contents.ofensiveStat)
-                statDescr += this.Contents.ofensiveStat.GetDescription() + " (ofensive)";
+                statDescr += this.Contents.ofensiveStat.GetDescription();// + " (ofensive)";
         }
         if (this.AffixType == ItemAffixTypeEnum.Defensive) {
             if (this.Contents.defensiveStat)
-                statDescr += this.Contents.defensiveStat.GetDescription() + " (defensive)";
+                statDescr += this.Contents.defensiveStat.GetDescription();// + " (defensive)";
         }
         if (this.AffixType == ItemAffixTypeEnum.TriggerEffect) {
             if (this.Contents.triggerStat)
-                statDescr += this.Contents.triggerStat.GetDescription() + " (trigger)";// Helpers.getPropertyByValue(TriggerStatsEnum, this.Contents.triggerStat) + " trigger";
+                statDescr += this.Contents.triggerStat.GetDescription();// + " (trigger)";// Helpers.getPropertyByValue(TriggerStatsEnum, this.Contents.triggerStat) + " trigger";
         }        
-        if (this.AffixType == ItemAffixTypeEnum.SecondaryTriggers) {
+        if (this.AffixType == ItemAffixTypeEnum.SecondaryTrigger) {
             if (this.Contents.secondaryTriggerStat)
-                statDescr += this.Contents.secondaryTriggerStat.GetDescription() + " (secondary)";
+                statDescr += this.Contents.secondaryTriggerStat.GetDescription();// + " (secondary)";
         }        
         if (this.AffixType == ItemAffixTypeEnum.Legendary) {
             if (this.Contents.legendaryStat)
-                statDescr += Helpers.getPropertyByValue(LegendaryStatsEnum, this.Contents.legendaryStat) + " (legendary)";
+                statDescr += this.Contents.legendaryStat.GetDescription();// + " (legendary)";
         }
         if (this.AffixType == ItemAffixTypeEnum.PowerUpSkill) {
             if (this.Contents.basicStat)
                 statDescr += this.Contents.basicStat.GetDescription();
         }
 
-        if (!statDescr)
+        var statDescrTest = statDescr.replace("*","").replace(" ", "");
+        if (!statDescrTest)
         {
             // ExtraDamageEffect, IncreaseDamage, IncreaseTriggerStat, ConditionalProcBasicAffix, ConditionalProcCastAffix, ConditionalSkillTriggerAffix
+            console.log("Contents for [most likely a ExtraDamageEffect]:")
+            console.log(this.Contents);
             statDescr += " [" + Helpers.getPropertyByValue(AffixCategoryEnum, this.AffixCategory);
             statDescr += ", " + Helpers.getPropertyByValue(ItemAffixTypeEnum, this.AffixType) + "]";
         }
 
-        if (this.Condition) {
-            conditionStr = "(requires " + this.Condition.Condition + " " + Helpers.getPropertyByValue(PowerTypesEnum, this.Condition.ConditionPowerType) + ")";
-        }
+        statDescr += (this.AffixType == ItemAffixTypeEnum.Damage || this.AffixType == ItemAffixTypeEnum.Armor) ? " (Primary)"
+        : this.AffixType == ItemAffixTypeEnum.BasicStat ? " (Basic)"
+        : " (" + Helpers.getPropertyByValue(ItemAffixTypeEnum, this.AffixType) + ")";
 
-        // if (statDescr.includes("NaN ") || statDescr.startsWith("0") || statDescr.includes("null") || statDescr.replace("*", "").length == 0)
-        //     console.log(this);
+        if (this.Condition)
+            conditionStr = "(requires " + this.Condition.Condition + " " + Helpers.getPropertyByValue(PowerTypesEnum, this.Condition.ConditionPowerType) + ")";
+
+        if (statDescr.includes("NaN ") || statDescr.startsWith("0") || statDescr.includes("null") || statDescr.replace("*", "").length == 0) {
+            console.log("Data missing for:");
+            console.log(this);
+        }
 
         return statDescr + " " + conditionStr;
     }
+
     public SetCondition(ConditionSatisfied:boolean) {
         this.ConditionSatisfied = ConditionSatisfied;
     }

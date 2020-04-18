@@ -1,7 +1,7 @@
-import { IDescribable } from '../IDescribable';
 import { ItemWeaponTypesEnum, DamageTypesEnum, ResistanceTypesEnum, ItemCategoriesEnum } from 'src/_Enums/itemAffixEnums';
 import { Helpers } from 'src/_Helpers/helpers';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
+import { IItemAffixStats } from './IItemAffixStats';
 
 export class ItemDamageNumberStats {
     WeaponType: ItemWeaponTypesEnum;
@@ -27,17 +27,22 @@ export class ItemDamageCategoryStats {
     }
 }
 
-export class ItemDamageStats implements IDescribable {
-    IsPrimaryDamage: boolean;
+export class ItemDamageStats implements IItemAffixStats {
+    private AddPrimaryDamage: boolean;
+    private AddEmpowerPercentage:boolean;
     WeaponType: ItemWeaponTypesEnum;
     MinDamage: number;
     MaxDamage: number;
     DamageData:ItemDamageCategoryStats;
     private Level:number;
     private PowerLevel: number;
+    Amount:number; //Just to check whether there is data in here (from outside method)
 
-    constructor(isPrimary:boolean, level:number, powerLevel:number, weaponType: ItemWeaponTypesEnum, minDamage?: number, maxDamage?: number, damageData?:ItemDamageCategoryStats) {
-        this.IsPrimaryDamage = isPrimary;
+    constructor(addPrimary:boolean, addEmpower:boolean, level:number, powerLevel:number, weaponType: ItemWeaponTypesEnum, minDamage?: number, maxDamage?: number, damageData?:ItemDamageCategoryStats) {
+
+        this.Amount = -1; // Just make sure it's not 0, (again) for outside check
+        this.AddPrimaryDamage = addPrimary;
+        this.AddEmpowerPercentage = addEmpower;
         this.PowerLevel = powerLevel;
         this.Level = level;
         this.WeaponType = weaponType;
@@ -45,46 +50,80 @@ export class ItemDamageStats implements IDescribable {
         this.MaxDamage = maxDamage;
         this.DamageData = damageData;
 
-        var data = this.GetBasicWeaponStats(this.WeaponType);
-        if (isPrimary) {
-            if (!(minDamage || maxDamage)) {
-                this.MinDamage = data.MinDamage;
-                this.MaxDamage = data.MaxDamage;
+        if (!this.DamageData) {
+            if (this.AddPrimaryDamage) {
+                var primaryDamageData = this.GetBasicWeaponStats(this.WeaponType);
+                this.MinDamage = new CalculationsHelper().getDamageStatForLevel(primaryDamageData.MinDamage, this.Level);
+                this.MaxDamage = new CalculationsHelper().getDamageStatForLevel(primaryDamageData.MaxDamage, this.Level);
+                this.DamageData = this.GetCategoryWeaponStats(this.WeaponType);
+
+                var powerFactor:number = 0;
+
+                var physicalDamageTypes = [DamageTypesEnum.Physical, DamageTypesEnum.PoisonOrBurn, DamageTypesEnum.CleaveOrAoE, DamageTypesEnum.BleedOrArmorReduction];
+                var bludgeonDamageTypes = [DamageTypesEnum.Physical, DamageTypesEnum.KnockbackOrStun, DamageTypesEnum.FreezeOrRoot];
+                var chainPierceDamageTypes = [DamageTypesEnum.PoisonOrBurn, DamageTypesEnum.ChainOrPierceAttack, DamageTypesEnum.ProjectileOrSummon];
+                var spellDamageTypes = [DamageTypesEnum.CleaveOrAoE, DamageTypesEnum.ChainOrPierceAttack, DamageTypesEnum.ProjectileOrSummon, DamageTypesEnum.FreezeOrRoot];
+
+                var physicalWeapons = [ItemWeaponTypesEnum.Axe, ItemWeaponTypesEnum.Hammer, ItemWeaponTypesEnum.Sword, ItemWeaponTypesEnum.Javelin];
+                var bludgeonWeapons = [ItemWeaponTypesEnum.Hammer, ItemWeaponTypesEnum.Staff];
+                var spellWeapons = [ItemWeaponTypesEnum.Bow, ItemWeaponTypesEnum.Wand, ItemWeaponTypesEnum.Staff];
+                var chainPierceWeapons = [ItemWeaponTypesEnum.Bow, ItemWeaponTypesEnum.Javelin, ItemWeaponTypesEnum.Sword];
+                
+                powerFactor += physicalWeapons.includes(this.WeaponType) ? physicalDamageTypes.includes(this.DamageData.MainDamageType) ? 3 : 1 : 0;
+                powerFactor += bludgeonWeapons.includes(this.WeaponType) ? bludgeonDamageTypes.includes(this.DamageData.MainDamageType) || spellDamageTypes.includes(this.DamageData.MainDamageType) ? 2 : 2 : 0;
+                powerFactor += chainPierceWeapons.includes(this.WeaponType) ? chainPierceDamageTypes.includes(this.DamageData.MainDamageType) ? 3 : 1 : 0;
+                powerFactor += spellWeapons.includes(this.WeaponType) ? spellDamageTypes.includes(this.DamageData.MainDamageType) ? 3 : 1 : 0;
+
+                var adequateDamageTypeEmpower = this.WeaponType == parseInt(this.DamageData.MainDamageType.toString(), 10);
+
+                if (physicalWeapons.includes(this.WeaponType)) {
+                    this.MinDamage = new CalculationsHelper().getEmpoweredValue(this.MinDamage, adequateDamageTypeEmpower ? 2 : 1);
+                    this.MaxDamage = new CalculationsHelper().getEmpoweredValue(this.MaxDamage, adequateDamageTypeEmpower ? 2 : 1);
+                }
+
+                if (adequateDamageTypeEmpower)
+                    powerFactor += this.WeaponType == ItemWeaponTypesEnum.Wand || this.WeaponType == ItemWeaponTypesEnum.Axe ? 3 : 2;
+
+                this.DamageData.EmpowerPercentage = new CalculationsHelper().getWeaponEmpoweredValue(this.DamageData.EmpowerPercentage, powerFactor);
             }
+            if (!this.AddEmpowerPercentage)
+                this.DamageData.EmpowerPercentage = 0;
         }
 
-        if (!this.DamageData) {
-            this.DamageData = this.GetCategoryWeaponStats(this.WeaponType);
-    
-            // Initialize EmpowerPercentage Logic
-            var powerFactor = this.WeaponType == ItemWeaponTypesEnum.Wand || this.WeaponType == ItemWeaponTypesEnum.Staff ? 3 : 1;
-            this.DamageData.EmpowerPercentage = new CalculationsHelper().getWeaponEmpoweredValue(this.DamageData.EmpowerPercentage, powerFactor);
+        // If reversed, reverse to fit right
+        if (this.MinDamage > this.MaxDamage) {
+            var damageTemp = this.MinDamage;
+            this.MinDamage = this.MaxDamage;
+            this.MaxDamage = damageTemp;
         }
+        // Just in case if rolls were THAT biased
+        else if (this.MinDamage == this.MaxDamage)
+            this.MaxDamage += Math.round(1+ this.Level/2);
     }
 
     // Stats for level1, calculate for other levels
     private GetLevelData():ItemDamageNumberStats[]{
         var basicDamageTypes:ItemDamageNumberStats[] = [];
-        basicDamageTypes.push(new ItemDamageNumberStats(ItemWeaponTypesEnum.Axe, 2, 10));
+        basicDamageTypes.push(new ItemDamageNumberStats(ItemWeaponTypesEnum.Axe, 6, 10));
         basicDamageTypes.push(new ItemDamageNumberStats(ItemWeaponTypesEnum.Bow, 3, 8));
-        basicDamageTypes.push(new ItemDamageNumberStats(ItemWeaponTypesEnum.Hammer, 6, 8));
-        basicDamageTypes.push(new ItemDamageNumberStats(ItemWeaponTypesEnum.Javelin, 1, 12));
-        basicDamageTypes.push(new ItemDamageNumberStats(ItemWeaponTypesEnum.Sword, 4, 9));
+        basicDamageTypes.push(new ItemDamageNumberStats(ItemWeaponTypesEnum.Hammer, 7, 9));
+        basicDamageTypes.push(new ItemDamageNumberStats(ItemWeaponTypesEnum.Sword, 6, 9));
+        basicDamageTypes.push(new ItemDamageNumberStats(ItemWeaponTypesEnum.Javelin, 3, 12));
         basicDamageTypes.push(new ItemDamageNumberStats(ItemWeaponTypesEnum.Wand, 3, 7));
-        basicDamageTypes.push(new ItemDamageNumberStats(ItemWeaponTypesEnum.Staff, 5, 9));
+        basicDamageTypes.push(new ItemDamageNumberStats(ItemWeaponTypesEnum.Staff, 5, 11));
 
         return basicDamageTypes;
     };
 
-    private GetBasicWeaponStats(type?:ItemWeaponTypesEnum) {
+    private GetBasicWeaponStats(type:ItemWeaponTypesEnum) {
         var levelData = this.GetLevelData();
-        var selected = type!= null
+        var selected = type != null
         ? type == ItemWeaponTypesEnum.Axe ? levelData[0]
         : type == ItemWeaponTypesEnum.Bow ? levelData[1]
         : type == ItemWeaponTypesEnum.Hammer ? levelData[2]
+        : type == ItemWeaponTypesEnum.Sword ? levelData[5]
         : type == ItemWeaponTypesEnum.Javelin ? levelData[3]
-        : type == ItemWeaponTypesEnum.Sword ? levelData[4]
-        : type == ItemWeaponTypesEnum.Wand ? levelData[5]
+        : type == ItemWeaponTypesEnum.Wand ? levelData[4]
         : levelData[6]
         : levelData[Helpers.getRandom(0, 6)];
 
@@ -98,22 +137,18 @@ export class ItemDamageStats implements IDescribable {
         var selectedElement = damageElements[Helpers.getRandom(0, damageElements.length - 1)];
         var categoryDamageStats = new ItemDamageCategoryStats(selectedDamageType, selectedElement, 0);
 
-        if (this.IsPrimaryDamage)
-            categoryDamageStats.EmpowerPercentage = Math.round(Helpers.getRandom(1,3) + Helpers.getRandom(-1,1) + Helpers.getRandom(0, (50 - this.Level)/10));
+        if (this.AddEmpowerPercentage)
+            categoryDamageStats.EmpowerPercentage = Math.round(Helpers.getRandom(2, 4) + Helpers.getRandom(-1, 1) + Helpers.getRandom(0, 5 - Math.abs(30 - this.Level)/10));
 
         return categoryDamageStats;
     }
 
     GetDescription():string {
         var empowerTypeStr = this.GetAppropriateEmpoweredType(this.DamageData);
-        var damage1 = Math.min(this.MinDamage, this.MaxDamage);
-        var damage2 = Math.max(this.MinDamage, this.MaxDamage);
-        if (damage1 == damage2)    // Just in case if rolls were THAT biased
-            damage2 += (1+ this.Level/2);
-
+ 
         var empoweredStr = new CalculationsHelper().getEmpoweredStr("*", this.PowerLevel);
         var primaryStr = this.MinDamage && this.MaxDamage
-            ? damage1 + " - " + damage2 + " " + Helpers.getPropertyByValue(ResistanceTypesEnum, this.DamageData.ElementType) + " damage" + empoweredStr : "";
+            ? this.MinDamage + " - " + this.MaxDamage + " " + Helpers.getPropertyByValue(ResistanceTypesEnum, this.DamageData.ElementType) + " damage" + empoweredStr : "";
 
         return primaryStr ? primaryStr + (empowerTypeStr ? ", " + empowerTypeStr : "") : empowerTypeStr;
     }
@@ -217,7 +252,7 @@ export class ItemDamageStats implements IDescribable {
     }    
     
     GetAppropriateEmpoweredType(data:ItemDamageCategoryStats) {
-        if (!this.DamageData && !this.DamageData.EmpowerPercentage)
+        if (!this.DamageData.EmpowerPercentage)
             return "";
 
         return Helpers.getPropertyByValue(DamageTypesEnum, data.MainDamageType) + " damage increased by " + data.EmpowerPercentage + "%";

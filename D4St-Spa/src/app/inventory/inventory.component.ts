@@ -50,7 +50,7 @@ export class InventoryComponent implements OnInit, OnChanges {
   protected BasicStats:InventoryBasicStatsModel;
 
   private armors :string[] = ["Boots","Chest", "Gloves", "Helm", "Pants"];
-  private weapons:string[] = ["Axes", "Bows", "Hammers", "Javelins", "Staves", "Swords", "Wands"];
+  private weapons:string[] = ["Axes", "Bows", "Hammers", "Swords", "Javelins", "Wands", "Staves"];
   private jewelries:string[] = ["Amulet", "Ring1", "Ring2"];//["Amulets", "Rings"];
 
   protected bootsSrc:string;

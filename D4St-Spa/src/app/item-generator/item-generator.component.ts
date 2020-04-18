@@ -3,7 +3,7 @@ import { IDropdownImageItem } from 'src/Models/_Common/IDropdownImageItem';
 import { DropdownImageItem } from 'src/Models/_Common/DropdownImageItem';
 import { Helpers } from 'src/_Helpers/helpers';
 import { ItemAffixGenerator } from 'src/Models/ItemAffixes/ItemAffixGenerator';
-import { ItemCategoriesEnum, ItemArmorTypesEnum, ItemJewelryTypesEnum, AffixCategoryEnum } from 'src/_Enums/itemAffixEnums';
+import { ItemCategoriesEnum, ItemArmorTypesEnum, ItemJewelryTypesEnum } from 'src/_Enums/itemAffixEnums';
 import { ItemAffix } from 'src/Models/ItemAffixes/ItemAffix';
 import { BasicCharStats } from 'src/Models/BasicCharStats';
 import { SkillVM } from 'src/Models/SkillVM';
@@ -19,36 +19,54 @@ import { InventoryVM } from 'src/Models/InventoryVM';
 export class ItemGeneratorComponent implements OnInit {
   @Output() EquipItemEmiter: EventEmitter<InventoryVM> = new EventEmitter(true);
 
-  constructor() { this.generateRandom = true; this.selectedDescriptions = []; }
+  constructor() { this.selectedDescriptions = []; }
 
   @Input() categories: IDropdownImageItem[];
   @Input() items: IDropdownImageItem[];
   @Input() rarities: IDropdownImageItem[];
   @Input() skills: SkillVM[];
-  generateRandom:boolean;
   selectedItem:IItemAffix[];
   selectedDescriptions:string[];
-  // @Output() SelectCategory = new EventEmitter<IDropdownImageItem>(true);
-  // @Output() SelectType = new EventEmitter<IDropdownImageItem>(true);
 
-  categoriesStr:string[] = ["Armor", "Weapons", "Jewelry"];
-  armors:string[] = ["Boots","Chest", "Gloves", "Helm", "Pants"];
-  weapons:string[] = ["Axes", "Bows", "Hammers", "Javelins", "Staves", "Swords", "Wands"];
-  jewelries:string[] = ["Amulets", "Rings"];
-  raritiesStr:string[] = ["Magic", "Rare", "Legendary"];
+  categoriesStr:string[] = ["Random", "Armor", "Weapons", "Jewelry"];
+  armors:string[] = ["Random", "Boots","Chest", "Gloves", "Helm", "Pants"];
+  weapons:string[] = ["Random", "Axes", "Bows", "Hammers", "Swords", "Javelins", "Wands", "Staves"];
+  jewelries:string[] = ["Random", "Amulets", "Rings"];
+  raritiesStr:string[] = ["Random", "Magic", "Rare", "Legendary"];
 
   itemCategoriesCaption:string = "Item Categories";
   itemTypesCaption:string = "Item Types";
   rarityTypesCaption:string = "Rarity";
+  selectedTypeStr:string;
+  selectedItemClass:string;
+  imgSrc:string;
 
   selectedCategory: IDropdownImageItem;
   selectedType: IDropdownImageItem;
   selectedRarity: IDropdownImageItem;
+  selectedCategoryTemp: IDropdownImageItem;
+  selectedTypeTemp: IDropdownImageItem;
+  selectedRarityTemp: IDropdownImageItem;
+
   @Input() BasicData: BasicCharStats;
   generatedAffixes: ItemAffix[];
 
+  private categoryIsRandom: boolean;
+  private typeIsRandom: boolean;
+  private rarityIsRandom: boolean;
+
   ngOnInit() {
     this.categories = this.GetCategoriesData(this.categoriesStr);
+    this.rarities = this.GetRarityData(this.raritiesStr);
+    this.SelectCategoryHandler(this.categories[0]);
+    this.SelectRarityHandler(this.rarities[0]);
+    this.SelectTypeHandler(this.items[0]);
+    this.imgSrc = this.UpdateImgSrc();
+
+    // Start as random
+    this.categoryIsRandom = true;
+    this.typeIsRandom = true;
+    this.rarityIsRandom = true;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -60,14 +78,18 @@ export class ItemGeneratorComponent implements OnInit {
 
   GetCategoriesData(elements:string[]):DropdownImageItem[] {
     var data = new Array<IDropdownImageItem>();
-    var count = 1;
-    elements.forEach(element => {
-      var selection = count == 1 ? this.armors : count == 2 ? this.weapons : this.jewelries;
-      var randType = Helpers.getRandom(1, selection.length);
-      var randImg = Helpers.getRandom(1, 2);
-      var imgSrc = "_Resources\\img\\items\\" + element[0] + selection[randType-1][0] + selection[randType-1][1] + randImg + ".png";
-      data.push(new DropdownImageItem(count, element, "", imgSrc, ""));
-      count++;
+    elements.forEach((element, count) => {
+      if (element != "Random") {
+        var selection = count == 1 ? this.armors : count == 2 ? this.weapons : this.jewelries;
+        var randType = Helpers.getRandom(1, selection.length - 1);
+        var randImg = Helpers.getRandom(1, 3);
+        var imgSrc = "_Resources\\img\\items\\" + element[0] + selection[randType][0] + selection[randType][1] + randImg + ".png";
+        data.push(new DropdownImageItem(count, element, "", imgSrc, ""));
+      }
+      else {
+        var imgSrc = "_Resources\\img\\items\\RaC.png";
+        data.push(new DropdownImageItem(0, element, "", imgSrc, ""));
+      }
     });
   
     return data;
@@ -75,56 +97,104 @@ export class ItemGeneratorComponent implements OnInit {
 
   GetItemsData(category: string, elements:string[]):DropdownImageItem[] {
     var data = new Array<IDropdownImageItem>();
-    var count = 1;
-    elements.forEach(element => {
-      // var randType = Helpers.getRandom(1, elements.length);
-      var randImg = Helpers.getRandom(1, 2);
-      var imgSrc = "_Resources\\img\\items\\" + category[0] + element[0] + element[1] + randImg + ".png";
-      data.push(new DropdownImageItem(count, element, "", imgSrc, ""));
-      count++;
+    elements.forEach((element, count) => {
+      if (element != "Random") {
+        var randImg = Helpers.getRandom(1, 3);
+        var imgSrc = "_Resources\\img\\items\\" + ((this.selectedCategory || this.selectedCategoryTemp || {name:""}).name || category)[0] + element[0] + element[1] + randImg + ".png";
+        data.push(new DropdownImageItem(count, element, "", imgSrc, ""));
+      }
+      else {
+        var catData = ((this.selectedCategory || this.selectedCategoryTemp || {name:""}).name || category);
+        var rarData = (this.selectedRarity || this.selectedRarityTemp || {id:0}).id;
+        var imgSrc = "_Resources\\img\\items\\" + catData[0] + "Ra" + rarData + ".png";
+        // (this.selectedCategory || this.selectedCategoryTemp || {name:""}).name || category
+        data.push(new DropdownImageItem(0, element, "", imgSrc, ""));
+      }
     });
   
     return data;
   }
 
-  GetRarityData(category: string, type:string, elements:string[]):DropdownImageItem[] {
+  GetRarityData(elements:string[]):DropdownImageItem[] {
     var data = new Array<IDropdownImageItem>();
-    var count = 1;
-    elements.forEach(element => {
-      var imgSrc = "_Resources\\img\\items\\" + category[0] + type[0] + type[1] + count + ".png";
-      data.push(new DropdownImageItem(count, element, "", imgSrc, ""));
-      count++;
+    elements.forEach((element, count) => {
+      if (element != "Random") {
+        var selectedCategoryId = (this.selectedCategory || {id:0}).id == 0 ? this.categories[Helpers.getRandom(1, 3)].id : this.selectedCategory.id;
+        var selectedCategoryStr = this.categories[selectedCategoryId].name;
+        var selection = selectedCategoryId == 1 ? this.armors : count == 2 ? this.weapons : this.jewelries;
+        var selectedTypeStr = (this.selectedType || {id:0}).id == 0 ? selection[Helpers.getRandom(1, selection.length-1)] : this.selectedType.name;
+
+        var imgSrc = "_Resources\\img\\items\\" + selectedCategoryStr[0] + selectedTypeStr[0] + selectedTypeStr[1] + count + ".png";
+        data.push(new DropdownImageItem(count, element, "", imgSrc, ""));
+      }
+      else {
+        var imgSrc = "_Resources\\img\\items\\RaR.png";
+        data.push(new DropdownImageItem(0, element, "", imgSrc, ""));
+      }
     });
   
     return data;
   }
 
-  async SelectCategoryHandler(item:IDropdownImageItem){
-    this.selectedCategory = item;
-    var selection = item.id == 1 ? this.armors : item.id == 2 ? this.weapons : this.jewelries;
-    this.items = this.GetItemsData(item.name, selection);
-    // this.SelectCategory.emit(item);
+  async SelectCategoryHandler(item:IDropdownImageItem) {
+    // Random selected
+    var isRandom = (item || {id:0}).id == 0;
+
+    if (this.categoryIsRandom && isRandom) {
+      // Set the Dropdown
+      this.selectedCategory = item;
+    }
+    else {
+      this.categoryIsRandom = isRandom;
+      var selectedCategory:IDropdownImageItem = null;
+      if (isRandom)
+        selectedCategory = this.categories[1 + Helpers.getRandom(0, 2)];
+      else selectedCategory = item;
+  
+      var selection = selectedCategory.id == 1 ? this.armors : selectedCategory.id == 2 ? this.weapons : this.jewelries;
+      if (isRandom)
+        this.selectedCategoryTemp = selectedCategory;
+      else this.selectedCategory = selectedCategory;
+    }
+  
+    this.items = this.GetItemsData(selectedCategory.name, selection);
   }
 
   async SelectTypeHandler(item: IDropdownImageItem) {
-    this.selectedType = item;
-    if (!item) {
-      setTimeout(() => {
-        if (!item && this.generateRandom) {
-          if (!this.selectedType) {
-            debugger;
-            var generateSeed = this.selectedCategory.id == ItemCategoriesEnum.Armor ? 5 : this.selectedCategory.id == ItemCategoriesEnum.Weapon ? 7 : 3;
-            this.selectedType = new DropdownImageItem(generateSeed, "", "", null, null);
-            this.rarities = this.GetRarityData(this.selectedCategory.name, this.selectedType.name, this.raritiesStr);
-          }
-        }
-        else this.rarities = this.GetRarityData(this.selectedCategory.name, item.name, this.raritiesStr);
-      }, 75);
-    } else this.rarities = this.GetRarityData(this.selectedCategory.name, item.name, this.raritiesStr);
+    // Random selected
+    var isRandom = (item || {id:0}).id == 0;
+    if (this.typeIsRandom && isRandom) {
+      this.selectedType = item;
+    }
+    else {
+      this.typeIsRandom = isRandom;
+      var categorySelectedData = this.categoryIsRandom ? this.selectedCategoryTemp : this.selectedCategory;
+      var selection = (categorySelectedData || {id:0}).id == 1 ? this.armors : (categorySelectedData || {id:0}).id == 2 ? this.weapons : this.jewelries;
+      var selectedTypes:IDropdownImageItem[] = this.GetItemsData(this.categoriesStr[(categorySelectedData || {id:0}).id], selection);
+  
+      if (isRandom) {
+        this.selectedTypeTemp = selectedTypes[Helpers.getRandom(1, selection.length-1)];
+        this.selectedType = this.items[0];
+      }
+      else this.selectedType = item;
+    }
   }
 
-  async SelectRarityHandler(item: IDropdownImageItem){
-    this.selectedRarity = item;
+  async SelectRarityHandler(item: IDropdownImageItem) {
+    // Random selected
+    var isRandom = (item || {id:0}).id == 0;
+    if (this.rarityIsRandom && isRandom) {
+      this.selectedRarity = item;
+    }
+    else {
+    if (isRandom) {
+        this.selectedRarityTemp = this.GetRarityData(this.raritiesStr)[Helpers.getRandom(1, 3)];
+        this.selectedRarity = this.rarities[0];
+      }
+      else this.selectedRarity = item;
+  
+      this.rarityIsRandom = isRandom;
+    }
   }
 
   async Generate() {
@@ -134,67 +204,71 @@ export class ItemGeneratorComponent implements OnInit {
     // Function<,ItemAffix[]> selectedFn = () => {}
     var itemAffixes:ItemAffix[] = [];
 
-    if (this.generateRandom) {
-      var categoryId = Helpers.getRandom(1,3);
-      var itemTypes = categoryId == 0 ? this.armors : categoryId == 1 ? this.weapons : this.jewelries;
-      var selectedTypeId = Helpers.getRandom(1, itemTypes.length);
-      var selectedRarityId = Helpers.getRandom(1,3);
+    var selectedCategoryId = !this.categoryIsRandom ? this.selectedCategory.id : Helpers.getRandom(1, 3);//this.selectedCategoryTemp.id;
+    var itemTypes = selectedCategoryId == 1 ? this.armors : selectedCategoryId == 2 ? this.weapons : this.jewelries;
+    var selectedTypeId = !this.typeIsRandom ? this.selectedType.id : Helpers.getRandom(1, itemTypes.length-1);// this.selectedTypeTemp.id;
+    var selectedRarityId = !this.rarityIsRandom ? this.selectedRarity.id : Helpers.getRandom(1, 3);// this.selectedRarityTemp.id;
 
-      this.SelectCategoryHandler(this.categories.filter(c => c.id == categoryId)[0]);
-      this.SelectTypeHandler(this.items.filter(t => t.id == selectedTypeId)[0]);
+    this.categories = this.GetCategoriesData(this.categoriesStr);
+    this.rarities = this.GetRarityData(this.raritiesStr);
+    this.items = this.GetItemsData(this.categoriesStr[selectedCategoryId], itemTypes)
 
-      if (!this.rarities)
-        this.rarities = this.GetRarityData(Helpers.getPropertyByValue(ItemCategoriesEnum, categoryId), Helpers.getPropertyByValue(itemTypes, selectedTypeId), this.raritiesStr);
+    if (this.categoryIsRandom)
+      this.selectedCategoryTemp = this.categories[selectedCategoryId];
+    if (this.typeIsRandom)
+      this.selectedTypeTemp = this.items[selectedTypeId];
+    if (this.rarityIsRandom)
+      this.selectedRarityTemp = this.rarities[selectedRarityId];
+    // this.SelectCategoryHandler(this.categories.filter(c => c.id == selectedCategoryId)[0]);
+    // this.SelectRarityHandler(this.rarities.filter(r => r.id == selectedRarityId)[0]);
+    // this.SelectTypeHandler(this.items.filter(t => t.id == selectedTypeId)[0]);
 
-      this.SelectRarityHandler(this.rarities.filter(r => r.id == selectedRarityId)[0]);
-    }
+    this.imgSrc = this.UpdateImgSrc();
+    this.selectedItemClass = this.UpdateItemClass();
+    this.selectedTypeStr = itemTypes[selectedTypeId] + " (" + this.raritiesStr[selectedRarityId] + ")";
 
     // For some reason there's delay with Random
     setTimeout(() => {
-      if (this.generateRandom) {
-        var generateSeed = this.selectedCategory.id == ItemCategoriesEnum.Armor ? 5 : this.selectedCategory.id == ItemCategoriesEnum.Weapon ? 7 : 3;
-        if (!this.selectedType) this.selectedType = new DropdownImageItem(generateSeed, "", "", null, null);
-      }
-      if (this.selectedCategory.id == ItemCategoriesEnum.Armor)
-        itemAffixes = generator.GenerateArmorAffixes(this.levelRequirement, this.selectedType.id, this.selectedRarity.id);
-      else if (this.selectedCategory.id == ItemCategoriesEnum.Weapon)
-        itemAffixes = generator.GenerateWeaponAffixes(this.levelRequirement, this.selectedType.id, this.selectedRarity.id);
-      else itemAffixes = generator.GenerateJewelryAffixes(this.levelRequirement, this.selectedType.id, this.selectedRarity.id);
+      if (selectedCategoryId == ItemCategoriesEnum.Armor)
+        itemAffixes = generator.GenerateArmorAffixes(this.levelRequirement, selectedTypeId, selectedRarityId);
+      else if (selectedCategoryId == ItemCategoriesEnum.Weapon)
+        itemAffixes = generator.GenerateWeaponAffixes(this.levelRequirement, selectedTypeId, selectedRarityId);
+      else itemAffixes = generator.GenerateJewelryAffixes(this.levelRequirement, selectedTypeId, selectedRarityId);
 
       this.generatedAffixes = itemAffixes;
       this.selectedItem = itemAffixes;
       this.selectedDescriptions = [];
-      this.selectedItem.forEach(a => { this.selectedDescriptions.push(a.GetAffixDescription(this.skills));});
+      this.selectedItem.forEach(a => {
+        // Sometimes double stats appear
+        var descr = a.GetAffixDescription(this.skills);
+        if (descr.includes("\n\n")) {
+          descr.split("\n\n").forEach(d => {this.selectedDescriptions.push(d)});
+        }
+        else this.selectedDescriptions.push(descr);
+      });
       this.RecalculateItemAffixConditions(this.BasicData);
-
-      //////// new CalculationsHelper().LogAffixData(this.selectedItem, AffixCategoryEnum.PrimaryDamage, this.skills);
-    }, this.generateRandom ? 75 : 0);
+    }, 75);
   }
 
   async EquipItem(data:IItemAffix[]) {
-    var inventoryData = new InventoryVM(this.selectedCategory.id, this.selectedType.id, this.selectedRarity.id);
-    if (this.selectedCategory.id == ItemCategoriesEnum.Armor) {
-      // Armor
-      data.forEach(a => { if (this.selectedType.id == ItemArmorTypesEnum.Boots) { inventoryData.Boots.push(a); }})
-      data.forEach(a => { if (this.selectedType.id == ItemArmorTypesEnum.Chest) { inventoryData.Chest.push(a); }})
-      data.forEach(a => { if (this.selectedType.id == ItemArmorTypesEnum.Gloves) { inventoryData.Gloves.push(a); }})
-      data.forEach(a => { if (this.selectedType.id == ItemArmorTypesEnum.Helm) { inventoryData.Helm.push(a); }})
-      data.forEach(a => { if (this.selectedType.id == ItemArmorTypesEnum.Pants) { inventoryData.Pants.push(a); }})
+    var selectedCategoryId = (!this.categoryIsRandom ? this.selectedCategory : (this.selectedCategoryTemp || {id:0})).id;
+    var selectedTypeId = (!this.typeIsRandom ? this.selectedType : (this.selectedTypeTemp || {id:0})).id;
+    var selectedRarityId = (!this.rarityIsRandom ? this.selectedRarity : (this.selectedRarityTemp || {id:0})).id;
+    var inventoryData = new InventoryVM(selectedCategoryId, selectedTypeId, selectedRarityId);
 
+    if (selectedCategoryId == ItemCategoriesEnum.Armor) {
+      // Armor
+      inventoryData[Helpers.getPropertyByValue(ItemArmorTypesEnum, selectedTypeId)] = data;
       // this[this.armors[this.selectedType.id - 1] + "Description"] = inventoryData[this.armors[this.selectedType.id - 1]].GetAffixDescription();
     }
-    else if (this.selectedCategory.id == ItemCategoriesEnum.Weapon) {
+    else if (selectedCategoryId == ItemCategoriesEnum.Weapon) {
       // Weapon
-      data.forEach(a => { inventoryData.Weapon.push(a); })
-      // this.WeaponDescription = inventoryData[this.selectedType.id - 1].GetAffixDescription();
+      inventoryData.Weapon = data;
     }
     else {
       // Jewelry
-      if (this.selectedType.id == ItemJewelryTypesEnum.Amulet) { inventoryData.Amulet = data; }
-      else {
-        debugger;
-        inventoryData["Ring" + this.getLastRingEquipped()] = data;
-      }
+      if (selectedTypeId == ItemJewelryTypesEnum.Amulet) { inventoryData.Amulet = data; }
+      else inventoryData["Ring" + this.getLastRingEquipped()] = data;
     }
 
     //////// new CalculationsHelper().LogAffixData(inventoryData.Weapon, AffixCategoryEnum.PrimaryDamage, this.skills);
@@ -209,10 +283,26 @@ export class ItemGeneratorComponent implements OnInit {
     return new CalculationsHelper().GetArmorTypesInfo();
   }
   
-  protected GetImgSrc():string {
+  protected UpdateImgSrc():string {
     var srcEmpty = "_Resources\\img\\borders\\border.png";
-    var filtersSelected = this.selectedCategory && this.selectedType && this.selectedRarity;
-    return filtersSelected ? "_Resources\\img\\items\\" + this.selectedCategory.name[0] + this.selectedType.name[0] + this.selectedType.name[1] + this.selectedRarity.id + ".png" : srcEmpty;
+    var selectedCategory = !this.categoryIsRandom ? this.selectedCategory : this.selectedCategoryTemp;
+    var selectedType = !this.typeIsRandom ? this.selectedType : this.selectedTypeTemp;
+    var selectedRarity = !this.rarityIsRandom ? this.selectedRarity : this.selectedRarityTemp;
+    var filtersSelected = selectedCategory.id && selectedType.id && selectedRarity.id;
+    return filtersSelected ? "_Resources\\img\\items\\" + selectedCategory.name[0] + selectedType.name[0] + selectedType.name[1] + selectedRarity.id + ".png" : srcEmpty;
+  }
+
+  protected UpdateItemClass():string {
+    var srcEmpty = "h3 customFont";
+    // var selectedCategory = !this.categoryIsRandom ? this.selectedCategory : this.selectedCategoryTemp;
+    // var selectedType = !this.typeIsRandom ? this.selectedType : this.selectedTypeTemp;
+    var selectedRarity = !this.rarityIsRandom ? this.selectedRarity : this.selectedRarityTemp;
+
+    var raritySelected = selectedRarity.id == 0 ? ""
+    : selectedRarity.id == 1 ? "Blue"
+    : selectedRarity.id == 2 ? "Red"
+    : "Green";
+    return srcEmpty + raritySelected;
   }
 
   protected levelRequirement?: number;
@@ -222,7 +312,7 @@ export class ItemGeneratorComponent implements OnInit {
       var variation = this.BasicData.Level < 10 ? 2 : this.BasicData.Level < 20 ? 3 : 4;
       var level = parseInt((this.BasicData.Level + Helpers.getRandom(-variation, variation)).toString(), 10);
       if (level < 0) level = 1;
-      if (level > 40) level = 40;// this.BasicData.MaxLevel)
+      if (level > 40) level = 40;
       this.levelRequirement = (level || 0) != 0 ? level: 1;
     }
 

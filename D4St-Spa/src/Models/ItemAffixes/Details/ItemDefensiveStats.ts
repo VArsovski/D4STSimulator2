@@ -1,10 +1,10 @@
-import { IDescribable } from '../IDescribable';
 import { DefensiveStatCategoryEnum, DefensiveStatsEnum, DamageTypesEnum, AttackTypesEnum, ResistanceTypesEnum } from 'src/_Enums/itemAffixEnums';
 import { Helpers } from 'src/_Helpers/helpers';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 import { CCEffectTypesEnum } from 'src/_Enums/triggerAffixEnums';
+import { IItemAffixStats } from './IItemAffixStats';
 
-export class ItemDefenseStats implements IDescribable {
+export class ItemDefenseStats implements IItemAffixStats {
     CCDamageAndDurationReduced?:ItemDefensiveStatsDetail;
     PotionAndGlobeBonus?:ItemDefensiveStatsDetail;
     DamageTaken?:ItemDefensiveStatsDetail;
@@ -18,6 +18,7 @@ export class ItemDefenseStats implements IDescribable {
     private selectedStat:string;
     private statsCalculated:boolean;
     private SocketPowerPercentage:number;
+    Amount:number;
 
     GetDescription(): string {
         var descr1 = (this.CCDamageAndDurationReduced) ? this.CCDamageAndDurationReduced.GetDescription() : "";
@@ -30,10 +31,16 @@ export class ItemDefenseStats implements IDescribable {
         var descr8 = this.Socket.Amount != 0 ? "Defensive Sockets empowered by " + this.SocketPowerPercentage + "%": "";
 
         var empoweredStr = new CalculationsHelper().getEmpoweredStr("*", this.PowerLevel);
-        return descr1 + descr2 + descr3 + descr4 + descr5 + descr6 + descr7 + descr8 + empoweredStr;
+        var allAffixDescr = ["+ " + descr1, "+ " + descr2, "+ " + descr3, "+ " + descr4, "+ " + descr5, "+ " + descr6, "+ " + descr7, "+ " + descr8];
+        var descr = allAffixDescr.filter(f => (f.replace("+ ", "") || []).length != 0);
+        descr.forEach(d => { d += empoweredStr; });
+        return descr.join('\n\n');
+        // return descr1 + descr2 + descr3 + descr4 + descr5 + descr6 + descr7 + descr8 + empoweredStr;
     }
 
     constructor(level:number, powerLevel:number, amount:number, amountPercentage:number, chance:number, duration:number, type:DefensiveStatsEnum, affectedCategories?:DefensiveStatCategoryEnum[]) {
+
+        this.Amount = -1; // Just make sure it's not 0, (again) for outside check
         this.Socket = new ItemDefensiveStatsDetail(0, 0, 0, 0, DefensiveStatsEnum.Socket, []);
         this.PowerLevel = powerLevel;
         this.Level = level;
@@ -97,8 +104,8 @@ export class ItemDefenseStats implements IDescribable {
     }
 }
 
-export class ItemDefensiveStatsDetail implements IDescribable {
-    Amount?:number;
+export class ItemDefensiveStatsDetail implements IItemAffixStats {
+    Amount:number;
     private AmountPercentage?:number;
     private Duration?:number;
     private Chance?: number;
@@ -181,8 +188,6 @@ export class ItemDefensiveStatsDetail implements IDescribable {
             if (!str)
                 str += this.Chance + "% chance " + " of " +  attackType + " attacks to return as " + Helpers.getPropertyByValue(DefensiveStatsEnum, this.Type);
         }
-        // if (this.Type == DefensiveStatsEnum.Socket)
-        //     str += "Socket";
 
         return str;
     }

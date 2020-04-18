@@ -107,7 +107,7 @@ export class CalculationsHelper {
 
   public getEmpoweredValue(value:number, powerLevel:number):number {
     for (let i = 0; i < powerLevel; i++) {
-      var variance = Helpers.getRandom(115, 125)/100;
+      var variance = Helpers.getRandom(115, 122)/100;
       if (i < 15) {
         value += Helpers.getRandom(2, 3);
       }

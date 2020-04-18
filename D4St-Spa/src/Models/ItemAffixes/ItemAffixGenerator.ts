@@ -5,9 +5,10 @@ import { ItemAffixBlueprint } from './ItemAffixBlueprint';
 import { ItemAffixCondition } from './ItemAffixCondition';
 import { PowerTypesEnum } from 'src/_Enums/powerTypesEnum';
 import { SkillVM } from '../SkillVM';
-import { ItemArmorStats } from './Details/ItemArmorStats';
 import { ItemDamageStats } from './Details/ItemDamageStats';
 import { ItemAffixEnumsHelper } from './AffixHelpers/ItemAffixEnumsHelper';
+import { BasicAffixHelper } from './AffixHelpers/BasicAffixHelper';
+import { TriggerAffixTypesEnum } from 'src/_Enums/triggerAffixEnums';
 
 export class ItemAffixGenerator {
     SkillPool: SkillVM[];
@@ -28,13 +29,12 @@ export class ItemAffixGenerator {
         affixesList.forEach(a => a.ItemCategory = ItemCategoriesEnum.Armor);
         affixesList = this.AddCategoryToAffixes(level, affixesList, rarity);
     
-        var powerLevelDefault = 0;
-        var selectedArmor = new ItemArmorStats(level, powerLevelDefault, itemType, Helpers.getRandom(1,3));
-        
-        affixesList.forEach(a => {
-            if (a.AffixCategory == AffixCategoryEnum.PrimaryArmor)
-                a.Contents.armorStat = selectedArmor;
-        });
+        // var powerLevelDefault = 0;
+        // var selectedArmor = new ItemArmorStats(level, powerLevelDefault, itemType, Helpers.getRandom(1,3));
+        // affixesList.forEach(a => {
+        //     if (a.AffixCategory == AffixCategoryEnum.PrimaryArmor)
+        //         a.Contents.armorStat = selectedArmor;
+        // });
     
         return affixesList;
     }
@@ -45,21 +45,19 @@ export class ItemAffixGenerator {
 
         var affixesList:ItemAffix[] = [];
         var affixesListBlueprint = this.GenerateBluePrintByRarityAndType(ItemCategoriesEnum.Weapon, rarity);
+
+        // Insert/Add this affix as first
         affixesListBlueprint.unshift(new ItemAffixBlueprint(ItemAffixTypeEnum.Damage, false, AffixCategoryEnum.PrimaryDamage));
         affixesList = this.AddConditionsToAffixesFromBlueprint(level, affixesListBlueprint, rarity);
         affixesList.forEach(a => a.ItemCategory = ItemCategoriesEnum.Weapon);
         affixesList = this.AddCategoryToAffixes(level, affixesList, rarity);
 
         var powerLevelDefault = 0;
-        // Set primary damage as true for the main damage stat
-        var selectedDamage = new ItemDamageStats(true, level, powerLevelDefault, itemType);
-        affixesList.forEach(a => {
-            if (a.AffixCategory == AffixCategoryEnum.PrimaryDamage) {
-                a.Contents.damageStat = selectedDamage;
-                //////// new CalculationsHelper().LogAffixData([a], AffixCategoryEnum.PrimaryDamage, this.skillPool);
-            }
-        });
-    
+        // Set primary affix (the one with index 0)
+        var selectedDamage = new ItemDamageStats(true, true, level, powerLevelDefault, itemType);
+        affixesList[0].Contents.damageStat = selectedDamage;
+
+        //////// new CalculationsHelper().LogAffixData([a], AffixCategoryEnum.PrimaryDamage, this.skillPool);
         return affixesList;
     }
     
@@ -101,7 +99,7 @@ export class ItemAffixGenerator {
         var itemAffixes = [];
         affixesListBlueprint.forEach(element => {
             // Crafting Weapon Affixes
-            var affix = new ItemAffix(element.AffixType, element.AffixType, null, element.AffixCategory, element.PowerLevel);
+            var affix = new ItemAffix(element.AffixType, null, element.AffixCategory, element.PowerLevel);
 
             if (element.IsConditional)
             {
@@ -134,17 +132,32 @@ export class ItemAffixGenerator {
         //1, 5, 12, 28
         var tiersToInclude:number[] = level < 6 ? [1] : level < 12 ? [1, 2] : level < 28 ? [1, 2, 3] : [1, 2, 3, 4];
         this.SkillPool.forEach(s => { if (tiersToInclude.indexOf(s.tier) != -1) availableSkills.push(s); });
+
+        // Not enough affixes or quite a bit of conditional
+        var conditionalAffixes = affixesList.filter(a => a.Condition).length;
+
+        if (10-affixesList.length >4 && conditionalAffixes >=2 && rarity != ItemRarityTypesEnum.Magic)
+        {
+            var socketStat = new BasicAffixHelper().GetByIndex(level, 0, BasicAffixEnum.Socket, 0, this.SkillPool[0]);
+            var socketAffix = new ItemAffix(ItemAffixTypeEnum.BasicStat, null, AffixCategoryEnum.IncreaseBasicStat, 0, null, null);
+            socketAffix["basicData"]
+            affixesList.push();
+        }
+        
+        console.clear();
         affixesList.forEach(affix => {
-            if (affix.AffixCategory == AffixCategoryEnum.PrimaryDamage) {
-                affix.Contents = new ItemAffixEnumsHelper(availableSkills).GetPrimaryItemAffix(level, affix.PowerLevel, ItemCategoriesEnum.Weapon, rarity, affix);
-            }
-            else if (affix.AffixCategory == AffixCategoryEnum.PrimaryArmor) {
-                affix.Contents = new ItemAffixEnumsHelper(availableSkills).GetPrimaryItemAffix(level, affix.PowerLevel, ItemCategoriesEnum.Armor, rarity, affix);
-            }
-            else {
-                // ExtraDamageEffect
-                affix.Contents = new ItemAffixEnumsHelper(availableSkills).GetRandomTypeByIndex(this.ItemType, level, affix.PowerLevel, rarity, affix);
-            }
+            if (affix.AffixCategory == AffixCategoryEnum.PrimaryDamage)
+                affix.Contents = new ItemAffixEnumsHelper(availableSkills).GetPrimaryItemAffix(this.ItemType, level, affix.PowerLevel, rarity, affix);
+            else if (affix.AffixCategory == AffixCategoryEnum.PrimaryArmor)
+                affix.Contents = new ItemAffixEnumsHelper(availableSkills).GetPrimaryItemAffix(this.ItemType, level, affix.PowerLevel, rarity, affix);
+            else affix.Contents = new ItemAffixEnumsHelper(availableSkills).GetRandomTypeByIndex(this.ItemType, level, affix.PowerLevel, rarity, affix);
+
+            // If Bow or Wand, Change cleave with ChainOrPierce
+            if (this.ItemType == ItemCategoriesEnum.Weapon)
+                if ((affix.ItemType == ItemWeaponTypesEnum.Bow || affix.ItemType == ItemWeaponTypesEnum.Wand) && affix.Contents.triggerStat) {
+                    if (affix.Contents.triggerStat.AffixType == TriggerAffixTypesEnum.Cleave)
+                    affix.Contents.triggerStat.AffixType = TriggerAffixTypesEnum.ChainOrPierce;
+                }
             
             affix.AffixCategory = affix.Contents.categoryStat;
         });
@@ -315,7 +328,7 @@ export class ItemAffixGenerator {
             }
             else {
                 primarySelected = rand % 2 == 0 ? ItemAffixTypeEnum.Armor : ItemAffixTypeEnum.Damage;
-                secondarySelected = rand % 2 == 0 ? ItemAffixTypeEnum.SecondaryTriggers : ItemAffixTypeEnum.TriggerEffect;
+                secondarySelected = rand % 2 == 0 ? ItemAffixTypeEnum.SecondaryTrigger : ItemAffixTypeEnum.TriggerEffect;
                 if (secondarySelected == ItemAffixTypeEnum.TriggerEffect)
                     empowerSecondary = true;
                 

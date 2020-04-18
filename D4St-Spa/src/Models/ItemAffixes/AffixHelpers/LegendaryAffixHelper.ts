@@ -1,5 +1,6 @@
 import { ItemAffixOutput } from '../Details/ItemAffixOutput';
 import { LegendaryStatsEnum } from 'src/_Enums/itemAffixEnums';
+import { ItemLegendaryStats } from '../Details/ItemLegendaryStats';
 
 export class LegendaryAffixHelper {
     public GetByIndex(level:number, powerLevel:number, index:number):ItemAffixOutput {
@@ -19,6 +20,7 @@ export class LegendaryAffixHelper {
         : index % delimiter == 11 ? LegendaryStatsEnum.AlternateAttackTypeTaken
         : LegendaryStatsEnum.AlternateLifestealOrShielding;
     
-        return new ItemAffixOutput(null, null, null, null, null, null, null, null, selected);
+        var legendaryStat = new ItemLegendaryStats(selected, 0);
+        return new ItemAffixOutput(null, null, null, null, null, null, null, null, legendaryStat);
     }
 }

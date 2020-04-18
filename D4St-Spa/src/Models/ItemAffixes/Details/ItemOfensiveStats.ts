@@ -1,9 +1,9 @@
-import { IDescribable } from '../IDescribable';
 import { OfensiveStatCategoryEnum, OfensiveStatsEnum } from 'src/_Enums/itemAffixEnums';
 import { Helpers } from 'src/_Helpers/helpers';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
+import { IItemAffixStats } from './IItemAffixStats';
 
-export class ItemOfensiveStats implements IDescribable {
+export class ItemOfensiveStats implements IItemAffixStats {
     private CleaveAndAoE?:ItemOfensiveStatsDetail;
     private PoisonAndBurn?:ItemOfensiveStatsDetail;
     private ArmorReductionAndBleed?:ItemOfensiveStatsDetail;
@@ -17,6 +17,7 @@ export class ItemOfensiveStats implements IDescribable {
     private PowerLevel:number;
     private statsCalculated:boolean;
     private SocketPowerPercentage:number;
+    Amount:number; //Just to check whether there is data in here (from outside method)
 
     GetDescription(): string {
         var descr1 = (this.CleaveAndAoE) ? this.CleaveAndAoE.GetDescription() : "";
@@ -29,10 +30,17 @@ export class ItemOfensiveStats implements IDescribable {
         var descr8 = this.Socket.Amount != 0 ? "Ofensive Sockets empowered by " + this.SocketPowerPercentage + "%": "";
 
         var empoweredStr = new CalculationsHelper().getEmpoweredStr("*", this.PowerLevel);
-        return descr1 + descr2 + descr3 + descr4 + descr5 + descr6 + descr7 + descr8 + empoweredStr;
+        var allAffixDescr = ["+ " + descr1, "+ " + descr2, "+ " + descr3, "+ " + descr4, "+ " + descr5, "+ " + descr6, "+ " + descr7, "+ " + descr8];
+        var descr = allAffixDescr.filter(f => (f.replace("+ ", "") || []).length != 0);
+        descr.forEach(d => { d += empoweredStr; });
+        return descr.join('\n\n');
+
+        // return descr1 + descr2 + descr3 + descr4 + descr5 + descr6 + descr7 + descr8 + empoweredStr;
     }
 
     constructor(level:number, powerLevel:number, amount:number, amountPercentage:number, type:OfensiveStatsEnum, affectedCategories?:OfensiveStatCategoryEnum[]) {
+
+        this.Amount = -1; // Just make sure it's not 0, (again) for outside check
         this.Socket = new ItemOfensiveStatsDetail(0, 0, OfensiveStatsEnum.Socket, []);
         this.PowerLevel = powerLevel;
         this.Level = level;
@@ -94,8 +102,8 @@ export class ItemOfensiveStats implements IDescribable {
     }
 }
 
-export class ItemOfensiveStatsDetail implements IDescribable {
-    Amount?:number;
+export class ItemOfensiveStatsDetail implements IItemAffixStats {
+    Amount:number;
     AmountPercentage?:number;
     private OfensiveAffixStatCategories:OfensiveStatCategoryEnum[];
     private Type:OfensiveStatsEnum;

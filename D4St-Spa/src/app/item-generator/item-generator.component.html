@@ -11,9 +11,9 @@
         <div class="row"><div class="col"><app-DemoDropdownCustomHtml [items]="this.rarities" [caption]="this.rarityTypesCaption" (itemSelectedEventAsync)="SelectRarityHandler($event)"></app-DemoDropdownCustomHtml></div></div>
         <div class="row">
             <div class="col-2" style="cursor: pointer;">
-                <div class="col-8 customFontBlue">
+                <!-- <div class="col-8 customFontBlue">
                     <label class="h3" for="Random" style="word-wrap:break-word"><input type="checkbox" [(ngModel)]="this.generateRandom" name="Randomize" value="Randomize"/> Random</label>
-                </div>
+                </div> -->
             <a class="sizeBar" (click)="Generate($event)">
                 <div class="row">
                     <div class="col"><img src="../../_Resources/img/selectors/OrnamentRedone.png" /></div>
@@ -32,11 +32,9 @@
                     <label *ngIf="this.levelRequirement <= this.BasicData.Level" class="customFontGreen h3">Level requirement {{this.levelRequirement}}</label>
                     <br/>
 
-                    <label *ngIf="this.selectedType && this.selectedRarity && this.selectedRarity.id==1" class="h3 customFontBlue"> {{" " + this.selectedType.name}} ({{this.selectedRarity.name}})</label>
-                    <label *ngIf="this.selectedType && this.selectedRarity && this.selectedRarity.id==2" class="h3 customFontRed">  {{" " + this.selectedType.name}} ({{this.selectedRarity.name}})</label>
-                    <label *ngIf="this.selectedType && this.selectedRarity && this.selectedRarity.id==3" class="h3 customFontGreen">{{" " + this.selectedType.name}} ({{this.selectedRarity.name}})</label>
+                    <label [class]="this.selectedItemClass"> {{ this.selectedTypeStr }}</label>
 
-                    <img class="thumnbnail imgThumbnail" [id]="'item-img-detail'" class="dropdownItemImg" [src]="this.GetImgSrc()" />
+                    <img class="thumnbnail imgThumbnail" [id]="'item-img-detail'" class="dropdownItemImg" [src]="this.imgSrc" />
                     <a (click)="EquipItem(this.selectedItem)" class="sizeMid ornament blueGlow redGlowHover customFontBlue h3"><img src="../_Resources/img/selectors/skull-1.png" style="transform: scale(0.5, 0.5);" alt="Equip">Equip</a>
                 </div>
             </div>

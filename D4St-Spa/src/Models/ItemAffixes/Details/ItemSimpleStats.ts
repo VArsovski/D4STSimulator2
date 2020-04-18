@@ -1,10 +1,10 @@
-import { IDescribable } from '../IDescribable';
 import { PowerTypesEnum } from 'src/_Enums/powerTypesEnum';
 import { Helpers } from 'src/_Helpers/helpers';
 import { ResistanceTypesEnum } from 'src/_Enums/itemAffixEnums';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
+import { IItemAffixStats } from './IItemAffixStats';
 
-export class ItemBasicPowersDetail implements IDescribable {
+export class ItemBasicPowersDetail implements IItemAffixStats {
     Amount: number;
     Type: PowerTypesEnum;
     private Level: number;
@@ -12,6 +12,8 @@ export class ItemBasicPowersDetail implements IDescribable {
     private statsCalculated:boolean;
 
     constructor(level:number, powerLevel:number, amount:number, type:PowerTypesEnum) {
+
+        this.Amount = -1; // Just make sure it's not 0, (again) for outside check
         this.Level = level || 1;
         this.PowerLevel = powerLevel;
         this.Amount = amount;
@@ -29,7 +31,7 @@ export class ItemBasicPowersDetail implements IDescribable {
     }
 }
 
-export class ItemBasicResistanceStatsDetail implements IDescribable {
+export class ItemBasicResistanceStatsDetail implements IItemAffixStats {
     Amount:number;
     Type:ResistanceTypesEnum;
     private PowerLevel: number;

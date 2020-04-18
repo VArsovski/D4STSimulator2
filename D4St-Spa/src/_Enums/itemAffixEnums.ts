@@ -33,8 +33,8 @@ export enum ItemWeaponTypesEnum {
     Bow=2,
     Hammer=3,
     Sword=4,
-    Wand=5,
-    Javelin=6,
+    Javelin=5,
+    Wand=6,
     Staff=7
 }
 
@@ -57,7 +57,7 @@ export enum ItemAffixTypeEnum {
     Offensive= 5,
     Defensive= 6,
     PowerUpSkill= 7,
-    SecondaryTriggers=8,
+    SecondaryTrigger=8,
     Legendary=9,
 }
 

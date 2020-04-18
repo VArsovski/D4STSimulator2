@@ -39,4 +39,5 @@ export enum SecondaryTriggerStatsEnum {
     EmpowerBasicStat = 4,
     EmpowerOfenseStat = 5,
     EmpowerDefenseStat = 6,
+    AddElementalDamage = 7
 }

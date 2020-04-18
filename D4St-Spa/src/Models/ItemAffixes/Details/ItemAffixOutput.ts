@@ -6,6 +6,7 @@ import { ItemOfensiveStats } from './ItemOfensiveStats';
 import { ItemDefenseStats } from './ItemDefensiveStats';
 import { ItemTriggerStats } from './ItemTriggerStats';
 import { ItemSecondaryTriggerStats } from './ItemSecondaryTriggerStats';
+import { ItemLegendaryStats } from './ItemLegendaryStats';
 
 export class ItemAffixOutput {
     categoryStat?: AffixCategoryEnum;
@@ -16,7 +17,7 @@ export class ItemAffixOutput {
     defensiveStat?: ItemDefenseStats;
     triggerStat?: ItemTriggerStats;
     secondaryTriggerStat?: ItemSecondaryTriggerStats;
-    legendaryStat?: LegendaryStatsEnum;
+    legendaryStat?: ItemLegendaryStats;
 
     constructor(categoryStat?: AffixCategoryEnum,
         armorStat?: ItemArmorStats,
@@ -26,7 +27,7 @@ export class ItemAffixOutput {
         defensiveStat?: ItemDefenseStats,
         triggerStat?: ItemTriggerStats,
         secondaryTriggerStat?: ItemSecondaryTriggerStats,
-        legendaryStat?: LegendaryStatsEnum) {
+        legendaryStat?: ItemLegendaryStats) {
         this.categoryStat = categoryStat;
         this.armorStat = armorStat;
         this.damageStat = damageStat;
@@ -36,5 +37,10 @@ export class ItemAffixOutput {
         this.triggerStat = triggerStat;
         this.secondaryTriggerStat = secondaryTriggerStat;
         this.legendaryStat = legendaryStat;
+    }
+
+    public GetSelectedStats():any {
+        var data = [this.armorStat, this.damageStat, this.basicStat, this.ofensiveStat, this.defensiveStat, this.triggerStat, this.secondaryTriggerStat, this.legendaryStat];
+        return data.filter(d => d || ({Amount:0}).Amount);
     }
 }

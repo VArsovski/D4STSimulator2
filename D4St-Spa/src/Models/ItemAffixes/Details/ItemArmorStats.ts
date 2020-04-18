@@ -1,8 +1,8 @@
-import { IDescribable } from '../IDescribable';
 import { ItemArmorTypesEnum, ArmorTypesEnum } from 'src/_Enums/itemAffixEnums';
 import { Helpers } from 'src/_Helpers/helpers';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 import { CCEffectTypesEnum } from 'src/_Enums/triggerAffixEnums';
+import { IItemAffixStats } from './IItemAffixStats';
 
 export class ItemArmorDetailStats {
     ItemArmorType:ItemArmorTypesEnum;
@@ -47,7 +47,7 @@ export class ItemArmorDetailStats {
     }
 }
 
-export class ItemArmorStats implements IDescribable {
+export class ItemArmorStats implements IItemAffixStats {
     Armor:number;
     ArmorType: ArmorTypesEnum;
     ReducePercentage: number;
@@ -56,8 +56,10 @@ export class ItemArmorStats implements IDescribable {
     private ItemType: ItemArmorTypesEnum;
     private ArmorStatDetails:ItemArmorDetailStats;
     private statsCalculated:boolean;
+    Amount:number; //Just to check whether there is data in here (from outside method)
 
     constructor(level:number, powerLevel:number, itemType: ItemArmorTypesEnum, armorType?: ArmorTypesEnum, armor?:number, reducePercentage?:number) {
+        this.Amount = -1; // Just make sure it's not 0, (again) for outside check
         this.Level = level || 1;
         this.PowerLevel = powerLevel;
         this.ItemType = itemType;

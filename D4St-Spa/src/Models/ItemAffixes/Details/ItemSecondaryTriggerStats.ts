@@ -1,4 +1,3 @@
-import { IDescribable } from '../IDescribable';
 import { SecondaryTriggerStatsEnum, TriggerAffixTypesEnum, TriggerStatsEnum } from 'src/_Enums/triggerAffixEnums';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 import { ItemTriggerStats } from './ItemTriggerStats';
@@ -6,8 +5,10 @@ import { Helpers } from 'src/_Helpers/helpers';
 import { TrapsEnum, CursesEnum } from 'src/_Enums/skillEnums';
 import { ItemBasicStats, ItemBasicStatsDetail } from './ItemBasicStats';
 import { ItemBasicPowersDetail, ItemBasicResistanceStatsDetail } from './ItemSimpleStats';
+import { ResistanceTypesEnum } from 'src/_Enums/itemAffixEnums';
+import { IItemAffixStats } from './IItemAffixStats';
 
-export class ItemSecondaryTriggerStatsDetail implements IDescribable {
+export class ItemSecondaryTriggerStatsDetail implements IItemAffixStats {
     private Level: number;
     private PowerLevel: any;
     Amount: number;
@@ -22,6 +23,8 @@ export class ItemSecondaryTriggerStatsDetail implements IDescribable {
     private statsCalculated:boolean;
 
     constructor(level:number, powerLevel:number, amount:number, duration:number, type:SecondaryTriggerStatsEnum, trigger:ItemTriggerStats) {
+
+        this.Amount = -1; // Just make sure it's not 0, (again) for outside check
         this.Level = level || 1;
         this.PowerLevel = powerLevel;
         this.Amount = amount;
@@ -110,7 +113,7 @@ export class ItemSecondaryTriggerStatsDetail implements IDescribable {
     }
 }
 
-export class ItemSecondaryTriggerStats implements IDescribable {
+export class ItemSecondaryTriggerStats implements IItemAffixStats {
     Amount:number;
     Chance:number;
     Duration:number;
@@ -121,8 +124,9 @@ export class ItemSecondaryTriggerStats implements IDescribable {
     private statsCalculated:boolean;
     private LevelToBuff: number;
     private TriggerDetails:ItemSecondaryTriggerStatsDetail;
+    private DamageType:number;
 
-    constructor(level:number, powerLevel:number, amount:number, chance:number, duration:number, type:SecondaryTriggerStatsEnum, trigger:ItemTriggerStats) {
+    constructor(level:number, powerLevel:number, amount:number, chance:number, duration:number, type:SecondaryTriggerStatsEnum, trigger:ItemTriggerStats, damageType?:ResistanceTypesEnum) {
         this.Level = level || 1;
         this.PowerLevel = powerLevel;
         this.Amount = amount;
@@ -130,11 +134,9 @@ export class ItemSecondaryTriggerStats implements IDescribable {
         this.Duration = duration;
         this.Type = type;
         this.Trigger = trigger;
+        this.DamageType = damageType || Helpers.getRandom(1, 5);
         
         if (!this.statsCalculated) {
-            if (!this.Trigger)
-                console.log(this);
-
             this.Chance = new CalculationsHelper().getEmpoweredValue(new CalculationsHelper().getTriggerStatsForLevel(this.Amount, this.Level, this.PowerLevel, this.Trigger.Type), this.PowerLevel);
             this.Amount = new CalculationsHelper().getEmpoweredValue(new CalculationsHelper().getTriggerStatsForLevel(this.Amount, this.Level, this.PowerLevel, this.Trigger.Type), this.PowerLevel);
 
@@ -148,6 +150,12 @@ export class ItemSecondaryTriggerStats implements IDescribable {
 
     public GetDescription():string {
         var secondaryTypeStr = this.TriggerDetails.GetDescription();
-        return this.Trigger.GetTriggerTypeInfo() + " has a " + this.Chance + " % chance to " + secondaryTypeStr;// + " for " + this.Duration;
+        var withChanceStr = this.Trigger.GetTriggerTypeInfo() + " has a " + this.Chance + " % chance to " + secondaryTypeStr;
+        var withoutChanceStr = this.Trigger.GetTriggerTypeInfo() + " does additional " + this.Amount + "% damage of type " + Helpers.getPropertyByValue(ResistanceTypesEnum, this.DamageType);
+
+        if (!this.Chance) {
+            debugger;
+        }
+        return this.Chance ? withChanceStr : withoutChanceStr;
     }
 }

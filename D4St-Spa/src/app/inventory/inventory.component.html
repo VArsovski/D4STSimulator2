@@ -10,14 +10,24 @@
 </div>
 
 <div class="row attacksDisplayHolder">
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/AttackPhysical.png" text="Physical attack bonus"></app-CustomCompareTooltip><label>{{this.Physical.Percentage + "%"}}</label></div>
+    <!-- var physicalDamageTypes = [DamageTypesEnum.Physical, DamageTypesEnum.PoisonOrBurn, DamageTypesEnum.CleaveOrAoE, DamageTypesEnum.BleedOrArmorReduction];
+    var bludgeonDamageTypes = [DamageTypesEnum.Physical, DamageTypesEnum.KnockbackOrStun, DamageTypesEnum.FreezeOrRoot];
+    var chainPierceDamageTypes = [DamageTypesEnum.PoisonOrBurn, DamageTypesEnum.ChainOrPierceAttack, DamageTypesEnum.ProjectileOrSummon];
+    var spellDamageTypes = [DamageTypesEnum.CleaveOrAoE, DamageTypesEnum.ChainOrPierceAttack, DamageTypesEnum.ProjectileOrSummon, DamageTypesEnum.FreezeOrRoot];
+
+    var physicalWeapons = [ItemWeaponTypesEnum.Axe, ItemWeaponTypesEnum.Hammer, ItemWeaponTypesEnum.Sword, ItemWeaponTypesEnum.Javelin];
+    var bludgeonWeapons = [ItemWeaponTypesEnum.Hammer, ItemWeaponTypesEnum.Staff];
+    var spellWeapons = [ItemWeaponTypesEnum.Bow, ItemWeaponTypesEnum.Wand, ItemWeaponTypesEnum.Staff];
+    var chainPierceWeapons = [ItemWeaponTypesEnum.Bow, ItemWeaponTypesEnum.Javelin, ItemWeaponTypesEnum.Sword]; -->
+
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/AttackPhysical.png" text="Physical attack bonus (Highest rolls on Axe, Hammer, Sword, Javelin)"></app-CustomCompareTooltip><label>{{this.Physical.Percentage + "%"}}</label></div>
     <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/AttackReduceArmor.png" text="BleedOrArmorReduction attack (Highest roll on Axe)"></app-CustomCompareTooltip><label>{{this.BleedOrArmorReduction.Percentage + "%"}}</label></div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/AttackPoison.png" text="Poison or Burn attack (Highest roll on Bows)"></app-CustomCompareTooltip><label>{{this.PoisonOrBurn.Percentage + "%"}}</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/AttackPoison.png" text="Poison or Burn attack (Highest roll on Bow, Javelin, Sword)"></app-CustomCompareTooltip><label>{{this.PoisonOrBurn.Percentage + "%"}}</label></div>
     <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/AttackCleave.png" text="Cleave or AoE attack (Highest roll on Sword)"></app-CustomCompareTooltip><label>{{this.CleaveOrAoE.Percentage + "%"}}</label></div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/AttackKnockback.jpg" text="Knockback or Stun attack (Highest roll on Hammer)"></app-CustomCompareTooltip><label>{{this.KnockbackOrStun.Percentage + "%"}}</label></div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/AttackChain.jfif" text="Chain or Pierce attack (Highest roll on Javelin)"></app-CustomCompareTooltip><label>{{this.ChainOrPierceAttack.Percentage + "%"}}</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/AttackKnockback.jpg" text="Knockback or Stun attack (Highest roll on Hammer, Staff)"></app-CustomCompareTooltip><label>{{this.KnockbackOrStun.Percentage + "%"}}</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/AttackChain.jfif" text="Chain or Pierce attack (Highest roll on Bow, Javelin)"></app-CustomCompareTooltip><label>{{this.ChainOrPierceAttack.Percentage + "%"}}</label></div>
     <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/AttackProjectile.png" text="Projectile or Spell/Summon attack (Highest roll on Wand)"></app-CustomCompareTooltip><label>{{this.ProjectileOrSummon.Percentage + "%"}}</label></div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/AttackFreeze.png" text="Freeze or Root attack (Highest roll on Staff)"></app-CustomCompareTooltip><label>{{this.FreezeOrRoot.Percentage + "%"}}</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/AttackFreeze.png" text="Freeze or Root attack (Highest roll on Staff, Hammer, Wand, Bow)"></app-CustomCompareTooltip><label>{{this.FreezeOrRoot.Percentage + "%"}}</label></div>
 </div>
 <div class="row attacksDisplayHolder2">
     <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/PhysicalDamage1.png" text="Physical damage"></app-CustomCompareTooltip><label>{{ this.PhysicalDamage.AvgDamage ? this.PhysicalDamage.AvgDamage : this.PhysicalDamage.MinDamage + "-" + this.PhysicalDamage.MaxDamage}}</label></div>
@@ -41,7 +51,7 @@
         <label *ngIf="this.LightArmor" style="transform: translate(20%, 20%);" class="customFontRed h2">{{" [" + this.LightArmor.CCPercentage + "%]"}}</label>
     </li>
     <li class="customFontBlue h3">
-        <app-CustomCompareTooltip contentImg="../../_Resources/img/ArmorMystical.png" contentLabel="Mystic" text="Mystic armor good against: Burn, Curse, Freeze, Bleed (reduced effect powers and duration)"></app-CustomCompareTooltip>
+        <app-CustomCompareTooltip contentImg="../../_Resources/img/ArmorMystical.png" contentLabel="Mystic" text="Mystic armor good against: Burn, Curse, Freeze, ReduceArmor (reduced effect powers and duration)"></app-CustomCompareTooltip>
         <br/>
         <label *ngIf="this.MysticArmor" style="transform: translate(20%, 20%);" class="customFontRed h2">{{this.MysticArmor.Armor}}</label>
         <label *ngIf="this.MysticArmor" style="transform: translate(20%, 20%);" class="customFontRed h2">{{" [" + this.MysticArmor.CCPercentage + "%]"}}</label>
@@ -49,8 +59,8 @@
 </ul>
 
 <div class="inventoryHolder">
-    <div class="row">
-        <div class="col customFontBlue sizeThumbnail">
+    <div class="row" style="height:25vh">
+        <div class="col customFontBlue sizeThumbnail" style="height:25vh">
             <div id="ABoHolder" class="bootsItem"><app-CustomCompareTooltip      class="itemTooltip" contentImg={{this.bootsSrc}} text={{this.BootsDescription}}></app-CustomCompareTooltip></div>
             <div id="AChHolder" class="chestItem"><app-CustomCompareTooltip      class="itemTooltip" contentImg={{this.chestSrc}} text={{this.ChestDescription}}></app-CustomCompareTooltip></div>
             <div id="AGlHolder" class="glovesItem"><app-CustomCompareTooltip     class="itemTooltip" contentImg={{this.glovesSrc}} text={{this.GlovesDescription}}></app-CustomCompareTooltip></div>

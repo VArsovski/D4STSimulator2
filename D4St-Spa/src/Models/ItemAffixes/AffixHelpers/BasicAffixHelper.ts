@@ -8,7 +8,7 @@ export class BasicAffixHelper {
     public GetByIndex(level:number, powerLevel:number, index:number, amount:number, skillData:SkillVM):ItemAffixOutput {
         var selected:BasicAffixEnum;
         var basicAffix:ItemBasicStats = new ItemBasicStats(level);
-        var delimiter = 7;
+        var delimiter = 6;
 
         BasicStatTypesEnum.PowerStats
         if (index % delimiter == 1) {
@@ -24,12 +24,8 @@ export class BasicAffixHelper {
             basicAffix.SetBasicStat(level, powerLevel, amount, Helpers.getRandom(1,3));
         }
         if (index % delimiter == 4) {
-            selected = BasicAffixEnum.IncreaseStatRegen;//  BasicAffixEnum.IncreaseStatRegenPercentage;
+            selected = BasicAffixEnum.IncreaseResistance;//  BasicAffixEnum.IncreaseStatRegenPercentage;
             basicAffix.SetBasicStat(level, powerLevel, amount, Helpers.getRandom(1,3));
-        }
-        if (index % delimiter == 6) {
-            selected = BasicAffixEnum.IncreaseResistance;
-            basicAffix.SetResistance(level, powerLevel, amount, Helpers.getRandom(1,5));
         }
         if (index % delimiter == 5) {
             selected = BasicAffixEnum.IncreaseSkillStat;

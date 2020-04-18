@@ -1,10 +1,10 @@
-import { IDescribable } from '../IDescribable';
 import { ItemBasicPowersDetail, ItemBasicResistanceStatsDetail } from './ItemSimpleStats';
 import { SkillVM } from 'src/Models/SkillVM';
 import { PowerTypesEnum } from 'src/_Enums/powerTypesEnum';
 import { BasicStatsEnum, ResistanceTypesEnum } from 'src/_Enums/itemAffixEnums';
 import { Helpers } from 'src/_Helpers/helpers';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
+import { IItemAffixStats } from './IItemAffixStats';
 
 export enum BasicStatTypesEnum {
     PowerStats= 1,
@@ -17,7 +17,7 @@ export enum BasicStatTypesEnum {
     Socket=8
 }
 
-export class ItemBasicStats implements IDescribable {
+export class ItemBasicStats implements IItemAffixStats {
     private PowerStats:ItemBasicPowersDetail;
     private StatNumbers:ItemBasicStatsDetail;
     private StatRegen:ItemBasicStatsDetail;
@@ -30,10 +30,13 @@ export class ItemBasicStats implements IDescribable {
     private PowerLevel: any;
     private Level: number;
     private statsCalculated:boolean;
+    Amount:number; //Just to check whether there is data in here (from outside method)
 
     constructor(level:number, powerLevel?:number, powerStats?:ItemBasicPowersDetail
         , statNumbers?:ItemBasicStatsDetail, statRegen?:ItemBasicStatsDetail, statPercentage?:ItemBasicStatsDetail, statRegenPercentage?:ItemBasicStatsDetail
         , resistance?:ItemBasicResistanceStatsDetail, skillEmpower?:SkillVM, socket?:number, selectedStat?:string) {
+
+        this.Amount = -1; // Just make sure it's not 0, (again) for outside check
         this.Socket = 0;
         this.PowerLevel = powerLevel;
         this.Level = level;
@@ -84,9 +87,9 @@ export class ItemBasicStats implements IDescribable {
     }
 
     public SetSkill(level:number, skillData: SkillVM, levels?: number) {
-        if (!levels) levels = 1;
-        // TODO: Recalculate stuff here..
-        skillData.level = levels;
+        if (!levels) levels = 0;
+        this.PowerLevel += levels || 0;
+        // skillData.level += levels;
         this.SkillEmpower = skillData;
         this.selectedStat = "SkillEmpower";
     }
@@ -106,15 +109,16 @@ export class ItemBasicStats implements IDescribable {
         var descr7 = "";
         
         if (this.SkillEmpower)
-            descr7 += (this.SkillEmpower.level || 1) + " to " + this.SkillEmpower.name + " (" + this.SkillEmpower.className + " only)";
+            descr7 += ((this.SkillEmpower.level + this.PowerLevel) || 1) + " to " + this.SkillEmpower.name + " (" + this.SkillEmpower.className + " only)";
 
         // TODO: Research when/Why Socket/s get added in middle of an affix
         var descr8 = this.Socket != 0 ? "Socket/s " + this.Socket: "";
-        var descr = "+ " + descr1 + descr2 + descr3 + descr4 + descr5 + descr6 + descr7 + descr8;
+        var allAffixDescr = ["+ " + descr1, "+ " + descr2, "+ " + descr3, "+ " + descr4, "+ " + descr5, "+ " + descr6, "+ " + descr7, "+ " + descr8];
+        var descr = allAffixDescr.filter(f => (f.replace("+ ", "") || []).length != 0);
         var empoweredStr = new CalculationsHelper().getEmpoweredStr("*", this.PowerLevel);
-        descr += empoweredStr;
+        descr.forEach(d => { d += empoweredStr; });
 
-        return descr;
+        return descr.join('\n\n');
     }
 
     private GetSelectedStat():string {
@@ -180,7 +184,7 @@ export class ItemBasicStats implements IDescribable {
     }
 }
 
-export class ItemBasicStatsDetail implements IDescribable {
+export class ItemBasicStatsDetail implements IItemAffixStats {
     Amount: number;
     private Type: BasicStatsEnum;
     private Level: number;
