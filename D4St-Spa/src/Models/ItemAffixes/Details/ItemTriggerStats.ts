@@ -3,6 +3,8 @@ import { Helpers } from 'src/_Helpers/helpers';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 import { TriggerStatsEnum, TriggerAffixTypesEnum, CCEffectTypesEnum } from 'src/_Enums/triggerAffixEnums';
 import { SkillVM } from 'src/Models/SkillVM';
+import { AffixCategoryEnum } from 'src/_Enums/itemAffixEnums';
+import { IItemAffixStats } from './IItemAffixStats';
 
 // export class ItemTriggerStatsDetail implements IDescribable {
 //     Chance: number;
@@ -32,7 +34,7 @@ import { SkillVM } from 'src/Models/SkillVM';
 //     }
 // }
 
-export class ItemTriggerStats implements IDescribable {
+export class ItemTriggerStats implements IItemAffixStats {
     Chance:number;
     Amount:number;
     Type:TriggerStatsEnum;
@@ -48,8 +50,9 @@ export class ItemTriggerStats implements IDescribable {
     //     PhysicalAoE = 3,              //TriggerAffixes [3, 6], 3 CCEffectTypesEnum[4,7]
     //     CCPhysical = 4,               //TA[3], CCET[3,4,7]
     //     Spellcast = 5,                //Cast a spell
-    constructor(level:number, powerLevel:number, amount:number, chance:number, type:TriggerStatsEnum, triggerAffixType:TriggerAffixTypesEnum, ccEffectType:CCEffectTypesEnum, skillStat: SkillVM) {
+    constructor(category: AffixCategoryEnum, level:number, powerLevel:number, amount:number, chance:number, type:TriggerStatsEnum, triggerAffixType:TriggerAffixTypesEnum, ccEffectType:CCEffectTypesEnum, skillStat: SkillVM) {
 
+        this.CategoryStats = category;
         this.Amount = -1; // Just make sure it's not 0, (again) for outside check
         this.Level = level || 1;
         this.PowerLevel = powerLevel;
@@ -76,6 +79,7 @@ export class ItemTriggerStats implements IDescribable {
             this.statsCalculated = true;
         }
     }
+    CategoryStats: AffixCategoryEnum;
 
     public GetDescription():string {
         

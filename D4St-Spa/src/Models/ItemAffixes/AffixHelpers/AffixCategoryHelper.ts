@@ -28,6 +28,6 @@ export class AffixCategoryHelper {
         : index % delimiter == 18 ? AffixCategoryEnum.IncreaseDamage
         : AffixCategoryEnum.ExtraDamageEffect;
     
-        return new ItemAffixOutput(selected);
+        return new ItemAffixOutput(selected, null);
     }
 }

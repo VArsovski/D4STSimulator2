@@ -1,10 +1,11 @@
 import { PowerTypesEnum } from 'src/_Enums/powerTypesEnum';
 import { Helpers } from 'src/_Helpers/helpers';
-import { ResistanceTypesEnum } from 'src/_Enums/itemAffixEnums';
+import { ResistanceTypesEnum, AffixCategoryEnum } from 'src/_Enums/itemAffixEnums';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 import { IItemAffixStats } from './IItemAffixStats';
 
 export class ItemBasicPowersDetail implements IItemAffixStats {
+    CategoryStats: AffixCategoryEnum;
     Amount: number;
     Type: PowerTypesEnum;
     private Level: number;
@@ -13,7 +14,6 @@ export class ItemBasicPowersDetail implements IItemAffixStats {
 
     constructor(level:number, powerLevel:number, amount:number, type:PowerTypesEnum) {
 
-        this.Amount = -1; // Just make sure it's not 0, (again) for outside check
         this.Level = level || 1;
         this.PowerLevel = powerLevel;
         this.Amount = amount;
@@ -27,7 +27,7 @@ export class ItemBasicPowersDetail implements IItemAffixStats {
 
     public GetDescription():string {
         var empoweredStr = new CalculationsHelper().getEmpoweredStr("*", this.PowerLevel);
-        return this.Amount + " " + Helpers.getPropertyByValue(PowerTypesEnum, this.Type) + " power" + empoweredStr;
+        return "+ " + this.Amount + " " + Helpers.getPropertyByValue(PowerTypesEnum, this.Type) + " power" + empoweredStr;
     }
 }
 
@@ -49,8 +49,34 @@ export class ItemBasicResistanceStatsDetail implements IItemAffixStats {
             this.statsCalculated = true;
         }
     }
+    CategoryStats: AffixCategoryEnum;
 
     public GetDescription():string {
-        return this.Amount + " " + Helpers.getPropertyByValue(ResistanceTypesEnum, this.Type) + "% resistance"
+        return "+ " + this.Amount + " " + Helpers.getPropertyByValue(ResistanceTypesEnum, this.Type) + "% resistance"
+    }
+}
+
+export class ItemSimpleStats implements IItemAffixStats {
+    Amount:number;
+    private PowerLevel: number;
+    private Level: number;
+    private statsCalculated:boolean;
+    Type:string;
+
+    constructor(level:number, powerLevel:number, amount:number, type:string) {
+        this.Level = level || 1;
+        this.PowerLevel = powerLevel;
+        this.Amount = amount;
+        this.Type = type;
+
+        if (!this.statsCalculated) {
+            this.Amount = new CalculationsHelper().getEmpoweredValue(this.Amount, this.PowerLevel);
+            this.statsCalculated = true;
+        }
+    }
+    CategoryStats: AffixCategoryEnum;
+
+    public GetDescription():string {
+        return this.Amount ? this.Amount + " " + this.Type : "";
     }
 }

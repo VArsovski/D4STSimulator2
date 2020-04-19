@@ -5,7 +5,7 @@ import { Helpers } from 'src/_Helpers/helpers';
 import { TrapsEnum, CursesEnum } from 'src/_Enums/skillEnums';
 import { ItemBasicStats, ItemBasicStatsDetail } from './ItemBasicStats';
 import { ItemBasicPowersDetail, ItemBasicResistanceStatsDetail } from './ItemSimpleStats';
-import { ResistanceTypesEnum } from 'src/_Enums/itemAffixEnums';
+import { ResistanceTypesEnum, AffixCategoryEnum, BasicStatTypesEnum, BasicStatsEnum } from 'src/_Enums/itemAffixEnums';
 import { IItemAffixStats } from './IItemAffixStats';
 
 export class ItemSecondaryTriggerStatsDetail implements IItemAffixStats {
@@ -36,6 +36,7 @@ export class ItemSecondaryTriggerStatsDetail implements IItemAffixStats {
             this.statsCalculated = true;
         }
     }
+    CategoryStats: AffixCategoryEnum;
 
     private SetCalculatedData()
     {
@@ -65,23 +66,31 @@ export class ItemSecondaryTriggerStatsDetail implements IItemAffixStats {
         var amountForBuff = Math.round(Helpers.getRandom(1, this.Level/4));
 
         if (this.Type == SecondaryTriggerStatsEnum.EmpowerBasicStat) {
-            var statType = Helpers.getRandom(0, 5);
-            var statData:ItemBasicStatsDetail = new ItemBasicStatsDetail(levelForBuff, this.PowerLevel, this.Amount, statType);
-            var statPowers = statType == 0 ? new ItemBasicPowersDetail(levelForBuff, this.PowerLevel, amountForBuff, Helpers.getRandom(1,3)) : null;
-            var stat1 = statType == 1 ? statData : null;
-            var stat2 = statType == 2 ? statData : null;
-            var stat3 = statType == 3 ? statData : null;
-            var stat4 = statType == 4 ? statData : null;
-            var selectedRes = Helpers.getRandom(1, 6);
-            if (statType == 5) {
+            // PowerStats= 1,           // StatPercentageRegen=5,     
+            // StatNumbers=2,           // Resistance=6,     
+            // StatRegen=3,             // SkillEmpower=7,   
+            // StatPercentage=4,        // Socket=8
+            var basicStatCategory = Helpers.getRandom(1, 6); // BasicStatTypesEnum
+            var basicStatType = Helpers.getRandom(1, 3);   //BasicStatsEnum
+            var statData:ItemBasicStatsDetail = new ItemBasicStatsDetail(levelForBuff, this.PowerLevel, this.Amount, basicStatCategory, basicStatType);
+
+            var statPowers = basicStatCategory == 1 ? new ItemBasicPowersDetail(levelForBuff, this.PowerLevel, amountForBuff, Helpers.getRandom(1,3)) : null;
+            var stat1 = basicStatCategory == 2 ? statData : null;
+            var stat2 = basicStatCategory == 3 ? statData : null;
+            var stat3 = basicStatCategory == 4 ? statData : null;
+            var stat4 = basicStatCategory == 5 ? statData : null;
+            if (basicStatCategory == BasicStatTypesEnum.Resistance) {
+                // Physical = 1,        // Lightning = 4,
+                // Fire = 2,            // Poison = 5,
+                // Cold = 3,            // All = 6
+                var selectedRes = Helpers.getRandom(1, 6); // ResistanceTypesEnum
                 if (selectedRes != 6)
                     amountForBuff += Math.round(amountForBuff* Helpers.getRandom(20, 40));
                 else amountForBuff = Math.round(amountForBuff* Helpers.getRandom(60, 80));
             }
 
-            var statRes = statType == 5 ? new ItemBasicResistanceStatsDetail(levelForBuff, this.PowerLevel, amountForBuff, selectedRes) : null;
-
-            this.BasicStat = new ItemBasicStats(levelForBuff, this.PowerLevel, statPowers, stat1, stat2, stat3, stat4, statRes);
+            var statRes = basicStatCategory == BasicStatTypesEnum.Resistance ? new ItemBasicResistanceStatsDetail(levelForBuff, this.PowerLevel, amountForBuff, selectedRes) : null;
+            this.BasicStat = new ItemBasicStats(this.CategoryStats, levelForBuff, this.PowerLevel, statPowers, stat1, stat2, stat3, stat4, statRes);
         }
         // TODO: Empower Ofense/Defense effects.. (SKIP for now)
         // if (this.Type == SecondaryTriggerStatsEnum.EmpowerOfenseStat) {
@@ -126,7 +135,8 @@ export class ItemSecondaryTriggerStats implements IItemAffixStats {
     private TriggerDetails:ItemSecondaryTriggerStatsDetail;
     private DamageType:number;
 
-    constructor(level:number, powerLevel:number, amount:number, chance:number, duration:number, type:SecondaryTriggerStatsEnum, trigger:ItemTriggerStats, damageType?:ResistanceTypesEnum) {
+    constructor(category:AffixCategoryEnum, level:number, powerLevel:number, amount:number, chance:number, duration:number, type:SecondaryTriggerStatsEnum, trigger:ItemTriggerStats, damageType?:ResistanceTypesEnum) {
+        this.CategoryStats = category;
         this.Level = level || 1;
         this.PowerLevel = powerLevel;
         this.Amount = amount;
@@ -147,6 +157,7 @@ export class ItemSecondaryTriggerStats implements IItemAffixStats {
             this.statsCalculated = true;
         }
     }
+    CategoryStats: AffixCategoryEnum;
 
     public GetDescription():string {
         var secondaryTypeStr = this.TriggerDetails.GetDescription();

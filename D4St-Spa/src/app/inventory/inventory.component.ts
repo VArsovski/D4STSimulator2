@@ -9,6 +9,8 @@ import { ItemAffix } from 'src/Models/ItemAffixes/ItemAffix';
 import { InventoryBasicStatsModel } from 'src/Models/InventoryBasicStatsModel';
 import { InventoryPrimaryDamageModel } from 'src/Models/InventoryPrimaryDamageModel';
 import { SkillVM } from 'src/Models/SkillVM';
+import { ItemArmorStats } from 'src/Models/ItemAffixes/Details/ItemArmorStats';
+import { ItemDamageStats } from 'src/Models/ItemAffixes/Details/ItemDamageStats';
 
 @Component({
   selector: 'app-inventory',
@@ -149,8 +151,8 @@ export class InventoryComponent implements OnInit, OnChanges {
     var ccTypesdata = { totalCCPercentageRateHeavy: 0, totalCCPercentageRateLight: 0, totalCCPercentageRateMystic: 0 }
     data.forEach(a => {
       a.forEach(affix => {
-        if (affix.Contents.armorStat) {
-          var armorAffixData = affix.Contents.armorStat;
+        if (affix.Contents.CategoryStat == AffixCategoryEnum.PrimaryArmor && affix.Contents.AffixData) {
+          var armorAffixData = affix.Contents.AffixData as ItemArmorStats;
           var selectedArmor = Helpers.getPropertyByValue(ArmorTypesEnum, armorAffixData.ArmorType);
           this[selectedArmor + "Armor"].Armor += armorAffixData.Armor;
           this[selectedArmor + "Armor"].ItemPieces += 1;
@@ -191,8 +193,8 @@ export class InventoryComponent implements OnInit, OnChanges {
     itemTypes.forEach(a => {
       var affixes:ItemAffix[] = this.inventoryData[a];
       affixes.forEach(affix => {
-        if (affix.Contents.damageStat) {
-          var affixData = affix.Contents.damageStat;
+        if (affix.Contents.CategoryStat == AffixCategoryEnum.PrimaryDamage && affix.Contents.AffixData) {
+          var affixData = affix.Contents.AffixData as ItemDamageStats;
           var selected = Helpers.getPropertyByValue(DamageTypesEnum, affixData.DamageData.MainDamageType);
           this[selected].Percentage += affixData.DamageData.EmpowerPercentage;
         }

@@ -1,4 +1,4 @@
-import { OfensiveStatCategoryEnum, OfensiveStatsEnum } from 'src/_Enums/itemAffixEnums';
+import { OfensiveStatCategoryEnum, OfensiveStatsEnum, AffixCategoryEnum } from 'src/_Enums/itemAffixEnums';
 import { Helpers } from 'src/_Helpers/helpers';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 import { IItemAffixStats } from './IItemAffixStats';
@@ -38,8 +38,9 @@ export class ItemOfensiveStats implements IItemAffixStats {
         // return descr1 + descr2 + descr3 + descr4 + descr5 + descr6 + descr7 + descr8 + empoweredStr;
     }
 
-    constructor(level:number, powerLevel:number, amount:number, amountPercentage:number, type:OfensiveStatsEnum, affectedCategories?:OfensiveStatCategoryEnum[]) {
+    constructor(category:AffixCategoryEnum, level:number, powerLevel:number, amount:number, amountPercentage:number, type:OfensiveStatsEnum, affectedCategories?:OfensiveStatCategoryEnum[]) {
 
+        this.CategoryStats = category;
         this.Amount = -1; // Just make sure it's not 0, (again) for outside check
         this.Socket = new ItemOfensiveStatsDetail(0, 0, OfensiveStatsEnum.Socket, []);
         this.PowerLevel = powerLevel;
@@ -70,6 +71,7 @@ export class ItemOfensiveStats implements IItemAffixStats {
             this.statsCalculated = true;
         }
     }
+    CategoryStats: import("../../../_Enums/itemAffixEnums").AffixCategoryEnum;
 
     private GenerateAppropriateCategoriesByType(type:OfensiveStatsEnum) {
         var categories:OfensiveStatCategoryEnum[] = [];
@@ -134,6 +136,9 @@ export class ItemOfensiveStatsDetail implements IItemAffixStats {
         if (this.Type == OfensiveStatsEnum.CastAndProjectileRange && !str)
             str += "Increase " + Helpers.getPropertyByValue(OfensiveStatsEnum, this.Type) + " by " + quantifier;
 
+        if (str.startsWith("+")) {
+            debugger;
+        }
         return str;
     }
 
@@ -143,4 +148,5 @@ export class ItemOfensiveStatsDetail implements IItemAffixStats {
         this.Type = type;
         this.OfensiveAffixStatCategories = ofensiveStatCategories;
     }
+    CategoryStats: AffixCategoryEnum;
 }

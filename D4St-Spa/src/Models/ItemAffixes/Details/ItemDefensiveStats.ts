@@ -1,4 +1,4 @@
-import { DefensiveStatCategoryEnum, DefensiveStatsEnum, DamageTypesEnum, AttackTypesEnum, ResistanceTypesEnum } from 'src/_Enums/itemAffixEnums';
+import { DefensiveStatCategoryEnum, DefensiveStatsEnum, DamageTypesEnum, AttackTypesEnum, ResistanceTypesEnum, AffixCategoryEnum } from 'src/_Enums/itemAffixEnums';
 import { Helpers } from 'src/_Helpers/helpers';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 import { CCEffectTypesEnum } from 'src/_Enums/triggerAffixEnums';
@@ -38,10 +38,10 @@ export class ItemDefenseStats implements IItemAffixStats {
         // return descr1 + descr2 + descr3 + descr4 + descr5 + descr6 + descr7 + descr8 + empoweredStr;
     }
 
-    constructor(level:number, powerLevel:number, amount:number, amountPercentage:number, chance:number, duration:number, type:DefensiveStatsEnum, affectedCategories?:DefensiveStatCategoryEnum[]) {
-
+    constructor(category: AffixCategoryEnum, level:number, powerLevel:number, amount:number, amountPercentage:number, chance:number, duration:number, type:DefensiveStatsEnum, affectedCategories?:DefensiveStatCategoryEnum[]) {
+        this.CategoryStats = category;
         this.Amount = -1; // Just make sure it's not 0, (again) for outside check
-        this.Socket = new ItemDefensiveStatsDetail(0, 0, 0, 0, DefensiveStatsEnum.Socket, []);
+        this.Socket = new ItemDefensiveStatsDetail(category, 0, 0, 0, 0, DefensiveStatsEnum.Socket, []);
         this.PowerLevel = powerLevel;
         this.Level = level;
         var appropriateCategories = affectedCategories ? affectedCategories : this.GenerateAppropriateCategoriesByType(type);
@@ -60,7 +60,7 @@ export class ItemDefenseStats implements IItemAffixStats {
 
         if (!this.statsCalculated) {
             if (this.selectedStat) {
-                var newDefensiveAffixStats = new ItemDefensiveStatsDetail(amount, amountPercentage, chance, duration, type, appropriateCategories);
+                var newDefensiveAffixStats = new ItemDefensiveStatsDetail(category, amount, amountPercentage, chance, duration, type, appropriateCategories);
                 this[selectedStat] = newDefensiveAffixStats;
         
                 if (this.selectedStat != "Socket") {
@@ -68,11 +68,12 @@ export class ItemDefenseStats implements IItemAffixStats {
                     this[this.selectedStat].AmountPercentage = new CalculationsHelper().getEmpoweredValue(this[this.selectedStat].AmountPercentage, this.PowerLevel);
                 }
                 else this.Socket.Amount += this.PowerLevel;
-                this.SocketPowerPercentage = Math.round(new CalculationsHelper().getEmpoweredValue(Helpers.getRandom(20, 30) + Helpers.getRandom(-5, 5), this.PowerLevel) + (10 - this.Level/4));
+                this.SocketPowerPercentage = Math.round(new CalculationsHelper().getEmpoweredValue(Helpers.getRandom(12, 20) + Helpers.getRandom(-5, 5), this.PowerLevel) + (50 - this.Level)/4);
             }
             this.statsCalculated = true;
         }
     }
+    CategoryStats: AffixCategoryEnum;
 
     private GenerateAppropriateCategoriesByType(type:DefensiveStatsEnum, quantifier?:number, percentage?:number) {
         var categories:DefensiveStatCategoryEnum[] = [];
@@ -189,10 +190,14 @@ export class ItemDefensiveStatsDetail implements IItemAffixStats {
                 str += this.Chance + "% chance " + " of " +  attackType + " attacks to return as " + Helpers.getPropertyByValue(DefensiveStatsEnum, this.Type);
         }
 
+        if (str.startsWith("+")) {
+            debugger;
+        }
         return str;
     }
 
-    constructor(amount:number, amountPercentage:number, chance:number, duration:number, type: DefensiveStatsEnum, defensiveStatCategories: DefensiveStatCategoryEnum[]) {
+    constructor(category: AffixCategoryEnum, amount:number, amountPercentage:number, chance:number, duration:number, type: DefensiveStatsEnum, defensiveStatCategories: DefensiveStatCategoryEnum[]) {
+        this.CategoryStats = category;
         this.Socket = 0;
         this.Amount = amount;
         this.AmountPercentage = amountPercentage;
@@ -209,4 +214,5 @@ export class ItemDefensiveStatsDetail implements IItemAffixStats {
         this.AttackType = attackType;
         this.CCType = ccType;
     }
+    CategoryStats: AffixCategoryEnum;
 }

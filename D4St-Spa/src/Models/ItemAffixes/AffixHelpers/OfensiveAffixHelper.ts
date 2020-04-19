@@ -1,10 +1,10 @@
 import { ItemAffixOutput } from '../Details/ItemAffixOutput';
-import { OfensiveStatsEnum } from 'src/_Enums/itemAffixEnums';
+import { OfensiveStatsEnum, AffixCategoryEnum } from 'src/_Enums/itemAffixEnums';
 import { Helpers } from 'src/_Helpers/helpers';
 import { ItemOfensiveStats } from '../Details/ItemOfensiveStats';
 
 export class OfensiveAffixHelper {
-    public GetByIndex(level:number, powerLevel:number, index:number):ItemAffixOutput {
+    public GetByIndex(category: AffixCategoryEnum, level:number, powerLevel:number, index:number):ItemAffixOutput {
         var delimiter = 8;
 
         var selected =
@@ -23,8 +23,8 @@ export class OfensiveAffixHelper {
 
         var amount = rand % 2 == 0 ? amountVariance : 0;
         var amountPercentage = rand % 2 != 0 ? percentageVariance : 0;
-        var ofensiveStatsData = new ItemOfensiveStats(level, powerLevel, amount, amountPercentage, selected);
+        var ofensiveStatsData = new ItemOfensiveStats(category, level, powerLevel, amount, amountPercentage, selected);
 
-        return new ItemAffixOutput(null, null, null, null, ofensiveStatsData);
+        return new ItemAffixOutput(category, ofensiveStatsData);
     }
 }

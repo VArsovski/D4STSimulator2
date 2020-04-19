@@ -61,6 +61,18 @@ export enum ItemAffixTypeEnum {
     Legendary=9,
 }
 
+export enum ItemAffixSTatsEnum {
+    ArmorStat = 0,
+    DamageStat = 1,
+    BasicStat = 2,
+    OfensiveStat = 3,
+    DefensiveStat = 4,
+    TriggerStat = 5,
+    SecondaryTriggerStat = 6,
+    LegendaryStat = 7,
+    OtherTypeStat = 8
+}
+
 export enum AttackTypesEnum {
     MeleeHit= 1,
     Projectile= 2,
@@ -120,13 +132,15 @@ export enum AffixCategoryEnum {
     ExtraDamageEffect= 21, // if Weapon then Basic can too, otherwise [LegendaryOnly]
 }
 
-export enum BasicAffixEnum {
-    IncreaseBasicPower= 1, // A D A
-    IncreaseBasicStat= 2, // HP, Resource, Armor, Stamina //Don't put DamageStats here, they go in WeaponOnly category
-    IncreaseStatRegen= 3, // HP, Resource, Stamina // If Stamina then Also add a Skill Bonus or another Basic Stat
-    IncreaseResistance= 4,
-    IncreaseSkillStat=5,
-    Socket = 6
+export enum BasicStatTypesEnum {
+    PowerStats= 1,
+    StatNumbers=2,
+    StatRegen=3,
+    StatPercentage=4,
+    StatPercentageRegen=5,
+    Resistance=6,
+    SkillEmpower=7,
+    Socket=8
 }
 
 export enum OfensiveStatsEnum {

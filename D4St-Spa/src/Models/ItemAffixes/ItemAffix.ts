@@ -1,4 +1,4 @@
-import { ItemCategoriesEnum, ItemAffixTypeEnum, AffixCategoryEnum, AttackTypesEnum, CastProcTypesEnum, DamageTypesEnum, ItemArmorTypesEnum, BasicAffixEnum, OfensiveStatsEnum, DefensiveStatsEnum, LegendaryStatsEnum  } from "../../_Enums/itemAffixEnums";
+import { ItemCategoriesEnum, ItemAffixTypeEnum, AffixCategoryEnum, AttackTypesEnum, CastProcTypesEnum } from "../../_Enums/itemAffixEnums";
 import { IItemAffix } from './IItemAffix';
 import { IItemAffixCondition } from './IItemAffixCondition';
 import { Helpers } from 'src/_Helpers/helpers';
@@ -46,47 +46,8 @@ export class ItemAffix implements IItemAffix {
         var conditionStr:string = "";
         var statDescr:string = "";
 
-        if (this.AffixType == ItemAffixTypeEnum.Damage) {
-            if (this.Contents.damageStat)
-                statDescr += this.Contents.damageStat.GetDescription();
-            // if (this.AffixCategory == AffixCategoryEnum.PrimaryDamage)
-            //     statDescr += " (primary)";
-        }
-        if (this.AffixType == ItemAffixTypeEnum.Armor) {
-            if (this.Contents.armorStat)
-                statDescr +=  this.Contents.armorStat.GetDescription();
-            // if (this.AffixCategory == AffixCategoryEnum.PrimaryArmor)
-            //     statDescr += " (primary)";
-        }
-        if (this.AffixType == ItemAffixTypeEnum.BasicStat) {
-            if (this.Contents.basicStat)
-                statDescr += this.Contents.basicStat.GetDescription();// + " (basic)";
-        }
-
-        if (this.AffixType == ItemAffixTypeEnum.Offensive) {
-            if (this.Contents.ofensiveStat)
-                statDescr += this.Contents.ofensiveStat.GetDescription();// + " (ofensive)";
-        }
-        if (this.AffixType == ItemAffixTypeEnum.Defensive) {
-            if (this.Contents.defensiveStat)
-                statDescr += this.Contents.defensiveStat.GetDescription();// + " (defensive)";
-        }
-        if (this.AffixType == ItemAffixTypeEnum.TriggerEffect) {
-            if (this.Contents.triggerStat)
-                statDescr += this.Contents.triggerStat.GetDescription();// + " (trigger)";// Helpers.getPropertyByValue(TriggerStatsEnum, this.Contents.triggerStat) + " trigger";
-        }        
-        if (this.AffixType == ItemAffixTypeEnum.SecondaryTrigger) {
-            if (this.Contents.secondaryTriggerStat)
-                statDescr += this.Contents.secondaryTriggerStat.GetDescription();// + " (secondary)";
-        }        
-        if (this.AffixType == ItemAffixTypeEnum.Legendary) {
-            if (this.Contents.legendaryStat)
-                statDescr += this.Contents.legendaryStat.GetDescription();// + " (legendary)";
-        }
-        if (this.AffixType == ItemAffixTypeEnum.PowerUpSkill) {
-            if (this.Contents.basicStat)
-                statDescr += this.Contents.basicStat.GetDescription();
-        }
+        if (this.Contents.AffixData)
+            statDescr += this.Contents.AffixData.GetDescription();
 
         var statDescrTest = statDescr.replace("*","").replace(" ", "");
         if (!statDescrTest)
@@ -98,7 +59,8 @@ export class ItemAffix implements IItemAffix {
             statDescr += ", " + Helpers.getPropertyByValue(ItemAffixTypeEnum, this.AffixType) + "]";
         }
 
-        statDescr += (this.AffixType == ItemAffixTypeEnum.Damage || this.AffixType == ItemAffixTypeEnum.Armor) ? " (Primary)"
+        statDescr += ((this.AffixType == ItemAffixTypeEnum.Damage && this.AffixCategory == AffixCategoryEnum.PrimaryDamage)
+        || (this.AffixType == ItemAffixTypeEnum.Armor && this.AffixCategory == AffixCategoryEnum.PrimaryArmor)) ? " (Primary)"
         : this.AffixType == ItemAffixTypeEnum.BasicStat ? " (Basic)"
         : " (" + Helpers.getPropertyByValue(ItemAffixTypeEnum, this.AffixType) + ")";
 

@@ -1,4 +1,4 @@
-import { ItemArmorTypesEnum, ArmorTypesEnum } from 'src/_Enums/itemAffixEnums';
+import { ItemArmorTypesEnum, ArmorTypesEnum, AffixCategoryEnum } from 'src/_Enums/itemAffixEnums';
 import { Helpers } from 'src/_Helpers/helpers';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 import { CCEffectTypesEnum } from 'src/_Enums/triggerAffixEnums';
@@ -58,7 +58,8 @@ export class ItemArmorStats implements IItemAffixStats {
     private statsCalculated:boolean;
     Amount:number; //Just to check whether there is data in here (from outside method)
 
-    constructor(level:number, powerLevel:number, itemType: ItemArmorTypesEnum, armorType?: ArmorTypesEnum, armor?:number, reducePercentage?:number) {
+    constructor(category: AffixCategoryEnum, level:number, powerLevel:number, itemType: ItemArmorTypesEnum, armorType?: ArmorTypesEnum, armor?:number, reducePercentage?:number) {
+        this.CategoryStats = category;
         this.Amount = -1; // Just make sure it's not 0, (again) for outside check
         this.Level = level || 1;
         this.PowerLevel = powerLevel;
@@ -77,6 +78,7 @@ export class ItemArmorStats implements IItemAffixStats {
             this.ReducePercentage = reducePercentage || 0;
         }
     }
+    CategoryStats: import("../../../_Enums/itemAffixEnums").AffixCategoryEnum;
 
     // Stats for level1, calculate for other levels
     private GetLevelData(level:number):ItemArmorDetailStats[] {

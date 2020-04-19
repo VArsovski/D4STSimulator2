@@ -1,43 +1,35 @@
-import { ItemBasicPowersDetail, ItemBasicResistanceStatsDetail } from './ItemSimpleStats';
+import { ItemBasicPowersDetail, ItemBasicResistanceStatsDetail, ItemSimpleStats } from './ItemSimpleStats';
 import { SkillVM } from 'src/Models/SkillVM';
 import { PowerTypesEnum } from 'src/_Enums/powerTypesEnum';
-import { BasicStatsEnum, ResistanceTypesEnum } from 'src/_Enums/itemAffixEnums';
+import { BasicStatsEnum, ResistanceTypesEnum, AffixCategoryEnum, BasicStatTypesEnum } from 'src/_Enums/itemAffixEnums';
 import { Helpers } from 'src/_Helpers/helpers';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 import { IItemAffixStats } from './IItemAffixStats';
-
-export enum BasicStatTypesEnum {
-    PowerStats= 1,
-    StatNumbers=2,
-    StatRegen=3,
-    StatPercentage=4,
-    StatPercentageRegen=5,
-    Resistance=6,
-    SkillEmpower=7,
-    Socket=8
-}
+import { ItemSkillStats } from './ItemSkillStats';
 
 export class ItemBasicStats implements IItemAffixStats {
+    CategoryStats: AffixCategoryEnum;
     private PowerStats:ItemBasicPowersDetail;
     private StatNumbers:ItemBasicStatsDetail;
     private StatRegen:ItemBasicStatsDetail;
     private StatPercentage:ItemBasicStatsDetail;
     private StatPercentageRegen:ItemBasicStatsDetail;
     private Resistance:ItemBasicResistanceStatsDetail;
-    private SkillEmpower:SkillVM;
-    private Socket:number;
-    private selectedStat:string;
+    private SkillEmpower:ItemSkillStats;
+    private Socket:ItemSimpleStats;
+    private selectedStat:BasicStatTypesEnum;
     private PowerLevel: any;
     private Level: number;
     private statsCalculated:boolean;
     Amount:number; //Just to check whether there is data in here (from outside method)
 
-    constructor(level:number, powerLevel?:number, powerStats?:ItemBasicPowersDetail
+    constructor(category: AffixCategoryEnum, level:number, powerLevel?:number, powerStats?:ItemBasicPowersDetail
         , statNumbers?:ItemBasicStatsDetail, statRegen?:ItemBasicStatsDetail, statPercentage?:ItemBasicStatsDetail, statRegenPercentage?:ItemBasicStatsDetail
-        , resistance?:ItemBasicResistanceStatsDetail, skillEmpower?:SkillVM, socket?:number, selectedStat?:string) {
+        , resistance?:ItemBasicResistanceStatsDetail, skillEmpower?:SkillVM, socket?:number, selectedStat?:BasicStatTypesEnum) {
 
+        this.CategoryStats = category;
         this.Amount = -1; // Just make sure it's not 0, (again) for outside check
-        this.Socket = 0;
+        this.Socket = new ItemSimpleStats(level, powerLevel, socket || 0, "Socket");
         this.PowerLevel = powerLevel;
         this.Level = level;
         this.PowerStats = powerStats;
@@ -45,13 +37,12 @@ export class ItemBasicStats implements IItemAffixStats {
         this.StatRegen = statRegen;
         this.StatPercentage = statPercentage;
         this.Resistance = resistance;
-        this.SkillEmpower = skillEmpower;
+        this.SkillEmpower = new ItemSkillStats(category, skillEmpower, level, powerLevel);
         this.selectedStat = selectedStat;
 
         if (!this.statsCalculated && this.selectedStat) {
             this.statsCalculated = true;
-            var selectedStat = this.GetSelectedStat();
-            var data = this.GetCalculatedData(this, selectedStat);
+            var data = this.GetCalculatedData(this, this.selectedStat);
             this.PowerStats = data.PowerStats;
             this.StatNumbers = data.StatNumbers;
             this.StatRegen = data.StatRegen;
@@ -63,84 +54,56 @@ export class ItemBasicStats implements IItemAffixStats {
 
     public SetPowers(level:number, powerLevel:number, amount:number, type:PowerTypesEnum) {
         this.PowerStats = new ItemBasicPowersDetail(level, powerLevel, amount, type);
-        this.selectedStat = "PowerStats";
+        this.selectedStat = BasicStatTypesEnum.PowerStats;
     }
 
     public SetBasicStat(level:number, powerLevel:number, amount:number, type:BasicStatsEnum) {
-        this.StatNumbers = new ItemBasicStatsDetail(level, powerLevel, amount, type);
-        this.selectedStat = "StatNumbers";
+        this.StatNumbers = new ItemBasicStatsDetail(level, powerLevel, amount, BasicStatTypesEnum.StatNumbers, type);
+        this.selectedStat = BasicStatTypesEnum.StatNumbers;
+    }
+
+    public SetStatRegen(level:number, powerLevel:number, amount:number, type:BasicStatsEnum) {
+        this.StatRegen = new ItemBasicStatsDetail(level, powerLevel, amount, BasicStatTypesEnum.StatRegen, type);
+        this.selectedStat = BasicStatTypesEnum.StatRegen;
     }
 
     public SetBasicStatPercentage(level:number, powerLevel:number, amount:number, type:BasicStatsEnum) {
-        this.StatPercentage = new ItemBasicStatsDetail(level, powerLevel, amount, type);
-        this.selectedStat = "StatPercentage";
+        this.StatPercentage = new ItemBasicStatsDetail(level, powerLevel, amount, BasicStatTypesEnum.StatPercentage, type);
+        this.selectedStat = BasicStatTypesEnum.StatPercentage;
     }
 
     public SetRegenPercentage(level:number, powerLevel:number, amount:number, type:BasicStatsEnum) {
-        this.StatPercentageRegen = new ItemBasicStatsDetail(level, powerLevel, amount, type);
-        this.selectedStat = "StatPercentageRegen";
+        this.StatPercentageRegen = new ItemBasicStatsDetail(level, powerLevel, amount, BasicStatTypesEnum.StatPercentageRegen, type);
+        this.selectedStat = BasicStatTypesEnum.StatPercentageRegen;
     }
 
     public SetResistance(level:number, powerLevel:number, amount:number, type:ResistanceTypesEnum) {
         this.Resistance = new ItemBasicResistanceStatsDetail(level, powerLevel, amount, type);
-        this.selectedStat = "Resistance";
+        this.selectedStat = BasicStatTypesEnum.Resistance;
     }
 
     public SetSkill(level:number, skillData: SkillVM, levels?: number) {
         if (!levels) levels = 0;
-        this.PowerLevel += levels || 0;
+        this.PowerLevel = levels || 0;
         // skillData.level += levels;
-        this.SkillEmpower = skillData;
-        this.selectedStat = "SkillEmpower";
+        this.SkillEmpower.AffixData = skillData;
+        this.selectedStat = BasicStatTypesEnum.SkillEmpower;
     }
 
     public SetSocket() {
-        this.Socket++;
-        this.selectedStat = "Socket";
+        this.Socket.Amount++;
+        this.selectedStat = BasicStatTypesEnum.Socket;
     }
 
-    GetDescription(): string {
-        var descr1 = ""; if (this.PowerStats) descr1 = this.PowerStats.GetDescription();
-        var descr2 = ""; if (this.StatNumbers) descr2 = this.StatNumbers.GetDescription();
-        var descr3 = ""; if (this.StatRegen) descr3 = this.StatRegen.GetDescription();
-        var descr4 = ""; if (this.StatPercentage) descr4 = this.StatPercentage.GetDescription();
-        var descr5 = ""; if (this.StatPercentageRegen) descr5 = this.StatPercentageRegen.GetDescription();
-        var descr6 = ""; if (this.Resistance) descr6 = this.Resistance.GetDescription();
-        var descr7 = "";
-        
-        if (this.SkillEmpower)
-            descr7 += ((this.SkillEmpower.level + this.PowerLevel) || 1) + " to " + this.SkillEmpower.name + " (" + this.SkillEmpower.className + " only)";
-
-        // TODO: Research when/Why Socket/s get added in middle of an affix
-        var descr8 = this.Socket != 0 ? "Socket/s " + this.Socket: "";
-        var allAffixDescr = ["+ " + descr1, "+ " + descr2, "+ " + descr3, "+ " + descr4, "+ " + descr5, "+ " + descr6, "+ " + descr7, "+ " + descr8];
-        var descr = allAffixDescr.filter(f => (f.replace("+ ", "") || []).length != 0);
+    public GetDescription(): string {
+        var selectedStatStr = Helpers.getPropertyByValue(BasicStatTypesEnum, this.selectedStat);
+        var selectedStatValue = this[selectedStatStr] as IItemAffixStats;
+        var descrStat = selectedStatValue.GetDescription();
         var empoweredStr = new CalculationsHelper().getEmpoweredStr("*", this.PowerLevel);
-        descr.forEach(d => { d += empoweredStr; });
-
-        return descr.join('\n\n');
+        return descrStat + empoweredStr;
     }
 
-    private GetSelectedStat():string {
-        var selectedStat:string = null;
-        if (this.PowerStats)
-            selectedStat = "PowerStats";
-        if (this.StatNumbers)
-            selectedStat = "StatNumbers";
-        if (this.StatRegen)
-            selectedStat = "StatRegen";
-        if (this.StatPercentage)
-            selectedStat = "StatPercentage";
-        if (this.StatPercentageRegen)
-            selectedStat = "StatPercentageRegen";
-        if (this.SkillEmpower)
-            selectedStat = "SkillEmpower";
-        if (this.Resistance)
-            selectedStat = "Resistance";
-        return selectedStat;
-    }
-
-    private GetCalculatedData(data:ItemBasicStats, selectedStat:string) {
+    private GetCalculatedData(data:ItemBasicStats, selectedStat:BasicStatTypesEnum) {
         // var data = new ItemBasicStats(this.Level, this.PowerLevel, this.PowerStats
         //     , this.StatNumbers, this.StatRegen, this.StatPercentage, this.StatPercentageRegen
         //     , this.Resistance, this.SkillEmpower, this.Socket, selectedStat);
@@ -149,12 +112,12 @@ export class ItemBasicStats implements IItemAffixStats {
         {
             var dict = Helpers.extractEnum(BasicStatTypesEnum);
             var selectedTypeNum:number[] = [];
-            dict.forEach(d => {if (d.name == data.selectedStat) selectedTypeNum.push(d.value);});
+            dict.forEach(d => {if (d.value == data.selectedStat) selectedTypeNum.push(d.value);});
             // var amount = new CalculationsHelper().getBasicStatForLevel(selectedTypeNum[0], data[data.selectedStat].Amount, data.Level);
 
             // if (data.selectedStat == "PowerStats" || data.selectedStat == "Resistance")
             //     data[data.selectedStat].Amount = new CalculationsHelper().getEmpoweredValue(new CalculationsHelper().getArmorStatForLevel(data[data.selectedStat].Amount, data.Level), data.PowerLevel);
-            if (["StatNumbers", "StatRegen", "StatPercentage", "StatPercentageRegen" ].indexOf(data.selectedStat) != -1)
+            if ([BasicStatTypesEnum.StatNumbers, BasicStatTypesEnum.StatRegen, BasicStatTypesEnum.StatPercentage, BasicStatTypesEnum.StatPercentageRegen].indexOf(data.selectedStat) != -1)
             {
                 // Should contain only one, DW :P
                 data[data.selectedStat].Amount = new CalculationsHelper().getEmpoweredValue(new CalculationsHelper().getArmorStatForLevel(data[data.selectedStat].Amount, data.Level), data.PowerLevel);
@@ -164,16 +127,17 @@ export class ItemBasicStats implements IItemAffixStats {
                     this[data.selectedStat].AmountPercentage = data[data.selectedStat].AmountPercentage;
                 }
             }
-            if (data.selectedStat == "SkillEmpower") {
-                if (!data.SkillEmpower.level)
-                    data.SkillEmpower.level = 1;
-                data.SkillEmpower.level += data.PowerLevel;
+            if (data.selectedStat == BasicStatTypesEnum.SkillEmpower) {
+                debugger;
+                if (!data.SkillEmpower.AffixData.level)
+                    data.SkillEmpower.AffixData.level = 1;
+                data.SkillEmpower.AffixData.level += data.PowerLevel;
                 if (!this.statsCalculated) {
-                    this.SkillEmpower.level = data.SkillEmpower.level;
+                    this.SkillEmpower.AffixData.level = data.SkillEmpower.AffixData.level;
                 }
             }
-            if (data.selectedStat == "Socket") {
-                data.Socket++;
+            if (data.selectedStat == BasicStatTypesEnum.Socket) {
+                data.Socket.Amount++;
                 if (!this.statsCalculated) {
                     this.Socket = data.Socket;
                 }
@@ -185,25 +149,31 @@ export class ItemBasicStats implements IItemAffixStats {
 }
 
 export class ItemBasicStatsDetail implements IItemAffixStats {
+    CategoryStats: AffixCategoryEnum;
     Amount: number;
+    private StatType: BasicStatTypesEnum;
     private Type: BasicStatsEnum;
     private Level: number;
     private PowerLevel: number;
     private statsCalculated:boolean;
 
-    constructor(level:number, powerLevel:number, amount:number, type:BasicStatsEnum) {
+    constructor(level:number, powerLevel:number, amount:number, statType:BasicStatTypesEnum, type:BasicStatsEnum) {
         this.Level = level || 1;
         this.PowerLevel = powerLevel;
         this.Amount = amount;
+        this.StatType = statType;
         this.Type = type;
 
         if (!this.statsCalculated) {
-            this.Amount = new CalculationsHelper().getBasicStatForLevel(this.Type, amount, this.Level);
+            this.Amount = new CalculationsHelper().getEmpoweredValue(new CalculationsHelper().getBasicStatForLevel(this.StatType, amount, this.Level), powerLevel);
             this.statsCalculated = true;
         }
     }
-
     GetDescription(): string {
-        return this.Amount + " " + Helpers.getPropertyByValue(BasicStatsEnum, this.Type);
+        var selectedType = Helpers.getPropertyByValue(BasicStatsEnum, this.Type);
+        var isRegen = [BasicStatTypesEnum.StatRegen, BasicStatTypesEnum.StatPercentageRegen].includes(this.StatType);
+        var isPercentage = [BasicStatTypesEnum.StatPercentage, BasicStatTypesEnum.StatPercentageRegen].includes(this.StatType);
+
+        return "+ " + this.Amount + (isPercentage ? "%" : "") + " " + selectedType + (isRegen ? " regen " : "");
     }
 }

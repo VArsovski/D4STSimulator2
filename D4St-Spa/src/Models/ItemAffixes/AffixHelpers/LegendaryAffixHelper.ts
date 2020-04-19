@@ -1,9 +1,9 @@
 import { ItemAffixOutput } from '../Details/ItemAffixOutput';
-import { LegendaryStatsEnum } from 'src/_Enums/itemAffixEnums';
+import { LegendaryStatsEnum, AffixCategoryEnum } from 'src/_Enums/itemAffixEnums';
 import { ItemLegendaryStats } from '../Details/ItemLegendaryStats';
 
 export class LegendaryAffixHelper {
-    public GetByIndex(level:number, powerLevel:number, index:number):ItemAffixOutput {
+    public GetByIndex(category:AffixCategoryEnum, level:number, powerLevel:number, index:number):ItemAffixOutput {
         var delimiter = 12;
 
         var selected =
@@ -20,7 +20,7 @@ export class LegendaryAffixHelper {
         : index % delimiter == 11 ? LegendaryStatsEnum.AlternateAttackTypeTaken
         : LegendaryStatsEnum.AlternateLifestealOrShielding;
     
-        var legendaryStat = new ItemLegendaryStats(selected, 0);
-        return new ItemAffixOutput(null, null, null, null, null, null, null, null, legendaryStat);
+        var legendaryStat = new ItemLegendaryStats(category, selected);
+        return new ItemAffixOutput(category, legendaryStat);
     }
 }

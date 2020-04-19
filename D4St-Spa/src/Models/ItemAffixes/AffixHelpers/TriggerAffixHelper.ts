@@ -2,9 +2,10 @@ import { ItemAffixOutput } from '../Details/ItemAffixOutput';
 import { ItemTriggerStats } from '../Details/ItemTriggerStats';
 import { TriggerStatsEnum } from 'src/_Enums/triggerAffixEnums';
 import { SkillVM } from 'src/Models/SkillVM';
+import { AffixCategoryEnum } from 'src/_Enums/itemAffixEnums';
 
 export class TriggerAffixHelper {
-    public GetByIndex(level:number, powerLevel:number, amount:number, chance:number, type:TriggerStatsEnum, skillData:SkillVM):ItemAffixOutput {
+    public GetByIndex(category: AffixCategoryEnum, level:number, powerLevel:number, amount:number, chance:number, type:TriggerStatsEnum, skillData:SkillVM):ItemAffixOutput {
         var delimiter = 6;
 
         // PhysicalAttack = 1,           //TriggerAffixes [1,2], 4 CCEffectTypesEnum[1,2]
@@ -20,7 +21,7 @@ export class TriggerAffixHelper {
         : TriggerStatsEnum.Spellcast;
     
         // TODO:
-        var triggerStat = new ItemTriggerStats(level, powerLevel, amount, chance, selected, null, null, skillData);
-        return new ItemAffixOutput(null, null, null, null, null, null, triggerStat);
+        var triggerStat = new ItemTriggerStats(category, level, powerLevel, amount, chance, selected, null, null, skillData);
+        return new ItemAffixOutput(category, triggerStat);
     }
 }
