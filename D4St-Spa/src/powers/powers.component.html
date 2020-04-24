@@ -1,12 +1,12 @@
 <div *ngIf="this.model?.BasicData">
-  <div id="powerDetails" class="row customFontRed" style="padding-left: 1em;">
-    <div class="col-4 h2">Angelic:  <a class="sizeSmall ornament yellowGlow blueGlowHover" (mouseout)="PowerUpPreviewCancel()" (mouseover)="PowerUpPreview(1)" (click)="PowerUp(1,1)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a> {{this.model.BasicData.AngelicPower}}</div>
-    <div class="col-4 h2">Demonic:  <a class="sizeSmall ornament redGlow blueGlowHover"    (mouseout)="PowerUpPreviewCancel()" (mouseover)="PowerUpPreview(2)" (click)="PowerUp(2,1)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a> {{this.model.BasicData.DemonicPower}}</div>
-    <div class="col-4 h2">Ancestral:<a class="sizeSmall ornament purpleGlow blueGlowHover" (mouseout)="PowerUpPreviewCancel()" (mouseover)="PowerUpPreview(3)" (click)="PowerUp(3,1)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a> {{this.model.BasicData.AncestralPower}}</div>
+  <div id="powerDetails" class="row customFontRed customFontRedProd" style="padding-left: 19rem; width:150%">
+    <div class="col-3 h1">Angelic:  <a class="sizeSmall ornament yellowGlow blueGlowHover" (mouseout)="PowerUpPreviewCancel()" (mouseover)="PowerUpPreview(1)" (click)="PowerUp(1,1)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a> {{this.model.BasicData.AngelicPower}}</div>
+    <div class="col-3 h1">Demonic:  <a class="sizeSmall ornament redGlow blueGlowHover"    (mouseout)="PowerUpPreviewCancel()" (mouseover)="PowerUpPreview(2)" (click)="PowerUp(2,1)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a> {{this.model.BasicData.DemonicPower}}</div>
+    <div class="col-3 h1">Ancestral:<a class="sizeSmall ornament purpleGlow blueGlowHover" (mouseout)="PowerUpPreviewCancel()" (mouseover)="PowerUpPreview(3)" (click)="PowerUp(3,1)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a> {{this.model.BasicData.AncestralPower}}</div>
   </div>
 
-  <div class="row" style="width:120%">
-    <div class="col-3 h2 customFontRed">
+  <div class="row" style="width:120%;transform:translate(20%, 25%)">
+    <div class="col-3 h2 customFontRed customFontRedProd">
       Powers:
       <div>
         {{this.model.BasicData.UnassignedPower}}
@@ -15,8 +15,8 @@
         <label class="customFontGreenTooltip" *ngIf="this.previewChanges?.BasicData.TotalPower">+{{this.previewChanges.BasicData.TotalPower}}</label>
       </div>
     </div>
-    <div class="row customFontRed">
-      <div class="col h4"> {{this.model.AngelicPowers.SpellPowerChance}}
+    <div class="row customFontRed customFontRedProd" style="transform: translate(-5%, 0%);">
+      <div class="col h3"> {{this.model.AngelicPowers.SpellPowerChance}}
         <label class="customFontGreenTooltip" *ngIf="this.previewChanges.AngelicPowers.SpellPowerChance">+{{this.previewChanges.AngelicPowers.SpellPowerChance| number:'1.2-2'}}</label>
         % chance to increase spellpower
         <div class="w-100"></div>
@@ -29,7 +29,7 @@
     </div>
   </div>
 
-  <div class="row" style="width:120%">
+  <div class="row" style="width:120%;transform:translate(20%, 25%)">
     <div class="col-3 h2 customFontBlue">
       Gifts:
       <div>
@@ -39,8 +39,8 @@
         <label class="customFontGreenTooltip" *ngIf="this.previewChanges?.BasicData.GiftsTotal">{{this.previewChanges.BasicData.GiftsTotal || 0}}</label>
       </div>
     </div>
-    <div class="row customFontRed">
-      <div class="col h4"> {{this.model.DemonicPowers.ReduceSpellpowerChance}}
+    <div class="row customFontRed customFontRedProd" style="transform: translate(-5%, 0%);">
+      <div class="col h3"> {{this.model.DemonicPowers.ReduceSpellpowerChance}}
         <label class="customFontGreenTooltip" *ngIf="this.previewChanges.DemonicPowers.ReduceSpellpowerChance">+{{this.previewChanges.DemonicPowers.ReduceSpellpowerChance| number:'1.2-2'}}</label>
         % chance to reduce target spellpower
         <div class="w-100"></div>
@@ -52,5 +52,4 @@
       </div>
     </div>
   </div>
-  
 </div>

@@ -1,5 +1,5 @@
 <div *ngIf="!!this.previewChanges">
-  <div class="row customFontRed" style="width: 150%; padding-right: 25%;">
+  <div class="row customFontRed customFontRedProd" style="width: 210%; padding-right: 25%;">
     <!--TODO: See into the following problem: -->
     <!-- IDK WHY BUT MOUSEOVER AND MOUSEOUT BEHAVE REVERSE FOR THIS ONE -->
     <div class="col-3 h1">LEVEL: {{this.model.BasicData.Level}} <a class="sizeMid ornament blueGlow redGlowHover" (mouseover)="LevelUpPreview($event)" (mouseout)="LevelUpPreviewCancel($event)" (click)="LevelUp(1)" (updateHomeFromStats)="LevelUp($event)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a></div>
@@ -14,79 +14,81 @@
         </label>
       </div>
     </div>
-    <div class="col-3 h1">CLASS: {{this.model.BasicData.ClassTypeStr}}</div>
+    <div class="col-3 h1" style="transform: translate(-35%, 0%);">CLASS: {{this.model.BasicData.ClassTypeStr}}</div>
     <div class="col-"></div>
   </div>
 
-  <div class="row customFontRed" style="width: 150%; padding-right: 25%;">
-    <div class="col h2">LIFE:</div>
-    <div class="col h4">Amount:
+  <div class="row customFontRed customFontRedProd" style="width: 210%; padding-right: 25%;">
+    <div class="col-2 h2">LIFE:</div>
+    <div class="col-2 h3">Amount:
       {{this.model.AngelicPowers.LifeAmount}}
       <label class="customFontGreenTooltip" *ngIf="this.previewChanges.AngelicPowers.LifeAmount">
-        +{{this.previewChanges.AngelicPowers.LifeAmount | number:'1.2-2'}}
+        +{{this.previewChanges.AngelicPowers.LifeAmount | number:'1.0-2'}}
       </label>
     </div>
-    <div class="col h4">Regen:
+    <div class="col h3">Regen:
       {{this.model.AngelicPowers.LifeRegenRate}}
       <label class="customFontGreenTooltip" *ngIf="this.previewChanges.AngelicPowers.LifeRegenRate">
-        +{{this.previewChanges.AngelicPowers.LifeRegenRate | number:'1.2-2'}}</label>/sec
+        +{{this.previewChanges.AngelicPowers.LifeRegenRate | number:'1.1-2'}}</label>/s
     </div>
-    <div class="col h4">Return:
+    <div class="col h3" style="transform: translate(-40%, 0);">Return:
       {{this.model.AngelicPowers.LifeReturnChance}}
       <label class="customFontGreenTooltip" *ngIf="this.previewChanges.AngelicPowers.LifeReturnChance">
-        +{{this.previewChanges.AngelicPowers.LifeReturnChance | number:'1.2-2'}}</label>
+        +{{this.previewChanges.AngelicPowers.LifeReturnChance | number:'1.1-2'}}</label>
       % for {{  this.model.AngelicPowers.LifePerHit}}
       <label class="customFontGreenTooltip" *ngIf="this.previewChanges.AngelicPowers.LifePerHit">
-        +{{  this.previewChanges.AngelicPowers.LifePerHit | number:'1.2-2'}}</label>
+        +{{  this.previewChanges.AngelicPowers.LifePerHit | number:'1.1-2'}}</label>
     </div>
   </div>
 
-  <div class="row customFontRed" style="width: 150%; padding-right: 25%;">
-    <div class="col h2">RESOURCE:</div>
-    <div class="col h4">Amount:
+  <div class="row customFontRed customFontRedProd" style="width: 210%; padding-right: 25%;">
+    <div class="col-2 h2">RESOURCE:</div>
+    <div class="col-2 h3">Amount:
       {{this.model.DemonicPowers.ResourceAmount}}
       <label class="customFontGreenTooltip" *ngIf="this.previewChanges.DemonicPowers.ResourceAmount">
-        +{{this.previewChanges.DemonicPowers.ResourceAmount | number:'1.2-2'}}
+        +{{this.previewChanges.DemonicPowers.ResourceAmount | number:'1.0-2'}}
       </label>
     </div>
-    <div class="col h4">Regen:
+    <div class="col h3">Regen:
       {{this.model.DemonicPowers.ResourceRegen}}
       <label class="customFontGreenTooltip" *ngIf="this.previewChanges.DemonicPowers.ResourceRegen">
-        +{{this.previewChanges.DemonicPowers.ResourceRegen | number:'1.2-2'}}</label>
-      /sec
+        +{{this.previewChanges.DemonicPowers.ResourceRegen | number:'1.1-2'}}</label>
+      /s
     </div>
-    <div class="col h4">Return:
+    <div class="col h3" style="transform: translate(-40%, 0);">Return:
       {{this.model.DemonicPowers.ResourceReturnChance}}
       <label class="customFontGreenTooltip" *ngIf="this.previewChanges.DemonicPowers.ResourceReturnChance">
-        +{{this.previewChanges.DemonicPowers.ResourceReturnChance | number:'1.2-2'}}</label>
+        +{{this.previewChanges.DemonicPowers.ResourceReturnChance | number:'1.1-2'}}</label>
       % for
       {{ this.model.DemonicPowers.ResourceReturn }}
       <label class="customFontGreenTooltip" *ngIf="this.previewChanges.DemonicPowers.ResourceReturn">
-        +{{ this.previewChanges.DemonicPowers.ResourceReturn | number:'1.2-2'}}</label>
+        +{{ this.previewChanges.DemonicPowers.ResourceReturn | number:'1.1-2'}}</label>
     </div>
   </div>
 
-  <div class="row customFontRed" style="width: 150%; padding-right: 25%;">
-    <div class="col-3 h2">STAMINA:</div>
-    <div class="col-3 h4">Amount:
+  <div class="row customFontRed customFontRedProd" style="width: 210%; padding-right: 25%;">
+    <div class="col-2 h2">STAMINA:</div>
+    <div class="col-2 h3">Amount:
       {{this.model.AncestralPowers.StaminaAmount}}
       <label class="customFontGreenTooltip" *ngIf="this.previewChanges.AncestralPowers.StaminaAmount">
-        +{{this.previewChanges.AncestralPowers.StaminaAmount | number:'1.2-2'}}</label>
+        +{{this.previewChanges.AncestralPowers.StaminaAmount | number:'1.0-2'}}</label>
     </div>
-    <div class="col-3 h4">Regen:
+    <div class="col-3 h3">Regen:
       {{this.model.AngelicPowers.StaminaRegenRate}}
       <label class="customFontGreenTooltip" *ngIf="this.previewChanges.AngelicPowers.StaminaRegenRate">
-        +{{this.previewChanges.AngelicPowers.StaminaRegenRate | number:'1.2-2'}}</label>
-      /sec
+        +{{this.previewChanges.AngelicPowers.StaminaRegenRate | number:'1.1-2'}}</label>
+      /s
     </div>
-    <div class="col-3 h4">Return:
+    <div class="col-2 h3" style="transform: translate(-30%, 0);">Return:
       {{this.model.DemonicPowers.StaminaReturn}}
       <label class="customFontGreenTooltip" *ngIf="this.previewChanges.DemonicPowers.StaminaReturn">
-        +{{this.previewChanges.DemonicPowers.StaminaReturn | number:'1.2-2'}}</label>
+        +{{this.previewChanges.DemonicPowers.StaminaReturn | number:'1.1-2'}}</label>
+    </div>
+    <div class="col h3" style="transform: translate(-30%, 0);">
         Sunder:
       {{" " + this.model.AncestralPowers.StaminaSunder}}
       <label class="customFontGreenTooltip" *ngIf="this.previewChanges.AncestralPowers.StaminaSunder">
-        +{{this.previewChanges.AncestralPowers.StaminaSunder | number:'1.2-2'}}</label>
+        +{{this.previewChanges.AncestralPowers.StaminaSunder | number:'1.1-2'}}</label>
     </div>
   </div>
 </div >

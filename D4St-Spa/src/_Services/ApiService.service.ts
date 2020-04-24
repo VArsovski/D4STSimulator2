@@ -17,6 +17,7 @@ import { ISkillDamageDataDTO } from 'src/Models/DTOs/ISkillDamageDataDTO';
 import { SkillDamageDataDTO } from 'src/Models/DTOs/SkillDamageDataDTO';
 import { SkillDetailDTO } from 'src/Models/SkillDetailDTO';
 import { ISkillDetailDTO } from 'src/Models/DTOs/ISkillDetailDTO';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: "root"
@@ -31,15 +32,18 @@ export class ApiServiceService {
 
   headerDict: any = {
     "Content-Type": "application/json",
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET, POST, PATCH, PUT, DELETE, OPTIONS",
-    "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token"
+    "Authorization": "Bearer ASDFQWER$#@!4321",
+    // "Access-Control-Allow-Origin": "'http://localhost:4200'"
+    // "Access-Control-Allow-Methods": "GET, POST, PATCH, PUT, DELETE, OPTIONS",
+    // "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token"
   };
 
-  requestOptions: any = { Headers: new Headers(this.headerDict) };
+  // headers?: HttpHeaders | { [header: string]: string | string[]; }
+  requestOptions:any;
 
   constructor(private http: HttpClient) {
-    this.baseUrl = "http://localhost:5000/api/";
+    this.baseUrl = environment.apiUrl;
+    this.requestOptions = { headers: this.headerDict };
     this.VM = new BasicStatsVM();
     this.LevelUpVM = new LevelUpStatsVM();
     this.SkillsVM = new SkillListVM();
@@ -49,8 +53,7 @@ export class ApiServiceService {
   getBasicStats = (): Promise<LevelUpStatsVM> => {
     return new Promise((resolve, reject) => {
       var classType = Helpers.getRandom(1, 3);
-      this.http
-        .get(this.baseUrl + "MainStats/" + classType, this.requestOptions)
+      this.http.get(this.baseUrl + "MainStats/" + classType, this.requestOptions)
         .pipe(
           map((response: any) => {
             this.VM = this.extractDetailsFromResponse(response.current);
@@ -74,7 +77,7 @@ export class ApiServiceService {
   LevelUp(model: BasicCharStats, levels: number): Promise<LevelUpStatsVM> {
     return new Promise((resolve, reject) => {
       this.http
-        .post(this.baseUrl + "MainStats/LevelUp?levels=" + levels, model, this.headerDict)
+        .post(this.baseUrl + "MainStats/LevelUp?levels=" + levels, model, this.requestOptions)
         .pipe(
           map((response: any) => {
             this.LevelUpVM.Current = this.extractDetailsFromResponse(response.current);
@@ -94,7 +97,7 @@ export class ApiServiceService {
       // if (levels) {
       var url = this.baseUrl + 'MainStats/PowerUp?powerType=' + powerType + '&levels=' + levels;
       //}
-      this.http.post(url, model, this.headerDict)
+      this.http.post(url, model, this.requestOptions)
       .pipe(map((response: any) => {
         this.LevelUpVM.Current = this.extractDetailsFromResponse(response.current);
         this.LevelUpVM.New = this.extractDetailsFromResponse(response.new);
@@ -112,7 +115,7 @@ export class ApiServiceService {
   LevelUpSkill(model: ISkillDTO): Promise<ISkillDTO> {
     return new Promise((resolve, reject) => {
       var url = this.baseUrl + "SkillBar/LevelUp";
-      this.http.post(url, model, this.headerDict)
+      this.http.post(url, model, this.requestOptions)
       .pipe(map((response:any) => {
         // debugger;
       }))
@@ -153,7 +156,7 @@ export class ApiServiceService {
     });
   };
 
-  extractDetailsFromResponse(data: any) {
+  private extractDetailsFromResponse(data: any) {
     var vm = new BasicStatsVM();
     vm.BasicData.Level = data.classDefinition.level;
     vm.BasicData.TotalPower = data.classDefinition.totalPower;
@@ -196,7 +199,7 @@ export class ApiServiceService {
     return vm;
   }
 
-  extractSkillDetailsFromResponse(element: any, power:number): ISkillAffixDetail {
+  private extractSkillDetailsFromResponse(element: any, power:number): ISkillAffixDetail {
     var data = new SkillAffixDetail(null, power);
     data.Level = element.level;
     data.ProcAmount = element.procAmount;
@@ -210,7 +213,7 @@ export class ApiServiceService {
     return data;
   }
 
-  extractSkillDTOFromResponse(element: any): ISkillDTO {
+  private extractSkillDTOFromResponse(element: any): ISkillDTO {
     var skill = new SkillDTO();
     skill.id = element.id;
     skill.level = element.skillData.level;

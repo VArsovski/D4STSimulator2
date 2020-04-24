@@ -1,6 +1,6 @@
 <div class="row titleRowCustom itemGeneratorBorder">
     <div class="col jumbotron jumbotron-transparentCustom itemGeneratorBorder">
-        <h2 class="display-4 customHeaderFontLeftTop">Try the Item Generator</h2>
+        <h2 class="display-4 customHeaderFontLeftTop" style="transform: translate(-4%, 0%);">Try the Item Generator</h2>
     </div>
 </div>
 
@@ -28,7 +28,7 @@
         <div class="col jumbotron jumbotron-transparentCustom itemGeneratorBorder">
             <div style="width: 200%; transform: translate(-3%, 0);" class="row text-left">
                 <div class="col sizeThumbnail">
-                    <label *ngIf="this.levelRequirement > this.BasicData.Level" class="customFontRed h3">Level requirement {{this.levelRequirement}}</label>
+                    <label *ngIf="this.levelRequirement > this.BasicData.Level" class="customFontRed customFontRedProd h3">Level requirement {{this.levelRequirement}}</label>
                     <label *ngIf="this.levelRequirement <= this.BasicData.Level" class="customFontGreen h3">Level requirement {{this.levelRequirement}}</label>
                     <br/>
 
@@ -39,7 +39,7 @@
                 </div>
             </div>
             <div style="width: 200%; transform: translate(-3%, 0);" class="row text-left" *ngFor="let affix of this.generatedAffixes; let i = index">
-                <div class="col h3 customFontRed" *ngIf="(affix.Condition != null && affix.Condition?.Condition && !affix.ConditionSatisfied)">{{this.selectedDescriptions[i]}}</div>
+                <div class="col h3 customFontRed customFontRedProd" *ngIf="(affix.Condition != null && affix.Condition?.Condition && !affix.ConditionSatisfied)">{{this.selectedDescriptions[i]}}</div>
                 <div class="col h3 customFontGreen" *ngIf="(affix.Condition != null && affix.Condition?.Condition && affix.ConditionSatisfied)">{{this.selectedDescriptions[i]}}</div>
                 <div class="col h3 customFontGreen" *ngIf="affix.Condition == null">{{this.selectedDescriptions[i]}}</div>
             </div>

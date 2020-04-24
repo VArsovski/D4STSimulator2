@@ -2,6 +2,12 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from "@angular/common/http";
 import { FormsModule } from "@angular/forms";
+import { TooltipModule } from "ngx-bootstrap/tooltip";
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import { DemoDropdownCustomHtmlComponent } from "../_NGXCustom/DemoDropdownCustomHtml/DemoDropdownCustomHtml.component";
+import { CustomCompareTooltipComponent } from "../_NGXCustom/CustomCompareTooltip/CustomCompareTooltip.component";
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from '../home/home.component';
@@ -11,13 +17,8 @@ import { ApiServiceService } from 'src/_Services/ApiService.service';
 import { StatsComponent } from '../stats/stats.component';
 import { SkillPickerComponent } from '../skillPicker/skillPicker.component';
 import { SkillBarComponent } from '../skillBar/skillBar.component';
-import { DemoDropdownCustomHtmlComponent } from "../_NGXCustom/DemoDropdownCustomHtml/DemoDropdownCustomHtml.component";
-import { CustomCompareTooltipComponent } from "../_NGXCustom/CustomCompareTooltip/CustomCompareTooltip.component";
-// import { SafePipe } from './safe.pipe';
+import { SafePipe } from './safe.pipe';
 
-import { TooltipModule } from "ngx-bootstrap/tooltip";
-import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ItemGeneratorComponent } from './item-generator/item-generator.component';
 import { InventoryComponent } from './inventory/inventory.component';
 
@@ -30,7 +31,7 @@ import { InventoryComponent } from './inventory/inventory.component';
       StatsComponent,
       SkillPickerComponent,
       SkillBarComponent,
-      // SafePipe,
+      SafePipe,
       DemoDropdownCustomHtmlComponent,
       CustomCompareTooltipComponent,
       ItemGeneratorComponent,
@@ -40,7 +41,7 @@ import { InventoryComponent } from './inventory/inventory.component';
       BrowserModule,
       HttpClientModule,
       FormsModule,
-      // TooltipModule.forRoot(),
+      TooltipModule.forRoot(),
       BsDropdownModule.forRoot(),
       BrowserAnimationsModule,
       TooltipModule.forRoot()

@@ -10,31 +10,35 @@ export class BasicAffixHelper {
         var basicAffix:ItemBasicStats = new ItemBasicStats(category, level, powerLevel);
         var delimiter = 8;
 
-        if (index % delimiter == 1) {
+        if (index % delimiter == BasicStatTypesEnum.PowerStats) {
             selected = BasicStatTypesEnum.PowerStats;
             basicAffix.SetPowers(level, powerLevel, amount, Helpers.getRandom(1,4));
         }
-        if (index % delimiter == 2) {
+        if (index % delimiter == BasicStatTypesEnum.StatNumbers) {
             selected = BasicStatTypesEnum.StatNumbers;
             basicAffix.SetBasicStat(level, powerLevel, amount, Helpers.getRandom(1,3));
         }
-        if (index % delimiter == 3) {
+        if (index % delimiter == BasicStatTypesEnum.StatRegen) {
             selected = BasicStatTypesEnum.StatRegen;
             basicAffix.SetStatRegen(level, powerLevel, amount, Helpers.getRandom(1,3));
         }
-        if (index % delimiter == 4) {
+        if (index % delimiter == BasicStatTypesEnum.StatPercentage) {
             selected = BasicStatTypesEnum.StatPercentage;
             basicAffix.SetBasicStatPercentage(level, powerLevel, amount, Helpers.getRandom(1,3));
         }
-        if (index % delimiter == 5) {
+        if (index % delimiter == BasicStatTypesEnum.StatPercentageRegen) {
             selected = BasicStatTypesEnum.StatPercentageRegen;
             basicAffix.SetRegenPercentage(level, powerLevel, amount, Helpers.getRandom(1,3));
-        }                
-        if (index % delimiter == 6) {
+        }
+        if (index % delimiter == BasicStatTypesEnum.StatReturn) {
+            selected = BasicStatTypesEnum.StatPercentageRegen;
+            basicAffix.SetStatReturn(level, powerLevel, amount, Helpers.getRandom(1,2));
+        }
+        if (index % delimiter == BasicStatTypesEnum.Resistance) {
             selected = BasicStatTypesEnum.Resistance;
             basicAffix.SetResistance(level, powerLevel, amount, Helpers.getRandom(1,3));
         }
-        if (index % delimiter == 7) {
+        if (index % delimiter == BasicStatTypesEnum.SkillEmpower) {
             selected = BasicStatTypesEnum.SkillEmpower;
             basicAffix.SetSkill(level, skillData, powerLevel);
         }

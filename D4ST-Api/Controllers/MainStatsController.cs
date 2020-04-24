@@ -2,6 +2,7 @@ using D4ST_Api.Models;
 using D4ST_Api.Models.Enums;
 using D4ST_Api.Models.HitEffects;
 using D4ST_Api.Models.MainStats;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -9,6 +10,8 @@ namespace D4ST_Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    // [Authorize]
+    // [EnableCors("http://localhost:4200")]
     public class MainStatsController : ControllerBase
     {
         private readonly ILogger<MainStatsController> _logger;

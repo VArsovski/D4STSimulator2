@@ -3,7 +3,7 @@ import { ItemAffixOutput } from '../Details/ItemAffixOutput';
 import { ItemArmorStats } from '../Details/ItemArmorStats';
 
 export class ArmorAffixHelper {
-    public GetByIndex(category:AffixCategoryEnum, level:number, powerLevel:number, itemType:ItemArmorTypesEnum, armorType:ArmorTypesEnum):ItemAffixOutput {
+    public GetByIndex(category:AffixCategoryEnum, level:number, powerLevel:number, itemType:ItemArmorTypesEnum, armorType:ArmorTypesEnum, isPrimary:boolean):ItemAffixOutput {
 
         var delimiter = 5;
         var selected =
@@ -18,7 +18,7 @@ export class ArmorAffixHelper {
         : armorType % delimiter == 2 ? ArmorTypesEnum.Light
         : ArmorTypesEnum.Mystic;
     
-        var armorStat = new ItemArmorStats(category, level, powerLevel, selected, selectedType);
+        var armorStat = new ItemArmorStats(category, level, powerLevel, selected, selectedType, 0, 0, isPrimary);
         return new ItemAffixOutput(category, armorStat);
     }
 }

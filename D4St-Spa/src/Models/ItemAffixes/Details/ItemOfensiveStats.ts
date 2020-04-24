@@ -136,9 +136,6 @@ export class ItemOfensiveStatsDetail implements IItemAffixStats {
         if (this.Type == OfensiveStatsEnum.CastAndProjectileRange && !str)
             str += "Increase " + Helpers.getPropertyByValue(OfensiveStatsEnum, this.Type) + " by " + quantifier;
 
-        if (str.startsWith("+")) {
-            debugger;
-        }
         return str;
     }
 

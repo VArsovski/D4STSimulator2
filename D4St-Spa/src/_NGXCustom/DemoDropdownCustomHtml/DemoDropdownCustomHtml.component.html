@@ -1,4 +1,4 @@
-<div class="btn-group dropright btnGroupCustom h2" dropdown dropdownToggle ngDefaultControl #dropdown="bs-dropdown" [(ngModel)]="this.selectedItem" [dropup]="true" [autoClose]="true" (placement)="this.placement">
+<div class="btn-group dropright btnGroupCustom h2" dropdown dropdownToggle ngDefaultControl #dropdown="bs-dropdown" [(ngModel)]="this.selectedItem" name="selectedItemModel" [dropup]="true" [autoClose]="true" (placement)="this.placement">
   <button *ngIf="this.selectedItem" id="button-custom-html" type="button" class="btn btnCustom" aria-controls="dropdown-custom-html">
     <img [id]="'item-selected---'+ this.selectedItem.id" class="dropdownItemImg" [src]=this.selectedItem.imageUrl>
     {{this.selectedItem.name}} <span [id]="'item-selected-detail---'+ this.selectedItem.id" *ngIf="this.selectedItem.detail">[{{this.selectedItem.detail}}]</span>

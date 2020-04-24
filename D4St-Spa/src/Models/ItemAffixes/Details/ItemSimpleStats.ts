@@ -20,7 +20,7 @@ export class ItemBasicPowersDetail implements IItemAffixStats {
         this.Type = type;
 
         if (!this.statsCalculated) {
-            this.Amount = new CalculationsHelper().getBasicPowerForLevel(this.Amount, this.Level, this.Type);
+            this.Amount = new CalculationsHelper().getEmpoweredValue(new CalculationsHelper().getBasicPowerForLevel(this.Amount, this.Level, this.Type), this.PowerLevel);
             this.statsCalculated = true;
         }
     }
@@ -52,21 +52,23 @@ export class ItemBasicResistanceStatsDetail implements IItemAffixStats {
     CategoryStats: AffixCategoryEnum;
 
     public GetDescription():string {
-        return "+ " + this.Amount + " " + Helpers.getPropertyByValue(ResistanceTypesEnum, this.Type) + "% resistance"
+        return "+ " + this.Amount + "% " + Helpers.getPropertyByValue(ResistanceTypesEnum, this.Type) + " resistance"
     }
 }
 
 export class ItemSimpleStats implements IItemAffixStats {
     Amount:number;
+    AmountPercentage:number;
     private PowerLevel: number;
     private Level: number;
     private statsCalculated:boolean;
     Type:string;
 
-    constructor(level:number, powerLevel:number, amount:number, type:string) {
+    constructor(level:number, powerLevel:number, amount:number, amountPercentage:number, type:string) {
         this.Level = level || 1;
         this.PowerLevel = powerLevel;
         this.Amount = amount;
+        this.AmountPercentage = amountPercentage;
         this.Type = type;
 
         if (!this.statsCalculated) {
@@ -77,6 +79,8 @@ export class ItemSimpleStats implements IItemAffixStats {
     CategoryStats: AffixCategoryEnum;
 
     public GetDescription():string {
-        return this.Amount ? this.Amount + " " + this.Type : "";
+        var amtDescr = this.Amount ? this.Amount + " " + this.Type : "";
+        var percDescr = this.AmountPercentage ? this.AmountPercentage + "% " + this.Type : ""
+        return "+ " + (amtDescr || percDescr);
     }
 }

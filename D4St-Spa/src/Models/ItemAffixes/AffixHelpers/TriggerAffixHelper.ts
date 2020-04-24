@@ -1,27 +1,20 @@
 import { ItemAffixOutput } from '../Details/ItemAffixOutput';
 import { ItemTriggerStats } from '../Details/ItemTriggerStats';
-import { TriggerStatsEnum } from 'src/_Enums/triggerAffixEnums';
+import { TriggerTypesEnum } from 'src/_Enums/triggerAffixEnums';
 import { SkillVM } from 'src/Models/SkillVM';
 import { AffixCategoryEnum } from 'src/_Enums/itemAffixEnums';
 
 export class TriggerAffixHelper {
-    public GetByIndex(category: AffixCategoryEnum, level:number, powerLevel:number, amount:number, chance:number, type:TriggerStatsEnum, skillData:SkillVM):ItemAffixOutput {
+    public GetByIndex(category: AffixCategoryEnum, level:number, powerLevel:number, amount:number, chance:number, type:TriggerTypesEnum, subtype:number, skillData:SkillVM):ItemAffixOutput {
         var delimiter = 6;
 
-        // PhysicalAttack = 1,           //TriggerAffixes [1,2], 4 CCEffectTypesEnum[1,2]
-        // SpellAttack = 1,              //TA[6], CCET[5,6,8,9,10]
-        // PhysicalAoE = 2,              //TriggerAffixes [3, 6], 3 CCEffectTypesEnum[4,7]
-        // CCPhysical = 4,               //TA[3], CCET[3,4,7]
-        // Spellcast = 5,                //Cast a spell
         var selected =
-          type % delimiter == 1 ? TriggerStatsEnum.PhysicalAttack
-        : type % delimiter == 2 ? TriggerStatsEnum.SpellAttack
-        : type % delimiter == 3 ? TriggerStatsEnum.PhysicalAoE
-        : type % delimiter == 4 ? TriggerStatsEnum.CCPhysical
-        : TriggerStatsEnum.Spellcast;
+          type % delimiter == 1 ? TriggerTypesEnum.HitEffectPhysical
+        : type % delimiter == 2 ? TriggerTypesEnum.HitEffectCC
+        : TriggerTypesEnum.SpellEffect
     
         // TODO:
-        var triggerStat = new ItemTriggerStats(category, level, powerLevel, amount, chance, selected, null, null, skillData);
+        var triggerStat = new ItemTriggerStats(category, level, powerLevel, amount, chance, selected, subtype, skillData);
         return new ItemAffixOutput(category, triggerStat);
     }
 }

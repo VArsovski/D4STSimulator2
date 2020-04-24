@@ -8,12 +8,14 @@ import { IItemAffixStats } from './IItemAffixStats';
 import { ItemSkillStats } from './ItemSkillStats';
 
 export class ItemBasicStats implements IItemAffixStats {
+
     CategoryStats: AffixCategoryEnum;
     private PowerStats:ItemBasicPowersDetail;
     private StatNumbers:ItemBasicStatsDetail;
     private StatRegen:ItemBasicStatsDetail;
     private StatPercentage:ItemBasicStatsDetail;
     private StatPercentageRegen:ItemBasicStatsDetail;
+    private StatReturn:ItemBasicStatsDetail;
     private Resistance:ItemBasicResistanceStatsDetail;
     private SkillEmpower:ItemSkillStats;
     private Socket:ItemSimpleStats;
@@ -24,18 +26,20 @@ export class ItemBasicStats implements IItemAffixStats {
     Amount:number; //Just to check whether there is data in here (from outside method)
 
     constructor(category: AffixCategoryEnum, level:number, powerLevel?:number, powerStats?:ItemBasicPowersDetail
-        , statNumbers?:ItemBasicStatsDetail, statRegen?:ItemBasicStatsDetail, statPercentage?:ItemBasicStatsDetail, statRegenPercentage?:ItemBasicStatsDetail
+        , statNumbers?:ItemBasicStatsDetail, statRegen?:ItemBasicStatsDetail, statPercentage?:ItemBasicStatsDetail, statRegenPercentage?:ItemBasicStatsDetail, statReturn?:ItemBasicStatsDetail
         , resistance?:ItemBasicResistanceStatsDetail, skillEmpower?:SkillVM, socket?:number, selectedStat?:BasicStatTypesEnum) {
 
         this.CategoryStats = category;
         this.Amount = -1; // Just make sure it's not 0, (again) for outside check
-        this.Socket = new ItemSimpleStats(level, powerLevel, socket || 0, "Socket");
+        this.Socket = new ItemSimpleStats(level, powerLevel, 0, socket || 0, "Socket");
         this.PowerLevel = powerLevel;
         this.Level = level;
         this.PowerStats = powerStats;
         this.StatNumbers = statNumbers;
         this.StatRegen = statRegen;
         this.StatPercentage = statPercentage;
+        this.StatPercentageRegen = statRegenPercentage;
+        this.StatReturn = statReturn;
         this.Resistance = resistance;
         this.SkillEmpower = new ItemSkillStats(category, skillEmpower, level, powerLevel);
         this.selectedStat = selectedStat;
@@ -77,6 +81,11 @@ export class ItemBasicStats implements IItemAffixStats {
         this.selectedStat = BasicStatTypesEnum.StatPercentageRegen;
     }
 
+    public SetStatReturn(level: number, powerLevel: number, amount: number, type:BasicStatsEnum) {
+        this.StatReturn = new ItemBasicStatsDetail(level, powerLevel, amount, BasicStatTypesEnum.StatReturn, type);
+        this.selectedStat = BasicStatTypesEnum.StatReturn;
+    }    
+
     public SetResistance(level:number, powerLevel:number, amount:number, type:ResistanceTypesEnum) {
         this.Resistance = new ItemBasicResistanceStatsDetail(level, powerLevel, amount, type);
         this.selectedStat = BasicStatTypesEnum.Resistance;
@@ -95,6 +104,14 @@ export class ItemBasicStats implements IItemAffixStats {
         this.selectedStat = BasicStatTypesEnum.Socket;
     }
 
+    // TODO: Sadly, have to do/invoke from SecondaryTriggers sometimes even this.. :/
+    public SetSelectedStat() {
+        if (!this.selectedStat) {
+            this.selectedStat = this.GetSelectedStat();
+            this.CategoryStats = AffixCategoryEnum.IncreaseBasicStat;
+        }
+    }
+
     public GetDescription(): string {
         var selectedStatStr = Helpers.getPropertyByValue(BasicStatTypesEnum, this.selectedStat);
         var selectedStatValue = this[selectedStatStr] as IItemAffixStats;
@@ -103,17 +120,26 @@ export class ItemBasicStats implements IItemAffixStats {
         return descrStat + empoweredStr;
     }
 
-    private GetCalculatedData(data:ItemBasicStats, selectedStat:BasicStatTypesEnum) {
-        // var data = new ItemBasicStats(this.Level, this.PowerLevel, this.PowerStats
-        //     , this.StatNumbers, this.StatRegen, this.StatPercentage, this.StatPercentageRegen
-        //     , this.Resistance, this.SkillEmpower, this.Socket, selectedStat);
+    GetSelectedStat():number {
+        var selectedStat:number = 0;
+        var currentStats:string[] = ["PowerStats","StatNumbers","StatRegen","StatPercentage","StatPercentageRegen","StatReturn","Resistance"];//["SkillEmpower","Socket"];
+        var defaultStats:string[] = ["SkillEmpower","Socket"];
 
+        for (let i = 0; i < currentStats.length; i++)
+            if (this[currentStats[i]]) { selectedStat = i; break; }
+        for (let i = 0; i < defaultStats.length; i++)
+            if (this[currentStats[i]]) { selectedStat = i; break; }
+
+        return selectedStat;
+    }
+
+    private GetCalculatedData(data:ItemBasicStats, selectedStat:BasicStatTypesEnum) {
+        
         if (selectedStat && !this.statsCalculated)
         {
             var dict = Helpers.extractEnum(BasicStatTypesEnum);
             var selectedTypeNum:number[] = [];
             dict.forEach(d => {if (d.value == data.selectedStat) selectedTypeNum.push(d.value);});
-            // var amount = new CalculationsHelper().getBasicStatForLevel(selectedTypeNum[0], data[data.selectedStat].Amount, data.Level);
 
             // if (data.selectedStat == "PowerStats" || data.selectedStat == "Resistance")
             //     data[data.selectedStat].Amount = new CalculationsHelper().getEmpoweredValue(new CalculationsHelper().getArmorStatForLevel(data[data.selectedStat].Amount, data.Level), data.PowerLevel);
@@ -123,12 +149,11 @@ export class ItemBasicStats implements IItemAffixStats {
                 data[data.selectedStat].Amount = new CalculationsHelper().getEmpoweredValue(new CalculationsHelper().getArmorStatForLevel(data[data.selectedStat].Amount, data.Level), data.PowerLevel);
                 data[data.selectedStat].AmountPercentage = new CalculationsHelper().getEmpoweredValue(new CalculationsHelper().getArmorStatForLevel(data[data.selectedStat].AmountPercentage, data.Level), data.PowerLevel);
                 if (!this.statsCalculated) {
-                    this[data.selectedStat].Amount = data[data.selectedStat].Amount;
-                    this[data.selectedStat].AmountPercentage = data[data.selectedStat].AmountPercentage;
+                    this[data.selectedStat].Amount = Math.min(data[data.selectedStat].Amount, 1 + this.PowerLevel);
+                    this[data.selectedStat].AmountPercentage = Math.min(data[data.selectedStat].AmountPercentage, 5,  this.PowerLevel);
                 }
             }
             if (data.selectedStat == BasicStatTypesEnum.SkillEmpower) {
-                debugger;
                 if (!data.SkillEmpower.AffixData.level)
                     data.SkillEmpower.AffixData.level = 1;
                 data.SkillEmpower.AffixData.level += data.PowerLevel;
@@ -151,8 +176,8 @@ export class ItemBasicStats implements IItemAffixStats {
 export class ItemBasicStatsDetail implements IItemAffixStats {
     CategoryStats: AffixCategoryEnum;
     Amount: number;
-    private StatType: BasicStatTypesEnum;
-    private Type: BasicStatsEnum;
+    StatType: BasicStatTypesEnum;
+    Type: BasicStatsEnum;
     private Level: number;
     private PowerLevel: number;
     private statsCalculated:boolean;
@@ -169,11 +194,15 @@ export class ItemBasicStatsDetail implements IItemAffixStats {
             this.statsCalculated = true;
         }
     }
+
     GetDescription(): string {
         var selectedType = Helpers.getPropertyByValue(BasicStatsEnum, this.Type);
         var isRegen = [BasicStatTypesEnum.StatRegen, BasicStatTypesEnum.StatPercentageRegen].includes(this.StatType);
         var isPercentage = [BasicStatTypesEnum.StatPercentage, BasicStatTypesEnum.StatPercentageRegen].includes(this.StatType);
 
-        return "+ " + this.Amount + (isPercentage ? "%" : "") + " " + selectedType + (isRegen ? " regen " : "");
+        var isReturn = this.StatType == BasicStatTypesEnum.StatReturn;
+        if (isReturn)
+            return this.Amount + (isPercentage ? "% " : " ") + Helpers.getPropertyByValue(BasicStatsEnum, this.Type) + " return";
+        else return "+ " + this.Amount + (isPercentage ? "%" : "") + " " + selectedType + (isRegen ? " regen " : "");
     }
 }

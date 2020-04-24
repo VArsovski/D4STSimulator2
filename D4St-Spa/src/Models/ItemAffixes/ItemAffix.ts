@@ -35,11 +35,9 @@ export class ItemAffix implements IItemAffix {
         if (!this.Condition)
             this.ConditionSatisfied = true;
 
-        // if (affixCategory || {} != {}) {
         this.AffixCategory = affixCategory;
         this.AttackProcType = attacProckType;
         this.CastProcType = castProcType;
-        //}
     }
 
     public GetAffixDescription(skillData:SkillVM[]):string {
@@ -59,20 +57,36 @@ export class ItemAffix implements IItemAffix {
             statDescr += ", " + Helpers.getPropertyByValue(ItemAffixTypeEnum, this.AffixType) + "]";
         }
 
-        statDescr += ((this.AffixType == ItemAffixTypeEnum.Damage && this.AffixCategory == AffixCategoryEnum.PrimaryDamage)
+        var conditionalBasicAffixTypes:AffixCategoryEnum[] = [
+            AffixCategoryEnum.ConditionalProcBasicAffix,
+            AffixCategoryEnum.ConditionalSkillTriggerAffix,
+        ];
+
+        var conditionalTriggerAffixTypes:AffixCategoryEnum[] = [
+            AffixCategoryEnum.ConditionalProcCastAffix,
+            AffixCategoryEnum.ConditionalProcEffectAffix,
+            AffixCategoryEnum.ConditionalProcTriggerAffix,
+        ];
+
+        var suffix = ((this.AffixType == ItemAffixTypeEnum.Damage && this.AffixCategory == AffixCategoryEnum.PrimaryDamage)
         || (this.AffixType == ItemAffixTypeEnum.Armor && this.AffixCategory == AffixCategoryEnum.PrimaryArmor)) ? " (Primary)"
         : this.AffixType == ItemAffixTypeEnum.BasicStat ? " (Basic)"
+        : conditionalBasicAffixTypes.includes(this.AffixCategory) ? " (ConditionalTrigger)"
+        : conditionalTriggerAffixTypes.includes(this.AffixCategory) ? " (ConditionalTrigger)"
         : " (" + Helpers.getPropertyByValue(ItemAffixTypeEnum, this.AffixType) + ")";
 
         if (this.Condition)
             conditionStr = "(requires " + this.Condition.Condition + " " + Helpers.getPropertyByValue(PowerTypesEnum, this.Condition.ConditionPowerType) + ")";
+
+        // Remove Extra ***s into max 3
+        statDescr = statDescr.replace("****", "***");
 
         if (statDescr.includes("NaN ") || statDescr.startsWith("0") || statDescr.includes("null") || statDescr.replace("*", "").length == 0) {
             console.log("Data missing for:");
             console.log(this);
         }
 
-        return statDescr + " " + conditionStr;
+        return statDescr + " " + conditionStr + suffix;
     }
 
     public SetCondition(ConditionSatisfied:boolean) {

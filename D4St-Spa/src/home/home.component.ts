@@ -43,7 +43,7 @@ export class HomeComponent implements OnInit, OnChanges {
 
   async initSkillTiers() {
     var tiersDistinct: any[] = [];
-    this.skillsModel.skills.forEach(x => {
+    this.skillsModel.skills.filter(s => s.classId == this.model.BasicData.ClassType).forEach(x => {
       if (tiersDistinct.indexOf(x.tier) == -1) tiersDistinct.push(x.tier);
     });
 
@@ -52,8 +52,7 @@ export class HomeComponent implements OnInit, OnChanges {
       data.tier = element;
       this.skillTiers.push(data);
     });
-
-    this.skillsModel.skills.forEach(element => {
+    this.skillsModel.skills.filter(s => s.classId == this.model.BasicData.ClassType).forEach(element => {
       this.skillTiers[(element.tier || element.data.tier) - 1].skills.push(element);
     });
   }

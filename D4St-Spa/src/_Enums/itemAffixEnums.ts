@@ -1,16 +1,15 @@
+//# region BasicEnum types
+
 export enum BasicStatsEnum {
     HP = 1,
     Resource = 2,
     Stamina = 3
-    // Armor = 4
 }
-
 export enum ItemCategoriesEnum {
     Armor= 1,
     Weapon= 2,
     Jewelry= 3
 }
-
 export enum ResistanceTypesEnum {
     Physical = 1,
     Fire = 2,
@@ -19,7 +18,6 @@ export enum ResistanceTypesEnum {
     Poison = 5,
     All = 6
 }
-
 export enum ItemArmorTypesEnum {
     Boots=1,
     Chest=2,
@@ -27,7 +25,6 @@ export enum ItemArmorTypesEnum {
     Helm=4,
     Pants=5
 }
-
 export enum ItemWeaponTypesEnum {
     Axe=1,
     Bow=2,
@@ -37,42 +34,64 @@ export enum ItemWeaponTypesEnum {
     Wand=6,
     Staff=7
 }
-
 export enum ItemJewelryTypesEnum {
     Amulet=1,
     Ring=2
 }
-
 export enum ItemRarityTypesEnum{
     Magic=1,
     Rare=2,
     Legendary=3
 }
+export enum ArmorTypesEnum {
+    Light= 1,
+    Heavy= 2,
+    Mystic= 3
+}
+export enum CastProcTypesEnum
+{
+    OnHit=1,
+    OnCast=2,
+    OnDeath=3
+}
+export enum OfensiveStatCategoryEnum {
+    Damage = 1,
+    Radius = 2,
+    Duration = 3,
+    Chance = 4
+}
+export enum DefensiveStatCategoryEnum {
+    Damage = 1,
+    Duration = 2,
+    Bonus = 3,
+    Chance = 4
+}
+
+//# endregion
 
 export enum ItemAffixTypeEnum {
     BasicStat= 1,
     Damage = 2,
     Armor = 3,
-    TriggerEffect = 4,
-    Offensive= 5,
-    Defensive= 6,
-    PowerUpSkill= 7,
-    SecondaryTrigger=8,
-    Legendary=9,
+    SecondaryStat= 4,
+    TriggerEffect = 5,
+    Offensive= 6,
+    Defensive= 7,
+    PowerUpSkill= 8,
+    SecondaryTrigger=9,
+    Legendary=10
 }
-
 export enum ItemAffixSTatsEnum {
-    ArmorStat = 0,
-    DamageStat = 1,
-    BasicStat = 2,
-    OfensiveStat = 3,
-    DefensiveStat = 4,
-    TriggerStat = 5,
-    SecondaryTriggerStat = 6,
-    LegendaryStat = 7,
-    OtherTypeStat = 8
+    ArmorStat = 1,
+    DamageStat = 2,
+    BasicStat = 3,
+    OfensiveStat = 4,
+    DefensiveStat = 5,
+    TriggerStat = 6,
+    SecondaryTriggerStat = 7,
+    LegendaryStat = 8,
+    OtherTypeStat = 9
 }
-
 export enum AttackTypesEnum {
     MeleeHit= 1,
     Projectile= 2,
@@ -80,29 +99,17 @@ export enum AttackTypesEnum {
     TriggerEffect= 4, // Critical, CrushingBlow, Knockback, ..
     Summon= 5
 }
-
 export enum DamageTypesEnum {
-    BleedOrArmorReduction = 1,
-    PoisonOrBurn = 2,
-    KnockbackOrStun = 3,
-    CleaveOrAoE = 4,
-    ChainOrPierceAttack = 5,
-    ProjectileOrSummon = 6,
-    FreezeOrRoot = 7,
-    Physical= 8
+    PhysicalOrCC = 1,
+    CleaveOrAoE = 2,
+    ChainOrProjectile = 3,
+    TrapOrSummon = 4,
+    TickOrCurse = 5
 }
-
-export enum ArmorTypesEnum {
-    Light= 1,
-    Heavy= 2,
-    Mystic= 3
-}
-
-export enum CastProcTypesEnum
-{
-    OnHit=1,
-    OnCast=2,
-    OnDeath=3
+export enum TrapAndSummonStatsEnum {
+    LifeAndDuration = 1,
+    DamageAndCharges = 2,
+    ProcEffectChance = 3
 }
 
 export enum AffixCategoryEnum {
@@ -138,9 +145,19 @@ export enum BasicStatTypesEnum {
     StatRegen=3,
     StatPercentage=4,
     StatPercentageRegen=5,
-    Resistance=6,
-    SkillEmpower=7,
-    Socket=8
+    StatReturn=6,
+    Resistance=7,
+    SkillEmpower=8,
+    Socket=9
+}
+
+export enum SecondaryStatTypesEnum {
+    Resistance = 1,
+    RedirectDamage = 2,
+    IncreaseStatSunder = 3,
+    EmpowerTrapsAndSummons = 4,
+    DamageTakenReduced = 5,
+    CCReduction = 6
 }
 
 export enum OfensiveStatsEnum {
@@ -153,21 +170,6 @@ export enum OfensiveStatsEnum {
     FreezeAndRoot= 7,
     Socket = 8
 }
-
-export enum OfensiveStatCategoryEnum {
-    Damage = 1,
-    Radius = 2,
-    Duration = 3,
-    Chance = 4
-}
-
-export enum DefensiveStatCategoryEnum {
-    Damage = 1,
-    Duration = 2,
-    Bonus = 3,
-    Chance = 4
-}
-
 export enum DefensiveStatsEnum {
     CCEffects= 1,
     PotionAndGlobeBonus= 2,
@@ -178,7 +180,6 @@ export enum DefensiveStatsEnum {
     LifestealOrShielding= 7,
     Socket = 8
 }
-
 export enum LegendaryStatsEnum {
     AlternateCleaveOrAoEEffect = 1,
     AlternatePoisonOrBurnEffect = 2,

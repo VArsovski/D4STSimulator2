@@ -20,24 +20,7 @@ export class ItemArmorDetailStats {
 
     private SetCCTypes() {
         if (this.ArmorType)
-        if (this.ArmorType == ArmorTypesEnum.Heavy) {
-            this.selectedCCTypes.push(CCEffectTypesEnum.ReduceArmor);
-            this.selectedCCTypes.push(CCEffectTypesEnum.Bleed);
-            this.selectedCCTypes.push(CCEffectTypesEnum.Knockback);
-            this.selectedCCTypes.push(CCEffectTypesEnum.Stun);
-        }
-        if (this.ArmorType == ArmorTypesEnum.Light) {
-            this.selectedCCTypes.push(CCEffectTypesEnum.Root);
-            this.selectedCCTypes.push(CCEffectTypesEnum.Wither);
-            this.selectedCCTypes.push(CCEffectTypesEnum.Blind);
-            this.selectedCCTypes.push(CCEffectTypesEnum.Burn);
-        }
-        if (this.ArmorType == ArmorTypesEnum.Mystic) {
-            this.selectedCCTypes.push(CCEffectTypesEnum.Burn);
-            this.selectedCCTypes.push(CCEffectTypesEnum.Curse);
-            this.selectedCCTypes.push(CCEffectTypesEnum.Freeze);
-            this.selectedCCTypes.push(CCEffectTypesEnum.Bleed);
-        }
+            this.selectedCCTypes = new CalculationsHelper().GetArmorTypesInfoAndForArmorType(this.ArmorType);
     }
 
     public GetCCTypes():string {
@@ -58,7 +41,7 @@ export class ItemArmorStats implements IItemAffixStats {
     private statsCalculated:boolean;
     Amount:number; //Just to check whether there is data in here (from outside method)
 
-    constructor(category: AffixCategoryEnum, level:number, powerLevel:number, itemType: ItemArmorTypesEnum, armorType?: ArmorTypesEnum, armor?:number, reducePercentage?:number) {
+    constructor(category: AffixCategoryEnum, level:number, powerLevel:number, itemType: ItemArmorTypesEnum, armorType?: ArmorTypesEnum, armor?:number, reducePercentage?:number, isPrimary?:boolean) {
         this.CategoryStats = category;
         this.Amount = -1; // Just make sure it's not 0, (again) for outside check
         this.Level = level || 1;
@@ -75,10 +58,10 @@ export class ItemArmorStats implements IItemAffixStats {
             var selectedAmount = calculatedData[0];
             var reducePercentage = calculatedData[1];
             this.Armor = armor || selectedAmount;
-            this.ReducePercentage = reducePercentage || 0;
+            this.ReducePercentage = isPrimary ? (reducePercentage || 0) : 0;
         }
     }
-    CategoryStats: import("../../../_Enums/itemAffixEnums").AffixCategoryEnum;
+    CategoryStats: AffixCategoryEnum;
 
     // Stats for level1, calculate for other levels
     private GetLevelData(level:number):ItemArmorDetailStats[] {

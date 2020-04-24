@@ -10,12 +10,16 @@ import { DemonicPowerAffixes } from 'src/Models/DemonicPowerAffixes';
 import { AncestralPowerAffixes } from 'src/Models/AncestralPowerAffixes';
 import { SkillDTO } from 'src/Models/DTOs/SkillDTO';
 import { SkillDamageDataDTO } from 'src/Models/DTOs/SkillDamageDataDTO';
-import { ArmorTypesEnum, ItemWeaponTypesEnum, DamageTypesEnum, ResistanceTypesEnum, AffixCategoryEnum } from 'src/_Enums/itemAffixEnums';
+import { ArmorTypesEnum, ItemWeaponTypesEnum, DamageTypesEnum, ResistanceTypesEnum, AffixCategoryEnum, BasicStatTypesEnum, ItemArmorTypesEnum, ItemRarityTypesEnum } from 'src/_Enums/itemAffixEnums';
 import { PowerTypesEnum } from 'src/_Enums/powerTypesEnum';
-import { TriggerStatsEnum, CCEffectTypesEnum } from 'src/_Enums/triggerAffixEnums';
+import { TriggerTypesEnum, HitEffectTypesEnum, CCEffectTypesEnum, SpellEffectTypesEnum } from 'src/_Enums/triggerAffixEnums';
 import { AffixMetadataEnum } from 'src/_Enums/skillEnums';
 import { SkillVM } from 'src/Models/SkillVM';
 import { IItemAffix } from 'src/Models/ItemAffixes/IItemAffix';
+import { IEffectAffix, SimpleEffectAffix, IEffectAffixHolder } from 'src/Models/ItemAffixes/EffectAffixes/IEffectAffix';
+import { HitEffectAffix } from 'src/Models/ItemAffixes/EffectAffixes/HitEffectAffix';
+import { SpellEffectAffix } from 'src/Models/ItemAffixes/EffectAffixes/SpellEffectAffix';
+import { CCEffectAffix } from 'src/Models/ItemAffixes/EffectAffixes/CCEffectAffix';
 
 export class CalculationsHelper {
 
@@ -208,15 +212,9 @@ export class CalculationsHelper {
     return Math.round(stat);
   }
 
-  public getTriggerStatsForLevel(stat: number, level: number, powerLevel:number, type:TriggerStatsEnum): number {
-    if (type == TriggerStatsEnum.Spellcast) {
-      stat = Helpers.getRandom(1,2);
-    }
-    else
-    {
-      var compensationFactor = level > 24 ? (level - 24)/2 : 0;
-      stat = Math.round((stat + compensationFactor)*(Helpers.getRandom(60,80)/100)*10)/10;
-    }
+  public getTriggerStatsForLevel(stat: number, level: number, powerLevel:number, type:TriggerTypesEnum): number {
+    var compensationFactor = level > 28 ? (level - 28)/2 : 0;
+    stat = Math.round((stat + compensationFactor)*(Helpers.getRandom(60,80)/100)*10)/10;
     stat = Math.round(this.getEmpoweredValue(stat, powerLevel)* 10)/10;
 
     return stat;
@@ -232,27 +230,38 @@ export class CalculationsHelper {
 
   public getBasicStatForLevel(type:number, stat: number, level: number): number {
     var delimiter = 6;
-    if (type % delimiter == 1) {
-      // Powers
-      stat += Math.round((level || 1) * Helpers.getRandom(30, 50)/100 * 10)/10;
+    var selected = type % delimiter;
+    if ([BasicStatTypesEnum.PowerStats, BasicStatTypesEnum.StatReturn]) {
+      // Powers, StatReturn
+      stat += Math.round((level || 1) * Helpers.getRandom(25, 40)/100 * 10)/10;
     }
-    if (type % delimiter == 2) {
-        // HP/Mana
+    if (selected == BasicStatTypesEnum.StatNumbers) {
+        // + HP/Mana/Stamina
         stat += Math.round((level || 1) * Helpers.getRandom(60, 90)/100 * 10)/10;
     }
-    if (type % delimiter == 3) {
-        // HP/Mana regen
+    if (selected == BasicStatTypesEnum.StatRegen) {
+        // + HP/Mana/Stamina Regen
         var regenFactor = Math.round((level / 8)*10)/10;
         var bonus = Math.max(1, regenFactor * (1 + Helpers.getRandom(-30, +30)/100));
         stat+= bonus;
     }
-    if (type % delimiter == 4) {
+    if (selected == BasicStatTypesEnum.StatPercentage) {
+      // + HP/Mana/Stamina Percentage
+      stat += Math.round((level || 1) * Helpers.getRandom(60, 90)/100 * 10)/10;
+    }
+    if (selected == BasicStatTypesEnum.StatPercentageRegen) {
+      // + HP/Mana/Stamina Percentage
+      var levelFactor = Math.abs(30 - (level || 1));
+      var percentageFactor = Helpers.getRandom(60, 90)/10;
+      stat += Math.round(percentageFactor * (5 - levelFactor/10) + Helpers.getRandom(10, 15));
+    }
+    if (selected == BasicStatTypesEnum.Resistance) {
         // Resistance
         var resusFactor = Math.round((level / 4) * 10)/10;
         var bonus = resusFactor * (Helpers.getRandom(50, 75)/100);
         if (isNaN(bonus)) bonus = 0;
         var selectedRes = Helpers.getRandom(1,6);
-        if (selectedRes == 6)
+        if (selectedRes == ResistanceTypesEnum.All)
             bonus *= Helpers.getRandom(50, 75)/100;
         stat += bonus;
     }
@@ -260,53 +269,42 @@ export class CalculationsHelper {
     return Math.round(stat);
   }
 
-  public GetArmorTypesInfo():string[] {
+  public GetArmorTypesInfoAndForArmorType(armorType?:ArmorTypesEnum):CCEffectTypesEnum[] {
     var armorTypesList = [ArmorTypesEnum.Heavy, ArmorTypesEnum.Light, ArmorTypesEnum.Mystic];
-    var data:string[] = [];
+    var selectedCCTypes:CCEffectTypesEnum[] = [];
 
-    armorTypesList.forEach(armorType => {
-      var selectedCCTypes:CCEffectTypesEnum[] = [];
-      if (armorType == ArmorTypesEnum.Heavy) {
-        selectedCCTypes.push(CCEffectTypesEnum.ReduceArmor);
-        selectedCCTypes.push(CCEffectTypesEnum.Bleed);
-        selectedCCTypes.push(CCEffectTypesEnum.Knockback);
-        selectedCCTypes.push(CCEffectTypesEnum.Stun);
+    armorTypesList.forEach(at => {
+      if (at == ArmorTypesEnum.Heavy && (!armorType || armorType == at)) {
+        selectedCCTypes.push(CCEffectTypesEnum.ReduceArmorOrBleed);
+        selectedCCTypes.push(CCEffectTypesEnum.KnockbackOrLevitate);
       }
-      if (armorType == ArmorTypesEnum.Light) {
-          selectedCCTypes.push(CCEffectTypesEnum.Root);
-          selectedCCTypes.push(CCEffectTypesEnum.Wither);
-          selectedCCTypes.push(CCEffectTypesEnum.Blind);
-          selectedCCTypes.push(CCEffectTypesEnum.Burn);
+      if (at == ArmorTypesEnum.Light && (!armorType || armorType == at)) {
+        selectedCCTypes.push(CCEffectTypesEnum.FreezeOrRoot);
+        selectedCCTypes.push(CCEffectTypesEnum.StunOrKnockdown);
       }
-      if (armorType == ArmorTypesEnum.Mystic) {
-          selectedCCTypes.push(CCEffectTypesEnum.Burn);
-          selectedCCTypes.push(CCEffectTypesEnum.Curse);
-          selectedCCTypes.push(CCEffectTypesEnum.Freeze);
-          selectedCCTypes.push(CCEffectTypesEnum.Bleed);
+      if (at == ArmorTypesEnum.Mystic && (!armorType || armorType == at)) {
+          selectedCCTypes.push(CCEffectTypesEnum.BlindOrCurse);
+          selectedCCTypes.push(CCEffectTypesEnum.WitherOrConflagrate);
       }
-
-      var typeNames:string[] = [];
-      selectedCCTypes.forEach(type => {
-        typeNames.push(Helpers.getPropertyByValue(CCEffectTypesEnum, type));
-      });
-
-      data.push(Helpers.getPropertyByValue(ArmorTypesEnum , armorType) + " armor reduces : " + typeNames.join(", "));
     });
 
-    return data;
+    return selectedCCTypes;
   }
 
   public GetDamageTypesInfo():string[] {
-    var data:string[] = [];
-    data.push(Helpers.getPropertyByValue(ItemWeaponTypesEnum, ItemWeaponTypesEnum.Axe)       + " : " + Helpers.getPropertyByValue(DamageTypesEnum, DamageTypesEnum.BleedOrArmorReduction));
-    data.push(Helpers.getPropertyByValue(ItemWeaponTypesEnum, ItemWeaponTypesEnum.Bow)       + " : " + Helpers.getPropertyByValue(DamageTypesEnum, DamageTypesEnum.PoisonOrBurn));
-    data.push(Helpers.getPropertyByValue(ItemWeaponTypesEnum, ItemWeaponTypesEnum.Hammer)    + " : " + Helpers.getPropertyByValue(DamageTypesEnum, DamageTypesEnum.KnockbackOrStun));
-    data.push(Helpers.getPropertyByValue(ItemWeaponTypesEnum, ItemWeaponTypesEnum.Sword)     + " : " + Helpers.getPropertyByValue(DamageTypesEnum, DamageTypesEnum.CleaveOrAoE));
-    data.push(Helpers.getPropertyByValue(ItemWeaponTypesEnum, ItemWeaponTypesEnum.Javelin)   + " : " + Helpers.getPropertyByValue(DamageTypesEnum, DamageTypesEnum.ChainOrPierceAttack));
-    data.push(Helpers.getPropertyByValue(ItemWeaponTypesEnum, ItemWeaponTypesEnum.Wand)      + " : " + Helpers.getPropertyByValue(DamageTypesEnum, DamageTypesEnum.ProjectileOrSummon));
-    data.push(Helpers.getPropertyByValue(ItemWeaponTypesEnum, ItemWeaponTypesEnum.Staff)     + " : " + Helpers.getPropertyByValue(DamageTypesEnum, DamageTypesEnum.FreezeOrRoot));
+    var info:string[] = [];
+    var weaponTypes: ItemWeaponTypesEnum[] = [ItemWeaponTypesEnum.Axe, ItemWeaponTypesEnum.Bow, ItemWeaponTypesEnum.Hammer
+      , ItemWeaponTypesEnum.Sword, ItemWeaponTypesEnum.Javelin, ItemWeaponTypesEnum.Wand, ItemWeaponTypesEnum.Staff];
+    var damageTypes:DamageTypesEnum[] = [];
+    weaponTypes.forEach(w => {
+      var data = this.GetAppropriateDamageTypesForWeaponType(w, ItemRarityTypesEnum.Legendary);
+      var leg = data[data.length - 1];
+      var woLeg = data.splice(data.length - 1, 1);
+      var dataStr = woLeg.map(d => Helpers.getPropertyByValue(DamageTypesEnum, d)).join(", ");
+      info.push(Helpers.getPropertyByValue(ItemWeaponTypesEnum, w) + " : " + dataStr + " [" + leg + "]");
+    })
 
-    return data;
+    return info;
   }
 
   public LogAffixData(affixData:IItemAffix[], affixCategory:AffixCategoryEnum, skillData:SkillVM[]) {
@@ -318,4 +316,192 @@ export class CalculationsHelper {
       }
     });
   }
+
+  public GetAppropriateAffixesForTrigger(type:TriggerTypesEnum): IEffectAffixHolder[] {
+    var triggerAffixes:IEffectAffixHolder[] = [];
+    var physicalAttackTriggers = [
+        HitEffectTypesEnum.LifeReturn,
+        HitEffectTypesEnum.ResourceReturn,
+        HitEffectTypesEnum.ResourceSunder,
+        HitEffectTypesEnum.StaminaReturn,
+        HitEffectTypesEnum.StaminaSunder,
+        HitEffectTypesEnum.CriticalHit,
+        HitEffectTypesEnum.Knockback,
+        HitEffectTypesEnum.ReduceArmor,
+        HitEffectTypesEnum.CrushingBlow,
+        HitEffectTypesEnum.Bleed,
+        HitEffectTypesEnum.Cleave,
+        HitEffectTypesEnum.ChainOrPierce
+    ];
+
+    var ccAttackTriggers = [
+      CCEffectTypesEnum.StunOrKnockdown,
+      CCEffectTypesEnum.KnockbackOrLevitate,
+      CCEffectTypesEnum.WitherOrConflagrate,
+      CCEffectTypesEnum.BlindOrCurse,
+      CCEffectTypesEnum.FreezeOrRoot,
+      CCEffectTypesEnum.ReduceArmorOrBleed
+    ];
+
+    var spellAttackTriggers = [
+        SpellEffectTypesEnum.CastRange,
+        SpellEffectTypesEnum.AoE,
+        SpellEffectTypesEnum.DoT,
+        SpellEffectTypesEnum.Stackable,
+        SpellEffectTypesEnum.Multicast,
+        SpellEffectTypesEnum.ResourceSunder,
+        SpellEffectTypesEnum.StaminaSunder,
+        SpellEffectTypesEnum.CastSpell
+    ];
+
+    if (type == TriggerTypesEnum.HitEffectPhysical)
+        triggerAffixes = physicalAttackTriggers.map(v => { return new HitEffectAffix(new SimpleEffectAffix(), v)});
+
+    if (type == TriggerTypesEnum.HitEffectCC)
+        triggerAffixes = ccAttackTriggers.map(v => { return new CCEffectAffix(new SimpleEffectAffix(), v)});
+
+    if (type == TriggerTypesEnum.SpellEffect)
+        triggerAffixes = spellAttackTriggers.map(v => { return new SpellEffectAffix(new SimpleEffectAffix(), v)});
+
+    return triggerAffixes;
+}
+
+// // PhysicalAttack = 1,           //TriggerAffixes [1,2], 4 CCEffectTypesEnum[1,2]
+// // SpellAttack = 1,              //TA[6], CCET[5,6,8,9,10]
+// // PhysicalAoE = 2,              //TriggerAffixes [3, 6], 3 CCEffectTypesEnum[4,7]
+// // CCPhysical = 4,               //TA[3], CCET[3,4,7]
+// // Spellcast = 5,                //Cast a spell
+// public GetAppropriateEffectsForAffix(type:CCEffectAffix): IEffectAffix[] {
+//     var triggerAffixes:IEffectAffix[] = [];
+
+//     // Stun = 1,         // Curse = 6,
+//     // Knockback = 2,    // Root = 7,  
+//     // Burn = 3,         // Freeze = 8, 
+//     // Wither = 4,       // Levitate = 9,        // Causes 50% projectile damage suffered 
+//     // Blind = 5,        // ReduceArmor = 10
+//     var physicalAttackTriggerTypes:IEffectAffix[] = [
+//       new HitEffectAffix(
+//         CCEffectTypesEnum.Stun,
+//         CCEffectTypesEnum.Knockback,
+//         CCEffectTypesEnum.Burn,
+//         CCEffectTypesEnum.Wither,
+
+//     ];
+
+//     var physicalCCTriggers:CCEffectTypesEnum[] = [
+//         CCEffectTypesEnum.Stun,
+//         CCEffectTypesEnum.Blind
+//     ];
+
+//     var spellAttackTriggers:CCEffectTypesEnum[] = [
+//         CCEffectTypesEnum.Burn,
+//         CCEffectTypesEnum.Wither,
+//         CCEffectTypesEnum.Curse,
+//         CCEffectTypesEnum.Root,
+//         CCEffectTypesEnum.Freeze
+//     ];
+
+//     // PhysicalAoE
+//     var physicalAoETriggers:CCEffectTypesEnum[] = [
+//         CCEffectTypesEnum.Knockback,
+//     ];
+
+//     // if (type == TriggerAffixTypesEnum.PhysicalAttack)
+//     //     triggerAffixes = physicalAttackTriggers;
+
+//     // if (type == TriggerAffixTypesEnum.PhysicalCC)
+//     //     triggerAffixes = physicalCCTriggers;
+
+//     // if (type == TriggerAffixTypesEnum.SpellDebuff)
+//     //     triggerAffixes = spellAttackTriggers;
+
+//     // if (type == TriggerAffixTypesEnum.PhysicalAoE)
+//     //     triggerAffixes = physicalAoETriggers;
+        
+//     return triggerAffixes;
+//   }
+
+  public GetAppropriateDamageTypesForWeaponType(weapon:ItemWeaponTypesEnum, rarity:ItemRarityTypesEnum):DamageTypesEnum[] {
+    // var physicalWeapons = [ItemWeaponTypesEnum.Axe, ItemWeaponTypesEnum.Hammer, ItemWeaponTypesEnum.Sword, ItemWeaponTypesEnum.Javelin];
+    // var bludgeonWeapons = [ItemWeaponTypesEnum.Hammer, ItemWeaponTypesEnum.Staff];
+    // var chainPierceWeapons = [ItemWeaponTypesEnum.Bow, ItemWeaponTypesEnum.Javelin, ItemWeaponTypesEnum.Sword];
+    // var spellWeapons = [ItemWeaponTypesEnum.Bow, ItemWeaponTypesEnum.Wand, ItemWeaponTypesEnum.Staff];
+    
+    var damageTypes:DamageTypesEnum[] = [];
+    if (weapon == ItemWeaponTypesEnum.Axe) {
+      damageTypes = [DamageTypesEnum.PhysicalOrCC, DamageTypesEnum.CleaveOrAoE];
+      if (rarity == ItemRarityTypesEnum.Legendary)
+        damageTypes.push(DamageTypesEnum.TickOrCurse)
+    }
+
+    if (weapon == ItemWeaponTypesEnum.Bow) {
+      damageTypes = [DamageTypesEnum.ChainOrProjectile, DamageTypesEnum.TickOrCurse];
+      if (rarity == ItemRarityTypesEnum.Legendary)
+        damageTypes.push(DamageTypesEnum.TrapOrSummon)
+    }
+
+    if (weapon == ItemWeaponTypesEnum.Hammer) {
+      damageTypes = [DamageTypesEnum.PhysicalOrCC, DamageTypesEnum.TickOrCurse];
+      if (rarity == ItemRarityTypesEnum.Legendary)
+        damageTypes.push(DamageTypesEnum.CleaveOrAoE)
+    }
+
+    if (weapon == ItemWeaponTypesEnum.Sword) {
+      damageTypes = [DamageTypesEnum.PhysicalOrCC, DamageTypesEnum.TickOrCurse, DamageTypesEnum.CleaveOrAoE];
+      if (rarity == ItemRarityTypesEnum.Legendary)
+        damageTypes.push(DamageTypesEnum.TrapOrSummon);
+    }
+
+    if (weapon == ItemWeaponTypesEnum.Javelin) {
+      damageTypes = [DamageTypesEnum.ChainOrProjectile, DamageTypesEnum.CleaveOrAoE];
+      if (rarity == ItemRarityTypesEnum.Legendary)
+        damageTypes.push(DamageTypesEnum.CleaveOrAoE);
+    }
+    if (weapon == ItemWeaponTypesEnum.Wand) {
+      damageTypes = [DamageTypesEnum.ChainOrProjectile, DamageTypesEnum.TickOrCurse];
+      if (rarity == ItemRarityTypesEnum.Legendary)
+        damageTypes.push(DamageTypesEnum.TrapOrSummon);
+    }
+    if (weapon == ItemWeaponTypesEnum.Staff) {
+      damageTypes = [DamageTypesEnum.CleaveOrAoE, DamageTypesEnum.TickOrCurse];
+      if (rarity == ItemRarityTypesEnum.Legendary)
+        damageTypes.push(DamageTypesEnum.PhysicalOrCC);
+    }
+
+    return damageTypes;
+  }
+
+  public GetArmorTypesInfo(armorType?:ArmorTypesEnum):string[] {
+    // Stun = 1,        Curse = 6,
+    // Knockback = 2,   Root = 7,
+    // Burn = 3,        Freeze = 8,
+    // Wither = 4,      Levitate = 9,
+    // Blind = 5,       ReduceArmor = 10
+    var typeNames = this.GetArmorTypesInfoAndForArmorType(armorType).map(cct => Helpers.getPropertyByValue(CCEffectTypesEnum , cct));
+    var data:string[] = [];
+    data.push(Helpers.getPropertyByValue(ArmorTypesEnum , armorType) + " armor reduces : " + typeNames.join(", ").replace("Or", ", "));
+    return data;
+  }
+
+  public GetAppropriateDamageTypesForCCEffect(effect:CCEffectTypesEnum):DamageTypesEnum[] {
+    var slashOrPierceCCTypes: CCEffectTypesEnum[] = [CCEffectTypesEnum.FreezeOrRoot, CCEffectTypesEnum.ReduceArmorOrBleed, CCEffectTypesEnum.StunOrKnockdown];
+    var bludgeonCCTypes: CCEffectTypesEnum[] = [CCEffectTypesEnum.ReduceArmorOrBleed, CCEffectTypesEnum.StunOrKnockdown, CCEffectTypesEnum.KnockbackOrLevitate];
+    var chainPierceCCTypes: CCEffectTypesEnum[] = [CCEffectTypesEnum.WitherOrConflagrate, CCEffectTypesEnum.BlindOrCurse, CCEffectTypesEnum.FreezeOrRoot];
+    var mysticCCTypes: CCEffectTypesEnum[] = [CCEffectTypesEnum.BlindOrCurse, CCEffectTypesEnum.WitherOrConflagrate, CCEffectTypesEnum.FreezeOrRoot];
+
+    var physicalDamageTypes = [DamageTypesEnum.PhysicalOrCC, DamageTypesEnum.TickOrCurse, DamageTypesEnum.CleaveOrAoE];
+    var bludgeonDamageTypes = [DamageTypesEnum.PhysicalOrCC, DamageTypesEnum.TrapOrSummon, DamageTypesEnum.TickOrCurse];
+    var chainPierceDamageTypes = [DamageTypesEnum.TrapOrSummon, DamageTypesEnum.CleaveOrAoE, DamageTypesEnum.ChainOrProjectile];
+    var spellDamageTypes = [DamageTypesEnum.ChainOrProjectile, DamageTypesEnum.TickOrCurse, DamageTypesEnum.TrapOrSummon];
+
+    var ccTypesArray = [slashOrPierceCCTypes, bludgeonCCTypes, chainPierceCCTypes, mysticCCTypes];
+    var damageTypes = [physicalDamageTypes, bludgeonDamageTypes, chainPierceDamageTypes, spellDamageTypes];
+
+    var selectedDamageTypes:DamageTypesEnum[] = [];
+    ccTypesArray.forEach((c, i) => {if (c.includes(effect))
+      selectedDamageTypes.concat(damageTypes[i]);
+    });
+
+    return selectedDamageTypes;
+  }  
 }

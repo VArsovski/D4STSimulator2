@@ -1,4 +1,4 @@
-import { ItemWeaponTypesEnum, DamageTypesEnum, ResistanceTypesEnum, ItemCategoriesEnum, AffixCategoryEnum } from 'src/_Enums/itemAffixEnums';
+import { ItemWeaponTypesEnum, DamageTypesEnum, ResistanceTypesEnum, AffixCategoryEnum, ItemRarityTypesEnum } from 'src/_Enums/itemAffixEnums';
 import { Helpers } from 'src/_Helpers/helpers';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 import { IItemAffixStats } from './IItemAffixStats';
@@ -29,15 +29,16 @@ export class ItemDamageCategoryStats {
 
 export class ItemDamageStats implements IItemAffixStats {
     CategoryStats: AffixCategoryEnum;
+    Amount:number;
     private AddPrimaryDamage: boolean;
     private AddEmpowerPercentage:boolean;
     WeaponType: ItemWeaponTypesEnum;
+    RarityType: ItemRarityTypesEnum;
     MinDamage: number;
     MaxDamage: number;
     DamageData:ItemDamageCategoryStats;
     private Level:number;
     private PowerLevel: number;
-    Amount:number; //Just to check whether there is data in here (from outside method)
 
     constructor(category: AffixCategoryEnum, addPrimary:boolean, addEmpower:boolean, level:number, powerLevel:number, weaponType: ItemWeaponTypesEnum, minDamage?: number, maxDamage?: number, damageData?:ItemDamageCategoryStats) {
 
@@ -45,36 +46,35 @@ export class ItemDamageStats implements IItemAffixStats {
         this.Amount = -1; // Just make sure it's not 0, (again) for outside check
         this.AddPrimaryDamage = addPrimary;
         this.AddEmpowerPercentage = addEmpower;
-        this.PowerLevel = powerLevel;
-        this.Level = level;
         this.WeaponType = weaponType;
         this.MinDamage = minDamage;
         this.MaxDamage = maxDamage;
+        this.Level = level;
+        this.PowerLevel = powerLevel;
 
         var physicalWeapons = [ItemWeaponTypesEnum.Axe, ItemWeaponTypesEnum.Hammer, ItemWeaponTypesEnum.Sword, ItemWeaponTypesEnum.Javelin];
         var bludgeonWeapons = [ItemWeaponTypesEnum.Hammer, ItemWeaponTypesEnum.Staff];
         var spellWeapons = [ItemWeaponTypesEnum.Bow, ItemWeaponTypesEnum.Wand, ItemWeaponTypesEnum.Staff];
         var chainPierceWeapons = [ItemWeaponTypesEnum.Bow, ItemWeaponTypesEnum.Javelin, ItemWeaponTypesEnum.Sword];
 
-        this.DamageData = damageData || (addPrimary ? this.GetCategoryWeaponStats(this.WeaponType) : new ItemDamageCategoryStats(Helpers.getRandom(1, 6), Helpers.getRandom(1, 6), Helpers.getRandom(3,4)));
+        this.DamageData = damageData || (addPrimary ? this.GetCategoryWeaponStats(this.WeaponType)
+                        : new ItemDamageCategoryStats(Helpers.getRandom(1, 6), Helpers.getRandom(1, 6), Helpers.getRandom(3,4)));
+
         var adequateDamageTypeEmpower = this.WeaponType == parseInt(this.DamageData.MainDamageType.toString(), 10);
         if (this.AddPrimaryDamage) {
             var primaryDamageData = this.GetBasicWeaponStats(this.WeaponType);
             this.MinDamage = primaryDamageData.MinDamage;
             this.MaxDamage = primaryDamageData.MaxDamage;
         }
-        else {
-            this.MinDamage = 0;
-            this.MaxDamage = 0;
-        }
+        else { this.MinDamage = 0; this.MaxDamage = 0; }
 
         if (this.AddEmpowerPercentage) {
             var powerFactor:number = 0;
             
-            var physicalDamageTypes = [DamageTypesEnum.Physical, DamageTypesEnum.PoisonOrBurn, DamageTypesEnum.CleaveOrAoE, DamageTypesEnum.BleedOrArmorReduction];
-            var bludgeonDamageTypes = [DamageTypesEnum.Physical, DamageTypesEnum.KnockbackOrStun, DamageTypesEnum.FreezeOrRoot];
-            var chainPierceDamageTypes = [DamageTypesEnum.PoisonOrBurn, DamageTypesEnum.ChainOrPierceAttack, DamageTypesEnum.ProjectileOrSummon];
-            var spellDamageTypes = [DamageTypesEnum.CleaveOrAoE, DamageTypesEnum.ChainOrPierceAttack, DamageTypesEnum.ProjectileOrSummon, DamageTypesEnum.FreezeOrRoot];
+            var physicalDamageTypes = [DamageTypesEnum.PhysicalOrCC, DamageTypesEnum.CleaveOrAoE, DamageTypesEnum.ChainOrProjectile];
+            var bludgeonDamageTypes = [DamageTypesEnum.PhysicalOrCC, DamageTypesEnum.TrapOrSummon];
+            var chainPierceDamageTypes = [DamageTypesEnum.TrapOrSummon, DamageTypesEnum.ChainOrProjectile];
+            var spellDamageTypes = [DamageTypesEnum.ChainOrProjectile, DamageTypesEnum.TrapOrSummon, DamageTypesEnum.PhysicalOrCC];
             
             powerFactor += physicalWeapons.includes(this.WeaponType) ? physicalDamageTypes.includes(this.DamageData.MainDamageType) ? 3 : 1 : 0;
             powerFactor += bludgeonWeapons.includes(this.WeaponType) ? bludgeonDamageTypes.includes(this.DamageData.MainDamageType) || spellDamageTypes.includes(this.DamageData.MainDamageType) ? 2 : 2 : 0;
@@ -139,7 +139,7 @@ export class ItemDamageStats implements IItemAffixStats {
     }
 
     private GetCategoryWeaponStats(type?:ItemWeaponTypesEnum) {
-        var appropriateDamageTypes = this.GetAppropriateDamageCategories(this.WeaponType);
+        var appropriateDamageTypes = new CalculationsHelper().GetAppropriateDamageTypesForWeaponType(this.WeaponType, this.RarityType);
         var selectedDamageType = appropriateDamageTypes[Helpers.getRandom(0, appropriateDamageTypes.length - 1)];
         var damageElements = this.GetAppropriateDamageElements(selectedDamageType);
         var selectedElement = damageElements[Helpers.getRandom(0, damageElements.length - 1)];
@@ -161,100 +161,20 @@ export class ItemDamageStats implements IItemAffixStats {
         return primaryStr ? primaryStr + (empowerTypeStr ? ", " + empowerTypeStr : "") : empowerTypeStr;
     }
 
-    private GetAppropriateDamageCategories(type: ItemWeaponTypesEnum):DamageTypesEnum[] {
-        var str:string = "";
-        var appropriateDamageTypes:DamageTypesEnum[] = [];
+    public GetAppropriateDamageElements(type: DamageTypesEnum):ResistanceTypesEnum[] {
+        var appropriateDamageTypes:ResistanceTypesEnum[] = [ResistanceTypesEnum.Physical, ResistanceTypesEnum.Fire, ResistanceTypesEnum.Cold
+        , ResistanceTypesEnum.Lightning, ResistanceTypesEnum.Poison];
 
-        // Same as sword.. (For now), perhaps differentiate the bonuses, Sword more Cleave, Axe more Bleed
-        if (type == ItemWeaponTypesEnum.Axe) {
-            appropriateDamageTypes.push(DamageTypesEnum.BleedOrArmorReduction);
-            appropriateDamageTypes.push(DamageTypesEnum.CleaveOrAoE);
-            appropriateDamageTypes.push(DamageTypesEnum.Physical);
-        }
-
-        if (type == ItemWeaponTypesEnum.Bow) {
-            appropriateDamageTypes.push(DamageTypesEnum.PoisonOrBurn);
-            appropriateDamageTypes.push(DamageTypesEnum.ChainOrPierceAttack);
-            appropriateDamageTypes.push(DamageTypesEnum.FreezeOrRoot);
-        }
-
-        if (type == ItemWeaponTypesEnum.Hammer) {
-            appropriateDamageTypes.push(DamageTypesEnum.KnockbackOrStun);
-            appropriateDamageTypes.push(DamageTypesEnum.FreezeOrRoot);
-            appropriateDamageTypes.push(DamageTypesEnum.Physical);
-        }
-
-        if (type == ItemWeaponTypesEnum.Sword) {
-            appropriateDamageTypes.push(DamageTypesEnum.Physical);
-            appropriateDamageTypes.push(DamageTypesEnum.CleaveOrAoE);
-            appropriateDamageTypes.push(DamageTypesEnum.BleedOrArmorReduction);
-        }
-
-        if (type == ItemWeaponTypesEnum.Javelin) {
-            appropriateDamageTypes.push(DamageTypesEnum.ChainOrPierceAttack);
-            appropriateDamageTypes.push(DamageTypesEnum.Physical);
-            appropriateDamageTypes.push(DamageTypesEnum.BleedOrArmorReduction);
-        }
-
-        if (type == ItemWeaponTypesEnum.Wand) {
-            appropriateDamageTypes.push(DamageTypesEnum.ProjectileOrSummon);
-            appropriateDamageTypes.push(DamageTypesEnum.FreezeOrRoot);
-            appropriateDamageTypes.push(DamageTypesEnum.PoisonOrBurn);
-            appropriateDamageTypes.push(DamageTypesEnum.ChainOrPierceAttack);
-        }
-
-        if (type == ItemWeaponTypesEnum.Staff) {
-            appropriateDamageTypes.push(DamageTypesEnum.FreezeOrRoot);
-            appropriateDamageTypes.push(DamageTypesEnum.KnockbackOrStun);
-            appropriateDamageTypes.push(DamageTypesEnum.PoisonOrBurn);
-        }
-
-        return appropriateDamageTypes;
-    }
-
-    private GetAppropriateDamageElements(type: DamageTypesEnum):ResistanceTypesEnum[] {
-        var str:string = "";
-        var appropriateDamageTypes:ResistanceTypesEnum[] = [];
-
-        if (type == DamageTypesEnum.BleedOrArmorReduction || type == DamageTypesEnum.CleaveOrAoE) {
-            appropriateDamageTypes.push(ResistanceTypesEnum.Physical);
-            appropriateDamageTypes.push(ResistanceTypesEnum.Lightning);
-            appropriateDamageTypes.push(ResistanceTypesEnum.Fire);
-        }
-
-        if (type == DamageTypesEnum.PoisonOrBurn) {
-            appropriateDamageTypes.push(ResistanceTypesEnum.Poison);
-            appropriateDamageTypes.push(ResistanceTypesEnum.Fire);
-            appropriateDamageTypes.push(ResistanceTypesEnum.Physical);
-        }
-
-        if (type == DamageTypesEnum.KnockbackOrStun) {
-            appropriateDamageTypes.push(ResistanceTypesEnum.Cold);
-            appropriateDamageTypes.push(ResistanceTypesEnum.Lightning);
-            appropriateDamageTypes.push(ResistanceTypesEnum.Physical);
-        }
-
-        if (type == DamageTypesEnum.ChainOrPierceAttack) {
-            appropriateDamageTypes.push(ResistanceTypesEnum.Physical);
-            appropriateDamageTypes.push(ResistanceTypesEnum.Lightning);
-            appropriateDamageTypes.push(ResistanceTypesEnum.Poison);
-        }
-
-        if (type == DamageTypesEnum.ProjectileOrSummon) {
-            appropriateDamageTypes.push(ResistanceTypesEnum.Fire);
-            appropriateDamageTypes.push(ResistanceTypesEnum.Lightning);
-            appropriateDamageTypes.push(ResistanceTypesEnum.Cold);
-        }
-
-        if (type == DamageTypesEnum.FreezeOrRoot) {
-            appropriateDamageTypes.push(ResistanceTypesEnum.Cold);
-            appropriateDamageTypes.push(ResistanceTypesEnum.Poison);
-            appropriateDamageTypes.push(ResistanceTypesEnum.Physical);
-        }
-
-        if (type == DamageTypesEnum.Physical) {
-            appropriateDamageTypes.push(ResistanceTypesEnum.Physical);
-        }
+        if (type == DamageTypesEnum.PhysicalOrCC) { }
+            appropriateDamageTypes = appropriateDamageTypes.filter(c => c != ResistanceTypesEnum.Poison);
+        if (type == DamageTypesEnum.CleaveOrAoE)
+            appropriateDamageTypes = appropriateDamageTypes.filter(c => c != ResistanceTypesEnum.Lightning)
+        if (type == DamageTypesEnum.ChainOrProjectile)
+            appropriateDamageTypes = appropriateDamageTypes.filter(c => c != ResistanceTypesEnum.Cold && c != ResistanceTypesEnum.Fire)
+        if (type == DamageTypesEnum.TrapOrSummon)
+            appropriateDamageTypes = appropriateDamageTypes.filter(c => c != ResistanceTypesEnum.Physical && c != ResistanceTypesEnum.Fire)
+        if (type == DamageTypesEnum.TickOrCurse)
+            appropriateDamageTypes = appropriateDamageTypes.filter(c => c == ResistanceTypesEnum.Fire || c == ResistanceTypesEnum.Poison);
 
         return appropriateDamageTypes;
     }

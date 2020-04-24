@@ -32,17 +32,17 @@
       <div class="col">
         <div class="row" *ngIf="model.data.angelicAffix.powerData.SelectedAffix">
           <!-- Angelic: -->
-          <div class="col-1"><a tooltip="+1" class="sizeSmall ornament yellowGlow blueGlowHover" (mouseover)="PreviewEmpower(1)" (mouseout)="CancelPreview(1)" (click)="EmpowerAffix(1,1)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a></div>
+          <div class="col-1"><a class="sizeSmall ornament yellowGlow blueGlowHover" (mouseover)="PreviewEmpower(1)" (mouseout)="CancelPreview(1)" (click)="EmpowerAffix(1,1)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a></div>
           <div class="col"><label class="clearfix">{{ model.data.angelicAffix.powerData.Description }}</label></div>
         </div>
         <div class="row" *ngIf="model.data.demonicAffix.powerData.SelectedAffix">
           <!-- Demonic: -->
-          <div class="col-1"><a tooltip="+1" class="sizeSmall ornament redGlow blueGlowHover" (mouseover)="PreviewEmpower(2)" (mouseout)="CancelPreview(2)" (click)="EmpowerAffix(2,1)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a></div>
+          <div class="col-1"><a class="sizeSmall ornament redGlow blueGlowHover" (mouseover)="PreviewEmpower(2)" (mouseout)="CancelPreview(2)" (click)="EmpowerAffix(2,1)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a></div>
           <div class="col"><label class="clearfix">{{ model.data.demonicAffix.powerData.Description }}</label></div>
         </div>
         <div class="row" *ngIf="model.data.ancestralAffix.powerData.SelectedAffix">
           <!-- Ancestral: -->
-          <div class="col-1"><a tooltip="+1" class="sizeSmall ornament purpleGlow blueGlowHover" (mouseover)="PreviewEmpower(3)" (mouseout)="CancelPreview(3)" (click)="EmpowerAffix(3,1)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a></div>
+          <div class="col-1"><a class="sizeSmall ornament purpleGlow blueGlowHover" (mouseover)="PreviewEmpower(3)" (mouseout)="CancelPreview(3)" (click)="EmpowerAffix(3,1)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a></div>
           <div class="col"><label class="clearfix">{{ model.data.ancestralAffix.powerData.Description }}</label></div>
         </div>
       </div>

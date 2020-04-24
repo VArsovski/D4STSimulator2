@@ -1,4 +1,4 @@
-import { ItemCategoriesEnum, ItemRarityTypesEnum, ItemAffixTypeEnum, AffixCategoryEnum, ResistanceTypesEnum, ItemWeaponTypesEnum, DamageTypesEnum, BasicStatTypesEnum } from 'src/_Enums/itemAffixEnums';
+import { ItemCategoriesEnum, ItemRarityTypesEnum, ItemAffixTypeEnum, AffixCategoryEnum, ResistanceTypesEnum, ItemWeaponTypesEnum, DamageTypesEnum, BasicStatTypesEnum, SecondaryStatTypesEnum } from 'src/_Enums/itemAffixEnums';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 import { ItemAffixOutput } from '../Details/ItemAffixOutput';
 import { LegendaryAffixHelper } from './LegendaryAffixHelper';
@@ -14,9 +14,11 @@ import { SkillVM } from 'src/Models/SkillVM';
 import { ItemAffix } from '../ItemAffix';
 import { SecondaryTriggerAffixHelper } from './SecondaryAffixCategoryHelper';
 import { ItemTriggerStats } from '../Details/ItemTriggerStats';
-import { SecondaryTriggerStatsEnum } from 'src/_Enums/triggerAffixEnums';
+import { TriggerTypesEnum } from 'src/_Enums/triggerAffixEnums';
 import { IItemAffix } from '../IItemAffix';
 import { ItemDamageStats } from '../Details/ItemDamageStats';
+import { ConditionalTriggerAffixHelper } from './ConditionalTriggerAffixHelper';
+import { SecondaryStatAffixHelper } from './SecondaryStatAffixHelper';
 
 export class ItemAffixEnumsHelper {
     skillPool:SkillVM[]
@@ -24,20 +26,21 @@ export class ItemAffixEnumsHelper {
         this.skillPool = skillPool || [];
     }
 
-    public GetRandomTypeByIndex(itemType:ItemCategoriesEnum, level: number, powerLevel:number, rarity:ItemRarityTypesEnum, affix:ItemAffix, selectedSkill:SkillVM):ItemAffixOutput {
+    public GetRandomTypeByIndex(itemType:ItemCategoriesEnum, level: number, powerLevel:number, rarity:ItemRarityTypesEnum, affix:ItemAffix, selectedSkill:SkillVM, isPrimary:boolean):ItemAffixOutput {
 
         // 1, 4, 6, [L14]
         var basicStatAffixesCategory = [AffixCategoryEnum.IncreaseBasicStat
             , AffixCategoryEnum.IncreaseSkillStat
-            , AffixCategoryEnum.ConditionalProcBasicAffix
+            // TODO: This was causing too much BasicAffixes be ConditionalTriggers tbh
+            // , AffixCategoryEnum.ConditionalProcBasicAffix
         ];
 
         if (rarity == ItemRarityTypesEnum.Legendary)
             basicStatAffixesCategory.push(AffixCategoryEnum.AlterBasicAffixStat);
 
-        var damageAffixesCategory = [AffixCategoryEnum.IncreaseTriggerStat
-            , AffixCategoryEnum.ExtraDamageEffect
+        var damageAffixesCategory = [AffixCategoryEnum.PrimaryDamage
             , AffixCategoryEnum.IncreaseDamage
+            , AffixCategoryEnum.ExtraDamageEffect
         ];
 
         // 2, [W3], [J5], 7, 8, 10
@@ -86,6 +89,13 @@ export class ItemAffixEnumsHelper {
             AffixCategoryEnum.ExtraDamageEffect
         ];
 
+        var secondaryStatAffixesCategory = [AffixCategoryEnum.ConditionalProcBasicAffix,
+            AffixCategoryEnum.EmpowerProcEffectAffixStat,
+            AffixCategoryEnum.EmpowerProcSkillAffixStat,
+            AffixCategoryEnum.EmpowerProcTriggerAffixStat,
+            AffixCategoryEnum.ConditionalSkillTriggerAffix
+        ]
+
         var affixOutput:ItemAffixOutput = new ItemAffixOutput(affix.AffixCategory, null);
         var affixType = affix.AffixType;
         var availableSkills:SkillVM[] = [];
@@ -95,6 +105,7 @@ export class ItemAffixEnumsHelper {
         var armorCategory = basicStatAffixesCategory[Helpers.getRandom(0, basicStatAffixesCategory.length-1)];
         var powerUpCategory = AffixCategoryEnum.IncreaseSkillStat;
         var basicCategory = basicStatAffixesCategory[Helpers.getRandom(0, basicStatAffixesCategory.length-1)];
+        var secondaryStatCategory = secondaryStatAffixesCategory[Helpers.getRandom(0, secondaryStatAffixesCategory.length-1)];
         var ofensiveOrDefensiveCategory = defensiveOrOfensiveStatAffixesCategory[Helpers.getRandom(0, defensiveOrOfensiveStatAffixesCategory.length-1)];
         var triggerCategory = triggerAffixesCategory[Helpers.getRandom(0, triggerAffixesCategory.length-1)];
         var secondaryCategory = secondaryTriggerCategory[Helpers.getRandom(0, secondaryTriggerCategory.length-1)];
@@ -104,6 +115,7 @@ export class ItemAffixEnumsHelper {
         : affixType == ItemAffixTypeEnum.Armor ? armorCategory
         : affixType == ItemAffixTypeEnum.PowerUpSkill ? powerUpCategory
         : affixType == ItemAffixTypeEnum.BasicStat ? basicCategory
+        : affixType == ItemAffixTypeEnum.SecondaryStat ? secondaryStatCategory
         : affixType == (ItemAffixTypeEnum.Offensive || ItemAffixTypeEnum.Defensive) ? ofensiveOrDefensiveCategory
         : affixType == ItemAffixTypeEnum.TriggerEffect ? triggerCategory
         : affixType == ItemAffixTypeEnum.SecondaryTrigger ? secondaryCategory
@@ -111,28 +123,15 @@ export class ItemAffixEnumsHelper {
 
         affix.AffixCategory = selectedCategory;
 
-        // TODO: Check if some of the following appear not appropriate
-        // IncreaseBasicStat (BasicStat),
-        // ExtraDamageEffect (Damage),
-        // IncreaseTriggerStat (Damage),
-        // IncreaseSkillStat (BasicStat),
-        // ConditionalProcTriggerAffix (Defensive),
-        // ConditionalProcCastAffix (BasicStat),
-        // ConditionalProcBasicAffix (BasicStat)
-        // AlterBasicAffixStat (BasicStat)
-        
-        // ExtraDamageEffect (Damage),
-        // IncreaseDamage (Damage),
-        // IncreaseTriggerStat (Damage),
         if (affixType == ItemAffixTypeEnum.Damage || affix.AffixCategory == AffixCategoryEnum.IncreaseDamage)
-            affixOutput = this.GetDamageAffixFromCategoryStats(level, powerLevel, affixType, itemType, affix);
+            affixOutput = this.GetDamageAffixFromCategoryStats(level, powerLevel, affixType, itemType, affix, isPrimary);
         if (affixType == ItemAffixTypeEnum.Armor)
-            affixOutput = this.GetArmorAffixFromCategoryStats(level, powerLevel, affixType, itemType, affix);
+            affixOutput = this.GetArmorAffixFromCategoryStats(level, powerLevel, affixType, itemType, affix, isPrimary);
 
         if (affixType == ItemAffixTypeEnum.PowerUpSkill)
             affixOutput = this.GetSkillAffixFromCategoryStats(level, powerLevel, affixType, itemType, affix, selectedSkill);
         else if (affixType == ItemAffixTypeEnum.BasicStat)
-            affixOutput = this.GetBasicAffixFromCategoryStats(level, powerLevel, affixType, itemType, affix, selectedSkill);
+            affixOutput = this.GetBasicAffixFromCategoryStats(level, powerLevel, Helpers.getRandom(1, 9), affixType, itemType, affix, selectedSkill);
 
         if (affixType == ItemAffixTypeEnum.Offensive)
             affixOutput = new OfensiveAffixHelper().GetByIndex(ofensiveOrDefensiveCategory, level, powerLevel, Helpers.getRandom(1, 8));
@@ -140,64 +139,82 @@ export class ItemAffixEnumsHelper {
             affixOutput = new DefensiveAffixHelper().GetByIndex(ofensiveOrDefensiveCategory, level, powerLevel, Helpers.getRandom(1, 8));
 
         if (affixType == ItemAffixTypeEnum.TriggerEffect)
-            affixOutput = this.GetTriggrAffixFromCategoryStats(level, powerLevel, affixType, itemType, affix, selectedSkill);
-        if (affixType == ItemAffixTypeEnum.SecondaryTrigger)
-            affixOutput = this.GetSecondaryTriggrAffixFromCategoryStats(level, powerLevel, affixType, itemType, affix, selectedSkill);
+            affixOutput = this.GetTriggerAffixFromCategoryStats(level, powerLevel, affixType, itemType, affix, selectedSkill);
+        if (affixType == ItemAffixTypeEnum.SecondaryTrigger) {
+            affixOutput = this.GetSecondaryTriggerAffixFromCategoryStats(level, powerLevel, affixType, itemType, affix, selectedSkill);
+        }
+
+        if (selectedCategory == AffixCategoryEnum.ExtraDamageEffect) {
+            // 1-4 (instead of 1-5) cause we don't want to empower specific skill usage with an elemental damage, very specific usage
+            var amount = Helpers.getRandom(3, 4);
+            var secondaryEffectsPowerLevel = powerLevel + Helpers.getRandom(2, 4);
+            var triggerType = Helpers.getRandom(1, 2);
+            var triggerSubtype = this.GetTriggerAffixTypeFromStats(triggerType);
+            var triggerStat = new TriggerAffixHelper().GetByIndex(triggerCategory, level, secondaryEffectsPowerLevel, amount, 0, triggerType, triggerSubtype, availableSkills[Helpers.getRandom(0, availableSkills.length -1)]);
+            var descr = triggerStat.AffixData.GetDescription();
+            if (descr.indexOf("null") != -1) {
+                debugger;
+            }
+
+            affixOutput = triggerStat;
+        }
+
+        if (secondaryStatAffixesCategory.includes(selectedCategory)) {
+            // Non-Legendary Armor doesn't get ofensive, and nonL weapon doesn't get defensive affixes [other than Resistance]
+            var addOfensive = itemType != ItemCategoriesEnum.Armor && rarity != ItemRarityTypesEnum.Legendary;
+            var addDefensive = itemType != ItemCategoriesEnum.Weapon && rarity != ItemRarityTypesEnum.Legendary;
+            var minStat = addDefensive ? 1 : 3;           var maxStat = addOfensive ? 6 : 4;
+            // Resistance = 1,              // EmpowerTrapsAndSummons = 4,
+            // RedirectDamage = 2,          // DamageTakenReduced = 5,
+            // IncreaseStatSunder = 3,      // CCReduction = 6
+            var selected = Helpers.getRandom(addOfensive ? 1 : 3, addDefensive ? 6 : 4);
+            if (itemType == ItemCategoriesEnum.Weapon && rarity == ItemRarityTypesEnum.Legendary)
+                if (Helpers.getRandom(1, 100) % 4 == 0) selected = 1;
+            affixOutput = this.GetSecondaryAffixFromCategoryStats(level, powerLevel, selected, itemType, affix);
+        }
+
+        var conditionalBasicAffixTypes:AffixCategoryEnum[] = [
+            AffixCategoryEnum.ConditionalProcBasicAffix,
+            AffixCategoryEnum.ConditionalSkillTriggerAffix,
+        ];
+
+        if (conditionalBasicAffixTypes.includes(affixOutput.CategoryStat))
+            affixOutput = this.GetConditionalBasicAffixFromCategoryStats(level, powerLevel, affixType, itemType, affix, selectedSkill);
+
+        var otherAffixTypes:AffixCategoryEnum[] = [
+            AffixCategoryEnum.ConditionalProcCastAffix,
+            AffixCategoryEnum.ConditionalProcEffectAffix,
+            AffixCategoryEnum.ConditionalProcTriggerAffix,
+        ];
+
+        if (otherAffixTypes.includes(affixOutput.CategoryStat))
+            affixOutput = this.GetSecondaryTriggerAffixFromCategoryStats(level, powerLevel, affixType, itemType, affix, selectedSkill);
 
         if (affixType == ItemAffixTypeEnum.Legendary)
             affixOutput = new LegendaryAffixHelper().GetByIndex(legendaryCategory, level, powerLevel, Helpers.getRandom(1, 12));//.legendaryStat;
 
-        var affixIsEmpty = !affixOutput.AffixData;
-        if (affixIsEmpty) {
-            debugger;
-            var amount = Helpers.getRandom(3, 4);
-            var amountSec = new CalculationsHelper().getSecondaryTriggerStatForLevel(Helpers.getRandom(2, 3), level, powerLevel);
-            var secondaryEffectsPowerLevel = powerLevel + Helpers.getRandom(2, 4);
-    
-            if (affix.AffixCategory == AffixCategoryEnum.IncreaseDamage)
-                affixOutput =  this.GetDamageAffixFromStats(damageCategory, level, powerLevel, Helpers.getRandom(1, 7), Helpers.getRandom(1, 5), Helpers.getRandom(3, 4), true, false);
-            if (affixOutput.CategoryStat == AffixCategoryEnum.ConditionalProcTriggerAffix) {
-                // // TODO: Gain X when X
-            }
-            if (affixOutput.CategoryStat == AffixCategoryEnum.IncreaseTriggerStat) {
-                affixOutput = new TriggerAffixHelper().GetByIndex(triggerCategory, level, secondaryEffectsPowerLevel, amount, 0, Helpers.getRandom(1, 5), availableSkills[Helpers.getRandom(0, availableSkills.length -1)]);
-                if (affixType == ItemAffixTypeEnum.Legendary) affixType = ItemAffixTypeEnum.TriggerEffect;
-            }
-            if (affixOutput.CategoryStat == AffixCategoryEnum.ExtraDamageEffect) {
-                // 1-4 (instead of 1-5) cause we don't want to empower specific skill usage with an elemental damage, very specific usage
-                var triggerStat = new TriggerAffixHelper().GetByIndex(triggerCategory, level, secondaryEffectsPowerLevel, amount, 0, Helpers.getRandom(1, 4), availableSkills[Helpers.getRandom(0, availableSkills.length -1)]);
-                affixOutput = new SecondaryTriggerAffixHelper().GetByIndex(secondaryCategory, level, secondaryEffectsPowerLevel, amountSec, 0, 0, SecondaryTriggerStatsEnum.AddElementalDamage, triggerStat.AffixData as ItemTriggerStats, Helpers.getRandom(1, 5));
-                if (affixType == ItemAffixTypeEnum.Legendary) affixType = ItemAffixTypeEnum.SecondaryTrigger;
-            }
-        }
-    
         return affixOutput;
     }
-    GetSecondaryTriggrAffixFromCategoryStats(level: number, powerLevel: number, affixType: ItemAffixTypeEnum, itemType: ItemCategoriesEnum, affix: ItemAffix, selectedSkill: SkillVM): ItemAffixOutput {
-        var selectedTrigger = Helpers.getRandom(1, 4);
-        var amount = new CalculationsHelper().getTriggerStatsForLevel(Helpers.getRandom(3,4), level, powerLevel, selectedTrigger);
-        var triggerStat = new TriggerAffixHelper().GetByIndex(affix.AffixCategory, level, powerLevel, amount, 0, selectedTrigger, selectedSkill);
-        var chanceSec = new CalculationsHelper().getTriggerChanceForLevel(Helpers.getRandom(10,15), level, powerLevel);
-        var amountSec = new CalculationsHelper().getSecondaryTriggerStatForLevel(Helpers.getRandom(4, 6), level, powerLevel);
-        var duration = Helpers.getRandom(3, 5);
-        var affixOutput = new SecondaryTriggerAffixHelper().GetByIndex(affix.AffixCategory, level, powerLevel, amountSec, chanceSec, duration, selectedTrigger, triggerStat.AffixData as ItemTriggerStats);
-        return affixOutput;
-}
 
-    public GetPrimaryItemAffix(category:AffixCategoryEnum, itemType:ItemCategoriesEnum, level:number, powerLevel:number, rarity:ItemRarityTypesEnum, affix:ItemAffix):ItemAffixOutput {
+    public GetPrimaryItemAffix(category:AffixCategoryEnum, itemType:ItemCategoriesEnum, level:number, powerLevel:number, rarity:ItemRarityTypesEnum, affix:ItemAffix, isPrimary:boolean):ItemAffixOutput {
         var affixData:ItemAffixOutput = new ItemAffixOutput(null, null);
         if (affix.AffixType == ItemAffixTypeEnum.Armor)
         {
             affixData.CategoryStat = AffixCategoryEnum.PrimaryArmor;
-            affixData = new ArmorAffixHelper().GetByIndex(category, level, powerLevel, Helpers.getRandom(1, 5), Helpers.getRandom(1, 3));//.armorStat;
+            affixData = new ArmorAffixHelper().GetByIndex(category, level, powerLevel, Helpers.getRandom(1, 5), Helpers.getRandom(1, 3), isPrimary);//.armorStat;
         }
         if (affix.AffixType == ItemAffixTypeEnum.Damage)
         {
-            affixData.CategoryStat = AffixCategoryEnum.PrimaryDamage;
-            var addPrimary = itemType == ItemCategoriesEnum.Weapon && affix.AffixCategory == AffixCategoryEnum.PrimaryDamage;
-            var addEmpower = (affix.AffixType == ItemAffixTypeEnum.Damage && itemType != ItemCategoriesEnum.Weapon) || (itemType == ItemCategoriesEnum.Weapon && affix.AffixCategory == AffixCategoryEnum.PrimaryDamage);
+            affixData.CategoryStat = isPrimary ? AffixCategoryEnum.PrimaryDamage : AffixCategoryEnum.IncreaseDamage;
+            var addPrimary = isPrimary;
+            var addEmpower = (itemType == ItemCategoriesEnum.Weapon && isPrimary) || (!isPrimary && itemType != ItemCategoriesEnum.Weapon);
 
-            var damageStat = this.GetDamageAffixFromStats(category, level, powerLevel, Helpers.getRandom(1, 7), Helpers.getRandom(1, 5), ResistanceTypesEnum.Physical, addPrimary, addEmpower);
+            if (! (isPrimary || addEmpower)) {
+                addPrimary = itemType == ItemCategoriesEnum.Weapon;
+                addEmpower = itemType != ItemCategoriesEnum.Weapon;
+            }
+
+            var damageStat = this.GetDamageAffixFromStats(category, level, powerLevel, Helpers.getRandom(1, 5), Helpers.getRandom(1, 5), ResistanceTypesEnum.Physical, addPrimary, addEmpower);
             affixData = damageStat;
         }
 
@@ -206,13 +223,20 @@ export class ItemAffixEnumsHelper {
 
     //# region Private AffixOutput Creation Methods
 
-    private GetDamageAffixFromCategoryStats(level:number, powerLevel:number, affixType: ItemAffixTypeEnum, itemType: ItemCategoriesEnum, affix: IItemAffix): ItemAffixOutput {
+    private GetDamageAffixFromCategoryStats(level:number, powerLevel:number, affixType: ItemAffixTypeEnum, itemType: ItemCategoriesEnum, affix: IItemAffix, isPrimary:boolean): ItemAffixOutput {
         var affixOutput:ItemAffixOutput = new ItemAffixOutput(affix.AffixCategory, null);
 
-        var addPrimaryDamageFactor = itemType == ItemCategoriesEnum.Weapon ? 2 : itemType == ItemCategoriesEnum.Armor ? 17 : 5; // Add Primary damage more often on weapons and much less often on Armor
+        var addPrimaryDamageFactor = itemType == ItemCategoriesEnum.Weapon ? 3 : itemType == ItemCategoriesEnum.Armor ? 17 : 5; // Add Primary damage more often on weapons and much less often on Armor
         var primaryRoll = Helpers.getRandom(1, 100) % addPrimaryDamageFactor == 0;
-        var addPrimary = affix.AffixCategory == AffixCategoryEnum.PrimaryDamage || primaryRoll;
-        var addEmpower = affix.AffixCategory == AffixCategoryEnum.PrimaryDamage || !primaryRoll; // ((affixType == ItemAffixTypeEnum.Damage && itemType != ItemCategoriesEnum.Weapon) || (itemType == ItemCategoriesEnum.Weapon && affix.AffixCategory == AffixCategoryEnum.PrimaryDamage)) || !addPrimary;
+        var addPrimary = isPrimary || primaryRoll;
+        var addEmpower = isPrimary || itemType != ItemCategoriesEnum.Weapon;
+
+        if (!(addPrimary || addEmpower)) {
+            debugger;
+            addPrimary = itemType == ItemCategoriesEnum.Weapon;
+            addEmpower = itemType != ItemCategoriesEnum.Weapon;
+        }
+
         affixOutput = this.GetDamageAffixFromStats(affix.AffixCategory, level, powerLevel, Helpers.getRandom(1, 7), Helpers.getRandom(1, 5), Helpers.getRandom(1, 5), addPrimary, addEmpower);
 
         // Reduce damage if not primary by some factor
@@ -228,8 +252,8 @@ export class ItemAffixEnumsHelper {
         return affixOutput;
     }
 
-    private GetArmorAffixFromCategoryStats(level:number, powerLevel:number, affixType: ItemAffixTypeEnum, itemType: ItemCategoriesEnum, affix: IItemAffix): ItemAffixOutput {
-        var affixOutput:ItemAffixOutput = new ArmorAffixHelper().GetByIndex(affix.AffixCategory, level, powerLevel, Helpers.getRandom(1, 5), Helpers.getRandom(1, 3));
+    private GetArmorAffixFromCategoryStats(level:number, powerLevel:number, affixType: ItemAffixTypeEnum, itemType: ItemCategoriesEnum, affix: IItemAffix, isPrimary:boolean): ItemAffixOutput {
+        var affixOutput:ItemAffixOutput = new ArmorAffixHelper().GetByIndex(affix.AffixCategory, level, powerLevel, Helpers.getRandom(1, 5), Helpers.getRandom(1, 3), isPrimary);
         // If it's not the primary armor then reduce additional armor affixes by somewhat 60%
         if (affix.ItemCategory != ItemCategoriesEnum.Armor || affix.AffixCategory != AffixCategoryEnum.PrimaryArmor)
             affixOutput.AffixData.Amount = Math.round((Helpers.getRandom(30, 45) + level/8)/100 * affixOutput.AffixData.Amount);
@@ -237,7 +261,7 @@ export class ItemAffixEnumsHelper {
         return affixOutput;
     }
 
-    GetSkillAffixFromCategoryStats(level: number, powerLevel: number, affixType: ItemAffixTypeEnum, itemType: ItemCategoriesEnum, affix: ItemAffix, selectedSkill:SkillVM): ItemAffixOutput {
+    private GetSkillAffixFromCategoryStats(level: number, powerLevel: number, affixType: ItemAffixTypeEnum, itemType: ItemCategoriesEnum, affix: ItemAffix, selectedSkill:SkillVM): ItemAffixOutput {
         var affixOutput:ItemAffixOutput = new BasicAffixHelper().GetByIndex(affix.AffixCategory, level, powerLevel, BasicStatTypesEnum.SkillEmpower, Helpers.getRandom(1, 3), selectedSkill);
         var basicAffix = new ItemBasicStats(affix.AffixCategory, level, powerLevel);
         basicAffix.SetSkill(level, selectedSkill);
@@ -245,36 +269,100 @@ export class ItemAffixEnumsHelper {
         return affixOutput;
     }
 
-    GetBasicAffixFromCategoryStats(level: number, powerLevel: number, affixType: ItemAffixTypeEnum, itemType: ItemCategoriesEnum, affix: ItemAffix, selectedSkill: SkillVM): ItemAffixOutput {
-        // PowerStats= 1,       // StatPercentage=4,           // SkillEmpower=7,
-        // StatNumbers=2,       // StatPercentageRegen=5,      // Socket=8
-        // StatRegen=3,         // Resistance=6,
-        var selectedBasicStatType = Helpers.getRandom(1, 7);
-
+    private GetBasicAffixFromCategoryStats(level: number, powerLevel: number, basicAffixType:BasicStatTypesEnum, affixType: ItemAffixTypeEnum, itemType: ItemCategoriesEnum, affix: ItemAffix, selectedSkill: SkillVM): ItemAffixOutput {
         // Starting lvl1 numbers
-        var amount = selectedBasicStatType == BasicStatTypesEnum.Resistance ? Helpers.getRandom(5,6) // Starting Resistance amount
-        : [BasicStatTypesEnum.PowerStats, BasicStatTypesEnum.Socket].includes(selectedBasicStatType) ? Helpers.getRandom(1, 2) // Socket, Powers
-        : ![BasicStatTypesEnum.StatPercentage, BasicStatTypesEnum.StatPercentageRegen].includes(selectedBasicStatType) ? Helpers.getRandom(6, 10) // Percentage, PercentageRegen
-        : selectedBasicStatType == BasicStatTypesEnum.StatNumbers ? Helpers.getRandom(3, 4) : Helpers.getRandom(1, 2); // ? BasicStatAmount : Regen/Sec
+        var amount = basicAffixType == BasicStatTypesEnum.Resistance ? Helpers.getRandom(5,6) // Starting Resistance amount
+        : [BasicStatTypesEnum.PowerStats, BasicStatTypesEnum.Socket].includes(basicAffixType) ? Helpers.getRandom(1, 2) // Socket, Powers
+        : ![BasicStatTypesEnum.StatPercentage, BasicStatTypesEnum.StatPercentageRegen].includes(basicAffixType) ? Helpers.getRandom(6, 10) // Percentage, PercentageRegen
+        : basicAffixType == BasicStatTypesEnum.StatNumbers ? Helpers.getRandom(3, 4) // StatNumbers
+        : Helpers.getRandom(1, 2); // ? BasicStatAmount : Regen/Sec/StatReturn
 
-        var affixOutput:ItemAffixOutput = new BasicAffixHelper().GetByIndex(affix.AffixCategory, level, powerLevel, selectedBasicStatType, amount, selectedSkill);
-        if (selectedBasicStatType == BasicStatTypesEnum.SkillEmpower)
+        var affixOutput:ItemAffixOutput = new BasicAffixHelper().GetByIndex(affix.AffixCategory, level, powerLevel, basicAffixType, amount, selectedSkill);
+        if (basicAffixType == BasicStatTypesEnum.SkillEmpower)
             (affixOutput.AffixData as ItemBasicStats).SetSkill(level, selectedSkill);
 
         return affixOutput;
     }
 
-    GetTriggrAffixFromCategoryStats(level: number, powerLevel: number, affixType: ItemAffixTypeEnum, itemType: ItemCategoriesEnum, affix: ItemAffix, selectedSkill:SkillVM): ItemAffixOutput {
-        var selectedTrigger = Helpers.getRandom(1, 5);
+    GetSecondaryAffixFromCategoryStats(level: number, powerLevel: number, affixType: SecondaryStatTypesEnum, itemType: ItemCategoriesEnum, affix: ItemAffix): ItemAffixOutput {
+        // Starting lvl1 numbers
+        var amount = affixType == SecondaryStatTypesEnum.Resistance
+        // Starting Resistance amount for lvl1 as SecondaryStat [3%-5%]
+        ? Helpers.getRandom(3, 5)
+        // CCReduction, AbsorbDamageOfTypeTaken into ResourceOrStamina, Reduce DamageTaken of Type
+        : ![SecondaryStatTypesEnum.CCReduction, SecondaryStatTypesEnum.RedirectDamage, SecondaryStatTypesEnum.DamageTakenReduced].includes(affixType) ? Helpers.getRandom(6, 10)
+        // IncreaseStatSunder, EmpowerTrapsAndSummons [12-16 %], higher %
+        : Helpers.getRandom(12, 16);
+        
+        var affixOutput:ItemAffixOutput = new SecondaryStatAffixHelper().GetByIndex(affix.AffixCategory, level, powerLevel, affixType, 0, amount);
+        return affixOutput;
+    }
+
+    private GetTriggerAffixFromCategoryStats(level: number, powerLevel: number, affixType: ItemAffixTypeEnum, itemType: ItemCategoriesEnum, affix: ItemAffix, selectedSkill:SkillVM): ItemAffixOutput {
         var chance = Helpers.getRandom(3,4);
         var amount = Helpers.getRandom(3,4);
-        var affixOutput:ItemAffixOutput = new TriggerAffixHelper().GetByIndex(affix.AffixCategory, level, powerLevel, amount, chance, Helpers.getRandom(1, 5), selectedSkill);
+        var triggerType = Helpers.getRandom(1, 3);
+        var triggerSubtype = this.GetTriggerAffixTypeFromStats(triggerType);
+        var affixOutput:ItemAffixOutput = new TriggerAffixHelper().GetByIndex(affix.AffixCategory, level, powerLevel, amount, chance, triggerType, triggerSubtype, selectedSkill);
+        var descr = affixOutput.AffixData.GetDescription();
+        if (descr.indexOf("null") != -1) {
+            debugger;
+        }
+
+        return affixOutput;
+    }
+
+    private GetConditionalBasicAffixFromCategoryStats(level: number, powerLevel: number, affixType: ItemAffixTypeEnum, itemType: ItemCategoriesEnum, affix: ItemAffix, selectedSkill: SkillVM): ItemAffixOutput {
+        var basicStat = this.GetBasicAffixFromCategoryStats(level, powerLevel, Helpers.getRandom(2, 7), affixType, itemType, affix, null);
+        var basicStatsData = (basicStat.AffixData as ItemBasicStats);
+        var chanceSec = new CalculationsHelper().getTriggerChanceForLevel(Helpers.getRandom(4, 6), level, powerLevel);
+        var triggerType = Helpers.getRandom(1, 2);
+        var triggerSubtype = this.GetTriggerAffixTypeFromStats(triggerType);
+        var triggerStat = new TriggerAffixHelper().GetByIndex(affix.AffixCategory, level, powerLevel, 0, chanceSec, triggerType, triggerSubtype, selectedSkill);
+        var descr = triggerStat.AffixData.GetDescription();
+        if (descr.indexOf("null") != -1) {
+            debugger;
+        }
+
+        var durationBonus = Helpers.getRandom(4, 6) + Helpers.getRandom(-2, 1);
+        var affixOutput = new ConditionalTriggerAffixHelper().GetByIndex(affix.AffixCategory, level, powerLevel, durationBonus, basicStatsData, triggerStat.AffixData as ItemTriggerStats);
+        return affixOutput;
+    }
+
+    private GetSecondaryTriggerAffixFromCategoryStats(level: number, powerLevel: number, affixType: ItemAffixTypeEnum, itemType: ItemCategoriesEnum, affix: ItemAffix, selectedSkill: SkillVM): ItemAffixOutput {
+        var selectedTrigger = Helpers.getRandom(1, 100);
+        var amount = new CalculationsHelper().getTriggerStatsForLevel(Helpers.getRandom(3,4), level, powerLevel, selectedTrigger);
+        var triggerType = Helpers.getRandom(1, 3);
+        var triggerSubtype = this.GetTriggerAffixTypeFromStats(triggerType);
+        var triggerStat = new TriggerAffixHelper().GetByIndex(affix.AffixCategory, level, powerLevel, amount, 0, triggerType, triggerSubtype, selectedSkill);
+        var descr = triggerStat.AffixData.GetDescription();
+        if (descr.indexOf("null") != -1) {
+            debugger;
+        }
+
+        var chanceSec = new CalculationsHelper().getTriggerChanceForLevel(Helpers.getRandom(10,15), level, powerLevel);
+        var amountSec = new CalculationsHelper().getSecondaryTriggerStatForLevel(Helpers.getRandom(4, 6), level, powerLevel);
+        var duration = Helpers.getRandom(3, 5);
+        var damageType = Helpers.getRandom(1, 5);
+        var affixOutput = new SecondaryTriggerAffixHelper().GetByIndex(affix.AffixCategory, level, powerLevel, amountSec, chanceSec, duration, selectedTrigger, triggerStat.AffixData as ItemTriggerStats, damageType);
         return affixOutput;
     }
 
     private GetDamageAffixFromStats(category:AffixCategoryEnum, level:number, powerLevel: number, weaponType:ItemWeaponTypesEnum, damageType:DamageTypesEnum, damageResistanceType: ResistanceTypesEnum, addPrimary: boolean, addEmpower: boolean) {
         var amount = Helpers.getRandom(3, 4);
         return new DamageAffixHelper().GetByIndex(category, level, powerLevel, weaponType, damageType, amount, damageResistanceType, addPrimary, addEmpower);
+    }
+
+    private GetTriggerAffixTypeFromStats(triggerType:TriggerTypesEnum) {
+        var hitEffectPhysical = triggerType == TriggerTypesEnum.HitEffectPhysical ? Helpers.getRandom(1, 12) : null;
+        var hitEffectCC = triggerType == TriggerTypesEnum.HitEffectCC ? Helpers.getRandom(1, 6) : null;
+
+        // SpellEffectTypesEnum [
+        //    CastRange = 1,     DoT = 3,           Multicast = 5,          StaminaSunder = 7,
+        //    AoE = 2,           Stackable = 4,     ResourceSunder = 6,     CastSpell = 8 
+        // ]
+        var spellEffectType = triggerType == TriggerTypesEnum.SpellEffect ? Helpers.getRandom(2, 7) : null;
+        return hitEffectPhysical || hitEffectCC || spellEffectType;
     }
 
     //# endregion

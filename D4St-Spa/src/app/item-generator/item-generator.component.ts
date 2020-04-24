@@ -10,6 +10,7 @@ import { SkillVM } from 'src/Models/SkillVM';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 import { IItemAffix } from 'src/Models/ItemAffixes/IItemAffix';
 import { InventoryVM } from 'src/Models/InventoryVM';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-item-generator',
@@ -280,7 +281,7 @@ export class ItemGeneratorComponent implements OnInit {
   }
 
   protected GetArmorTypesInfo():string[] {
-    return new CalculationsHelper().GetArmorTypesInfo();
+    return new CalculationsHelper().GetArmorTypesInfo(null);
   }
   
   protected UpdateImgSrc():string {
@@ -293,7 +294,7 @@ export class ItemGeneratorComponent implements OnInit {
   }
 
   protected UpdateItemClass():string {
-    var srcEmpty = "h3 customFont";
+    var classToDisplay = "h3 customFont";
     // var selectedCategory = !this.categoryIsRandom ? this.selectedCategory : this.selectedCategoryTemp;
     // var selectedType = !this.typeIsRandom ? this.selectedType : this.selectedTypeTemp;
     var selectedRarity = !this.rarityIsRandom ? this.selectedRarity : this.selectedRarityTemp;
@@ -302,7 +303,13 @@ export class ItemGeneratorComponent implements OnInit {
     : selectedRarity.id == 1 ? "Blue"
     : selectedRarity.id == 2 ? "Red"
     : "Green";
-    return srcEmpty + raritySelected;
+
+    classToDisplay += raritySelected
+    if (environment.production) {
+      classToDisplay += "Prod";
+    }
+
+    return classToDisplay;
   }
 
   protected levelRequirement?: number;
