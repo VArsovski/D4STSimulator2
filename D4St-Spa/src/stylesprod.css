@@ -289,7 +289,7 @@ input[type=checkbox] {
     list-style: none;
     width: 650px;
     height: 100px;
-    transform: translate(122%, -960%) scale(0.97, 1);
+    transform: translate(122%, -915%) scale(0.97, 1);
 }
 
 .armorDisplayHolder li {
@@ -302,7 +302,7 @@ input[type=checkbox] {
 
 .attacksDisplayHolder {
     width: 740px;
-    transform: translate(96%, 0%);
+    transform: translate(96%, -40%);
     list-style: none;
     /* float: left; */
 }
@@ -333,7 +333,7 @@ input[type=checkbox] {
     background-image: url("_Resources/img/Inventory2.png");
     background-size: cover;
     background-repeat: no-repeat;
-    transform: translate(175%, -160%);
+    transform: translate(175%, -155%);
     opacity: 0.7;
 }
 

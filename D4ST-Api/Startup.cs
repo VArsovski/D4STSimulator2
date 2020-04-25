@@ -1,4 +1,5 @@
-using System.Collections.Generic;
+using System.Text;
+using D4ST_Api.Controllers.ExtensionsAndHandlers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -24,30 +25,20 @@ namespace d4st_api
                 opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             });
 
-            services.AddAuthentication(x =>
-            {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(x =>
-            {
-                // TODO: Config works here... ???
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(x => {
+            //     x.RequireHttpsMetadata = false;
+            //     x.SaveToken = true;
                 var key = Configuration.GetSection("Authentication:AuthenticationKey").Value;
-                x.RequireHttpsMetadata = false;
-                x.SaveToken = true;
-                x.TokenValidationParameters = new TokenValidationParameters
-                {
+                x.TokenValidationParameters = new TokenValidationParameters {
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(key)),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key)),
                     ValidateIssuer = false,
                     ValidateAudience = false
                 };
             });
 
             services.AddCors();
-            // services.AddAutoMapper();
-
-            // Injection
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -60,6 +51,9 @@ namespace d4st_api
             // app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            // TODO: Uncomment this for next phase [Adding Auth]
+            // app.UseApiKey();
             app.UseAuthentication();
             app.UseAuthorization();
 
