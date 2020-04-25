@@ -116,6 +116,7 @@ export class ItemSecondaryTriggerStatsDetail implements IItemAffixStats {
                 // TODO: This should never happen but just in case it Does.. ?
                 if (!this.BasicStat.CategoryStats)
                     this.BasicStat.SetSelectedStat();
+                // if (this.BasicStat == BasicStatTypesEnum.StatReturn)
                 str = " gain " + this.BasicStat.GetDescription();
             }
             str += " for " + this.Duration + " sec";

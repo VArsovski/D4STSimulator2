@@ -26,19 +26,19 @@ export class InventoryComponent implements OnInit, OnChanges {
   protected HeavyArmor:InventoryArmorModel;
   protected LightArmor:InventoryArmorModel;
   protected MysticArmor:InventoryArmorModel;
-  protected BleedOrArmorReduction:InventoryDamageModel;
-  protected PoisonOrBurn:InventoryDamageModel;
+
+  protected PhysicalOrCC:InventoryDamageModel;
   protected CleaveOrAoE:InventoryDamageModel;
-  protected KnockbackOrStun:InventoryDamageModel;
-  protected ChainOrPierceAttack:InventoryDamageModel;
-  protected ProjectileOrSummon:InventoryDamageModel;
-  protected FreezeOrRoot:InventoryDamageModel;
-  protected Physical:InventoryDamageModel;
+  protected ChainOrProjectile:InventoryDamageModel;
+  protected TrapOrSummon:InventoryDamageModel;
+  protected TickOrCurse:InventoryDamageModel;
+
   protected PhysicalDamage: InventoryPrimaryDamageModel;
   protected FireDamage: InventoryPrimaryDamageModel;
   protected PoisonDamage: InventoryPrimaryDamageModel;
   protected ColdDamage: InventoryPrimaryDamageModel;
   protected LightningDamage: InventoryPrimaryDamageModel;
+
   protected BootsDescription:string;
   protected ChestDescription:string;
   protected GlovesDescription:string;
@@ -71,15 +71,14 @@ export class InventoryComponent implements OnInit, OnChanges {
     this.HeavyArmor = new InventoryArmorModel();
     this.LightArmor = new InventoryArmorModel();
     this.MysticArmor = new InventoryArmorModel();
-    this.BleedOrArmorReduction = new InventoryDamageModel();
-    this.PoisonOrBurn = new InventoryDamageModel();
-    this.CleaveOrAoE = new InventoryDamageModel();
-    this.KnockbackOrStun = new InventoryDamageModel();
-    this.ChainOrPierceAttack = new InventoryDamageModel();
-    this.ProjectileOrSummon = new InventoryDamageModel();
-    this.FreezeOrRoot = new InventoryDamageModel();
-    this.Physical = new InventoryDamageModel();
     this.BasicStats = new InventoryBasicStatsModel();
+
+    this.PhysicalOrCC = new InventoryDamageModel();
+    this.TickOrCurse = new InventoryDamageModel();
+    this.CleaveOrAoE = new InventoryDamageModel();
+    this.TrapOrSummon = new InventoryDamageModel();
+    this.ChainOrProjectile = new InventoryDamageModel();
+    
     this.PhysicalDamage = new InventoryPrimaryDamageModel();
     this.FireDamage = new InventoryPrimaryDamageModel();
     this.PoisonDamage = new InventoryPrimaryDamageModel();
@@ -181,14 +180,11 @@ export class InventoryComponent implements OnInit, OnChanges {
 
     var itemTypes:string[] = ["Helm","Chest","Pants","Boots","Gloves","Amulet","Ring1","Ring2","Weapon"];
 
-    this.BleedOrArmorReduction = new InventoryDamageModel();
-    this.PoisonOrBurn = new InventoryDamageModel();
+    this.PhysicalOrCC = new InventoryDamageModel();
+    this.TickOrCurse = new InventoryDamageModel();
     this.CleaveOrAoE = new InventoryDamageModel();
-    this.KnockbackOrStun = new InventoryDamageModel();
-    this.ChainOrPierceAttack = new InventoryDamageModel();
-    this.ProjectileOrSummon = new InventoryDamageModel();
-    this.FreezeOrRoot = new InventoryDamageModel();
-    this.Physical = new InventoryDamageModel();
+    this.TrapOrSummon = new InventoryDamageModel();
+    this.ChainOrProjectile = new InventoryDamageModel();
 
     itemTypes.forEach(a => {
       var affixes:ItemAffix[] = this.inventoryData[a];
