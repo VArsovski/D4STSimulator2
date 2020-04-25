@@ -54,6 +54,7 @@ namespace d4st_api
 
             // TODO: Uncomment this for next phase [Adding Auth]
             // app.UseApiKey();
+
             app.UseAuthentication();
             app.UseAuthorization();
 
