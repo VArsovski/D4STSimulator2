@@ -5,7 +5,9 @@
 export const environment = {
   production: false,
   apiUrl:'http://localhost:5000/api/',
-  allowedHosts:['http://localhost:4200/', 'http://localhost:5000/', 'd4STSimulatorDemo/api/']
+  allowedHosts:['http://localhost:4200', 'http://localhost:5000', 'd4STSimulatorDemo/api'],
+  accessorKey:"RVpQWkxFTU9OU1FFRVpF",//"AAaa",
+  accessorHost: "d4STSimulatorDemo"
 };
 
 /*

@@ -17,10 +17,10 @@ namespace d4st_api
                 var services = scope.ServiceProvider;
                 try
                 {
-                    var context = services.GetRequiredService<DataContext>();
+                    // var context = services.GetRequiredService<DataContext>();
                     // context.Database.Migrate();
-                    Seed.SeedCharacterClasses(context);
-                    Seed.SeedSkills(context);
+                    // Seed.SeedCharacterClasses(context);
+                    // Seed.SeedSkills(context);
                 }
                 catch (Exception ex)
                 {

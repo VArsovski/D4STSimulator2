@@ -12,12 +12,13 @@ import { ISkillAffixDetail } from 'src/Models/DTOs/ISkillAffixDetail';
 import { SkillAffixDetail } from 'src/Models/DTOs/SkillAffixDetail';
 import { ISkillDTO } from 'src/Models/DTOs/ISkillDTO';
 import { SkillDTO } from 'src/Models/DTOs/SkillDTO';
-import { SkillWithImageVM } from 'src/Models/SkillWithImageVM';
-import { ISkillDamageDataDTO } from 'src/Models/DTOs/ISkillDamageDataDTO';
-import { SkillDamageDataDTO } from 'src/Models/DTOs/SkillDamageDataDTO';
 import { SkillDetailDTO } from 'src/Models/SkillDetailDTO';
-import { ISkillDetailDTO } from 'src/Models/DTOs/ISkillDetailDTO';
 import { environment } from 'src/environments/environment';
+// import { SkillWithImageVM } from 'src/Models/SkillWithImageVM';
+// import { ISkillDamageDataDTO } from 'src/Models/DTOs/ISkillDamageDataDTO';
+// import { SkillDamageDataDTO } from 'src/Models/DTOs/SkillDamageDataDTO';
+// import { ISkillDetailDTO } from 'src/Models/DTOs/ISkillDetailDTO';
+// import { FnParam } from '@angular/compiler/src/output/output_ast';
 
 @Injectable({
   providedIn: "root"
@@ -29,11 +30,11 @@ export class ApiServiceService {
   SkillsVM: SkillListVM;
   LevelUpSkillVM: ISkillDTO;
   baseUrl: string;
+  private accessorKey:string = environment.accessorKey;
 
   headerDict: any = {
     "Content-Type": "application/json",
-    "Authorization": "Bearer ASDFQWER$#@!4321",
-    // "Access-Control-Allow-Origin": "'http://localhost:4200'"
+    // "Access-Control-Allow-Origin": environment.allowedHosts[1],
     // "Access-Control-Allow-Methods": "GET, POST, PATCH, PUT, DELETE, OPTIONS",
     // "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token"
   };
@@ -50,9 +51,76 @@ export class ApiServiceService {
     this.LevelUpSkillVM = new SkillDTO();
   }
 
+  private async getAccess() {
+    return new Promise((resolve, reject) => {
+        var currentAccessKey = localStorage["currentAccessKey"];
+
+        var setFn = async () => {
+          debugger;
+          this.headerDict["Authorization"] = "Bearer " + localStorage["currentAccessKey"];
+          this.requestOptions = { headers: this.headerDict };
+        }
+
+        var getFn = async () => {
+          var model:{Name:string, Key:string} = { Name: environment.accessorHost, Key: environment.accessorKey };
+          var headerDict = this.headerDict;
+          // headerDict["Content-Length"] = JSON.stringify(model).length;
+          var requestOptions = { headers: headerDict };
+          var token = "";
+          debugger;
+          this.http.get(this.baseUrl + "Auth/InitAccess/" + "?Name=" + environment.accessorHost + "&Key=" + environment.accessorKey, requestOptions)
+          .pipe(
+            map((response: any) => {
+            debugger;
+            token = response.token;
+          }))
+          .subscribe(
+          response => {
+            debugger;
+            localStorage["currentAccessKey"] = response["token"];
+            setFn();
+            },
+          error => {
+            debugger;
+            console.log(error);
+          }
+        )};
+
+        var postFn = async () => {
+          var model:{Name:string, Key:string} = { Name: environment.accessorHost, Key: environment.accessorKey };
+          var headerDict = this.headerDict;
+          headerDict["Content-Length"] = JSON.stringify(model).length;
+          var requestOptions = { headers: headerDict };
+          var token = "";
+          debugger;
+          this.http.post(this.baseUrl + "Auth/InitAccess", model, requestOptions)
+          .pipe(
+            map((response: any) => {
+            debugger;
+            token = response.token;
+          }))
+          .subscribe(
+          response => {
+            debugger;
+            localStorage["currentAccessKey"] = response["token"];
+            setFn();
+            },
+          error => {
+            debugger;
+            console.log(error);
+          }
+        )};
+    
+        if (!currentAccessKey)
+          getFn();
+        else setFn();
+      });
+    }
+  
   getBasicStats = (): Promise<LevelUpStatsVM> => {
     return new Promise((resolve, reject) => {
       var classType = Helpers.getRandom(1, 3);
+      // this.getAccess();
       this.http.get(this.baseUrl + "MainStats/" + classType, this.requestOptions)
         .pipe(
           map((response: any) => {
@@ -76,6 +144,7 @@ export class ApiServiceService {
 
   LevelUp(model: BasicCharStats, levels: number): Promise<LevelUpStatsVM> {
     return new Promise((resolve, reject) => {
+      // this.getAccess();
       this.http
         .post(this.baseUrl + "MainStats/LevelUp?levels=" + levels, model, this.requestOptions)
         .pipe(
@@ -93,6 +162,7 @@ export class ApiServiceService {
   }
 
   PowerUp(model: BasicCharStats, powerType: any, levels: any): Promise<any> {
+    // this.getAccess();
     return new Promise((resolve, reject) => {
       // if (levels) {
       var url = this.baseUrl + 'MainStats/PowerUp?powerType=' + powerType + '&levels=' + levels;
@@ -113,6 +183,7 @@ export class ApiServiceService {
   }
 
   LevelUpSkill(model: ISkillDTO): Promise<ISkillDTO> {
+    // this.getAccess();
     return new Promise((resolve, reject) => {
       var url = this.baseUrl + "SkillBar/LevelUp";
       this.http.post(url, model, this.requestOptions)
@@ -127,6 +198,7 @@ export class ApiServiceService {
   }
   
   getSkills = (classType?: number): Promise<any> => {
+    // this.getAccess();
     return new Promise((resolve, reject) => {
       var url = classType ? this.baseUrl + "SkillBar/" + classType : this.baseUrl + "SkillBar/0";
       this.http

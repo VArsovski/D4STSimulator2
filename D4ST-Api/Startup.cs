@@ -1,5 +1,6 @@
 using System.Text;
 using D4ST_Api.Controllers.ExtensionsAndHandlers;
+using D4ST_Api.Models.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -25,11 +26,12 @@ namespace d4st_api
                 opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             });
 
+            var key = Configuration.GetSection("Authentication:AuthenticationKey").Value;
+            key = StringHelper.DecodeFrom64(key);
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(x => {
-            //     x.RequireHttpsMetadata = false;
-            //     x.SaveToken = true;
-                var key = Configuration.GetSection("Authentication:AuthenticationKey").Value;
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
                 x.TokenValidationParameters = new TokenValidationParameters {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key)),

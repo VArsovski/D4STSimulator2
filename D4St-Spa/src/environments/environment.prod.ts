@@ -1,5 +1,7 @@
 export const environment = {
   production: true,
   apiUrl: 'api/',
-  allowedHosts: ['api/', 'd4STSimulatorDemo/api/']
+  allowedHosts: ['d4STSimulatorDemo/api', 'api'],
+  accessorKey:"AAaa",
+  accessorHost: "d4STSimulatorDemo"
 };

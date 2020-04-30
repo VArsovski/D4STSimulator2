@@ -1,12 +1,11 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
-using System.Web;
 using System;
 
 namespace D4ST_Api.Controllers.ExtensionsAndHandlers
 {
-    public class ApiKeyHandler : IHttpAsyncHandler
+    public class ApiKeyHandler// : IHttpAsyncHandler
     {
         private ILogger _logger;
 
