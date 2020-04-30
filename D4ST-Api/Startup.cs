@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Text;
 using D4ST_Api.Controllers.ExtensionsAndHandlers;
 using D4ST_Api.Models.Helpers;
@@ -63,12 +64,12 @@ namespace d4st_api
             app.UseCors( options => {
                 // TODO: And here DOESN'T... ???
                 // var ahs = Configuration.GetSection("AllowedHosts").Value;
-                // var ahs = new List<string>{"http://localhost:4200", "http://localhost:5000", "http://d4stsimulatordemo"};
+                var ahs = new List<string>{"http://localhost:4200", "http://localhost:5000", "http://d4stsimulatordemo"};
 
                 // Why does this work only for single Origin ??
-                // ahs.ForEach( a => { options.SetIsOriginAllowed(o => o.Contains(a)); });
-                options.SetIsOriginAllowedToAllowWildcardSubdomains();
-                options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+                ahs.ForEach( a => { options.WithOrigins(a).AllowAnyMethod().AllowAnyHeader(); });
+                //options.SetIsOriginAllowedToAllowWildcardSubdomains();
+                // options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
             });
 
             app.UseDefaultFiles();

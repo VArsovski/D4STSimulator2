@@ -54,7 +54,7 @@ namespace D4ST_Api.Controllers
         // }
 
         [Route("/InitAccess")]
-        public async Task<IActionResult> InitAccess(AccessorKeyModel model)
+        public async Task<IActionResult> InitAccess([FromQuery]AccessorKeyModel model)
         {
             var keyEncoded = StringHelper.DecodeFrom64(model.Key);
             if (this.AllowedUserKeys[model.Name] != keyEncoded)

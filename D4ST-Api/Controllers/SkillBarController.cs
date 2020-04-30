@@ -19,7 +19,6 @@ namespace D4ST_Api.Controllers
     [ApiController]
     [Route("api/[controller]")]
     // [Authorize]
-    // [EnableCors("http://localhost:4200")]
     public class SkillBarController : ControllerBase
     {
         private const string _LEVEL_INVALID = "Bad level data inserted";

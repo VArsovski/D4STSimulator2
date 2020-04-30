@@ -34,9 +34,9 @@ export class ApiServiceService {
 
   headerDict: any = {
     "Content-Type": "application/json",
-    // "Access-Control-Allow-Origin": environment.allowedHosts[1],
-    // "Access-Control-Allow-Methods": "GET, POST, PATCH, PUT, DELETE, OPTIONS",
-    // "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token"
+    "Access-Control-Allow-Origin": environment.allowedHosts[1],
+    "Access-Control-Allow-Methods": "GET, POST, PATCH, PUT, DELETE, OPTIONS",
+    "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token"
   };
 
   // headers?: HttpHeaders | { [header: string]: string | string[]; }
@@ -120,7 +120,7 @@ export class ApiServiceService {
   getBasicStats = (): Promise<LevelUpStatsVM> => {
     return new Promise((resolve, reject) => {
       var classType = Helpers.getRandom(1, 3);
-      // this.getAccess();
+      this.getAccess();
       this.http.get(this.baseUrl + "MainStats/" + classType, this.requestOptions)
         .pipe(
           map((response: any) => {
