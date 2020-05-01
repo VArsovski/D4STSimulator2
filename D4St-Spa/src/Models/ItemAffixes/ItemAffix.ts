@@ -27,6 +27,7 @@ export class ItemAffix implements IItemAffix {
     Condition: IItemAffixCondition;
     skillData: SkillVM[];
     PowerLevel: number;
+    SelectedEquipStat: string;
 
     constructor(affixType: ItemAffixTypeEnum, condition?:IItemAffixCondition, affixCategory?: AffixCategoryEnum, powerLevel?:number, attacProckType?: AttackTypesEnum, castProcType?: CastProcTypesEnum) {
         this.AffixType = affixType;
@@ -38,6 +39,8 @@ export class ItemAffix implements IItemAffix {
         this.AffixCategory = affixCategory;
         this.AttackProcType = attacProckType;
         this.CastProcType = castProcType;
+        if (this.Contents)
+            this.SelectedEquipStat = this.Contents.AffixData.SelectedEquipStat;
     }
 
     public GetAffixDescription(skillData:SkillVM[]):string {

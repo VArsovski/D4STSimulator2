@@ -1,16 +1,18 @@
 import { Component, OnInit, Input, Output, SimpleChanges, OnChanges } from '@angular/core';
 import { IItemAffix } from 'src/Models/ItemAffixes/IItemAffix';
-import { ArmorTypesEnum, DamageTypesEnum, ItemCategoriesEnum, AffixCategoryEnum } from 'src/_Enums/itemAffixEnums';
 import { InventoryVM } from 'src/Models/InventoryVM';
-import { Helpers } from 'src/_Helpers/helpers';
-import { InventoryArmorModel } from 'src/Models/InventoryArmorModel';
-import { InventoryDamageModel } from 'src/Models/InventoryDamageModel';
-import { ItemAffix } from 'src/Models/ItemAffixes/ItemAffix';
+import { InventoryArmorModelCombined, InventoryArmorModel } from 'src/Models/InventoryArmorModel';
 import { InventoryBasicStatsModel } from 'src/Models/InventoryBasicStatsModel';
-import { InventoryPrimaryDamageModel } from 'src/Models/InventoryPrimaryDamageModel';
 import { SkillVM } from 'src/Models/SkillVM';
+import { IArmorStatDetailsInventoryModel, IArmorStatDetailsInventoryModelCombined } from 'src/Models/InventoryDetailModels/IArmorStatDetailsInventoryModel';
+import { ArmorStatDetailsInventoryModel, ArmorStatDetailsInventoryModelCombined } from 'src/Models/InventoryDetailModels/ArmorStatDetailsInventoryModel';
+import { IEquippableStat } from 'src/Models/InventoryDetailModels/IEquippableStat';
+import { InventoryDamageModelCombined, InventoryDamageEmpowerModelCombined } from 'src/Models/InventoryPrimaryDamageModel';
+import { InventoryResistancesModel } from 'src/Models/InventoryResistancesModel';
+import { Helpers } from 'src/_Helpers/helpers';
+import { ArmorTypesEnum } from 'src/_Enums/itemAffixEnums';
 import { ItemArmorStats } from 'src/Models/ItemAffixes/Details/ItemArmorStats';
-import { ItemDamageStats } from 'src/Models/ItemAffixes/Details/ItemDamageStats';
+import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 
 @Component({
   selector: 'app-inventory',
@@ -23,21 +25,13 @@ export class InventoryComponent implements OnInit, OnChanges {
   @Input()inventoryItem: InventoryVM;
   protected tempInventoryData: InventoryVM;
 
-  protected HeavyArmor:InventoryArmorModel;
-  protected LightArmor:InventoryArmorModel;
-  protected MysticArmor:InventoryArmorModel;
+  protected DamageData:InventoryDamageModelCombined;
+  protected DamageEmpowerData:InventoryDamageEmpowerModelCombined;
+  protected ArmorData:InventoryArmorModelCombined;
+  protected Resistance:InventoryResistancesModel;
 
-  protected PhysicalOrCC:InventoryDamageModel;
-  protected CleaveOrAoE:InventoryDamageModel;
-  protected ChainOrProjectile:InventoryDamageModel;
-  protected TrapOrSummon:InventoryDamageModel;
-  protected TickOrCurse:InventoryDamageModel;
-
-  protected PhysicalDamage: InventoryPrimaryDamageModel;
-  protected FireDamage: InventoryPrimaryDamageModel;
-  protected PoisonDamage: InventoryPrimaryDamageModel;
-  protected ColdDamage: InventoryPrimaryDamageModel;
-  protected LightningDamage: InventoryPrimaryDamageModel;
+  protected ArmorDetails: IArmorStatDetailsInventoryModel;
+  protected ArmorDetailsCombined: IArmorStatDetailsInventoryModelCombined;
 
   protected BootsDescription:string;
   protected ChestDescription:string;
@@ -50,6 +44,7 @@ export class InventoryComponent implements OnInit, OnChanges {
   protected Ring2Description:string;
 
   protected BasicStats:InventoryBasicStatsModel;
+  protected Level:number;
 
   private armors :string[] = ["Boots","Chest", "Gloves", "Helm", "Pants"];
   private weapons:string[] = ["Axes", "Bows", "Hammers", "Swords", "Javelins", "Wands", "Staves"];
@@ -68,27 +63,20 @@ export class InventoryComponent implements OnInit, OnChanges {
 
   constructor() {
     this.skillData = [];
-    this.HeavyArmor = new InventoryArmorModel();
-    this.LightArmor = new InventoryArmorModel();
-    this.MysticArmor = new InventoryArmorModel();
+    this.ArmorData = new InventoryArmorModelCombined();
     this.BasicStats = new InventoryBasicStatsModel();
-
-    this.PhysicalOrCC = new InventoryDamageModel();
-    this.TickOrCurse = new InventoryDamageModel();
-    this.CleaveOrAoE = new InventoryDamageModel();
-    this.TrapOrSummon = new InventoryDamageModel();
-    this.ChainOrProjectile = new InventoryDamageModel();
-    
-    this.PhysicalDamage = new InventoryPrimaryDamageModel();
-    this.FireDamage = new InventoryPrimaryDamageModel();
-    this.PoisonDamage = new InventoryPrimaryDamageModel();
-    this.ColdDamage = new InventoryPrimaryDamageModel();
-    this.LightningDamage = new InventoryPrimaryDamageModel();
+    this.DamageData = new InventoryDamageModelCombined();
+    this.DamageEmpowerData = new InventoryDamageEmpowerModelCombined();
   }
 
   ngOnInit() {
     this.inventoryData = new InventoryVM(1, 1, 1);
     this.tempInventoryData = new InventoryVM(1, 1, 1); //Store new values here if slot already equipped
+    this.DamageData = new InventoryDamageModelCombined();
+    this.ArmorDetails = new ArmorStatDetailsInventoryModel();
+    this.ArmorDetailsCombined = new ArmorStatDetailsInventoryModelCombined();
+    this.Resistance = new InventoryResistancesModel();
+
     this.armors.forEach(a => this[a + "Description"] = "");
     this.jewelries.forEach(a => this[a + "Description"] = "");
   }
@@ -111,9 +99,50 @@ export class InventoryComponent implements OnInit, OnChanges {
         this.imageRaritiesDict[e] = this.inventoryData.selectedRarity;
 
         if (selectedItem.length != 0) {
-          await this.calculateArmorTypes(selectedItem, e);
-          await this.calculateDamageTypes(selectedItem, e);
+          selectedItem.forEach(async a => {
+            var selectedStat = a.Contents["SelectedStat"] || a.Contents.AffixData["SelectedStat"];
+            var selectedSubStat = a.Contents.AffixData.SelectedEquipStat;
+
+            debugger;
+            var selectedLevel = a.Contents.AffixData["Level"];
+            if (selectedLevel > (this.Level || 0))
+              this.Level = selectedLevel;
+
+            if (selectedStat == "DamageData" || selectedStat == "DamageEmpowerData") {
+              var selectedSrcStat = this[selectedStat][selectedSubStat];
+              this[selectedStat][selectedSubStat] = (a.Contents as IEquippableStat).updateEquippedStats(selectedSrcStat, a as IItemAffix);
+            }
+
+            if (["StatNumbers", "StatRegen", "StatPercentage", "StatPercentageRegen"].includes(selectedStat)) {
+              var statType = selectedSubStat.replace("Regen", "").replace("Percentage", "");
+              var selectedSrcStat = this["BasicStats"][statType];
+              this["BasicStats"][statType] = (a.Contents as IEquippableStat).updateEquippedStats(selectedSrcStat, a as IItemAffix);
+            }
+
+            if (selectedStat == "PowerData" || selectedStat == "PowerStats") {
+              var selectedSrcStat = this["BasicStats"][selectedSubStat];
+              if (selectedSubStat != "AllPower")
+                this["BasicStats"][selectedSubStat] = (a.Contents as IEquippableStat).updateEquippedStats(selectedSrcStat, a as IItemAffix);
+              else {
+                ["AngelicPower", "DemonicPower", "AncestralPower"].forEach(p => 
+                  this["BasicStats"][p] = (a.Contents as IEquippableStat).updateEquippedStats(this["BasicStats"][p], a as IItemAffix));
+              }
+            }
+
+            if (selectedStat == "SkillData" || selectedStat == "SkillEmpower") {
+              // var selectedSrcStat = this[selectedStat][selectedSubStat];
+              // this["BasicStats"][selectedStat] = (a.Contents as IEquippableStat).updateEquippedStats(selectedSrcStat, a as IItemAffix);
+            }
+
+            if (selectedStat == "ArmorData") {
+              // If Armor recalculate everything instead of just the SubData
+              await this.calculateArmorTypes(selectedItem, e);
+            }
+          })
+
+          await this.calculateArmorDetailData();
         }
+
         await this.UpdateInventoryImages(e);
 
         var affixDescriptions:string[] = [];
@@ -123,6 +152,19 @@ export class InventoryComponent implements OnInit, OnChanges {
       }
     });
     await this.SetClassNames();
+  }
+  protected async calculateArmorDetailData() {
+      var totals:number[] = [];
+      ["HeavyArmor", "LightArmor", "MysticArmor"].forEach(at => {
+        debugger;
+        var calculationFactor = new CalculationsHelper().GetCalculatedFactor(at, this.ArmorData[at].Amount, this.Level);
+        totals.push(Math.round(calculationFactor * this.ArmorData[at].Amount * 10) / 10);
+      })
+
+      var total = 0;
+      totals.forEach(t => total += t)
+      debugger;
+      this.ArmorData.Armor.Amount = total;
   }
 
   protected async calculateArmorTypes(itemData:IItemAffix[], itemType:string) {
@@ -143,59 +185,33 @@ export class InventoryComponent implements OnInit, OnChanges {
       this.inventoryData.Weapon
     ];
 
-    this.HeavyArmor = new InventoryArmorModel();
-    this.LightArmor = new InventoryArmorModel();
-    this.MysticArmor = new InventoryArmorModel();
+    this.ArmorData.HeavyArmor = new InventoryArmorModel();
+    this.ArmorData.LightArmor = new InventoryArmorModel();
+    this.ArmorData.MysticArmor = new InventoryArmorModel();
 
     var ccTypesdata = { totalCCPercentageRateHeavy: 0, totalCCPercentageRateLight: 0, totalCCPercentageRateMystic: 0 }
     data.forEach(a => {
       a.forEach(affix => {
-        if (affix.Contents.CategoryStat == AffixCategoryEnum.PrimaryArmor && affix.Contents.AffixData) {
+        var selectedStat = affix.Contents["SelectedStat"] || affix.Contents.AffixData["SelectedStat"];
+        var selectedType = affix.Contents.AffixData.SelectedEquipStat;
+        if (selectedStat == "ArmorData") {
           var armorAffixData = affix.Contents.AffixData as ItemArmorStats;
           var selectedArmor = Helpers.getPropertyByValue(ArmorTypesEnum, armorAffixData.ArmorType);
-          this[selectedArmor + "Armor"].Armor += armorAffixData.Armor;
-          this[selectedArmor + "Armor"].ItemPieces += 1;
-          ccTypesdata["totalCCPercentageRate" + selectedArmor] += armorAffixData.Armor * armorAffixData.ReducePercentage;
+          this["ArmorData"][selectedArmor + "Armor"].Amount += armorAffixData.Armor;
         }
       })
     });
 
-    var armorEnumData = Helpers.extractEnum(ArmorTypesEnum).slice(0, 3);
-    armorEnumData.forEach(e => {
-      var value = e.value;
-      if (this[value + "Armor"].Armor != 0)
-      ccTypesdata["totalCCPercentageRate" + value] = Math.round(this[value + "Armor"].ItemPieces * ccTypesdata["totalCCPercentageRate" + value]/this[value + "Armor"].Armor);
-    });
+    // var armorEnumData = Helpers.extractEnum(ArmorTypesEnum).slice(0, 3);
+    // armorEnumData.forEach(e => {
+    //   var value = e.value;
+    //   if (this["ArmorData"][value + "Armor"].Armor != 0)
+    //   ccTypesdata["totalCCPercentageRate" + value] = Math.round(this[value + "Armor"].ItemPieces * ccTypesdata["totalCCPercentageRate" + value]/this[value + "Armor"].Armor);
+    // });
 
-    this.HeavyArmor.CCPercentage = ccTypesdata.totalCCPercentageRateHeavy;
-    this.LightArmor.CCPercentage = ccTypesdata.totalCCPercentageRateLight;
-    this.MysticArmor.CCPercentage = ccTypesdata.totalCCPercentageRateMystic;
-  }
-
-  protected async calculateDamageTypes(itemData:IItemAffix[], itemType:string) {
-    if ((this.inventoryData[itemType] || []).length == 0) {
-      this.inventoryData[itemType] = itemData;
-    }
-    else this.tempInventoryData[itemType] = itemData;
-
-    var itemTypes:string[] = ["Helm","Chest","Pants","Boots","Gloves","Amulet","Ring1","Ring2","Weapon"];
-
-    this.PhysicalOrCC = new InventoryDamageModel();
-    this.TickOrCurse = new InventoryDamageModel();
-    this.CleaveOrAoE = new InventoryDamageModel();
-    this.TrapOrSummon = new InventoryDamageModel();
-    this.ChainOrProjectile = new InventoryDamageModel();
-
-    itemTypes.forEach(a => {
-      var affixes:ItemAffix[] = this.inventoryData[a];
-      affixes.forEach(affix => {
-        if (affix.Contents.CategoryStat == AffixCategoryEnum.PrimaryDamage && affix.Contents.AffixData) {
-          var affixData = affix.Contents.AffixData as ItemDamageStats;
-          var selected = Helpers.getPropertyByValue(DamageTypesEnum, affixData.DamageData.MainDamageType);
-          this[selected].Percentage += affixData.DamageData.EmpowerPercentage;
-        }
-      })
-    });
+    // this.ArmorData.HeavyArmor.CCPercentage = ccTypesdata.totalCCPercentageRateHeavy;
+    // this.ArmorData.LightArmor.CCPercentage = ccTypesdata.totalCCPercentageRateLight;
+    // this.ArmorData.MysticArmor.CCPercentage = ccTypesdata.totalCCPercentageRateMystic;
   }
 
   protected ArmorSrc(type:string):string {

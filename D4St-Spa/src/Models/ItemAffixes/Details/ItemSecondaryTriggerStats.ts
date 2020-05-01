@@ -7,6 +7,8 @@ import { ItemBasicStats, ItemBasicStatsDetail } from './ItemBasicStats';
 import { ItemBasicPowersDetail, ItemBasicResistanceStatsDetail } from './ItemSimpleStats';
 import { ResistanceTypesEnum, AffixCategoryEnum, BasicStatTypesEnum } from 'src/_Enums/itemAffixEnums';
 import { IItemAffixStats } from './IItemAffixStats';
+import { IEquippableStat, IEquippableInventoryModel } from 'src/Models/InventoryDetailModels/IEquippableStat';
+import { IItemAffix } from '../IItemAffix';
 
 export class ItemSecondaryTriggerStatsDetail implements IItemAffixStats {
     private Level: number;
@@ -18,6 +20,8 @@ export class ItemSecondaryTriggerStatsDetail implements IItemAffixStats {
     Trap: TrapsEnum;
     Curse: CursesEnum;
     BasicStat:ItemBasicStats;
+    SelectedEquipStat: string;
+    CategoryStats: AffixCategoryEnum;
     // OfenseStat:ItemOfensiveStats;
     // DefenseStat:ItemDefenseStats;
     private statsCalculated:boolean;
@@ -36,7 +40,6 @@ export class ItemSecondaryTriggerStatsDetail implements IItemAffixStats {
             this.statsCalculated = true;
         }
     }
-    CategoryStats: AffixCategoryEnum;
 
     private SetCalculatedData()
     {
@@ -127,12 +130,15 @@ export class ItemSecondaryTriggerStatsDetail implements IItemAffixStats {
     }
 }
 
-export class ItemSecondaryTriggerStats implements IItemAffixStats {
+export class ItemSecondaryTriggerStats implements IItemAffixStats, IEquippableStat {
     Amount:number;
     Chance:number;
     Duration:number;
     Trigger:ItemTriggerStats;
+    CategoryStats: AffixCategoryEnum;
     Type:SecondaryTriggerStatsEnum;
+    SelectedStat: string;
+    SelectedEquipStat: string;
     private PowerLevel: number;
     private Level: number;
     private statsCalculated:boolean;
@@ -161,8 +167,11 @@ export class ItemSecondaryTriggerStats implements IItemAffixStats {
             this.TriggerDetails = new ItemSecondaryTriggerStatsDetail(this.LevelToBuff, this.PowerLevel, this.Amount, this.Duration, this.Type, this.Trigger)
             this.statsCalculated = true;
         }
+
+        this.SelectedEquipStat = "SecondaryTrigger:" + this.Trigger.SelectedEquipStat;
     }
-    CategoryStats: AffixCategoryEnum;
+
+    updateEquippedStats: (src:IItemAffix, affix:IItemAffix) => IItemAffix;
 
     public GetDescription():string {
         var secondaryTypeStr = this.TriggerDetails.GetDescription();

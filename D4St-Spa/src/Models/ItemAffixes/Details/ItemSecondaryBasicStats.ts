@@ -4,13 +4,17 @@ import { ItemSimpleStats, ItemBasicResistanceStatsDetail } from './ItemSimpleSta
 import { Helpers } from 'src/_Helpers/helpers';
 import { CCEffectTypesEnum } from 'src/_Enums/triggerAffixEnums';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
+import { IEquippableStat, IEquippableInventoryModel } from 'src/Models/InventoryDetailModels/IEquippableStat';
+import { IItemAffix } from '../IItemAffix';
 
-export class ItemSecondaryBasicStats implements IItemAffixStats {
+export class ItemSecondaryBasicStats implements IItemAffixStats, IEquippableStat {
     Level: number;
     PowerLevel: number;
     Amount: number;
     CategoryStats: AffixCategoryEnum;
-    SelectedStat: SecondaryStatTypesEnum;
+    private selectedStat: SecondaryStatTypesEnum;
+    SelectedStat: string;
+    SelectedEquipStat: string;
     Resistance:ItemBasicResistanceStatsDetail;
     RedirectDamage:ItemSimpleStats;
     IncreaseStatSunder:ItemSimpleStats;
@@ -36,7 +40,8 @@ export class ItemSecondaryBasicStats implements IItemAffixStats {
             this.CategoryStats = category;
             this.Level = level;
             this.PowerLevel = powerLevel;
-            this.SelectedStat = selectedStat,
+            this.selectedStat = selectedStat,
+            this.SelectedStat = Helpers.getPropertyByValue(SecondaryStatTypesEnum, this.selectedStat);
 
             // Resistance = 1,              // EmpowerTrapsAndSummons = 4,
             // RedirectDamage = 2,          // DamageTakenReduced = 5,
@@ -56,41 +61,52 @@ export class ItemSecondaryBasicStats implements IItemAffixStats {
 
             if (!this.statsCalculated) {
                 // Make numbers increased for Traps&Summons stat type increase
-                if (this.SelectedStat == SecondaryStatTypesEnum.EmpowerTrapsAndSummons)
+                if (this.selectedStat == SecondaryStatTypesEnum.EmpowerTrapsAndSummons)
                     this.PowerLevel += 3;
 
-                var selectedStatStr = Helpers.getPropertyByValue(SecondaryStatTypesEnum, this.SelectedStat);
+                var selectedStatStr = Helpers.getPropertyByValue(SecondaryStatTypesEnum, this.selectedStat);
                 this[selectedStatStr].Amount = new CalculationsHelper().getEmpoweredValue(this[selectedStatStr].Amount || 0, this.PowerLevel);
                 if (selectedStatStr != "Resistance")
                     this[selectedStatStr].AmountPercentage = new CalculationsHelper().getEmpoweredValue(this[selectedStatStr].AmountPercentage || 0, this.PowerLevel);
                 this.statsCalculated = true;
             }
+        
+        this.SelectedEquipStat = this[this.SelectedStat].SelectedEquipStat;
     }
+
+    updateEquippedStats: (src:IItemAffix, affix:IItemAffix) => IItemAffix;
 
     GetDescription(): string {
         // Resistance = 1,             // EmpowerTrapsAndSummons = 4,
         // CCReduction = 2,            // RedirectDamage = 5,
         // DamageTakenReduced = 3,     // IncreaseStatSunder = 6
-        var selectedStat = Helpers.getPropertyByValue(SecondaryStatTypesEnum, this.SelectedStat);
-        if (!this[selectedStat]) {
-            this.SelectedStat = this.GetSelectedStat();
-            selectedStat = Helpers.getPropertyByValue(SecondaryStatTypesEnum, this.SelectedStat);
-            console.log(selectedStat);
-            console.log(this);
+        if (this.SelectedStat) {
+            var selectedStat = Helpers.getPropertyByValue(SecondaryStatTypesEnum, this.selectedStat);
+            if (!this[selectedStat]) {
+                this.selectedStat = this.GetSelectedStat();
+                selectedStat = Helpers.getPropertyByValue(SecondaryStatTypesEnum, this.selectedStat);
+                console.log(selectedStat);
+                console.log(this);
+            }
         }
 
-        var isPrimaryType = [SecondaryStatTypesEnum.Resistance, SecondaryStatTypesEnum.IncreaseStatSunder].includes(this.SelectedStat);
+        if (!this.SelectedStat) {
+            debugger;
+            return "";
+        }
+
+        var isPrimaryType = [SecondaryStatTypesEnum.Resistance, SecondaryStatTypesEnum.IncreaseStatSunder].includes(this.selectedStat);
         var isPercentage = this[selectedStat].AmountPercentage;
 
         var quantifier = isPercentage ? this[selectedStat].AmountPercentage + "%" : this[selectedStat].Amount;
         var descrPrimary = isPrimaryType ? this[selectedStat].GetDescription() : "";
-        var dpsDescr = this.SelectedStat == SecondaryStatTypesEnum.DamageTakenReduced
+        var dpsDescr = this.selectedStat == SecondaryStatTypesEnum.DamageTakenReduced
             ? "DamageTaken of type " + Helpers.getPropertyByValue(DamageTypesEnum, this.damageType) + " reduced by " + quantifier : "";
-        var redirectDescr = this.SelectedStat == SecondaryStatTypesEnum.RedirectDamage
+        var redirectDescr = this.selectedStat == SecondaryStatTypesEnum.RedirectDamage
             ? quantifier + " of DamageTaken of type " + Helpers.getPropertyByValue(ResistanceTypesEnum, this.elementType) + " goes to " + Helpers.getPropertyByValue(BasicStatsEnum, this.statType) : "";
-        var ccDescr = this.SelectedStat == SecondaryStatTypesEnum.CCReduction
+        var ccDescr = this.selectedStat == SecondaryStatTypesEnum.CCReduction
             ? "Effects of type " + Helpers.getPropertyByValue(CCEffectTypesEnum, this.ccType) + " reduced by " + quantifier : "";
-        var empowerDescr = this.SelectedStat == SecondaryStatTypesEnum.EmpowerTrapsAndSummons
+        var empowerDescr = this.selectedStat == SecondaryStatTypesEnum.EmpowerTrapsAndSummons
             ? "Increase " + Helpers.getPropertyByValue(TrapAndSummonStatsEnum, this.summonTrapStatType) + " of TrapsAndSummons by " + quantifier: "";
 
         return descrPrimary + dpsDescr + redirectDescr + ccDescr + empowerDescr;

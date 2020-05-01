@@ -503,5 +503,38 @@ export class CalculationsHelper {
     });
 
     return selectedDamageTypes;
-  }  
+  }
+
+  public GetCalculatedFactor(selectedType: string, amount: number, level: number) {
+    var isHeavy = selectedType == Helpers.getPropertyByValue(ArmorTypesEnum, ArmorTypesEnum.Heavy) + "Armor";
+    var isLight = selectedType == Helpers.getPropertyByValue(ArmorTypesEnum, ArmorTypesEnum.Light) + "Armor";
+    // var isMystic = selectedType == Helpers.getPropertyByValue(ArmorTypesEnum, ArmorTypesEnum.Mystic) + "Armor";
+
+    // Start relative high numbers, then do Diminished returns afterwards
+    var factorZero = isHeavy ? 0.64 : isLight ? 0.42 : 0.28;
+    var factorMin = isHeavy ? 0.18 : isLight ? 0.14 : 0.08;
+
+    // 16 Armor per level the requirement, as levels go up, the requirement gets a bit higher
+    var amountPerLvl = 20;
+    var lvlCalcFactor = 4;
+    var lvlMaxCoeff = amountPerLvl + Math.round(level/lvlCalcFactor);
+    var factorCalc = factorZero;
+
+    // Calculate Average of reductions for each LvlCalcFactor levels
+    var maxLvl = 40;
+    var currentLvl = 0;
+    var step = Math.round((factorZero - factorMin) * lvlMaxCoeff/maxLvl * 100) / 100;
+    var factorCalcList:number[] = [];
+    while(currentLvl <= level && factorCalc > step) {
+      factorCalc -= step;
+      // factorCalc *= amountPerLvl * lvlMaxCoeff;
+      currentLvl+=lvlCalcFactor;
+      factorCalcList.push(Math.round(factorCalc * 100) / 100);
+    }
+    
+    var sum = factorCalcList.reduce((a, b) => a + b, 0);
+    var avg = (sum / factorCalcList.length) || 0;
+    
+    return Math.round(avg * 100)/100;
+  }
 }

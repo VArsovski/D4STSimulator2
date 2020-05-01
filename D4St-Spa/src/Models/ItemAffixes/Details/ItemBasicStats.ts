@@ -1,13 +1,19 @@
 import { ItemBasicPowersDetail, ItemBasicResistanceStatsDetail, ItemSimpleStats } from './ItemSimpleStats';
 import { SkillVM } from 'src/Models/SkillVM';
 import { PowerTypesEnum } from 'src/_Enums/powerTypesEnum';
-import { BasicStatsEnum, ResistanceTypesEnum, AffixCategoryEnum, BasicStatTypesEnum } from 'src/_Enums/itemAffixEnums';
+import { BasicStatsEnum, ResistanceTypesEnum, AffixCategoryEnum, BasicStatTypesEnum, ArmorTypesEnum } from 'src/_Enums/itemAffixEnums';
 import { Helpers } from 'src/_Helpers/helpers';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 import { IItemAffixStats } from './IItemAffixStats';
 import { ItemSkillStats } from './ItemSkillStats';
+import { IEquippableStat, IEquippableInventoryModel } from 'src/Models/InventoryDetailModels/IEquippableStat';
+import { BasicStatEquippable } from './IEquippableStatDetails/BasicStatEquippable';
+import { IItemAffix } from '../IItemAffix';
+import { PowerStatEquippable } from './IEquippableStatDetails/PowerStatEquippable';
+import { ResistanceEquippable } from './IEquippableStatDetails/ResistanceEquippable';
+import { SkillStatEquippable } from './IEquippableStatDetails/SkillStatEquippable';
 
-export class ItemBasicStats implements IItemAffixStats {
+export class ItemBasicStats implements IItemAffixStats, IEquippableStat {
 
     CategoryStats: AffixCategoryEnum;
     private PowerStats:ItemBasicPowersDetail;
@@ -24,6 +30,8 @@ export class ItemBasicStats implements IItemAffixStats {
     private Level: number;
     private statsCalculated:boolean;
     Amount:number; //Just to check whether there is data in here (from outside method)
+    SelectedStat: string;
+    SelectedEquipStat: string;
 
     constructor(category: AffixCategoryEnum, level:number, powerLevel?:number, powerStats?:ItemBasicPowersDetail
         , statNumbers?:ItemBasicStatsDetail, statRegen?:ItemBasicStatsDetail, statPercentage?:ItemBasicStatsDetail, statRegenPercentage?:ItemBasicStatsDetail, statReturn?:ItemBasicStatsDetail
@@ -55,40 +63,48 @@ export class ItemBasicStats implements IItemAffixStats {
             this.SkillEmpower = data.SkillEmpower;
         }
     }
+    updateEquippedStats: (src:IItemAffix, affix:IItemAffix) => IItemAffix;;
 
     public SetPowers(level:number, powerLevel:number, amount:number, type:PowerTypesEnum) {
         this.PowerStats = new ItemBasicPowersDetail(level, powerLevel, amount, type);
         this.selectedStat = BasicStatTypesEnum.PowerStats;
+        this.UpdateEquipStatsData();
     }
 
     public SetBasicStat(level:number, powerLevel:number, amount:number, type:BasicStatsEnum) {
         this.StatNumbers = new ItemBasicStatsDetail(level, powerLevel, amount, BasicStatTypesEnum.StatNumbers, type);
         this.selectedStat = BasicStatTypesEnum.StatNumbers;
+        this.UpdateEquipStatsData();
     }
 
     public SetStatRegen(level:number, powerLevel:number, amount:number, type:BasicStatsEnum) {
         this.StatRegen = new ItemBasicStatsDetail(level, powerLevel, amount, BasicStatTypesEnum.StatRegen, type);
         this.selectedStat = BasicStatTypesEnum.StatRegen;
+        this.UpdateEquipStatsData();
     }
 
     public SetBasicStatPercentage(level:number, powerLevel:number, amount:number, type:BasicStatsEnum) {
         this.StatPercentage = new ItemBasicStatsDetail(level, powerLevel, amount, BasicStatTypesEnum.StatPercentage, type);
         this.selectedStat = BasicStatTypesEnum.StatPercentage;
+        this.UpdateEquipStatsData();
     }
 
     public SetRegenPercentage(level:number, powerLevel:number, amount:number, type:BasicStatsEnum) {
         this.StatPercentageRegen = new ItemBasicStatsDetail(level, powerLevel, amount, BasicStatTypesEnum.StatPercentageRegen, type);
         this.selectedStat = BasicStatTypesEnum.StatPercentageRegen;
+        this.UpdateEquipStatsData();
     }
 
     public SetStatReturn(level: number, powerLevel: number, amount: number, type:BasicStatsEnum) {
         this.StatReturn = new ItemBasicStatsDetail(level, powerLevel, amount, BasicStatTypesEnum.StatReturn, type);
         this.selectedStat = BasicStatTypesEnum.StatReturn;
+        this.UpdateEquipStatsData();
     }    
 
     public SetResistance(level:number, powerLevel:number, amount:number, type:ResistanceTypesEnum) {
         this.Resistance = new ItemBasicResistanceStatsDetail(level, powerLevel, amount, type);
         this.selectedStat = BasicStatTypesEnum.Resistance;
+        this.UpdateEquipStatsData();
     }
 
     public SetSkill(level:number, skillData: SkillVM, levels?: number) {
@@ -97,11 +113,13 @@ export class ItemBasicStats implements IItemAffixStats {
         // skillData.level += levels;
         this.SkillEmpower.AffixData = skillData;
         this.selectedStat = BasicStatTypesEnum.SkillEmpower;
+        this.UpdateEquipStatsData();
     }
 
     public SetSocket() {
         this.Socket.Amount++;
         this.selectedStat = BasicStatTypesEnum.Socket;
+        this.UpdateEquipStatsData();
     }
 
     // TODO: Sadly, have to do/invoke from SecondaryTriggers sometimes even this.. :/
@@ -120,7 +138,7 @@ export class ItemBasicStats implements IItemAffixStats {
         return descrStat + empoweredStr;
     }
 
-    GetSelectedStat():number {
+    private GetSelectedStat():number {
         var selectedStat:number = 0;
         var currentStats:string[] = ["PowerStats","StatNumbers","StatRegen","StatPercentage","StatPercentageRegen","StatReturn","Resistance"];//["SkillEmpower","Socket"];
         var defaultStats:string[] = ["SkillEmpower","Socket"];
@@ -171,9 +189,29 @@ export class ItemBasicStats implements IItemAffixStats {
 
         return data;
     }
+
+    private UpdateEquipStatsData() {
+        this.SelectedEquipStat = this.PowerStats ? this.PowerStats.SelectedEquipStat// Helpers.getPropertyByValue(PowerTypesEnum, this.PowerStats.Type)
+        : this.StatNumbers ? this.StatNumbers.SelectedEquipStat// Helpers.getPropertyByValue(BasicStatsEnum, this.StatNumbers.Type)
+        : this.StatRegen ? this.StatRegen.SelectedEquipStat// Helpers.getPropertyByValue(BasicStatsEnum, this.StatRegen.Type) + "Regen"
+        : this.StatPercentage ? this.StatPercentage.SelectedEquipStat// Helpers.getPropertyByValue(BasicStatsEnum, this.StatPercentage.Type) + "Percentage"
+        : this.StatPercentageRegen ? this.StatPercentageRegen.SelectedEquipStat// Helpers.getPropertyByValue(BasicStatsEnum, this.StatPercentageRegen.Type) + "RegenPercentage"
+        : this.Resistance ? this.Resistance.SelectedEquipStat// Helpers.getPropertyByValue(ResistanceTypesEnum, this.Resistance.Type) + "Resistance"
+        : this.PowerStats ? this.PowerStats.SelectedEquipStat// Helpers.getPropertyByValue(PowerTypesEnum, this.PowerStats.Type) + "Power"
+        : this.SkillEmpower ? "SkillEmpower:" + (this.SkillEmpower.AffixData || {name:""}).name
+        : null;
+
+        if (!this.selectedStat)
+            this.selectedStat = this.GetSelectedStat();
+        this.SelectedStat = Helpers.getPropertyByValue(BasicStatTypesEnum, this.selectedStat);
+        this.updateEquippedStats = this.selectedStat == BasicStatTypesEnum.PowerStats ? new PowerStatEquippable(this.SelectedStat, this.SelectedEquipStat).updateEquippedStats
+                                 : this.selectedStat == BasicStatTypesEnum.SkillEmpower ? new SkillStatEquippable(this.SelectedStat, this.SelectedEquipStat).updateEquippedStats
+                                 : this.selectedStat == BasicStatTypesEnum.Resistance ? new ResistanceEquippable(this.SelectedStat, this.SelectedEquipStat).updateEquippedStats
+                                 : new BasicStatEquippable(this.SelectedStat, this.SelectedEquipStat).updateEquippedStats
+    }
 }
 
-export class ItemBasicStatsDetail implements IItemAffixStats {
+export class ItemBasicStatsDetail implements IItemAffixStats, IEquippableStat {
     CategoryStats: AffixCategoryEnum;
     Amount: number;
     StatType: BasicStatTypesEnum;
@@ -181,6 +219,8 @@ export class ItemBasicStatsDetail implements IItemAffixStats {
     private Level: number;
     private PowerLevel: number;
     private statsCalculated:boolean;
+    SelectedStat: string;
+    SelectedEquipStat: string;
 
     constructor(level:number, powerLevel:number, amount:number, statType:BasicStatTypesEnum, type:BasicStatsEnum) {
         this.Level = level || 1;
@@ -193,7 +233,19 @@ export class ItemBasicStatsDetail implements IItemAffixStats {
             this.Amount = new CalculationsHelper().getEmpoweredValue(new CalculationsHelper().getBasicStatForLevel(this.StatType, amount, this.Level), powerLevel);
             this.statsCalculated = true;
         }
+
+        var suffix = this.StatType == BasicStatTypesEnum.StatNumbers ? ""
+        : this.StatType == BasicStatTypesEnum.StatRegen ? "Regen"
+        : this.StatType == BasicStatTypesEnum.StatPercentage ? "Percentage"
+        : this.StatType == BasicStatTypesEnum.StatPercentageRegen ? "RegenPercentage"
+        : "";
+
+        this.SelectedStat = Helpers.getPropertyByValue(BasicStatTypesEnum, this.StatType);
+        this.SelectedEquipStat = Helpers.getPropertyByValue(BasicStatsEnum, this.Type) + suffix;
+        this.updateEquippedStats = new BasicStatEquippable(this.SelectedStat, this.SelectedEquipStat).updateEquippedStats;
     }
+
+    updateEquippedStats: (src:IItemAffix, affix:IItemAffix) => IItemAffix;
 
     GetDescription(): string {
         var selectedType = Helpers.getPropertyByValue(BasicStatsEnum, this.Type);

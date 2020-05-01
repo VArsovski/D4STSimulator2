@@ -3,8 +3,13 @@ import { Helpers } from 'src/_Helpers/helpers';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 import { CCEffectTypesEnum } from 'src/_Enums/triggerAffixEnums';
 import { IItemAffixStats } from './IItemAffixStats';
+import { IEquippableStat, IEquippableInventoryModel } from 'src/Models/InventoryDetailModels/IEquippableStat';
+import { IItemAffix } from '../IItemAffix';
 
-export class ItemDefenseStats implements IItemAffixStats {
+export class ItemDefenseStats implements IItemAffixStats, IEquippableStat {
+    Amount:number;
+    SelectedStat:string;
+    SelectedEquipStat: string;
     CCDamageAndDurationReduced?:ItemDefensiveStatsDetail;
     PotionAndGlobeBonus?:ItemDefensiveStatsDetail;
     DamageTaken?:ItemDefensiveStatsDetail;
@@ -15,10 +20,8 @@ export class ItemDefenseStats implements IItemAffixStats {
     Socket:ItemDefensiveStatsDetail;
     private Level:number;
     private PowerLevel: number;
-    private selectedStat:string;
     private statsCalculated:boolean;
     private SocketPowerPercentage:number;
-    Amount:number;
 
     GetDescription(): string {
         var descr1 = (this.CCDamageAndDurationReduced) ? this.CCDamageAndDurationReduced.GetDescription() : "";
@@ -51,28 +54,33 @@ export class ItemDefenseStats implements IItemAffixStats {
             amount = Math.round(amount * 2.5);
 
         var selectedStat = Helpers.getPropertyByValue(DefensiveStatsEnum, type);
-        this.selectedStat = selectedStat;
+        this.SelectedStat = selectedStat;
         if (type == DefensiveStatsEnum.Socket)
         {
             this.Socket.Amount = 1;
-            this.selectedStat = "Socket";
+            this.SelectedStat = "Socket";
         }
 
         if (!this.statsCalculated) {
-            if (this.selectedStat) {
+            if (this.SelectedStat) {
                 var newDefensiveAffixStats = new ItemDefensiveStatsDetail(category, amount, amountPercentage, chance, duration, type, appropriateCategories);
                 this[selectedStat] = newDefensiveAffixStats;
         
-                if (this.selectedStat != "Socket") {
-                    this[this.selectedStat].Amount = new CalculationsHelper().getEmpoweredValue(this[this.selectedStat].Amount, this.PowerLevel);
-                    this[this.selectedStat].AmountPercentage = new CalculationsHelper().getEmpoweredValue(this[this.selectedStat].AmountPercentage, this.PowerLevel);
+                if (this.SelectedStat != "Socket") {
+                    this[this.SelectedStat].Amount = new CalculationsHelper().getEmpoweredValue(this[this.SelectedStat].Amount, this.PowerLevel);
+                    this[this.SelectedStat].AmountPercentage = new CalculationsHelper().getEmpoweredValue(this[this.SelectedStat].AmountPercentage, this.PowerLevel);
                 }
                 else this.Socket.Amount += this.PowerLevel;
                 this.SocketPowerPercentage = Math.round(new CalculationsHelper().getEmpoweredValue(Helpers.getRandom(12, 20) + Helpers.getRandom(-5, 5), this.PowerLevel) + (50 - this.Level)/4);
             }
             this.statsCalculated = true;
         }
+
+        this.SelectedEquipStat = this[this.SelectedStat].SelectedEquipStat;
     }
+
+    updateEquippedStats: (src:IItemAffix, affix:IItemAffix) => IItemAffix;
+
     CategoryStats: AffixCategoryEnum;
 
     private GenerateAppropriateCategoriesByType(type:DefensiveStatsEnum, quantifier?:number, percentage?:number) {
@@ -107,15 +115,18 @@ export class ItemDefenseStats implements IItemAffixStats {
 
 export class ItemDefensiveStatsDetail implements IItemAffixStats {
     Amount:number;
+    SelectedEquipStat: string;
+    CategoryStats: AffixCategoryEnum;
+    private CCType:CCEffectTypesEnum;
+    private DamageType:DamageTypesEnum;
+    private AttackType:AttackTypesEnum;
+
     private AmountPercentage?:number;
     private Duration?:number;
     private Chance?: number;
     private DefensiveAffixStatCategories:DefensiveStatCategoryEnum[];
     private Type:DefensiveStatsEnum;
-
-    private DamageType:DamageTypesEnum;
-    private AttackType:AttackTypesEnum;
-    private CCType:CCEffectTypesEnum;
+    
     // private selectedStat:string;
     private Socket:number;
 
@@ -213,6 +224,7 @@ export class ItemDefensiveStatsDetail implements IItemAffixStats {
         this.DamageType = damageType;
         this.AttackType = attackType;
         this.CCType = ccType;
+
+        this.SelectedEquipStat = Helpers.getPropertyByValue(DefensiveStatsEnum, this.Type);
     }
-    CategoryStats: AffixCategoryEnum;
 }

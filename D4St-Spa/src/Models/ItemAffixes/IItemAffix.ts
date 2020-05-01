@@ -11,6 +11,7 @@ export interface IItemAffix {            // : ItemAffixBlueprint {
     AttackProcType: AttackTypesEnum;     // OnHit, OnCast, OnDeath
     AffixCategory: AffixCategoryEnum;    // Melee, Projectile, AoE, TriggerEffect, Summon
     ConditionSatisfied: boolean;
+    SelectedEquipStat:string;
 
     // The Basic Data, Function should return formatted text with numbers and set Description
     Contents:ItemAffixOutput;

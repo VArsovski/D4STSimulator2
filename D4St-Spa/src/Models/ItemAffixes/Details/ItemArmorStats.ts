@@ -3,6 +3,9 @@ import { Helpers } from 'src/_Helpers/helpers';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 import { CCEffectTypesEnum } from 'src/_Enums/triggerAffixEnums';
 import { IItemAffixStats } from './IItemAffixStats';
+import { IEquippableStat } from 'src/Models/InventoryDetailModels/IEquippableStat';
+import { ArmorStatEquippable, ArmorStatPrimaryEquippable } from './IEquippableStatDetails/ArmorStatEquppable';
+import { IItemAffix } from '../IItemAffix';
 
 export class ItemArmorDetailStats {
     ItemArmorType:ItemArmorTypesEnum;
@@ -30,16 +33,19 @@ export class ItemArmorDetailStats {
     }
 }
 
-export class ItemArmorStats implements IItemAffixStats {
+export class ItemArmorStats implements IItemAffixStats, IEquippableStat {
     Armor:number;
     ArmorType: ArmorTypesEnum;
-    ReducePercentage: number;
+    // ReducePercentage: number;
     private PowerLevel: any;
     private Level: number;
     private ItemType: ItemArmorTypesEnum;
     private ArmorStatDetails:ItemArmorDetailStats;
     private statsCalculated:boolean;
     Amount:number; //Just to check whether there is data in here (from outside method)
+    SelectedEquipStat: string;
+    SelectedAffixStat: string;
+    SelectedStat: string;
 
     constructor(category: AffixCategoryEnum, level:number, powerLevel:number, itemType: ItemArmorTypesEnum, armorType?: ArmorTypesEnum, armor?:number, reducePercentage?:number, isPrimary?:boolean) {
         this.CategoryStats = category;
@@ -58,9 +64,18 @@ export class ItemArmorStats implements IItemAffixStats {
             var selectedAmount = calculatedData[0];
             var reducePercentage = calculatedData[1];
             this.Armor = armor || selectedAmount;
-            this.ReducePercentage = isPrimary ? (reducePercentage || 0) : 0;
+            // this.ReducePercentage = isPrimary ? (reducePercentage || 0) : 0;
         }
+
+        this.SelectedStat = "ArmorData"
+        this.SelectedEquipStat = Helpers.getPropertyByValue(ArmorTypesEnum, this.ArmorType) + "Armor";
+
+        // TODO: Should call both, see if that's properly done
+        this.updateEquippedStats = new ArmorStatEquippable(this.SelectedStat, this.SelectedEquipStat).updateEquippedStats;
+        this.updateEquippedStats = new ArmorStatPrimaryEquippable(this.SelectedStat, this.SelectedEquipStat).updateEquippedStats;
     }
+
+    updateEquippedStats: (src:IItemAffix, affix:IItemAffix) => IItemAffix;
     CategoryStats: AffixCategoryEnum;
 
     // Stats for level1, calculate for other levels
@@ -93,8 +108,9 @@ export class ItemArmorStats implements IItemAffixStats {
 
     public GetDescription():string {
         var empoweredStr = new CalculationsHelper().getEmpoweredStr("*", this.PowerLevel);
-        var reductionStr = "(Reduce " + this.ArmorStatDetails.GetCCTypes() + " by " + this.ReducePercentage + "%)";
+        // TODO: CC Reduction has a new formula now, based upon types of CCRed affixes and ArmorAmount, Calculated in InventoryComponent.ts
+        // var reductionStr = "(Reduce " + this.ArmorStatDetails.GetCCTypes() + " by " + this.ReducePercentage + "%)";
         var basicDataStr = this.Armor ? this.Armor + " " + Helpers.getPropertyByValue(ArmorTypesEnum, this.ArmorType) + " armor" + empoweredStr + "\n": "";
-        return basicDataStr + reductionStr;
+        return basicDataStr;
     }
 }

@@ -115,6 +115,7 @@ export enum TrapAndSummonStatsEnum {
 export enum AffixCategoryEnum {
     PrimaryArmor = 1,
     PrimaryDamage= 2,
+    EmpowerDamageType = 22,
     IncreaseBasicStat= 3, // +HP, +Armor, +Resource, +Regen, +Resistance
     IncreaseCastAffixStat= 4, // +CastRange, AoE, Pierce, Duration
     IncreaseTriggerStat= 5, //+Crit/Crushing/Knockback/Stun/Freeze chance

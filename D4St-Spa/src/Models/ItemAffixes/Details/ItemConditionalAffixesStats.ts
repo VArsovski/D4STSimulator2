@@ -4,8 +4,10 @@ import { ItemTriggerStats } from './ItemTriggerStats';
 import { Helpers } from 'src/_Helpers/helpers';
 import { CCEffectTypesEnum } from 'src/_Enums/triggerAffixEnums';
 import { ItemBasicStats } from './ItemBasicStats';
+import { IEquippableStat, IEquippableInventoryModel } from 'src/Models/InventoryDetailModels/IEquippableStat';
+import { IItemAffix } from '../IItemAffix';
 
-export class ItemConditionalBasicStats implements IItemAffixStats {
+export class ItemConditionalBasicStats implements IItemAffixStats, IEquippableStat {
     Amount: number;
     Level: number;
     PowerLevel: number;
@@ -13,6 +15,8 @@ export class ItemConditionalBasicStats implements IItemAffixStats {
     CategoryStats: AffixCategoryEnum;
     BasicStatsData: ItemBasicStats;
     TriggerData: ItemTriggerStats;
+    SelectedStat: string;
+    SelectedEquipStat: string;
 
     constructor(level:number, powerLevel:number, basicData:ItemBasicStats, triggerData:ItemTriggerStats, duration:number) {
         this.Level = level;
@@ -20,7 +24,12 @@ export class ItemConditionalBasicStats implements IItemAffixStats {
         this.BasicStatsData = basicData;
         this.TriggerData = triggerData;
         this.Duration = duration;
+
+        this.SelectedStat = this.BasicStatsData.SelectedStat;
+        this.SelectedEquipStat = this.BasicStatsData.SelectedEquipStat;
     }
+
+    updateEquippedStats: (src:IItemAffix, affix:IItemAffix) => IItemAffix;
 
     public GetDescription(): string {
         console.log("When: ");
@@ -40,6 +49,7 @@ export class ItemConditionalTriggerStats implements IItemAffixStats {
     CategoryStats: AffixCategoryEnum;
     BasicStatsData: ItemBasicStats;
     TriggerData: ItemTriggerStats;
+    SelectedEquipStat: string;
 
     constructor(level:number, powerLevel:number, basicData:ItemBasicStats, triggerData:ItemTriggerStats, duration:number) {
         this.Level = level;
@@ -67,6 +77,7 @@ export class ItemConditionalCastStats implements IItemAffixStats {
     CategoryStats: AffixCategoryEnum;
     BasicStatsData: ItemBasicStats;
     TriggerData: ItemTriggerStats;
+    SelectedEquipStat: string;
 
     constructor(level:number, powerLevel:number, basicData:ItemBasicStats, triggerData:ItemTriggerStats, duration:number) {
         this.Level = level;

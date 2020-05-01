@@ -2,8 +2,10 @@ import { OfensiveStatCategoryEnum, OfensiveStatsEnum, AffixCategoryEnum } from '
 import { Helpers } from 'src/_Helpers/helpers';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 import { IItemAffixStats } from './IItemAffixStats';
+import { IEquippableStat, IEquippableInventoryModel } from 'src/Models/InventoryDetailModels/IEquippableStat';
+import { IItemAffix } from '../IItemAffix';
 
-export class ItemOfensiveStats implements IItemAffixStats {
+export class ItemOfensiveStats implements IItemAffixStats, IEquippableStat {
     private CleaveAndAoE?:ItemOfensiveStatsDetail;
     private PoisonAndBurn?:ItemOfensiveStatsDetail;
     private ArmorReductionAndBleed?:ItemOfensiveStatsDetail;
@@ -12,12 +14,15 @@ export class ItemOfensiveStats implements IItemAffixStats {
     private ChainAndPierce?:ItemOfensiveStatsDetail;
     private CastAndProjectileRange?:ItemOfensiveStatsDetail;
     private Socket:ItemOfensiveStatsDetail;
-    private selectedStat:string;
+    selectedStat:string;
     private Level: number;
     private PowerLevel:number;
     private statsCalculated:boolean;
     private SocketPowerPercentage:number;
     Amount:number; //Just to check whether there is data in here (from outside method)
+    SelectedStat: string;
+    CategoryStats: AffixCategoryEnum;
+    SelectedEquipStat: string;
 
     GetDescription(): string {
         var descr1 = (this.CleaveAndAoE) ? this.CleaveAndAoE.GetDescription() : "";
@@ -70,8 +75,11 @@ export class ItemOfensiveStats implements IItemAffixStats {
             }
             this.statsCalculated = true;
         }
+
+        this.SelectedEquipStat = this[this.selectedStat].SelectedEquipStat;
     }
-    CategoryStats: import("../../../_Enums/itemAffixEnums").AffixCategoryEnum;
+
+    updateEquippedStats: (src:IItemAffix, affix:IItemAffix) => IItemAffix;
 
     private GenerateAppropriateCategoriesByType(type:OfensiveStatsEnum) {
         var categories:OfensiveStatCategoryEnum[] = [];
@@ -109,6 +117,8 @@ export class ItemOfensiveStatsDetail implements IItemAffixStats {
     AmountPercentage?:number;
     private OfensiveAffixStatCategories:OfensiveStatCategoryEnum[];
     private Type:OfensiveStatsEnum;
+    CategoryStats: AffixCategoryEnum;
+    SelectedEquipStat: string;
 
     GetDescription(): string {
         var str = "";
@@ -144,6 +154,6 @@ export class ItemOfensiveStatsDetail implements IItemAffixStats {
         this.AmountPercentage = amountPercentage;
         this.Type = type;
         this.OfensiveAffixStatCategories = ofensiveStatCategories;
+        this.SelectedEquipStat = Helpers.getPropertyByValue(OfensiveStatsEnum, this.Type);
     }
-    CategoryStats: AffixCategoryEnum;
 }

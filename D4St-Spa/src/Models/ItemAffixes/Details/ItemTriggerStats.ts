@@ -4,11 +4,14 @@ import { TriggerTypesEnum, CCEffectTypesEnum, SpellEffectTypesEnum, HitEffectTyp
 import { SkillVM } from 'src/Models/SkillVM';
 import { AffixCategoryEnum } from 'src/_Enums/itemAffixEnums';
 import { IItemAffixStats } from './IItemAffixStats';
+import { IEquippableStat, IEquippableInventoryModel } from 'src/Models/InventoryDetailModels/IEquippableStat';
+import { IItemAffix } from '../IItemAffix';
 
-export class ItemTriggerStats implements IItemAffixStats {
+export class ItemTriggerStats implements IItemAffixStats, IEquippableStat {
     Chance:number;
     Amount:number;
     Type:TriggerTypesEnum;
+    CategoryStats: AffixCategoryEnum;
     // HitEffectPhysical = 1,    // HitEffectTypesEnum
     // HitEffectCC = 2,          // CCEffectTypesEnum
     // SpellEffect = 3,          // SpellEffectTypesEnum
@@ -20,6 +23,9 @@ export class ItemTriggerStats implements IItemAffixStats {
     private Level: number;
     private statsCalculated: boolean;
     private SelectedType:string;
+    SelectedStat: string;
+    SelectedEquipStat: string;
+
     constructor(category: AffixCategoryEnum, level:number, powerLevel:number, amount:number, chance:number, type:TriggerTypesEnum, triggerSubtype:number, skillStat: SkillVM) {
 
         this.CategoryStats = category;
@@ -46,8 +52,13 @@ export class ItemTriggerStats implements IItemAffixStats {
 
             this.statsCalculated = true;
         }
+
+        this.SelectedEquipStat = this.Type == TriggerTypesEnum.HitEffectCC ? Helpers.getPropertyByValue(CCEffectTypesEnum, this.HitEffectCC)
+                               : this.Type == TriggerTypesEnum.HitEffectPhysical ? Helpers.getPropertyByValue(HitEffectTypesEnum, this.HitEffectPhysical)
+                               : Helpers.getPropertyByValue(TriggerTypesEnum, this.Type);
     }
-    CategoryStats: AffixCategoryEnum;
+
+    updateEquippedStats: (src:IItemAffix, affix:IItemAffix) => IItemAffix;
 
     public GetDescription():string {
 

@@ -8,6 +8,7 @@ import { SkillVM } from '../SkillVM';
 import { ItemDamageStats } from './Details/ItemDamageStats';
 import { ItemAffixEnumsHelper } from './AffixHelpers/ItemAffixEnumsHelper';
 import { BasicAffixHelper } from './AffixHelpers/BasicAffixHelper';
+import { ItemDamageEmpowerStats, ItemDamageCategoryStats } from './Details/ItemDamageEmpowerStats';
 
 export class ItemAffixGenerator {
     SkillPool: SkillVM[];
@@ -38,16 +39,27 @@ export class ItemAffixGenerator {
         var affixesList:ItemAffix[] = [];
         var affixesListBlueprint = this.GenerateBluePrintByRarityAndType(ItemCategoriesEnum.Weapon, rarity);
 
-        // Insert/Add this affix as first
+        // Insert/Add these affixes as first
         affixesListBlueprint.unshift(new ItemAffixBlueprint(ItemAffixTypeEnum.Damage, false, AffixCategoryEnum.PrimaryDamage));
+        affixesListBlueprint.unshift(new ItemAffixBlueprint(ItemAffixTypeEnum.Damage, false, AffixCategoryEnum.PrimaryDamage));
+
         affixesList = this.AddConditionsToAffixesFromBlueprint(level, affixesListBlueprint, rarity);
         affixesList.forEach(a => a.ItemCategory = ItemCategoriesEnum.Weapon);
         affixesList = this.AddCategoryToAffixes(level, affixesList, rarity);
         var powerLevelDefault = 0;
 
         // Set primary affix (the one with index 0)
-        var selectedDamage = new ItemDamageStats(AffixCategoryEnum.PrimaryDamage, true, true, level, powerLevelDefault, itemType);
+        var selectedDamage = new ItemDamageStats(AffixCategoryEnum.PrimaryDamage, level, powerLevelDefault, itemType);
+        var basicAmount = Helpers.getRandom(3, 4);
+        debugger;
+        var selectedDamageEmpower = new ItemDamageEmpowerStats(AffixCategoryEnum.PrimaryDamage, basicAmount, level, powerLevelDefault, 0, rarity, null);
+
+        // TODO: Kinda weird that there the function gets out of the AffixData container..
         affixesList[0].Contents.AffixData = selectedDamage;
+        affixesList[0].Contents.updateEquippedStats = selectedDamage.updateEquippedStats;
+        affixesList[1].Contents.AffixData = selectedDamageEmpower;
+        affixesList[1].Contents.updateEquippedStats = selectedDamageEmpower.updateEquippedStats;
+        
         return affixesList;
     }
     

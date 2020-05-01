@@ -56,7 +56,6 @@ export class ApiServiceService {
         var currentAccessKey = localStorage["currentAccessKey"];
 
         var setFn = async () => {
-          debugger;
           this.headerDict["Authorization"] = "Bearer " + localStorage["currentAccessKey"];
           this.requestOptions = { headers: this.headerDict };
         }
@@ -67,16 +66,13 @@ export class ApiServiceService {
           // headerDict["Content-Length"] = JSON.stringify(model).length;
           var requestOptions = { headers: headerDict };
           var token = "";
-          debugger;
           this.http.get(this.baseUrl + "Auth/InitAccess/" + "?Name=" + environment.accessorHost + "&Key=" + environment.accessorKey, requestOptions)
           .pipe(
             map((response: any) => {
-            debugger;
             token = response.token;
           }))
           .subscribe(
           response => {
-            debugger;
             localStorage["currentAccessKey"] = response["token"];
             setFn();
             },
@@ -92,16 +88,13 @@ export class ApiServiceService {
           headerDict["Content-Length"] = JSON.stringify(model).length;
           var requestOptions = { headers: headerDict };
           var token = "";
-          debugger;
           this.http.post(this.baseUrl + "Auth/InitAccess", model, requestOptions)
           .pipe(
             map((response: any) => {
-            debugger;
             token = response.token;
           }))
           .subscribe(
           response => {
-            debugger;
             localStorage["currentAccessKey"] = response["token"];
             setFn();
             },
