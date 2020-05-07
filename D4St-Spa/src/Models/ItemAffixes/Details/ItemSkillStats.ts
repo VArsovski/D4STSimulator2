@@ -1,8 +1,9 @@
-import { IItemAffixStats } from './IItemAffixStats';
+import { IItemAffixStats, SimpleItemAffixStatsMetadata, IItemAffixStatsMetadata } from './IItemAffixStats';
 import { AffixCategoryEnum } from 'src/_Enums/itemAffixEnums';
 import { SkillVM } from 'src/Models/SkillVM';
-import { IEquippableStat } from 'src/Models/InventoryDetailModels/IEquippableStat';
+import { IEquippableStat } from 'src/Models/InventoryModels/InventoryDetailModels/IEquippableStat';
 import { IItemAffix } from '../IItemAffix';
+import { Helpers } from 'src/_Helpers/helpers';
 
 export class ItemSkillStats implements IItemAffixStats, IEquippableStat {
     Level: number;
@@ -10,8 +11,8 @@ export class ItemSkillStats implements IItemAffixStats, IEquippableStat {
     PowerLevel:number
     AffixData: SkillVM;
     CategoryStats: AffixCategoryEnum;
-    SelectedStat: string;
-    SelectedEquipStat: string;
+    InputMeta: IItemAffixStatsMetadata;
+    OutputMeta: IItemAffixStatsMetadata;
 
     constructor(category:AffixCategoryEnum, affixData:SkillVM, level:number, powerLevel:number) {
         this.Level = level;
@@ -24,6 +25,14 @@ export class ItemSkillStats implements IItemAffixStats, IEquippableStat {
                 this.AffixData.level = Math.round(this.AffixData.tier * 3);
             }
         }
+
+        this.InputMeta = new SimpleItemAffixStatsMetadata();
+        this.OutputMeta = new SimpleItemAffixStatsMetadata();
+        this.InputMeta.SelectedCategoryStat = this.constructor.name;
+        this.InputMeta.SelectedStat = Helpers.getPropertyByValue(AffixCategoryEnum, this.CategoryStats);
+        this.OutputMeta.SelectedCategoryStat = "BasicStat";
+        this.OutputMeta.SelectedStat = "SkillEmpower";
+        this.OutputMeta.SelectedEquipStat = (this.AffixData || {name:"SkillNotSelected"}).name;
     }
     
     updateEquippedStats: (src: IItemAffix, affix: IItemAffix) => IItemAffix;

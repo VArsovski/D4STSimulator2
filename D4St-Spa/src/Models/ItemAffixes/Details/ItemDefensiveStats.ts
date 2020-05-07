@@ -2,14 +2,12 @@ import { DefensiveStatCategoryEnum, DefensiveStatsEnum, DamageTypesEnum, AttackT
 import { Helpers } from 'src/_Helpers/helpers';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 import { CCEffectTypesEnum } from 'src/_Enums/triggerAffixEnums';
-import { IItemAffixStats } from './IItemAffixStats';
-import { IEquippableStat, IEquippableInventoryModel } from 'src/Models/InventoryDetailModels/IEquippableStat';
+import { IItemAffixStats, SimpleItemAffixStatsMetadata, IItemAffixStatsMetadata } from './IItemAffixStats';
+import { IEquippableStat } from 'src/Models/InventoryModels/InventoryDetailModels/IEquippableStat';
 import { IItemAffix } from '../IItemAffix';
 
 export class ItemDefenseStats implements IItemAffixStats, IEquippableStat {
     Amount:number;
-    SelectedStat:string;
-    SelectedEquipStat: string;
     CCDamageAndDurationReduced?:ItemDefensiveStatsDetail;
     PotionAndGlobeBonus?:ItemDefensiveStatsDetail;
     DamageTaken?:ItemDefensiveStatsDetail;
@@ -22,6 +20,9 @@ export class ItemDefenseStats implements IItemAffixStats, IEquippableStat {
     private PowerLevel: number;
     private statsCalculated:boolean;
     private SocketPowerPercentage:number;
+    InputMeta: IItemAffixStatsMetadata;
+    OutputMeta: IItemAffixStatsMetadata;
+    private SelectedStat: string;
 
     GetDescription(): string {
         var descr1 = (this.CCDamageAndDurationReduced) ? this.CCDamageAndDurationReduced.GetDescription() : "";
@@ -53,6 +54,11 @@ export class ItemDefenseStats implements IItemAffixStats, IEquippableStat {
         if (type == DefensiveStatsEnum.DamageStaggered && amount && !amountPercentage)
             amount = Math.round(amount * 2.5);
 
+        this.InputMeta = new SimpleItemAffixStatsMetadata();
+        this.OutputMeta = new SimpleItemAffixStatsMetadata();
+        this.InputMeta.SelectedCategoryStat = this.constructor.name;
+        this.InputMeta.SelectedStat = Helpers.getPropertyByValue(AffixCategoryEnum, this.CategoryStats);
+
         var selectedStat = Helpers.getPropertyByValue(DefensiveStatsEnum, type);
         this.SelectedStat = selectedStat;
         if (type == DefensiveStatsEnum.Socket)
@@ -76,7 +82,8 @@ export class ItemDefenseStats implements IItemAffixStats, IEquippableStat {
             this.statsCalculated = true;
         }
 
-        this.SelectedEquipStat = this[this.SelectedStat].SelectedEquipStat;
+        this.OutputMeta.SelectedStat = this.SelectedStat;
+        this.OutputMeta.SelectedEquipStat = this[this.SelectedStat].SelectedEquipStat;
     }
 
     updateEquippedStats: (src:IItemAffix, affix:IItemAffix) => IItemAffix;
@@ -115,18 +122,17 @@ export class ItemDefenseStats implements IItemAffixStats, IEquippableStat {
 
 export class ItemDefensiveStatsDetail implements IItemAffixStats {
     Amount:number;
-    SelectedEquipStat: string;
     CategoryStats: AffixCategoryEnum;
     private CCType:CCEffectTypesEnum;
     private DamageType:DamageTypesEnum;
     private AttackType:AttackTypesEnum;
-
     private AmountPercentage?:number;
     private Duration?:number;
     private Chance?: number;
     private DefensiveAffixStatCategories:DefensiveStatCategoryEnum[];
     private Type:DefensiveStatsEnum;
-    
+    InputMeta: IItemAffixStatsMetadata;
+    OutputMeta: IItemAffixStatsMetadata;
     // private selectedStat:string;
     private Socket:number;
 
@@ -225,6 +231,14 @@ export class ItemDefensiveStatsDetail implements IItemAffixStats {
         this.AttackType = attackType;
         this.CCType = ccType;
 
-        this.SelectedEquipStat = Helpers.getPropertyByValue(DefensiveStatsEnum, this.Type);
+        this.InputMeta = new SimpleItemAffixStatsMetadata();
+        this.OutputMeta = new SimpleItemAffixStatsMetadata();
+        this.InputMeta.SelectedCategoryStat = this.constructor.name;
+        this.InputMeta.SelectedStat = Helpers.getPropertyByValue(AffixCategoryEnum, this.CategoryStats);
+
+        this.OutputMeta.SelectedCategoryStat = "ItemDefensiveStats";
+        this.OutputMeta.SelectedStat = Helpers.getPropertyByValue(DefensiveStatsEnum, this.Type);
+        this.OutputMeta.SelectedEquipStat = this.Type != DefensiveStatsEnum.CCEffects ? Helpers.getPropertyByValue(DefensiveStatsEnum, this.Type)
+        : Helpers.getPropertyByValue(CCEffectTypesEnum, this.CCType);
     }
 }

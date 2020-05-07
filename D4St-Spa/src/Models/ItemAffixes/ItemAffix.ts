@@ -82,12 +82,26 @@ export class ItemAffix implements IItemAffix {
             conditionStr = "(requires " + this.Condition.Condition + " " + Helpers.getPropertyByValue(PowerTypesEnum, this.Condition.ConditionPowerType) + ")";
 
         // Remove Extra ***s into max 3
-        statDescr = statDescr.replace("****", "***");
+        if (statDescr.indexOf("****") != -1)
+        while (statDescr.indexOf("****") != -1) {
+            statDescr = statDescr.replace("****", "***");
+        }
 
         if (statDescr.includes("NaN ") || statDescr.startsWith("0") || statDescr.includes("null") || statDescr.replace("*", "").length == 0) {
             console.log("Data missing for:");
             console.log(this);
         }
+
+        // TODO: Find the rest of the types and Set
+        // if (this.AffixType > 3 && this.AffixType < 9) {
+        //     var inputData = this.Contents.InputMeta;
+        //     var outputData = this.Contents.OutputMeta;
+        //     var innerInputData = this.Contents.AffixData["InputMeta"];
+        //     var innerOutputData = this.Contents.AffixData["OutputMeta"];
+
+        //     suffix += JSON.stringify(outputData);
+        //     suffix += JSON.stringify(innerOutputData);
+        // }
 
         return statDescr + " " + conditionStr + suffix;
     }

@@ -18,7 +18,7 @@ export class ArmorAffixHelper {
         : armorType % delimiter == 2 ? ArmorTypesEnum.Light
         : ArmorTypesEnum.Mystic;
     
-        var armorStat = new ItemArmorStats(category, level, powerLevel, selected, selectedType, 0, 0, isPrimary);
+        var armorStat = new ItemArmorStats(category, level, powerLevel, selected, selectedType);
         return new ItemAffixOutput(category, armorStat);
     }
 }

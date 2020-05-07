@@ -43,6 +43,7 @@ export class CustomCompareTooltipComponent {
   @Input() contentTitle:string;
   @Input() width:string;
   @Input() height:string;
+  @Input() maxwidth:string;
   @Input() contentImg:string;
   @Input() contentLabel:string;
   @Input() style:SafeStyle;

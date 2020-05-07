@@ -1,16 +1,25 @@
 <div class="row basicStatsDisplayHolder">
     <div class="customFontBlue h3 sizeCrystal iconTop col">
-        <app-CustomCompareTooltip contentImg="../../_Resources/img/HealthPotion.png" text="HP (lose it all and you die)"></app-CustomCompareTooltip>
-        <label>{{"+" + this.BasicStats.HP.Amount + " (" + this.BasicStats.HP.AmountPercentage + "%)"}}</label>
-        <label>{{this.BasicStats.HP.Regen + "/" + this.BasicStats.HP.AmountPercentageRegen + "%/s"}}</label>
+        <app-CustomCompareTooltip contentImg="../../_Resources/img/HealthPotion.png" contentLabel="HP" text="
+        Amount: {{'+' + this.BasicStats.HP.Amount + ' (+' + this.BasicStats.HP.AmountPercentage + '%)'}}
+        <br/>
+        Regen: {{'+' + this.BasicStats.HP.Regen + ' (+' + this.BasicStats.HP.AmountPercentageRegen + '%)/s'
+        + '<br/>' + ' +' + this.BasicStats.HP.Return + '/hit return'}}
+        "></app-CustomCompareTooltip>
     </div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/ResourcePotion3.gif" text="Resource (required for casting impactful abilities)"></app-CustomCompareTooltip>
-        <label>{{"+" + this.BasicStats.Resource.Amount + " (" + this.BasicStats.Resource.AmountPercentage + "%)"}}</label>
-        <label>{{this.BasicStats.Resource.Regen + "/" + this.BasicStats.Resource.AmountPercentageRegen + "%/s"}}</label>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentLabel="Resource" contentImg="../../_Resources/img/ResourcePotion3.gif" text="
+        Amount: {{'+' + this.BasicStats.Resource.Amount + ' (+' + this.BasicStats.Resource.AmountPercentage + '%)'}}
+        <br/>
+        Regen: {{'+' + this.BasicStats.Resource.Regen + ' (+' + this.BasicStats.Resource.AmountPercentageRegen + '%)/s'
+        + '<br/>' + ' +' + this.BasicStats.Resource.Return + '/hit return'}}
+        "></app-CustomCompareTooltip>
     </div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/StaminaPotion.png" text="Stamina (endurance in direct combat)"></app-CustomCompareTooltip>
-        <label>{{"+" + this.BasicStats.Stamina.Amount + " (" + this.BasicStats.Stamina.AmountPercentage + "%)"}}</label>
-        <label>{{this.BasicStats.Stamina.Regen + "/" + this.BasicStats.Stamina.AmountPercentageRegen + "%/s"}}</label>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentLabel="Stamina" contentImg="../../_Resources/img/StaminaPotion.png" text="
+        Amount: {{'+' + this.BasicStats.Stamina.Amount + ' (+' + this.BasicStats.Stamina.AmountPercentage + '%)'}}
+        <br/>
+        Regen: {{'+' + this.BasicStats.Stamina.Regen + ' (+' + this.BasicStats.Stamina.AmountPercentageRegen + '%)/s'
+        + '<br/>' + ' +' + this.BasicStats.Stamina.Return + '/hit return'}}
+        "></app-CustomCompareTooltip>
     </div>
 </div>
 <div class="row powerStatsDisplayHolder">
@@ -30,11 +39,11 @@
     <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/AttackReduceArmor.png" text="Procs or abilities can cast a trap or a summoned. This type increases their damage. Usually found on Bow, Wand, or Staff"></app-CustomCompareTooltip><label>{{this.DamageEmpowerData.TrapOrSummon.Percentage + "%"}}</label></div>
 </div>
 <div class="row attacksDisplayHolder2">
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/PhysicalDamage1.png" text="Physical damage"></app-CustomCompareTooltip><label>{{ this.DamageData.PhysicalDamage.AvgDamage ? this.DamageData.PhysicalDamage.AvgDamage : this.DamageData.PhysicalDamage.MinDamage + "-" + this.DamageData.PhysicalDamage.MaxDamage}}</label></div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/FireDamage1.png" text="Fire damage"></app-CustomCompareTooltip><label>{{ this.DamageData.FireDamage.AvgDamage ? this.DamageData.FireDamage.AvgDamage : this.DamageData.FireDamage.MinDamage + "-" + this.DamageData.FireDamage.MaxDamage}}</label></div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/PoisonDamage.png" text="Poison damage"></app-CustomCompareTooltip><label>{{ this.DamageData.PhysicalDamage.AvgDamage ? this.DamageData.PoisonDamage.AvgDamage : this.DamageData.PoisonDamage.MinDamage + "-" + this.DamageData.PoisonDamage.MaxDamage}}</label></div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/ColdDamage.png" text="Cold damage"></app-CustomCompareTooltip><label>{{ this.DamageData.ColdDamage.AvgDamage ? this.DamageData.ColdDamage.AvgDamage : this.DamageData.ColdDamage.MinDamage + "-" + this.DamageData.ColdDamage.MaxDamage}}</label></div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/LightningDamage.jpg" text="Lightning damage"></app-CustomCompareTooltip><label>{{ this.DamageData.LightningDamage.AvgDamage ? this.DamageData.LightningDamage.AvgDamage : this.DamageData.LightningDamage.MinDamage + "-" + this.DamageData.LightningDamage.MaxDamage}}</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/PhysicalDamage1.png" text="Physical damage (% Resistance)"></app-CustomCompareTooltip><label>{{ this.DamageData.PhysicalDamage.AvgDamage ? this.DamageData.PhysicalDamage.AvgDamage : this.DamageData.PhysicalDamage.MinDamage + "-" + this.DamageData.PhysicalDamage.MaxDamage}} ({{ this.Resistance.PhysicalResistance.Percentage + "%" }})</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/FireDamage1.png" text="Fire damage (% Resistance)"></app-CustomCompareTooltip><label>{{ this.DamageData.FireDamage.AvgDamage ? this.DamageData.FireDamage.AvgDamage : this.DamageData.FireDamage.MinDamage + "-" + this.DamageData.FireDamage.MaxDamage}} ({{ this.Resistance.FireResistance.Percentage + "%" }})</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/PoisonDamage.png" text="Poison damage (% Resistance)"></app-CustomCompareTooltip><label>{{ this.DamageData.PhysicalDamage.AvgDamage ? this.DamageData.PoisonDamage.AvgDamage : this.DamageData.PoisonDamage.MinDamage + "-" + this.DamageData.PoisonDamage.MaxDamage}} ({{ this.Resistance.PoisonResistance.Percentage + "%" }})</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/ColdDamage.png" text="Cold damage (% Resistance)"></app-CustomCompareTooltip><label>{{ this.DamageData.ColdDamage.AvgDamage ? this.DamageData.ColdDamage.AvgDamage : this.DamageData.ColdDamage.MinDamage + "-" + this.DamageData.ColdDamage.MaxDamage}} ({{ this.Resistance.ColdResistance.Percentage + "%" }})</label></div>
+    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/LightningDamage.jpg" text="Lightning damage (% Resistance)"></app-CustomCompareTooltip><label>{{ this.DamageData.LightningDamage.AvgDamage ? this.DamageData.LightningDamage.AvgDamage : this.DamageData.LightningDamage.MinDamage + "-" + this.DamageData.LightningDamage.MaxDamage}} ({{ this.Resistance.LightningResistance.Percentage + "%" }})</label></div>
 </div>
 
 <ul class="armorDisplayHolder">
@@ -47,10 +56,16 @@
     <br/> Mystic armor reduces: Burn, Curse, Freeze, ReduceArmor suffered
     "></app-CustomCompareTooltip>
         <br/>
-        <label *ngIf="this.ArmorData" style="transform: translate(20%, 20%);" class="customFontRed h2">{{this.ArmorData.HeavyArmor.Amount + "/"}}</label>
-        <label *ngIf="this.ArmorData" style="transform: translate(20%, 20%);" class="customFontRed h2">{{this.ArmorData.LightArmor.Amount + "/"}}</label>
-        <label *ngIf="this.ArmorData" style="transform: translate(20%, 20%);" class="customFontRed h2">{{this.ArmorData.MysticArmor.Amount}}</label>
-        <app-CustomCompareTooltip width="45px" height="45px" contentImg="../../_Resources/img/ArmorHeavy.png" contentLabel="{{'-' + this.ArmorData.Armor.Amount | number:'1.0-0' + '%'}}" text="PhysicalDamage Taken reduced by {{this.ArmorData.Armor.Amount | number:'1.0-0'}}%"></app-CustomCompareTooltip>
+        <label *ngIf="this.ArmorData" style="transform: translate(0%, 20%);" class="customFontRed h2">Total: {{this.ArmorData.HeavyArmor.Amount + this.ArmorData.LightArmor.Amount + this.ArmorData.MysticArmor.Amount}}</label>
+        <app-CustomCompareTooltip width="45px" height="45px" maxwidth="75px" contentImg="../../_Resources/img/PhysicalDamage1.png" contentLabel="{{'-' + (this.ArmorData.Armor.Amount | number:'1.0-0') + '%'}}" text="
+        Heavy: {{this.ArmorData.HeavyArmor.Amount}}
+        <br/>
+        Light: {{this.ArmorData.LightArmor.Amount}}
+        <br/>
+        Mystic: {{this.ArmorData.MysticArmor.Amount}}
+        <br/>
+        PhysicalDamage Taken reduced by {{this.ArmorData.Armor.Amount | number:'1.0-0'}}%"></app-CustomCompareTooltip>
+        
         <!-- <label *ngIf="this.ArmorData" style="transform: translate(20%, 20%);" class="customFontRed h2">{{" [" + this.ArmorData.Armor.Amount | number:'1.0-0' + "%]"}}</label> -->
     </li>
 
@@ -83,15 +98,15 @@
 <div class="inventoryHolder">
     <div class="row" style="height:25vh">
         <div class="col customFontBlue sizeThumbnail" style="height:25vh">
-            <div id="ABoHolder" class="bootsItem"><app-CustomCompareTooltip      class="itemTooltip" contentImg={{this.bootsSrc}} text={{this.BootsDescription}}></app-CustomCompareTooltip></div>
-            <div id="AChHolder" class="chestItem"><app-CustomCompareTooltip      class="itemTooltip" contentImg={{this.chestSrc}} text={{this.ChestDescription}}></app-CustomCompareTooltip></div>
-            <div id="AGlHolder" class="glovesItem"><app-CustomCompareTooltip     class="itemTooltip" contentImg={{this.glovesSrc}} text={{this.GlovesDescription}}></app-CustomCompareTooltip></div>
-            <div id="AHeHolder" class="helmItem"><app-CustomCompareTooltip       class="itemTooltip" width="75px" height="75px" contentImg={{this.helmSrc}} text={{this.HelmDescription}}></app-CustomCompareTooltip></div>
-            <div id="APaHolder" class="pantsItem"><app-CustomCompareTooltip      class="itemTooltip" contentImg={{this.pantsSrc}} text={{this.PantsDescription}}></app-CustomCompareTooltip></div>
-            <div id="WepHolder" [class]=this.WeaponCss><app-CustomCompareTooltip class="itemTooltip" contentImg={{this.weaponSrc}} text={{this.WeaponDescription}}></app-CustomCompareTooltip></div>
-            <div id="JAmHolder" [class]=this.AmuletCss><app-CustomCompareTooltip class="itemTooltip" width="45px" height="45px" contentImg={{this.amuletSrc}} text={{this.AmuletDescription}}></app-CustomCompareTooltip></div>
-            <div id="JRi1Holder" [class]=this.Ring1Css><app-CustomCompareTooltip class="itemTooltip" width="45px" height="45px" contentImg={{this.ring1Src}} text={{this.Ring1Description}}></app-CustomCompareTooltip></div>
-            <div id="JRi2Holder" [class]=this.Ring2Css><app-CustomCompareTooltip class="itemTooltip" width="45px" height="45px" contentImg={{this.ring2Src}} text={{this.Ring2Description}}></app-CustomCompareTooltip></div>
+            <div id="ABoHolder" class="bootsItem"><app-CustomCompareTooltip     class="itemTooltip" contentImg={{this.bootsSrc}} text={{this.BootsDescription}}></app-CustomCompareTooltip></div>
+            <div id="AChHolder" class="chestItem"><app-CustomCompareTooltip     class="itemTooltip" contentImg={{this.chestSrc}} text={{this.ChestDescription}}></app-CustomCompareTooltip></div>
+            <div id="AGlHolder" class="glovesItem"><app-CustomCompareTooltip    class="itemTooltip" contentImg={{this.glovesSrc}} text={{this.GlovesDescription}}></app-CustomCompareTooltip></div>
+            <div id="AHeHolder" class="helmItem"><app-CustomCompareTooltip      class="itemTooltip" width="75px" height="75px" contentImg={{this.helmSrc}} text={{this.HelmDescription}}></app-CustomCompareTooltip></div>
+            <div id="APaHolder" class="pantsItem"><app-CustomCompareTooltip     class="itemTooltip" contentImg={{this.pantsSrc}} text={{this.PantsDescription}}></app-CustomCompareTooltip></div>
+            <div id="WepHolder" class= "weaponItem"><app-CustomCompareTooltip   class="itemTooltip" contentImg={{this.weaponSrc}} text={{this.WeaponDescription}}></app-CustomCompareTooltip></div>
+            <div id="JAmHolder" class= "amuletItem"><app-CustomCompareTooltip   class="itemTooltip" width="45px" height="45px" contentImg={{this.amuletSrc}} text={{this.AmuletDescription}}></app-CustomCompareTooltip></div>
+            <div id="JRi1Holder" class="ring1Item"><app-CustomCompareTooltip    class="itemTooltip" width="45px" height="45px" contentImg={{this.ring1Src}} text={{this.Ring1Description}}></app-CustomCompareTooltip></div>
+            <div id="JRi2Holder" class="ring2Item"><app-CustomCompareTooltip    class="itemTooltip" width="45px" height="45px" contentImg={{this.ring2Src}} text={{this.Ring2Description}}></app-CustomCompareTooltip></div>
         </div>
     </div>
 </div>

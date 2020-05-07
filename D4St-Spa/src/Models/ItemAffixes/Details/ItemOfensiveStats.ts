@@ -1,8 +1,8 @@
 import { OfensiveStatCategoryEnum, OfensiveStatsEnum, AffixCategoryEnum } from 'src/_Enums/itemAffixEnums';
 import { Helpers } from 'src/_Helpers/helpers';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
-import { IItemAffixStats } from './IItemAffixStats';
-import { IEquippableStat, IEquippableInventoryModel } from 'src/Models/InventoryDetailModels/IEquippableStat';
+import { IItemAffixStats, SimpleItemAffixStatsMetadata, IItemAffixStatsMetadata } from './IItemAffixStats';
+import { IEquippableStat } from 'src/Models/InventoryModels/InventoryDetailModels/IEquippableStat';
 import { IItemAffix } from '../IItemAffix';
 
 export class ItemOfensiveStats implements IItemAffixStats, IEquippableStat {
@@ -14,15 +14,15 @@ export class ItemOfensiveStats implements IItemAffixStats, IEquippableStat {
     private ChainAndPierce?:ItemOfensiveStatsDetail;
     private CastAndProjectileRange?:ItemOfensiveStatsDetail;
     private Socket:ItemOfensiveStatsDetail;
-    selectedStat:string;
+    private selectedStat:string;
     private Level: number;
     private PowerLevel:number;
     private statsCalculated:boolean;
     private SocketPowerPercentage:number;
     Amount:number; //Just to check whether there is data in here (from outside method)
-    SelectedStat: string;
     CategoryStats: AffixCategoryEnum;
-    SelectedEquipStat: string;
+    InputMeta: IItemAffixStatsMetadata;
+    OutputMeta: IItemAffixStatsMetadata;
 
     GetDescription(): string {
         var descr1 = (this.CleaveAndAoE) ? this.CleaveAndAoE.GetDescription() : "";
@@ -76,7 +76,13 @@ export class ItemOfensiveStats implements IItemAffixStats, IEquippableStat {
             this.statsCalculated = true;
         }
 
-        this.SelectedEquipStat = this[this.selectedStat].SelectedEquipStat;
+        this.InputMeta = new SimpleItemAffixStatsMetadata();
+        this.OutputMeta = new SimpleItemAffixStatsMetadata();
+        this.InputMeta.SelectedCategoryStat = this.constructor.name;
+        this.InputMeta.SelectedStat = Helpers.getPropertyByValue(AffixCategoryEnum, this.CategoryStats);
+        this.OutputMeta.SelectedCategoryStat = "OfensiveStat";
+        this.OutputMeta.SelectedStat = this.selectedStat;
+        this.OutputMeta.SelectedEquipStat = this[this.selectedStat].SelectedEquipStat;
     }
 
     updateEquippedStats: (src:IItemAffix, affix:IItemAffix) => IItemAffix;
@@ -118,8 +124,9 @@ export class ItemOfensiveStatsDetail implements IItemAffixStats {
     private OfensiveAffixStatCategories:OfensiveStatCategoryEnum[];
     private Type:OfensiveStatsEnum;
     CategoryStats: AffixCategoryEnum;
-    SelectedEquipStat: string;
-
+    InputMeta: IItemAffixStatsMetadata;
+    OutputMeta: IItemAffixStatsMetadata;
+    
     GetDescription(): string {
         var str = "";
 
@@ -154,6 +161,13 @@ export class ItemOfensiveStatsDetail implements IItemAffixStats {
         this.AmountPercentage = amountPercentage;
         this.Type = type;
         this.OfensiveAffixStatCategories = ofensiveStatCategories;
-        this.SelectedEquipStat = Helpers.getPropertyByValue(OfensiveStatsEnum, this.Type);
+
+        this.InputMeta = new SimpleItemAffixStatsMetadata();
+        this.OutputMeta = new SimpleItemAffixStatsMetadata();
+        this.InputMeta.SelectedCategoryStat = this.constructor.name;
+        this.InputMeta.SelectedStat = Helpers.getPropertyByValue(AffixCategoryEnum, this.CategoryStats);
+        this.OutputMeta.SelectedEquipStat = Helpers.getPropertyByValue(OfensiveStatsEnum, this.Type);
+        this.OutputMeta.SelectedCategoryStat = "OfensiveStat";
+        this.OutputMeta.SelectedStat = "TODO:DetailsForOfensiveStats";
     }
 }

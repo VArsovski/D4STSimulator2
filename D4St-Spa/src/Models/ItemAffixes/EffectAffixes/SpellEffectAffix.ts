@@ -2,8 +2,11 @@ import { IEffectAffix, IEffectAffixHolder } from './IEffectAffix'
 import { Helpers } from 'src/_Helpers/helpers';
 import { IDescribable } from '../IDescribable';
 import { SpellEffectTypesEnum, TriggerTypesEnum } from 'src/_Enums/triggerAffixEnums';
+import { IItemAffixStats, SimpleItemAffixStatsMetadata, IItemAffixStatsMetadata } from '../Details/IItemAffixStats';
+import { AffixCategoryEnum } from 'src/_Enums/itemAffixEnums';
 
-export class SpellEffectAffix implements IEffectAffixHolder, IDescribable {
+export class SpellEffectAffix implements IEffectAffixHolder, IItemAffixStats, IDescribable {
+    Amount: number;
     private CastRange: IEffectAffix;
     private AoE: IEffectAffix;
     private DoT: IEffectAffix;
@@ -14,6 +17,9 @@ export class SpellEffectAffix implements IEffectAffixHolder, IDescribable {
     private SkillData: IEffectAffix;
     SelectedType: any;
     AffixData: IEffectAffix;
+    CategoryStats: AffixCategoryEnum;
+    InputMeta: IItemAffixStatsMetadata;
+    OutputMeta: IItemAffixStatsMetadata;
 
     constructor(affixData:IEffectAffix, selectedType:SpellEffectTypesEnum) {
         this.SelectedType = this[Helpers.getPropertyByValue(SpellEffectTypesEnum, this[this.SelectedType])];
@@ -21,6 +27,11 @@ export class SpellEffectAffix implements IEffectAffixHolder, IDescribable {
         if (this[this.SelectedType]) {
             this[this.SelectedType] = affixData;
         }
+
+        this.InputMeta = new SimpleItemAffixStatsMetadata();
+        this.OutputMeta = new SimpleItemAffixStatsMetadata();
+        this.InputMeta.SelectedCategoryStat = this.constructor.name;
+        this.InputMeta.SelectedStat = Helpers.getPropertyByValue(AffixCategoryEnum, this.CategoryStats);
     }
 
     GetDescription(): string {

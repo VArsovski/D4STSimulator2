@@ -1,7 +1,6 @@
 import { IArmorStatDetailsInventoryModel, IArmorStatDetailsInventoryModelCombined } from './IArmorStatDetailsInventoryModel';
-import { IEquippableInventoryModel } from './IEquippableStat';
 
-export class ArmorStatDetailsInventoryModel implements IArmorStatDetailsInventoryModel, IEquippableInventoryModel {
+export class ArmorStatDetailsInventoryModel implements IArmorStatDetailsInventoryModel {
     StunReduction: number;
     KnockdownReduction: number;
     KnockbackReduction: number;

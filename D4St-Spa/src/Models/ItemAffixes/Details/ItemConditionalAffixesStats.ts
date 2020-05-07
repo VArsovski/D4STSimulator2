@@ -1,10 +1,10 @@
-import { IItemAffixStats } from './IItemAffixStats';
+import { IItemAffixStats, IItemAffixStatsMetadata, SimpleItemAffixStatsMetadata } from './IItemAffixStats';
 import { AffixCategoryEnum } from 'src/_Enums/itemAffixEnums';
 import { ItemTriggerStats } from './ItemTriggerStats';
 import { Helpers } from 'src/_Helpers/helpers';
 import { CCEffectTypesEnum } from 'src/_Enums/triggerAffixEnums';
 import { ItemBasicStats } from './ItemBasicStats';
-import { IEquippableStat, IEquippableInventoryModel } from 'src/Models/InventoryDetailModels/IEquippableStat';
+import { IEquippableStat } from 'src/Models/InventoryModels/InventoryDetailModels/IEquippableStat';
 import { IItemAffix } from '../IItemAffix';
 
 export class ItemConditionalBasicStats implements IItemAffixStats, IEquippableStat {
@@ -15,8 +15,8 @@ export class ItemConditionalBasicStats implements IItemAffixStats, IEquippableSt
     CategoryStats: AffixCategoryEnum;
     BasicStatsData: ItemBasicStats;
     TriggerData: ItemTriggerStats;
-    SelectedStat: string;
-    SelectedEquipStat: string;
+    InputMeta: IItemAffixStatsMetadata;
+    OutputMeta: IItemAffixStatsMetadata;
 
     constructor(level:number, powerLevel:number, basicData:ItemBasicStats, triggerData:ItemTriggerStats, duration:number) {
         this.Level = level;
@@ -25,8 +25,14 @@ export class ItemConditionalBasicStats implements IItemAffixStats, IEquippableSt
         this.TriggerData = triggerData;
         this.Duration = duration;
 
-        this.SelectedStat = this.BasicStatsData.SelectedStat;
-        this.SelectedEquipStat = this.BasicStatsData.SelectedEquipStat;
+        this.InputMeta = new SimpleItemAffixStatsMetadata();
+        this.OutputMeta = new SimpleItemAffixStatsMetadata();
+        this.InputMeta.SelectedCategoryStat = this.constructor.name;
+        this.InputMeta.SelectedStat = "Conditional:TODO" + this.BasicStatsData.InputMeta.SelectedStat;
+        this.InputMeta.SelectedEquipStat = "Conditional:TODO" + this.BasicStatsData.InputMeta.SelectedEquipStat;
+        this.OutputMeta.SelectedCategoryStat = "Conditional:TODO" + this.BasicStatsData.OutputMeta.SelectedCategoryStat;
+        this.OutputMeta.SelectedStat = "Conditional:TODO" + this.BasicStatsData.OutputMeta.SelectedStat;
+        this.OutputMeta.SelectedEquipStat = "Conditional:TODO" + this.BasicStatsData.OutputMeta.SelectedEquipStat;
     }
 
     updateEquippedStats: (src:IItemAffix, affix:IItemAffix) => IItemAffix;
@@ -49,7 +55,8 @@ export class ItemConditionalTriggerStats implements IItemAffixStats {
     CategoryStats: AffixCategoryEnum;
     BasicStatsData: ItemBasicStats;
     TriggerData: ItemTriggerStats;
-    SelectedEquipStat: string;
+    InputMeta: IItemAffixStatsMetadata;
+    OutputMeta: IItemAffixStatsMetadata;
 
     constructor(level:number, powerLevel:number, basicData:ItemBasicStats, triggerData:ItemTriggerStats, duration:number) {
         this.Level = level;
@@ -57,6 +64,14 @@ export class ItemConditionalTriggerStats implements IItemAffixStats {
         this.BasicStatsData = basicData;
         this.TriggerData = triggerData;
         this.Duration = duration;
+
+        this.InputMeta = new SimpleItemAffixStatsMetadata();
+        this.OutputMeta = new SimpleItemAffixStatsMetadata();
+        this.InputMeta.SelectedCategoryStat = this.constructor.name;
+        this.InputMeta.SelectedStat = Helpers.getPropertyByValue(AffixCategoryEnum, this.CategoryStats);
+        this.OutputMeta.SelectedCategoryStat = "Conditional:TODO" + this.BasicStatsData.OutputMeta.SelectedCategoryStat + " - " + this.TriggerData.OutputMeta.SelectedCategoryStat;
+        this.OutputMeta.SelectedStat = "Conditional:TODO" + this.BasicStatsData.OutputMeta.SelectedStat + " - " + this.TriggerData.OutputMeta.SelectedStat;
+        this.OutputMeta.SelectedEquipStat = "Conditional:TODO" + this.BasicStatsData.OutputMeta.SelectedEquipStat + " - " + this.TriggerData.OutputMeta.SelectedEquipStat;
     }
 
     public GetDescription(): string {
@@ -77,7 +92,8 @@ export class ItemConditionalCastStats implements IItemAffixStats {
     CategoryStats: AffixCategoryEnum;
     BasicStatsData: ItemBasicStats;
     TriggerData: ItemTriggerStats;
-    SelectedEquipStat: string;
+    InputMeta: IItemAffixStatsMetadata;
+    OutputMeta: IItemAffixStatsMetadata;
 
     constructor(level:number, powerLevel:number, basicData:ItemBasicStats, triggerData:ItemTriggerStats, duration:number) {
         this.Level = level;
@@ -85,6 +101,15 @@ export class ItemConditionalCastStats implements IItemAffixStats {
         this.BasicStatsData = basicData;
         this.TriggerData = triggerData;
         this.Duration = duration;
+
+        this.InputMeta = new SimpleItemAffixStatsMetadata();
+        this.OutputMeta = new SimpleItemAffixStatsMetadata();
+        this.InputMeta.SelectedCategoryStat = this.constructor.name;
+        this.InputMeta.SelectedStat = "Conditional:TODO" + this.BasicStatsData.InputMeta.SelectedStat + " - " + this.TriggerData.InputMeta.SelectedStat;
+        this.InputMeta.SelectedEquipStat = "Conditional:TODO" + this.BasicStatsData.InputMeta.SelectedEquipStat + " - " + this.TriggerData.InputMeta.SelectedEquipStat;
+        this.OutputMeta.SelectedStat = "Conditional:TODO" + this.BasicStatsData.OutputMeta.SelectedCategoryStat + " - " + this.TriggerData.OutputMeta.SelectedStat;
+        this.OutputMeta.SelectedStat = "Conditional:TODO" + this.BasicStatsData.OutputMeta.SelectedStat + " - " + this.TriggerData.OutputMeta.SelectedStat;
+        this.OutputMeta.SelectedEquipStat = "Conditional:TODO" + this.BasicStatsData.OutputMeta.SelectedEquipStat + " - " + this.TriggerData.OutputMeta.SelectedStat;
     }
 
     public GetDescription(): string {

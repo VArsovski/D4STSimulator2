@@ -1,4 +1,4 @@
-import { IItemAffix } from './ItemAffixes/IItemAffix';
+import { IItemAffix } from '../ItemAffixes/IItemAffix';
 
 export class InventoryVM {
     selectedCategory:number;

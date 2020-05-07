@@ -218,9 +218,10 @@ export class ItemAffixEnumsHelper {
             affixData = damageStat;
         }
 
-        if (!affixData.SelectedEquipStat) {
+        if (!affixData.OutputMeta.SelectedEquipStat) {
             debugger;
         }
+        
         return affixData;
     }
 
@@ -256,11 +257,8 @@ export class ItemAffixEnumsHelper {
             }
         }
 
-        if (!affixOutput.SelectedEquipStat) affixOutput.SelectedEquipStat = affixOutput.AffixData.SelectedEquipStat;
-
-        if (!affixOutput.SelectedEquipStat) {
-            debugger;
-        }
+        if (!affixOutput.InputMeta.SelectedStat) affixOutput.InputMeta = affixOutput.AffixData.InputMeta;
+        if (!affixOutput.OutputMeta.SelectedStat) affixOutput.OutputMeta = affixOutput.AffixData.OutputMeta;
         return affixOutput;
     }
 
@@ -270,11 +268,8 @@ export class ItemAffixEnumsHelper {
         if (affix.ItemCategory != ItemCategoriesEnum.Armor || affix.AffixCategory != AffixCategoryEnum.PrimaryArmor)
             affixOutput.AffixData.Amount = Math.round((Helpers.getRandom(30, 45) + level/8)/100 * affixOutput.AffixData.Amount);
 
-        if (!affixOutput.SelectedEquipStat) affixOutput.SelectedEquipStat = affixOutput.AffixData.SelectedEquipStat;
-
-        if (!affixOutput.SelectedEquipStat) {
-            debugger;
-        }
+        if (!affixOutput.InputMeta.SelectedStat) affixOutput.InputMeta = affixOutput.AffixData.InputMeta;
+        if (!affixOutput.OutputMeta.SelectedStat) affixOutput.OutputMeta = affixOutput.AffixData.OutputMeta;
         return affixOutput;
     }
 
@@ -284,11 +279,8 @@ export class ItemAffixEnumsHelper {
         basicAffix.SetSkill(level, selectedSkill);
         affixOutput.AffixData = basicAffix;
 
-        if (!affixOutput.SelectedEquipStat) affixOutput.SelectedEquipStat = affixOutput.AffixData.SelectedEquipStat;
-
-        if (!affixOutput.SelectedEquipStat) {
-            debugger;
-        }
+        if (!affixOutput.InputMeta.SelectedStat) affixOutput.InputMeta = affixOutput.AffixData.InputMeta;
+        if (!affixOutput.OutputMeta.SelectedStat) affixOutput.OutputMeta = affixOutput.AffixData.OutputMeta;
         return affixOutput;
     }
 
@@ -304,11 +296,8 @@ export class ItemAffixEnumsHelper {
         if (basicAffixType == BasicStatTypesEnum.SkillEmpower)
             (affixOutput.AffixData as ItemBasicStats).SetSkill(level, selectedSkill);
 
-        if (!affixOutput.SelectedEquipStat) affixOutput.SelectedEquipStat = affixOutput.AffixData.SelectedEquipStat;
-
-        if (!affixOutput.SelectedEquipStat) {
-            debugger;
-        }
+        if (!affixOutput.InputMeta.SelectedStat) affixOutput.InputMeta = affixOutput.AffixData.InputMeta;
+        if (!affixOutput.OutputMeta.SelectedStat) affixOutput.OutputMeta = affixOutput.AffixData.OutputMeta;
         return affixOutput;
     }
 
@@ -323,11 +312,8 @@ export class ItemAffixEnumsHelper {
         : Helpers.getRandom(12, 16);
         
         var affixOutput:ItemAffixOutput = new SecondaryStatAffixHelper().GetByIndex(affix.AffixCategory, level, powerLevel, affixType, 0, amount);
-        if (!affixOutput.SelectedEquipStat) affixOutput.SelectedEquipStat = affixOutput.AffixData.SelectedEquipStat;
-
-        if (!affixOutput.SelectedEquipStat) {
-            debugger;
-        }
+        if (!affixOutput.InputMeta.SelectedStat) affixOutput.InputMeta = affixOutput.AffixData.InputMeta;
+        if (!affixOutput.OutputMeta.SelectedStat) affixOutput.OutputMeta = affixOutput.AffixData.OutputMeta;
         return affixOutput;
     }
 
@@ -342,11 +328,8 @@ export class ItemAffixEnumsHelper {
             debugger;
         }
 
-        if (!affixOutput.SelectedEquipStat) affixOutput.SelectedEquipStat = affixOutput.AffixData.SelectedEquipStat;
-
-        if (!affixOutput.SelectedEquipStat) {
-            debugger;
-        }
+        if (!affixOutput.InputMeta.SelectedStat) affixOutput.InputMeta = affixOutput.AffixData.InputMeta;
+        if (!affixOutput.OutputMeta.SelectedStat) affixOutput.OutputMeta = affixOutput.AffixData.OutputMeta;
         return affixOutput;
     }
 
@@ -364,11 +347,8 @@ export class ItemAffixEnumsHelper {
 
         var durationBonus = Helpers.getRandom(4, 6) + Helpers.getRandom(-2, 1);
         var affixOutput = new ConditionalTriggerAffixHelper().GetByIndex(affix.AffixCategory, level, powerLevel, durationBonus, basicStatsData, triggerStat.AffixData as ItemTriggerStats);
-        if (!affixOutput.SelectedEquipStat) affixOutput.SelectedEquipStat = affixOutput.AffixData.SelectedEquipStat;
-
-        if (!affixOutput.SelectedEquipStat) {
-            debugger;
-        }
+        if (!affixOutput.InputMeta.SelectedStat) affixOutput.InputMeta = affixOutput.AffixData.InputMeta;
+        if (!affixOutput.OutputMeta.SelectedStat) affixOutput.OutputMeta = affixOutput.AffixData.OutputMeta;
         return affixOutput;
     }
 
@@ -388,11 +368,8 @@ export class ItemAffixEnumsHelper {
         var duration = Helpers.getRandom(3, 5);
         var damageType = Helpers.getRandom(1, 5);
         var affixOutput = new SecondaryTriggerAffixHelper().GetByIndex(affix.AffixCategory, level, powerLevel, amountSec, chanceSec, duration, selectedTrigger, triggerStat.AffixData as ItemTriggerStats, damageType);
-        if (!affixOutput.SelectedEquipStat) affixOutput.SelectedEquipStat = affixOutput.AffixData.SelectedEquipStat;
-        if (!affixOutput.SelectedEquipStat) {
-            debugger;
-        }
-
+        if (!affixOutput.InputMeta.SelectedStat) affixOutput.InputMeta = affixOutput.AffixData.InputMeta;
+        if (!affixOutput.OutputMeta.SelectedStat) affixOutput.OutputMeta = affixOutput.AffixData.OutputMeta;
         return affixOutput;
     }
 

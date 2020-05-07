@@ -6,7 +6,7 @@ import { SkillWithImageVM } from 'src/Models/SkillWithImageVM';
 import { SkillEquipVM } from 'src/Models/SkillEquipVM';
 import { BasicStatDifferencesVM } from 'src/Models/BasicStatDifferencesVM';
 import { SkillVM } from 'src/Models/SkillVM';
-import { InventoryVM } from 'src/Models/InventoryVM';
+import { InventoryVM } from 'src/Models/InventoryModels/InventoryVM';
 
 @Component({
   selector: "app-home",

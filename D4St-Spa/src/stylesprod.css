@@ -284,7 +284,6 @@ input[type=checkbox] {
     /* border-image-slice: 20px;
     border-image-width: 20px; */
 }
-
 .armorDisplayHolder {
     list-style: none;
     width: 650px;
@@ -300,26 +299,31 @@ input[type=checkbox] {
     transform:translate(10%, -200%);
 }
 
-/* .armorDetailDisplayHolder label {
-    transform: translate(0%, 20%);
-} */
-
 .attacksDisplayHolder {
     width: 740px;
-    transform: translate(96%, -40%);
+    transform: translate(96%, 70%);
     list-style: none;
     /* float: left; */
 }
 .attacksDisplayHolder2 {
     width: 770px;
-    transform: translate(92%, -40%);
+    transform: translate(92%, 70%);
+    list-style: none;
+    /* float: left; */
+}
+.resistancesDisplayHolder {
+    width: 770px;
+    transform: translate(92%, 70%);
     list-style: none;
     /* float: left; */
 }
 
 .basicStatsDisplayHolder {
     width:520px;
-    transform:translate(162%,-750%);
+    /*transform:translate(162%,-750%);*/
+    bottom: calc(175% + 10px);
+    left: calc(72% + 5px);
+    position: absolute;
 }
 
 .powerStatsDisplayHolder {
@@ -337,8 +341,9 @@ input[type=checkbox] {
     background-image: url("_Resources/img/Inventory2.png");
     background-size: cover;
     background-repeat: no-repeat;
-    transform: translate(175%, -155%);
+    transform: translate(175%, -150%);
     opacity: 0.7;
+    position:relative;
 }
 
 .btnGroupCustom, .btnGroupCustom ul {
@@ -443,65 +448,84 @@ second step: add the css li li {width:100%;}
 third step: add .mainNav li a {white-space:nowrap;} */
 
 .bootsItem {
-    opacity:1.0; transform: translate(25%, 180%);
+    position:absolute;
+    opacity:1.0; /*transform: translate(-70%, 220%);*/
+    top: 175%;
+    right: 120%;
 }
 .chestItem {
-    opacity:1.0; transform: translate(40%, -100%);    
+    position:absolute;
+    opacity:1.0; /*transform: translate(-60%, -70%);*/
+    top: 25%;
+    right: 85%;
 }
 .glovesItem {
-    opacity:1.0; transform: translate(76%, -210%);
+    position:absolute;
+    opacity:1.0; /*transform: translate(40%, -160%);*/
+    top: 25%;
+    left: 40%;
 }
 .helmItem {
-    width:75px;height:75px; opacity:1.0; transform: translate(255%, -700%);
+    position:absolute;
+    width:75px;height:75px; opacity:1.0; /*transform: translate(-135%, -650%);*/
+    bottom: 95%;
+    right: 110%;
 }
 .pantsItem {
-    opacity:1.0; transform: translate(55%, -220%);
+    position:absolute;
+    opacity:1.0; /*transform: translate(-15%, -170%);*/
+    top: 145%;
+    right: 60%;
 }
-.weaponItem, .weaponWithWeaponItem {
-    opacity:1.0; transform: translate(5%, -125%);
+.weaponItem {
+    position:absolute;
+    opacity:1.0; /*transform: translate(-235%, 30%);*/
+    top: 30%;
+    right: 175%;
 }
-.weaponWithArmorItem, .weaponWithArmorWithWeaponItem {
+.weaponWithArmorItem, .weaponWithWeaponItem, .weaponWithArmorWithWeaponItem, .weaponWithJewelryItem {
+    position:absolute;
     width: 100px;
-    opacity:1.0; transform: translate(18%, -460%);
-}
-.weaponWithJewelryItem {
-    opacity:1.0; transform: translate(5%, -460%);
+    opacity:1.0; /*transform: translate(-280%, -420%);*/
+    top: 25%;
+    right: 165%;
 }
 .amuletItem {
-    width:45px; height:45px; opacity:1.0; transform: translate(650%, -565%);
+    position:absolute;
+    width:45px; height:45px; opacity:1.0; /*transform: translate(70%, -480%);*/
+    right: 70%;
+    top: -10%;
 }
-.amuletWithWeaponItem {
-    width:45px; height:45px; opacity:1.0; transform: translate(650%, -825%);
+.amuletWithWeaponItem, .amuletWithArmorItem, .amuletWithArmorWithWeaponItem {
+    position:absolute;
+    width:45px; height:45px; opacity:1.0; /*transform: translate(650%, -825%);*/
+    right: 70%;
+    top: -10%;
 }
-.amuletWithArmorItem {
-    width:45px; height:45px; opacity:1.0; transform: translate(650%, -1625%);
+
+.ring1Item {
+    position:absolute;
+    width:45px; height:45px; opacity:1.0; /*transform: translate(-450%, 450%);*/
+    right: 190%;
+    top: 110%;
 }
-.amuletWithArmorWithWeaponItem {
-    width:45px; height:45px; opacity:1.0; transform: translate(660%, -1885%);
-}
-.ring1Item, .ring1WithWeaponItem {
-    width:45px; height:45px; opacity:1.0; transform: translate(130%, -175%);
-}
-.ring1WithWeaponItem {
-    width:45px; height:45px; opacity:1.0; transform: translate(130%, -455%);
-}
-.ring1WithArmorItem {
-    width:45px; height:45px; opacity:1.0; transform: translate(125%, -1225%);
-}
-.ring1WithArmorWithWeaponItem {
-    width:45px; height:45px; opacity:1.0; transform: translate(125%, -1500%);
+.ring1WithWeaponItem, .ring1WithWeaponItem, .ring1WithArmorItem, .ring1WithArmorWithWeaponItem {
+    position:absolute;
+    width:45px; height:45px; opacity:1.0; /*transform: translate(130%, -455%);*/
+    right: 190%;
+    top: 110%;
 }
 .ring2Item {
-    width:45px; height:45px; opacity:1.0; transform: translate(800%, -275%);
+    position:absolute;
+    width:45px; height:45px; opacity:1.0; /*transform: translate(200%, -200%);*/
+    left: 40%;
+    top: 110%;
 }
-.ring2WithWeaponItem {
-    width:45px; height:45px; opacity:1.0; transform: translate(800%, -550%);
-}
-.ring2WithArmorItem {
-    width:45px; height:45px; opacity:1.0; transform: translate(800%, -1325%);
-}
-.ring2WithArmorWithWeaponItem {
-    width:45px; height:45px; opacity:1.0; transform: translate(800%, -1600%);
+.ring2WithWeaponItem, .ring2WithArmorItem, .ring2WithArmorWithWeaponItem {
+    position:absolute;
+    width:45px; height:45px; opacity:1.0; /*transform: translate(800%, -550%);*/
+    left: 40%;
+    top: 110%;
 }
 .itemTooltip {
     width: 30rem;

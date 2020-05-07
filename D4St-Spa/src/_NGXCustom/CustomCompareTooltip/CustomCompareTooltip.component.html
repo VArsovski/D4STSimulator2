@@ -1,7 +1,6 @@
 <ng-template #popTemplate>{{contentTitle}} <div [class]="class" [innerHtml]="html"></div></ng-template>
-<button type="button" class="btn btn-outline-secondary"
+<button type="button" class="btn btn-outline-secondary" [style.width]="maxwidth"
         [tooltip]="popTemplate">
         <img *ngIf="contentImg" [style.width]="width" [style.height]="height" [src]="contentImg">
         <label *ngIf="contentLabel" class="h4">{{contentLabel}}</label>
 </button>
-

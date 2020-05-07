@@ -1,10 +1,10 @@
-import { IItemAffixStats } from './IItemAffixStats';
-import { IEquippableStat, IEquippableInventoryModel } from 'src/Models/InventoryDetailModels/IEquippableStat';
+import { IItemAffixStats, IItemAffixStatsMetadata, SimpleItemAffixStatsMetadata } from './IItemAffixStats';
+import { IEquippableStat } from 'src/Models/InventoryModels/InventoryDetailModels/IEquippableStat';
 import { AffixCategoryEnum, ItemWeaponTypesEnum, ItemRarityTypesEnum, DamageTypesEnum, ResistanceTypesEnum } from 'src/_Enums/itemAffixEnums';
 import { Helpers } from 'src/_Helpers/helpers';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 import { IItemAffix } from '../IItemAffix';
-import { DamageStatPrimaryEquippable } from './IEquippableStatDetails/DamageStatEquippable';
+import { DamageStatPrimaryEquippable } from '../../IEquippableStatDetails/DamageStatEquippable';
 
 export class ItemDamageCategoryStats {
     MainDamageType: DamageTypesEnum;
@@ -23,15 +23,15 @@ export class ItemDamageEmpowerStats implements IItemAffixStats, IEquippableStat 
     Amount: number;
     Level:number;
     PowerLevel:number;
-    SelectedStat: string;
     CategoryStats: AffixCategoryEnum;
-    SelectedEquipStat: string;
     DamageData:ItemDamageCategoryStats;
     WeaponType:ItemWeaponTypesEnum;
     RarityType:ItemRarityTypesEnum;
     MainDamageType: DamageTypesEnum;
     ElementType: ResistanceTypesEnum;
     EmpowerPercentage: number;
+    InputMeta: IItemAffixStatsMetadata;
+    OutputMeta: IItemAffixStatsMetadata;
 
     constructor(category: AffixCategoryEnum, amount:number, level:number, powerLevel:number,weaponType:ItemWeaponTypesEnum, rarityType:ItemRarityTypesEnum, damageData:ItemDamageCategoryStats) {
         this.Category = category;
@@ -53,9 +53,13 @@ export class ItemDamageEmpowerStats implements IItemAffixStats, IEquippableStat 
             this.EmpowerPercentage = this.DamageData.EmpowerPercentage;
         }
 
-        this.SelectedStat = "DamageEmpowerData";
-        this.SelectedEquipStat = Helpers.getPropertyByValue(DamageTypesEnum, this.MainDamageType);
-        this.updateEquippedStats = new DamageStatPrimaryEquippable(this.SelectedStat, this.SelectedEquipStat).updateEquippedStats;
+        this.InputMeta = new SimpleItemAffixStatsMetadata();
+        this.OutputMeta = new SimpleItemAffixStatsMetadata();
+        this.InputMeta.SelectedCategoryStat = this.constructor.name;
+        this.InputMeta.SelectedStat = Helpers.getPropertyByValue(AffixCategoryEnum, this.CategoryStats);
+        this.OutputMeta.SelectedStat = "DamageEmpowerData";
+        this.OutputMeta.SelectedEquipStat = Helpers.getPropertyByValue(DamageTypesEnum, this.MainDamageType);
+        this.updateEquippedStats = new DamageStatPrimaryEquippable(this.OutputMeta.SelectedStat, this.OutputMeta.SelectedEquipStat).updateEquippedStats;
     }
 
     GetDescription(): string {

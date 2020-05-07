@@ -1,7 +1,7 @@
-import { IEquippableStat } from 'src/Models/InventoryDetailModels/IEquippableStat';
-import { IItemAffix } from '../../IItemAffix';
+import { IEquippableStat } from 'src/Models/InventoryModels/InventoryDetailModels/IEquippableStat';
+import { IItemAffix } from '../ItemAffixes/IItemAffix';
 
-export class ResistanceEquippable implements IEquippableStat {
+export class SkillStatEquippable implements IEquippableStat {
     SelectedStat: string;
     SelectedEquipStat: string;
     updateEquippedStats: (src:IItemAffix, affix:IItemAffix) => IItemAffix;

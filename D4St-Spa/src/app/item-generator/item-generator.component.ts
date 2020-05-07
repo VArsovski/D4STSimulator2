@@ -9,7 +9,7 @@ import { BasicCharStats } from 'src/Models/BasicCharStats';
 import { SkillVM } from 'src/Models/SkillVM';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 import { IItemAffix } from 'src/Models/ItemAffixes/IItemAffix';
-import { InventoryVM } from 'src/Models/InventoryVM';
+import { InventoryVM } from 'src/Models/InventoryModels/InventoryVM';
 import { environment } from 'src/environments/environment';
 
 @Component({

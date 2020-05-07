@@ -1,10 +1,10 @@
-import { IItemAffixStats } from './IItemAffixStats';
+import { IItemAffixStats, SimpleItemAffixStatsMetadata, IItemAffixStatsMetadata } from './IItemAffixStats';
 import { AffixCategoryEnum, SecondaryStatTypesEnum, DamageTypesEnum, ResistanceTypesEnum, BasicStatsEnum, TrapAndSummonStatsEnum } from 'src/_Enums/itemAffixEnums';
 import { ItemSimpleStats, ItemBasicResistanceStatsDetail } from './ItemSimpleStats';
 import { Helpers } from 'src/_Helpers/helpers';
 import { CCEffectTypesEnum } from 'src/_Enums/triggerAffixEnums';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
-import { IEquippableStat, IEquippableInventoryModel } from 'src/Models/InventoryDetailModels/IEquippableStat';
+import { IEquippableStat } from 'src/Models/InventoryModels/InventoryDetailModels/IEquippableStat';
 import { IItemAffix } from '../IItemAffix';
 
 export class ItemSecondaryBasicStats implements IItemAffixStats, IEquippableStat {
@@ -13,8 +13,6 @@ export class ItemSecondaryBasicStats implements IItemAffixStats, IEquippableStat
     Amount: number;
     CategoryStats: AffixCategoryEnum;
     private selectedStat: SecondaryStatTypesEnum;
-    SelectedStat: string;
-    SelectedEquipStat: string;
     Resistance:ItemBasicResistanceStatsDetail;
     RedirectDamage:ItemSimpleStats;
     IncreaseStatSunder:ItemSimpleStats;
@@ -29,7 +27,8 @@ export class ItemSecondaryBasicStats implements IItemAffixStats, IEquippableStat
     private summonTrapStatType: TrapAndSummonStatsEnum;
     private statsCalculated:boolean;
 
-    constructor(category:AffixCategoryEnum, level:number, powerLevel:number, selectedStat:SecondaryStatTypesEnum
+    constructor(category:AffixCategoryEnum, level:number, powerLevel:number
+        , selectedStat:SecondaryStatTypesEnum
         , resistance: ItemBasicResistanceStatsDetail
         , redirectDamage:ItemSimpleStats
         , increaseStatSunder:ItemSimpleStats
@@ -41,7 +40,6 @@ export class ItemSecondaryBasicStats implements IItemAffixStats, IEquippableStat
             this.Level = level;
             this.PowerLevel = powerLevel;
             this.selectedStat = selectedStat,
-            this.SelectedStat = Helpers.getPropertyByValue(SecondaryStatTypesEnum, this.selectedStat);
 
             // Resistance = 1,              // EmpowerTrapsAndSummons = 4,
             // RedirectDamage = 2,          // DamageTakenReduced = 5,
@@ -70,9 +68,17 @@ export class ItemSecondaryBasicStats implements IItemAffixStats, IEquippableStat
                     this[selectedStatStr].AmountPercentage = new CalculationsHelper().getEmpoweredValue(this[selectedStatStr].AmountPercentage || 0, this.PowerLevel);
                 this.statsCalculated = true;
             }
-        
-        this.SelectedEquipStat = this[this.SelectedStat].SelectedEquipStat;
+
+            this.InputMeta = new SimpleItemAffixStatsMetadata();
+            this.OutputMeta = new SimpleItemAffixStatsMetadata();
+            this.InputMeta.SelectedCategoryStat = this.constructor.name;
+            this.InputMeta.SelectedStat = Helpers.getPropertyByValue(AffixCategoryEnum, this.CategoryStats);
+            this.OutputMeta.SelectedCategoryStat = "SecondaryBasicStat";
+            this.OutputMeta.SelectedStat = Helpers.getPropertyByValue(SecondaryStatTypesEnum, this.selectedStat);
+            this.OutputMeta.SelectedEquipStat = this[this.OutputMeta.SelectedStat].SelectedEquipStat;
     }
+    InputMeta: IItemAffixStatsMetadata;
+    OutputMeta: IItemAffixStatsMetadata;
 
     updateEquippedStats: (src:IItemAffix, affix:IItemAffix) => IItemAffix;
 
@@ -80,7 +86,7 @@ export class ItemSecondaryBasicStats implements IItemAffixStats, IEquippableStat
         // Resistance = 1,             // EmpowerTrapsAndSummons = 4,
         // CCReduction = 2,            // RedirectDamage = 5,
         // DamageTakenReduced = 3,     // IncreaseStatSunder = 6
-        if (this.SelectedStat) {
+        if (this.OutputMeta.SelectedStat) {
             var selectedStat = Helpers.getPropertyByValue(SecondaryStatTypesEnum, this.selectedStat);
             if (!this[selectedStat]) {
                 this.selectedStat = this.GetSelectedStat();
@@ -90,7 +96,7 @@ export class ItemSecondaryBasicStats implements IItemAffixStats, IEquippableStat
             }
         }
 
-        if (!this.SelectedStat) {
+        if (!this.OutputMeta.SelectedStat) {
             debugger;
             return "";
         }

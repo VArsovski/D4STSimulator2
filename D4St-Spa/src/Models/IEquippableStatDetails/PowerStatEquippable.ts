@@ -1,5 +1,5 @@
-import { IEquippableStat, IEquippableInventoryModel } from 'src/Models/InventoryDetailModels/IEquippableStat';
-import { IItemAffix } from '../../IItemAffix';
+import { IEquippableStat } from 'src/Models/InventoryModels/InventoryDetailModels/IEquippableStat';
+import { IItemAffix } from '../ItemAffixes/IItemAffix';
 
 export class PowerStatEquippable implements IEquippableStat {
     SelectedStat: string;

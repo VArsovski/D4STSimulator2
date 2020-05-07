@@ -1,18 +1,20 @@
 import { Component, OnInit, Input, Output, SimpleChanges, OnChanges } from '@angular/core';
 import { IItemAffix } from 'src/Models/ItemAffixes/IItemAffix';
-import { InventoryVM } from 'src/Models/InventoryVM';
-import { InventoryArmorModelCombined, InventoryArmorModel } from 'src/Models/InventoryArmorModel';
-import { InventoryBasicStatsModel } from 'src/Models/InventoryBasicStatsModel';
+import { InventoryVM } from 'src/Models/InventoryModels/InventoryVM';
+import { InventoryArmorModelCombined, InventoryArmorModel } from 'src/Models/InventoryModels/InventoryArmorModel';
+import { InventoryBasicStatsModel } from 'src/Models/InventoryModels/InventoryBasicStatsModel';
 import { SkillVM } from 'src/Models/SkillVM';
-import { IArmorStatDetailsInventoryModel, IArmorStatDetailsInventoryModelCombined } from 'src/Models/InventoryDetailModels/IArmorStatDetailsInventoryModel';
-import { ArmorStatDetailsInventoryModel, ArmorStatDetailsInventoryModelCombined } from 'src/Models/InventoryDetailModels/ArmorStatDetailsInventoryModel';
-import { IEquippableStat } from 'src/Models/InventoryDetailModels/IEquippableStat';
-import { InventoryDamageModelCombined, InventoryDamageEmpowerModelCombined } from 'src/Models/InventoryPrimaryDamageModel';
-import { InventoryResistancesModel } from 'src/Models/InventoryResistancesModel';
+import { IArmorStatDetailsInventoryModel, IArmorStatDetailsInventoryModelCombined } from 'src/Models/InventoryModels/InventoryDetailModels/IArmorStatDetailsInventoryModel';
+import { ArmorStatDetailsInventoryModel, ArmorStatDetailsInventoryModelCombined } from 'src/Models/InventoryModels/InventoryDetailModels/ArmorStatDetailsInventoryModel';
+import { IEquippableStat } from 'src/Models/InventoryModels/InventoryDetailModels/IEquippableStat';
+import { InventoryDamageModelCombined, InventoryDamageEmpowerModelCombined } from 'src/Models/InventoryModels/InventoryPrimaryDamageModel';
+import { InventoryResistancesModel } from 'src/Models/InventoryModels/InventoryResistancesModel';
 import { Helpers } from 'src/_Helpers/helpers';
 import { ArmorTypesEnum } from 'src/_Enums/itemAffixEnums';
 import { ItemArmorStats } from 'src/Models/ItemAffixes/Details/ItemArmorStats';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
+import { BasicCharStats } from 'src/Models/BasicCharStats';
+import { InventoryTriggerModelCombined } from 'src/Models/InventoryModels/InventoryTriggerModelCombined';
 
 @Component({
   selector: 'app-inventory',
@@ -23,15 +25,17 @@ export class InventoryComponent implements OnInit, OnChanges {
 
   protected inventoryData: InventoryVM;
   @Input()inventoryItem: InventoryVM;
+  @Input()basicChatStats: BasicCharStats;
   protected tempInventoryData: InventoryVM;
 
+  protected BasicStats:InventoryBasicStatsModel;
   protected DamageData:InventoryDamageModelCombined;
   protected DamageEmpowerData:InventoryDamageEmpowerModelCombined;
   protected ArmorData:InventoryArmorModelCombined;
   protected Resistance:InventoryResistancesModel;
-
   protected ArmorDetails: IArmorStatDetailsInventoryModel;
   protected ArmorDetailsCombined: IArmorStatDetailsInventoryModelCombined;
+  protected TriggerData: InventoryTriggerModelCombined;
 
   protected BootsDescription:string;
   protected ChestDescription:string;
@@ -42,9 +46,6 @@ export class InventoryComponent implements OnInit, OnChanges {
   protected AmuletDescription:string;
   protected Ring1Description:string;
   protected Ring2Description:string;
-
-  protected BasicStats:InventoryBasicStatsModel;
-  protected Level:number;
 
   private armors :string[] = ["Boots","Chest", "Gloves", "Helm", "Pants"];
   private weapons:string[] = ["Axes", "Bows", "Hammers", "Swords", "Javelins", "Wands", "Staves"];
@@ -63,8 +64,14 @@ export class InventoryComponent implements OnInit, OnChanges {
 
   constructor() {
     this.skillData = [];
-    this.ArmorData = new InventoryArmorModelCombined();
     this.BasicStats = new InventoryBasicStatsModel();
+    this.ArmorData = new InventoryArmorModelCombined();
+    this.DamageData = new InventoryDamageModelCombined();
+    this.TriggerData = new InventoryTriggerModelCombined();
+    this.ArmorDetails = new ArmorStatDetailsInventoryModel();
+    this.ArmorDetailsCombined = new ArmorStatDetailsInventoryModelCombined();
+    this.Resistance = new InventoryResistancesModel();
+    this.basicChatStats = new BasicCharStats();
     this.DamageData = new InventoryDamageModelCombined();
     this.DamageEmpowerData = new InventoryDamageEmpowerModelCombined();
   }
@@ -72,10 +79,6 @@ export class InventoryComponent implements OnInit, OnChanges {
   ngOnInit() {
     this.inventoryData = new InventoryVM(1, 1, 1);
     this.tempInventoryData = new InventoryVM(1, 1, 1); //Store new values here if slot already equipped
-    this.DamageData = new InventoryDamageModelCombined();
-    this.ArmorDetails = new ArmorStatDetailsInventoryModel();
-    this.ArmorDetailsCombined = new ArmorStatDetailsInventoryModelCombined();
-    this.Resistance = new InventoryResistancesModel();
 
     this.armors.forEach(a => this[a + "Description"] = "");
     this.jewelries.forEach(a => this[a + "Description"] = "");
@@ -88,7 +91,7 @@ export class InventoryComponent implements OnInit, OnChanges {
     availableCategories.push("Weapon");
 
     availableCategories.forEach(async e => {
-      if ((changes["inventoryItem"].currentValue[e] || []).length != 0) {
+      if ((changes["inventoryItem"] && changes["inventoryItem"].currentValue[e] || []).length != 0) {
         this.inventoryData.selectedCategory = changes["inventoryItem"].currentValue["selectedCategory"];
         this.inventoryData.selectedType = changes["inventoryItem"].currentValue["selectedType"];
         this.inventoryData.selectedRarity = changes["inventoryItem"].currentValue["selectedRarity"];
@@ -100,23 +103,31 @@ export class InventoryComponent implements OnInit, OnChanges {
 
         if (selectedItem.length != 0) {
           selectedItem.forEach(async a => {
-            var selectedStat = a.Contents["SelectedStat"] || a.Contents.AffixData["SelectedStat"];
-            var selectedSubStat = a.Contents.AffixData.SelectedEquipStat;
-
+            var selectedStat = a.Contents.AffixData.OutputMeta["SelectedStat"] || a.Contents.OutputMeta.SelectedStat;
+            var categoryStat = a.Contents.AffixData.OutputMeta["SelectedCategoryStat"] || a.Contents.OutputMeta.SelectedCategoryStat;
+            var selectedSubStat = a.Contents.AffixData.OutputMeta["SelectedEquipStat"] || a.Contents.OutputMeta.SelectedEquipStat || a.Contents.AffixData.SelectedEquipStat;
             debugger;
-            var selectedLevel = a.Contents.AffixData["Level"];
-            if (selectedLevel > (this.Level || 0))
-              this.Level = selectedLevel;
+
+            // var selectedLevel = a.Contents.AffixData["Level"];
+            // var level = this.basicChatStats.Level || 0;
+            // if (selectedLevel > level)
+            //   this.Level = selectedLevel;
 
             if (selectedStat == "DamageData" || selectedStat == "DamageEmpowerData") {
               var selectedSrcStat = this[selectedStat][selectedSubStat];
               this[selectedStat][selectedSubStat] = (a.Contents as IEquippableStat).updateEquippedStats(selectedSrcStat, a as IItemAffix);
             }
 
-            if (["StatNumbers", "StatRegen", "StatPercentage", "StatPercentageRegen"].includes(selectedStat)) {
+            if (["StatNumbers", "StatRegen", "StatPercentage", "StatPercentageRegen", "StatReturn"].includes(selectedStat)) {
               var statType = selectedSubStat.replace("Regen", "").replace("Percentage", "");
               var selectedSrcStat = this["BasicStats"][statType];
               this["BasicStats"][statType] = (a.Contents as IEquippableStat).updateEquippedStats(selectedSrcStat, a as IItemAffix);
+            }
+
+            if (selectedStat == "Resistance") {
+              var statType = selectedSubStat;
+              var selectedSrcStat = this[selectedStat][statType];
+              this[selectedStat][statType] = (a.Contents as IEquippableStat).updateEquippedStats(selectedSrcStat, a as IItemAffix);
             }
 
             if (selectedStat == "PowerData" || selectedStat == "PowerStats") {
@@ -151,13 +162,14 @@ export class InventoryComponent implements OnInit, OnChanges {
         this[e + "Description"] = affixDescriptions.join('<br/>');
       }
     });
-    await this.SetClassNames();
+
+    // await this.SetClassNames();
   }
   protected async calculateArmorDetailData() {
       var totals:number[] = [];
       ["HeavyArmor", "LightArmor", "MysticArmor"].forEach(at => {
         debugger;
-        var calculationFactor = new CalculationsHelper().GetCalculatedFactor(at, this.ArmorData[at].Amount, this.Level);
+        var calculationFactor = new CalculationsHelper().GetCalculatedFactor(at, this.ArmorData[at].Amount, this.basicChatStats.Level);
         totals.push(Math.round(calculationFactor * this.ArmorData[at].Amount * 10) / 10);
       })
 
@@ -192,12 +204,12 @@ export class InventoryComponent implements OnInit, OnChanges {
     var ccTypesdata = { totalCCPercentageRateHeavy: 0, totalCCPercentageRateLight: 0, totalCCPercentageRateMystic: 0 }
     data.forEach(a => {
       a.forEach(affix => {
-        var selectedStat = affix.Contents["SelectedStat"] || affix.Contents.AffixData["SelectedStat"];
-        var selectedType = affix.Contents.AffixData.SelectedEquipStat;
+        var selectedStat = affix.Contents.OutputMeta["SelectedStat"] || affix.Contents.AffixData.OutputMeta["SelectedStat"];
+        var selectedType = affix.Contents.AffixData.OutputMeta.SelectedEquipStat;
         if (selectedStat == "ArmorData") {
           var armorAffixData = affix.Contents.AffixData as ItemArmorStats;
           var selectedArmor = Helpers.getPropertyByValue(ArmorTypesEnum, armorAffixData.ArmorType);
-          this["ArmorData"][selectedArmor + "Armor"].Amount += armorAffixData.Armor;
+          this["ArmorData"][selectedArmor + "Armor"].Amount += armorAffixData.Amount;
         }
       })
     });
@@ -254,49 +266,6 @@ export class InventoryComponent implements OnInit, OnChanges {
     var selectedCategoryType = data.selectedCategory == 1 ? "A" : data.selectedCategory == 2 ? "W" : "J";
     var selectedItemType = data.selectedCategory == 1 ? this.armors[data.selectedType - 1] : data.selectedCategory == 2 ? this.weapons[data.selectedType - 1] : this.jewelries[data.selectedType - 1];
     return filtersSelected ? "_Resources\\img\\items\\" + selectedCategoryType + selectedItemType[0] + selectedItemType[1] + data.selectedRarity + ".png" : srcEmpty;
-  }
-
-  // FUCK THIS BULLSHIT CROSS SITE SCRIPTING PROTECTION MAN
-  // SUSUUUUUUUU UUUUUUUUUUUUUUUUUCH A BUUUUUUUUUULSHIT, BULLSHIT
-  protected WeaponCss:string;
-  protected AmuletCss:string;
-  protected Ring1Css:string;
-  protected Ring2Css:string;
-
-  protected async SetClassNames() {
-    if (this.inventoryData) {
-      setTimeout(() => {
-        var classStr:string = "";
-        var armorEquipped:boolean = false;
-        var weaponEquipped:boolean = (this.inventoryData["Weapon"] || []).length != 0;
-        var jewelryEquipped:boolean = false;
-    
-        for (let a = 0; a < this.armors.length; a++) {
-          if ((this.inventoryData[this.armors[a]] || []).length) {
-            armorEquipped = true;
-            break;
-          }
-        }
-        for (let a = 0; a < this.armors.length; a++) {
-          if ((this.inventoryData[this.jewelries[a]] || []).length) {
-            jewelryEquipped = true;
-            break;
-          }
-        }
-
-        if (armorEquipped)
-          classStr += "WithArmor";
-        if (weaponEquipped)
-          classStr+="WithWeapon";
-
-        var variableItems = [];
-        this.jewelries.forEach(j => {variableItems.push(j)});
-        variableItems.push("Weapon");
-        variableItems.forEach(v => {
-          this[v + "Css"] = v.toLowerCase() + classStr + "Item";
-        })
-      }, 35);
-    }
   }
 
   private imageRaritiesDict = {

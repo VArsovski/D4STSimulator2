@@ -1,10 +1,10 @@
 import { ItemWeaponTypesEnum, DamageTypesEnum, ResistanceTypesEnum, AffixCategoryEnum, ItemRarityTypesEnum } from 'src/_Enums/itemAffixEnums';
 import { Helpers } from 'src/_Helpers/helpers';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
-import { IItemAffixStats } from './IItemAffixStats';
-import { IEquippableStat } from 'src/Models/InventoryDetailModels/IEquippableStat';
+import { IItemAffixStats, IItemAffixStatsMetadata, SimpleItemAffixStatsMetadata } from './IItemAffixStats';
+import { IEquippableStat } from 'src/Models/InventoryModels/InventoryDetailModels/IEquippableStat';
 import { IItemAffix } from '../IItemAffix';
-import { DamageStatMinMaxEquippable } from './IEquippableStatDetails/DamageStatEquippable';
+import { DamageStatMinMaxEquippable } from '../../IEquippableStatDetails/DamageStatEquippable';
 
 export class ItemDamageNumberStats {
     WeaponType: ItemWeaponTypesEnum;
@@ -27,10 +27,10 @@ export class ItemDamageStats implements IItemAffixStats, IEquippableStat {
     MaxDamage: number;
     private Level:number;
     private PowerLevel: number;
-    SelectedStat: string;
-    SelectedEquipStat: string;
     MainDamageType: DamageTypesEnum;
     ElementType: ResistanceTypesEnum;
+    InputMeta: IItemAffixStatsMetadata;
+    OutputMeta: IItemAffixStatsMetadata;
 
     constructor(category: AffixCategoryEnum, level:number, powerLevel:number, weaponType: ItemWeaponTypesEnum, minDamage?: number, maxDamage?: number, mainDamageType?: DamageTypesEnum, elementType?: ResistanceTypesEnum) {
 
@@ -57,9 +57,13 @@ export class ItemDamageStats implements IItemAffixStats, IEquippableStat {
         if (this.MaxDamage != 0)
             this.MaxDamage = new CalculationsHelper().getEmpoweredValue(new CalculationsHelper().getDamageStatForLevel(this.MaxDamage, this.Level), this.PowerLevel + (physicalWeapons.includes(this.WeaponType) ? adequateDamageTypeEmpower ? 2 : 1 : 0));
 
-        this.SelectedStat = "DamageData";
-        this.SelectedEquipStat = Helpers.getPropertyByValue(ResistanceTypesEnum, this.ElementType) + "Damage";
-        this.updateEquippedStats = new DamageStatMinMaxEquippable(this.SelectedStat, this.SelectedEquipStat).updateEquippedStats;
+        this.InputMeta = new SimpleItemAffixStatsMetadata();
+        this.OutputMeta = new SimpleItemAffixStatsMetadata();
+        this.InputMeta.SelectedCategoryStat = this.constructor.name;
+        this.InputMeta.SelectedStat = Helpers.getPropertyByValue(AffixCategoryEnum, this.CategoryStats);
+        this.OutputMeta.SelectedStat = "DamageData";
+        this.OutputMeta.SelectedEquipStat = Helpers.getPropertyByValue(ResistanceTypesEnum, this.ElementType) + "Damage";
+        this.updateEquippedStats = new DamageStatMinMaxEquippable(this.OutputMeta.SelectedStat, this.OutputMeta.SelectedEquipStat).updateEquippedStats;
     }
 
     updateEquippedStats: (src:IItemAffix, affix:IItemAffix) => IItemAffix;
