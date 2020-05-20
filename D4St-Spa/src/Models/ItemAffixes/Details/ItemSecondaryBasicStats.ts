@@ -1,13 +1,13 @@
-import { IItemAffixStats, SimpleItemAffixStatsMetadata, IItemAffixStatsMetadata } from './IItemAffixStats';
+import { IItemAffixStats, SimpleItemAffixStatsMetadata, IItemAffixStatsMetadata, SimpleAffixStats } from './IItemAffixStats';
 import { AffixCategoryEnum, SecondaryStatTypesEnum, DamageTypesEnum, ResistanceTypesEnum, BasicStatsEnum, TrapAndSummonStatsEnum } from 'src/_Enums/itemAffixEnums';
 import { ItemSimpleStats, ItemBasicResistanceStatsDetail } from './ItemSimpleStats';
 import { Helpers } from 'src/_Helpers/helpers';
 import { CCEffectTypesEnum } from 'src/_Enums/triggerAffixEnums';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
-import { IEquippableStat } from 'src/Models/InventoryModels/InventoryDetailModels/IEquippableStat';
 import { IItemAffix } from '../IItemAffix';
+import { IEquippableAffixStat } from 'src/Models/IEquippableStatDetails/IEquippableAffixStat';
 
-export class ItemSecondaryBasicStats implements IItemAffixStats, IEquippableStat {
+export class ItemSecondaryBasicStats implements IEquippableAffixStat {
     Level: number;
     PowerLevel: number;
     Amount: number;
@@ -19,6 +19,9 @@ export class ItemSecondaryBasicStats implements IItemAffixStats, IEquippableStat
     EmpowerTrapsAndSummons:ItemSimpleStats;
     DamageTakenReduced: ItemSimpleStats;
     CCReduction:ItemSimpleStats;
+    EquippableStatData: IItemAffixStats;
+    updateEquippedStats: (src:IItemAffix, affix:IItemAffix) => IItemAffix;
+    getZeroStats: (src: any) => any;
 
     private damageType:DamageTypesEnum;
     private ccType:CCEffectTypesEnum;
@@ -69,24 +72,33 @@ export class ItemSecondaryBasicStats implements IItemAffixStats, IEquippableStat
                 this.statsCalculated = true;
             }
 
-            this.InputMeta = new SimpleItemAffixStatsMetadata();
-            this.OutputMeta = new SimpleItemAffixStatsMetadata();
-            this.InputMeta.SelectedCategoryStat = this.constructor.name;
-            this.InputMeta.SelectedStat = Helpers.getPropertyByValue(AffixCategoryEnum, this.CategoryStats);
-            this.OutputMeta.SelectedCategoryStat = "SecondaryBasicStat";
-            this.OutputMeta.SelectedStat = Helpers.getPropertyByValue(SecondaryStatTypesEnum, this.selectedStat);
-            this.OutputMeta.SelectedEquipStat = this[this.OutputMeta.SelectedStat].SelectedEquipStat;
-    }
-    InputMeta: IItemAffixStatsMetadata;
-    OutputMeta: IItemAffixStatsMetadata;
+            this.EquippableStatData = new SimpleAffixStats();
+            this.EquippableStatData.InputMeta = new SimpleItemAffixStatsMetadata();
+            this.EquippableStatData.OutputMeta = new SimpleItemAffixStatsMetadata();
+            this.EquippableStatData.InputMeta.SelectedCategoryStat = this.constructor.name;
+            this.EquippableStatData.InputMeta.SelectedStat = Helpers.getPropertyByValue(AffixCategoryEnum, this.CategoryStats);
+            this.EquippableStatData.OutputMeta.SelectedCategoryStat = "SecondaryBasicStat";
+            this.EquippableStatData.OutputMeta.SelectedStat = Helpers.getPropertyByValue(SecondaryStatTypesEnum, this.selectedStat);
 
-    updateEquippedStats: (src:IItemAffix, affix:IItemAffix) => IItemAffix;
+            var selectedSubStatObj = this[Helpers.getPropertyByValue(SecondaryStatTypesEnum, this.selectedStat)];
+            var selectedSubStatType = this.selectedStat == SecondaryStatTypesEnum.Resistance ? ResistanceTypesEnum
+                                    : this.selectedStat == SecondaryStatTypesEnum.RedirectDamage ? DamageTypesEnum
+                                    : this.selectedStat == SecondaryStatTypesEnum.IncreaseStatSunder ? ResistanceTypesEnum
+                                    : this.selectedStat == SecondaryStatTypesEnum.DamageTakenReduced ? DamageTypesEnum
+                                    : this.selectedStat == SecondaryStatTypesEnum.CCReduction ? CCEffectTypesEnum
+                                    : Helpers.getPropertyByValue(SecondaryStatTypesEnum, this.selectedStat);
+
+            // TODO: MAKE ITEMSIMPLESTATS RETURN PROPERLY THE SUBVALUES
+            if (this.selectedStat == SecondaryStatTypesEnum.EmpowerTrapsAndSummons) { debugger; }
+            var selectedSubStat = Helpers.getPropertyByValue(selectedSubStatType, selectedSubStatObj.Type) || selectedSubStatObj.Type;
+            this.EquippableStatData.OutputMeta.SelectedEquipStat = selectedSubStat;
+    }
 
     GetDescription(): string {
         // Resistance = 1,             // EmpowerTrapsAndSummons = 4,
         // CCReduction = 2,            // RedirectDamage = 5,
         // DamageTakenReduced = 3,     // IncreaseStatSunder = 6
-        if (this.OutputMeta.SelectedStat) {
+        if (this.EquippableStatData.OutputMeta.SelectedStat) {
             var selectedStat = Helpers.getPropertyByValue(SecondaryStatTypesEnum, this.selectedStat);
             if (!this[selectedStat]) {
                 this.selectedStat = this.GetSelectedStat();
@@ -96,7 +108,7 @@ export class ItemSecondaryBasicStats implements IItemAffixStats, IEquippableStat
             }
         }
 
-        if (!this.OutputMeta.SelectedStat) {
+        if (!this.EquippableStatData.OutputMeta.SelectedStat) {
             debugger;
             return "";
         }

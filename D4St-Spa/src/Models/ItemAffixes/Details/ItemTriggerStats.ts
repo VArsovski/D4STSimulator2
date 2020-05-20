@@ -3,11 +3,12 @@ import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 import { TriggerTypesEnum, CCEffectTypesEnum, SpellEffectTypesEnum, HitEffectTypesEnum } from 'src/_Enums/triggerAffixEnums';
 import { SkillVM } from 'src/Models/SkillVM';
 import { AffixCategoryEnum } from 'src/_Enums/itemAffixEnums';
-import { IItemAffixStats, SimpleItemAffixStatsMetadata, IItemAffixStatsMetadata } from './IItemAffixStats';
-import { IEquippableStat } from 'src/Models/InventoryModels/InventoryDetailModels/IEquippableStat';
+import { SimpleItemAffixStatsMetadata, IItemAffixStats, SimpleAffixStats } from './IItemAffixStats';
 import { IItemAffix } from '../IItemAffix';
+import { IEquippableAffixStat } from 'src/Models/IEquippableStatDetails/IEquippableAffixStat';
+import { TriggerStatEquippable } from 'src/Models/IEquippableStatDetails/TriggerStatEquippable';
 
-export class ItemTriggerStats implements IItemAffixStats, IEquippableStat {
+export class ItemTriggerStats implements IEquippableAffixStat {
     Chance:number;
     Amount:number;
     Type:TriggerTypesEnum;
@@ -23,8 +24,9 @@ export class ItemTriggerStats implements IItemAffixStats, IEquippableStat {
     private Level: number;
     private statsCalculated: boolean;
     private SelectedType:string;
-    InputMeta: IItemAffixStatsMetadata;
-    OutputMeta: IItemAffixStatsMetadata;
+    EquippableStatData: IItemAffixStats;
+    getZeroStats: (src: any) => any;
+    updateEquippedStats: (src:IItemAffix, affix:IItemAffix) => IItemAffix;
 
     constructor(category: AffixCategoryEnum, level:number, powerLevel:number, amount:number, chance:number, type:TriggerTypesEnum, triggerSubtype:number, skillStat: SkillVM) {
 
@@ -53,18 +55,18 @@ export class ItemTriggerStats implements IItemAffixStats, IEquippableStat {
             this.statsCalculated = true;
         }
 
-        this.InputMeta = new SimpleItemAffixStatsMetadata();
-        this.OutputMeta = new SimpleItemAffixStatsMetadata();
-        this.InputMeta.SelectedCategoryStat = this.constructor.name;
-        this.InputMeta.SelectedStat = Helpers.getPropertyByValue(TriggerTypesEnum, this.Type);
-        this.OutputMeta.SelectedCategoryStat = "Trigger";
-        this.OutputMeta.SelectedStat = Helpers.getPropertyByValue(TriggerTypesEnum, this.Type);
-        this.OutputMeta.SelectedEquipStat = this.Type == TriggerTypesEnum.HitEffectCC ? Helpers.getPropertyByValue(CCEffectTypesEnum, this.HitEffectCC)
+        this.EquippableStatData = new SimpleAffixStats();
+        this.EquippableStatData.InputMeta.SelectedCategoryStat = this.constructor.name;
+        this.EquippableStatData.InputMeta.SelectedStat = Helpers.getPropertyByValue(TriggerTypesEnum, this.Type);
+        this.EquippableStatData.OutputMeta.SelectedCategoryStat = "TriggerData";
+        this.EquippableStatData.OutputMeta.SelectedStat = Helpers.getPropertyByValue(TriggerTypesEnum, this.Type);
+        this.EquippableStatData.OutputMeta.SelectedEquipStat = this.Type == TriggerTypesEnum.HitEffectCC ? Helpers.getPropertyByValue(CCEffectTypesEnum, this.HitEffectCC)
                                : this.Type == TriggerTypesEnum.HitEffectPhysical ? Helpers.getPropertyByValue(HitEffectTypesEnum, this.HitEffectPhysical)
                                : Helpers.getPropertyByValue(TriggerTypesEnum, this.Type);
+        
+        this.getZeroStats = (src) => { (src as ItemTriggerStats).Amount = 0 };
+        this.updateEquippedStats = new TriggerStatEquippable().updateEquippedStats;
     }
-
-    updateEquippedStats: (src:IItemAffix, affix:IItemAffix) => IItemAffix;
 
     public GetDescription():string {
 

@@ -1,4 +1,4 @@
-import { SecondaryTriggerStatsEnum, TriggerTypesEnum, SpellEffectTypesEnum, HitEffectTypesEnum, CCEffectTypesEnum } from 'src/_Enums/triggerAffixEnums';
+import { SecondaryTriggerStatsEnum, TriggerTypesEnum, SpellEffectTypesEnum } from 'src/_Enums/triggerAffixEnums';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 import { ItemTriggerStats } from './ItemTriggerStats';
 import { Helpers } from 'src/_Helpers/helpers';
@@ -6,13 +6,15 @@ import { TrapsEnum, CursesEnum } from 'src/_Enums/skillEnums';
 import { ItemBasicStats, ItemBasicStatsDetail } from './ItemBasicStats';
 import { ItemBasicPowersDetail, ItemBasicResistanceStatsDetail } from './ItemSimpleStats';
 import { ResistanceTypesEnum, AffixCategoryEnum, BasicStatTypesEnum } from 'src/_Enums/itemAffixEnums';
-import { IItemAffixStats, SimpleItemAffixStatsMetadata, IItemAffixStatsMetadata } from './IItemAffixStats';
-import { IEquippableStat } from 'src/Models/InventoryModels/InventoryDetailModels/IEquippableStat';
+import { IItemAffixStats, SimpleAffixStats } from './IItemAffixStats';
 import { IItemAffix } from '../IItemAffix';
+import { IEquippableAffixStat } from 'src/Models/IEquippableStatDetails/IEquippableAffixStat';
+import { SecondaryTriggerStatsEquippable } from 'src/Models/IEquippableStatDetails/SecondaryTriggerStatsEquippable';
 
-export class ItemSecondaryTriggerStatsDetail implements IItemAffixStats {
+export class ItemSecondaryTriggerStatsDetail implements IEquippableAffixStat {
     private Level: number;
     private PowerLevel: any;
+    private statsCalculated:boolean;
     Amount: number;
     Type: SecondaryTriggerStatsEnum;
     Trigger: ItemTriggerStats;
@@ -21,11 +23,9 @@ export class ItemSecondaryTriggerStatsDetail implements IItemAffixStats {
     Curse: CursesEnum;
     BasicStat:ItemBasicStats;
     CategoryStats: AffixCategoryEnum;
-    // OfenseStat:ItemOfensiveStats;
-    // DefenseStat:ItemDefenseStats;
-    private statsCalculated:boolean;
-    InputMeta: IItemAffixStatsMetadata;
-    OutputMeta: IItemAffixStatsMetadata;
+    EquippableStatData: IItemAffixStats;
+    getZeroStats: (src: any) => any;
+    updateEquippedStats: (src: any, affix: IItemAffix) => any;
 
     constructor(level:number, powerLevel:number, amount:number, duration:number, type:SecondaryTriggerStatsEnum, trigger:ItemTriggerStats) {
 
@@ -40,13 +40,14 @@ export class ItemSecondaryTriggerStatsDetail implements IItemAffixStats {
             this.SetCalculatedData();
             this.statsCalculated = true;
         }
-        this.InputMeta = new SimpleItemAffixStatsMetadata();
-        this.OutputMeta = new SimpleItemAffixStatsMetadata();
-        this.InputMeta.SelectedCategoryStat = this.constructor.name;
-        this.InputMeta.SelectedStat = Helpers.getPropertyByValue(AffixCategoryEnum, this.CategoryStats);
-        this.OutputMeta.SelectedCategoryStat = "SecondaryBasicStat";
-        this.OutputMeta.SelectedStat = Helpers.getPropertyByValue(SecondaryTriggerStatsEnum, this.Type);
-        this.OutputMeta.SelectedEquipStat = "TODO:SecondaryTriggerDetails";
+
+        debugger;
+        this.EquippableStatData = new SimpleAffixStats();
+        this.EquippableStatData.InputMeta.SelectedCategoryStat = this.constructor.name;
+        this.EquippableStatData.InputMeta.SelectedStat = Helpers.getPropertyByValue(AffixCategoryEnum, this.CategoryStats);
+        this.EquippableStatData.OutputMeta.SelectedCategoryStat = "SecondaryBasicStat";
+        this.EquippableStatData.OutputMeta.SelectedStat = Helpers.getPropertyByValue(SecondaryTriggerStatsEnum, this.Type);
+        this.EquippableStatData.OutputMeta.SelectedEquipStat = "SecondaryTriggerStats";
     }
 
     private SetCalculatedData()
@@ -138,7 +139,7 @@ export class ItemSecondaryTriggerStatsDetail implements IItemAffixStats {
     }
 }
 
-export class ItemSecondaryTriggerStats implements IItemAffixStats, IEquippableStat {
+export class ItemSecondaryTriggerStats implements IEquippableAffixStat {
     Amount:number;
     Chance:number;
     Duration:number;
@@ -151,8 +152,9 @@ export class ItemSecondaryTriggerStats implements IItemAffixStats, IEquippableSt
     private LevelToBuff: number;
     private TriggerDetails:ItemSecondaryTriggerStatsDetail;
     private DamageType:number;
-    InputMeta: IItemAffixStatsMetadata;
-    OutputMeta: IItemAffixStatsMetadata;
+    EquippableStatData: IItemAffixStats;
+    updateEquippedStats: (src:IItemAffix, affix:IItemAffix) => IItemAffix;
+    getZeroStats: (src: any) => any;
 
     constructor(category:AffixCategoryEnum, level:number, powerLevel:number, amount:number, chance:number, duration:number, type:SecondaryTriggerStatsEnum, trigger:ItemTriggerStats, damageType?:ResistanceTypesEnum) {
         this.CategoryStats = category;
@@ -176,18 +178,21 @@ export class ItemSecondaryTriggerStats implements IItemAffixStats, IEquippableSt
             this.statsCalculated = true;
         }
 
-        this.InputMeta = new SimpleItemAffixStatsMetadata();
-        this.OutputMeta = new SimpleItemAffixStatsMetadata();
-
-        debugger;
-        this.InputMeta.SelectedCategoryStat = this.constructor.name;
-        this.InputMeta.SelectedStat = Helpers.getPropertyByValue(AffixCategoryEnum, this.CategoryStats);
-        this.OutputMeta.SelectedCategoryStat = "SecondaryTriggerStat";
-        this.OutputMeta.SelectedStat = this.TriggerDetails.OutputMeta.SelectedEquipStat;
-        this.OutputMeta.SelectedEquipStat = Helpers.getPropertyByValue(SecondaryTriggerStatsEnum, this.Type);
+        this.EquippableStatData = new SimpleAffixStats();
+        this.EquippableStatData.InputMeta.SelectedCategoryStat = this.constructor.name;
+        this.EquippableStatData.InputMeta.SelectedStat = Helpers.getPropertyByValue(AffixCategoryEnum, this.CategoryStats);
+        this.EquippableStatData.OutputMeta.SelectedCategoryStat = "SecondaryTriggerStats";
+        this.EquippableStatData.OutputMeta.SelectedStat = Helpers.getPropertyByValue(SecondaryTriggerStatsEnum, this.Type);
+        this.EquippableStatData.OutputMeta.SelectedEquipStat = Helpers.getPropertyByValue(SecondaryTriggerStatsEnum, this.Type);
+        this.getZeroStats = (src) => { var stat = (src as ItemSecondaryTriggerStats);
+            debugger;
+            if (stat) {
+                stat.Amount = 0; stat.Chance = 0; stat.Duration = 0; stat.Trigger.Chance = 0;
+            }
+            return stat;
+        }
+        this.updateEquippedStats = new SecondaryTriggerStatsEquippable().updateEquippedStats;
     }
-
-    updateEquippedStats: (src:IItemAffix, affix:IItemAffix) => IItemAffix;
 
     public GetDescription():string {
         var secondaryTypeStr = this.TriggerDetails.GetDescription();

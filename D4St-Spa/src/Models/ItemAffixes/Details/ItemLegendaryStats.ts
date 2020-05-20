@@ -1,31 +1,35 @@
-import { IItemAffixStats, IItemAffixStatsMetadata, SimpleItemAffixStatsMetadata } from './IItemAffixStats';
+import { IItemAffixStats, IItemAffixStatsMetadata, SimpleItemAffixStatsMetadata, SimpleAffixStats } from './IItemAffixStats';
 import { LegendaryStatsEnum, AffixCategoryEnum } from 'src/_Enums/itemAffixEnums';
 import { Helpers } from 'src/_Helpers/helpers';
-import { IEquippableStat } from 'src/Models/InventoryModels/InventoryDetailModels/IEquippableStat';
 import { IItemAffix } from '../IItemAffix';
+import { IEquippableAffixStat } from 'src/Models/IEquippableStatDetails/IEquippableAffixStat';
+import { LegendaryEquippableStat } from 'src/Models/IEquippableStatDetails/LegendaryEquippableStat';
 
-export class ItemLegendaryStats implements IItemAffixStats, IEquippableStat {
+export class ItemLegendaryStats implements IEquippableAffixStat {
     Amount: number;
     Type:LegendaryStatsEnum;
+    SelectedCategoryStat: string;
+    CategoryStats: AffixCategoryEnum;
+    EquippableStatData: IItemAffixStats;
+    getZeroStats: (src: any) => any;
+    updateEquippedStats: (src:IItemAffix, affix:IItemAffix) => IItemAffix;
 
     constructor(category: AffixCategoryEnum, type:LegendaryStatsEnum, amount?:number) {
         this.Type = type;
         this.Amount = amount;
-        this.InputMeta = new SimpleItemAffixStatsMetadata();
-        this.OutputMeta = new SimpleItemAffixStatsMetadata();
-        this.InputMeta.SelectedCategoryStat = this.constructor.name;
-        this.InputMeta.SelectedStat = Helpers.getPropertyByValue(AffixCategoryEnum, this.CategoryStats);
-        this.OutputMeta.SelectedCategoryStat = "LegendaryStat";
-        this.OutputMeta.SelectedStat = Helpers.getPropertyByValue(LegendaryStatsEnum, this.Type);
-        this.OutputMeta.SelectedEquipStat = "TODO:LegendaryStatDetail";
+        this.EquippableStatData = new SimpleAffixStats();
+        this.EquippableStatData.InputMeta.SelectedCategoryStat = this.constructor.name;
+        this.EquippableStatData.InputMeta.SelectedStat = Helpers.getPropertyByValue(AffixCategoryEnum, this.CategoryStats);
+        this.EquippableStatData.OutputMeta.SelectedCategoryStat = "LegendaryStatData";
+        this.EquippableStatData.OutputMeta.SelectedStat = Helpers.getPropertyByValue(LegendaryStatsEnum, this.Type);
+        this.EquippableStatData.OutputMeta.SelectedEquipStat = "TODO:LegendaryStatDetail";
+        this.getZeroStats = (src) => {
+            if (src)
+             (src as ItemLegendaryStats).Amount = 0;
+            return src;
+        };
+        this.updateEquippedStats = new LegendaryEquippableStat().updateEquippedStats;
     }
-
-    InputMeta: IItemAffixStatsMetadata;
-    OutputMeta: IItemAffixStatsMetadata;
-    SelectedCategoryStat: string;
-    updateEquippedStats: (src:IItemAffix, affix:IItemAffix) => IItemAffix;
-
-    CategoryStats: AffixCategoryEnum;
 
     GetDescription(): string {
         return Helpers.getPropertyByValue(LegendaryStatsEnum, this.Type);

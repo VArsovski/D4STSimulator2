@@ -1,10 +1,11 @@
-import { IItemAffixStats, IItemAffixStatsMetadata, SimpleItemAffixStatsMetadata } from './IItemAffixStats';
-import { IEquippableStat } from 'src/Models/InventoryModels/InventoryDetailModels/IEquippableStat';
+import { IItemAffixStats, IItemAffixStatsMetadata, SimpleItemAffixStatsMetadata, SimpleAffixStats } from './IItemAffixStats';
 import { AffixCategoryEnum, ItemWeaponTypesEnum, ItemRarityTypesEnum, DamageTypesEnum, ResistanceTypesEnum } from 'src/_Enums/itemAffixEnums';
 import { Helpers } from 'src/_Helpers/helpers';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 import { IItemAffix } from '../IItemAffix';
 import { DamageStatPrimaryEquippable } from '../../IEquippableStatDetails/DamageStatEquippable';
+import { IEquippableAffixStat } from 'src/Models/IEquippableStatDetails/IEquippableAffixStat';
+import { InventoryDamageModel } from 'src/Models/InventoryModels/InventoryDamageModel';
 
 export class ItemDamageCategoryStats {
     MainDamageType: DamageTypesEnum;
@@ -18,7 +19,7 @@ export class ItemDamageCategoryStats {
     }
 }
 
-export class ItemDamageEmpowerStats implements IItemAffixStats, IEquippableStat {
+export class ItemDamageEmpowerStats implements IEquippableAffixStat {
     Category: AffixCategoryEnum
     Amount: number;
     Level:number;
@@ -30,8 +31,12 @@ export class ItemDamageEmpowerStats implements IItemAffixStats, IEquippableStat 
     MainDamageType: DamageTypesEnum;
     ElementType: ResistanceTypesEnum;
     EmpowerPercentage: number;
-    InputMeta: IItemAffixStatsMetadata;
-    OutputMeta: IItemAffixStatsMetadata;
+    SelectedStat: string;
+    SelectedEquipStat: string;
+    SelectedCategoryStat: string;
+    EquippableStatData: IItemAffixStats;
+    updateEquippedStats: (src:IItemAffix, affix:IItemAffix) => IItemAffix;
+    getZeroStats: (src: any) => any;
 
     constructor(category: AffixCategoryEnum, amount:number, level:number, powerLevel:number,weaponType:ItemWeaponTypesEnum, rarityType:ItemRarityTypesEnum, damageData:ItemDamageCategoryStats) {
         this.Category = category;
@@ -53,13 +58,15 @@ export class ItemDamageEmpowerStats implements IItemAffixStats, IEquippableStat 
             this.EmpowerPercentage = this.DamageData.EmpowerPercentage;
         }
 
-        this.InputMeta = new SimpleItemAffixStatsMetadata();
-        this.OutputMeta = new SimpleItemAffixStatsMetadata();
-        this.InputMeta.SelectedCategoryStat = this.constructor.name;
-        this.InputMeta.SelectedStat = Helpers.getPropertyByValue(AffixCategoryEnum, this.CategoryStats);
-        this.OutputMeta.SelectedStat = "DamageEmpowerData";
-        this.OutputMeta.SelectedEquipStat = Helpers.getPropertyByValue(DamageTypesEnum, this.MainDamageType);
-        this.updateEquippedStats = new DamageStatPrimaryEquippable(this.OutputMeta.SelectedStat, this.OutputMeta.SelectedEquipStat).updateEquippedStats;
+        this.EquippableStatData = new SimpleAffixStats();
+        this.EquippableStatData.InputMeta = new SimpleItemAffixStatsMetadata();
+        this.EquippableStatData.OutputMeta = new SimpleItemAffixStatsMetadata();
+        this.EquippableStatData.InputMeta.SelectedCategoryStat = this.constructor.name;
+        this.EquippableStatData.InputMeta.SelectedStat = Helpers.getPropertyByValue(AffixCategoryEnum, this.CategoryStats);
+        this.EquippableStatData.OutputMeta.SelectedStat = "DamageEmpowerData";
+        this.EquippableStatData.OutputMeta.SelectedEquipStat = Helpers.getPropertyByValue(DamageTypesEnum, this.MainDamageType);
+        this.updateEquippedStats = new DamageStatPrimaryEquippable(this.EquippableStatData.OutputMeta.SelectedStat, this.EquippableStatData.OutputMeta.SelectedEquipStat).updateEquippedStats;
+        this.getZeroStats = (src) => { (src as InventoryDamageModel) = new InventoryDamageModel(); return src; }
     }
 
     GetDescription(): string {
@@ -126,6 +133,4 @@ export class ItemDamageEmpowerStats implements IItemAffixStats, IEquippableStat 
 
         return appropriateDamageTypes;
     }
-
-    updateEquippedStats: (src:IItemAffix, affix:IItemAffix) => IItemAffix;
 }

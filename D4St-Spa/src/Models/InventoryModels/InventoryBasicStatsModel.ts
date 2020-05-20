@@ -6,16 +6,24 @@ export class InventoryBasicStatsModel {
     HP:BasicStatInventoryModel;
     Resource:BasicStatInventoryModel;
     Stamina:BasicStatInventoryModel;
-    AngelicPower:ItemBasicPowersDetail;
-    DemonicPower:ItemBasicPowersDetail;
-    AncestralPower:ItemBasicPowersDetail;
+    PowerData:InventoryCombinedPowerModel;
 
     constructor() {
         this.HP = new BasicStatInventoryModel(0, 0, 0, 0, 0);
         this.Resource = new BasicStatInventoryModel(0, 0, 0, 0, 0);
         this.Stamina = new BasicStatInventoryModel(0, 0, 0, 0, 0);
-        this.AngelicPower = new ItemBasicPowersDetail(1,0,0, PowerTypesEnum.Angelic);
-        this.DemonicPower = new ItemBasicPowersDetail(1,0,0, PowerTypesEnum.Demonic);
-        this.AncestralPower = new ItemBasicPowersDetail(1,0,0, PowerTypesEnum.Ancestral);
+        this.PowerData = new InventoryCombinedPowerModel();
+    }
+}
+
+export class InventoryCombinedPowerModel {
+    AngelicPower:ItemBasicPowersDetail;
+    DemonicPower:ItemBasicPowersDetail;
+    AncestralPower:ItemBasicPowersDetail;
+
+    constructor() {
+        this.AngelicPower = new ItemBasicPowersDetail(0, 0, 0, PowerTypesEnum.Angelic);
+        this.DemonicPower = new ItemBasicPowersDetail(0, 0, 0, PowerTypesEnum.Demonic);
+        this.AncestralPower = new ItemBasicPowersDetail(0, 0, 0, PowerTypesEnum.Ancestral);
     }
 }

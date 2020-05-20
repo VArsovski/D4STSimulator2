@@ -1,15 +1,18 @@
-import { IEquippableStat } from 'src/Models/InventoryModels/InventoryDetailModels/IEquippableStat';
 import { IItemAffix } from '../ItemAffixes/IItemAffix';
+import { InventoryResistanceModel } from '../InventoryModels/InventoryDamageModel';
+import { IEquippableAffixStat } from './IEquippableAffixStat';
+import { IItemAffixStats } from '../ItemAffixes/Details/IItemAffixStats';
 
-export class ResistanceEquippable implements IEquippableStat {
+export class ResistanceEquippable implements IEquippableAffixStat {
     SelectedStat: string;
     SelectedEquipStat: string;
+    EquippableStatData: IItemAffixStats;
+    getZeroStats: (src: any) => any;
     updateEquippedStats: (src:IItemAffix, affix:IItemAffix) => IItemAffix;
 
-    constructor(selectedStat:string, selectedEquipStat:string) {
-        this.SelectedStat = selectedStat;
-        this.SelectedEquipStat = this.SelectedEquipStat;
+    constructor() {
         this.updateEquippedStats = this.calculateResistanceStats;
+        this.getZeroStats = (src:any) => { (src as InventoryResistanceModel).Percentage = 0; return src; }
     }
 
     private calculateResistanceStats(src:IItemAffix, affix:IItemAffix):IItemAffix {

@@ -142,7 +142,7 @@ export enum AffixCategoryEnum {
 
 export enum BasicStatTypesEnum {
     PowerStats= 1,
-    StatNumbers=2,
+    StatAmount=2,
     StatRegen=3,
     StatPercentage=4,
     StatPercentageRegen=5,

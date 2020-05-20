@@ -1,11 +1,13 @@
 import { OfensiveStatCategoryEnum, OfensiveStatsEnum, AffixCategoryEnum } from 'src/_Enums/itemAffixEnums';
 import { Helpers } from 'src/_Helpers/helpers';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
-import { IItemAffixStats, SimpleItemAffixStatsMetadata, IItemAffixStatsMetadata } from './IItemAffixStats';
-import { IEquippableStat } from 'src/Models/InventoryModels/InventoryDetailModels/IEquippableStat';
+import { IItemAffixStats, SimpleItemAffixStatsMetadata, IItemAffixStatsMetadata, SimpleAffixStats } from './IItemAffixStats';
 import { IItemAffix } from '../IItemAffix';
+import { OfensiveStatsEquippable } from 'src/Models/IEquippableStatDetails/OfensiveStatsEquippable';
+import { IEquippableAffixStat } from 'src/Models/IEquippableStatDetails/IEquippableAffixStat';
+import { InventoryDamageModel } from 'src/Models/InventoryModels/InventoryDamageModel';
 
-export class ItemOfensiveStats implements IItemAffixStats, IEquippableStat {
+export class ItemOfensiveStats implements IEquippableAffixStat {
     private CleaveAndAoE?:ItemOfensiveStatsDetail;
     private PoisonAndBurn?:ItemOfensiveStatsDetail;
     private ArmorReductionAndBleed?:ItemOfensiveStatsDetail;
@@ -14,15 +16,16 @@ export class ItemOfensiveStats implements IItemAffixStats, IEquippableStat {
     private ChainAndPierce?:ItemOfensiveStatsDetail;
     private CastAndProjectileRange?:ItemOfensiveStatsDetail;
     private Socket:ItemOfensiveStatsDetail;
-    private selectedStat:string;
     private Level: number;
     private PowerLevel:number;
     private statsCalculated:boolean;
     private SocketPowerPercentage:number;
     Amount:number; //Just to check whether there is data in here (from outside method)
     CategoryStats: AffixCategoryEnum;
-    InputMeta: IItemAffixStatsMetadata;
-    OutputMeta: IItemAffixStatsMetadata;
+    SelectedStat:string;
+    EquippableStatData: IItemAffixStats;
+    updateEquippedStats: (src:IItemAffix, affix:IItemAffix) => IItemAffix;
+    getZeroStats: (src: any) => any;
 
     GetDescription(): string {
         var descr1 = (this.CleaveAndAoE) ? this.CleaveAndAoE.GetDescription() : "";
@@ -56,19 +59,19 @@ export class ItemOfensiveStats implements IItemAffixStats, IEquippableStat {
 
         var selectedStat = Helpers.getPropertyByValue(OfensiveStatsEnum, type);
         this[selectedStat] = newOfensiveAffixStats;
-        this.selectedStat = selectedStat;
+        this.SelectedStat = selectedStat;
 
         if (type == OfensiveStatsEnum.Socket)
         {
             this.Socket.Amount = 1;
-            this.selectedStat = "Socket";
+            this.SelectedStat = "Socket";
         }
 
         if (!this.statsCalculated) {
-            if (this.selectedStat) {
-                if (this.selectedStat != "Socket") {
-                    this[this.selectedStat].Amount = new CalculationsHelper().getEmpoweredValue(this[this.selectedStat].Amount, this.PowerLevel);
-                    this[this.selectedStat].AmountPercentage = new CalculationsHelper().getEmpoweredValue(this[this.selectedStat].AmountPercentage, this.PowerLevel);
+            if (this.SelectedStat) {
+                if (this.SelectedStat != "Socket") {
+                    this[this.SelectedStat].Amount = new CalculationsHelper().getEmpoweredValue(this[this.SelectedStat].Amount, this.PowerLevel);
+                    this[this.SelectedStat].AmountPercentage = new CalculationsHelper().getEmpoweredValue(this[this.SelectedStat].AmountPercentage, this.PowerLevel);
                 }
                 else this.Socket.Amount+=this.PowerLevel;
                 this.SocketPowerPercentage = Math.round(new CalculationsHelper().getEmpoweredValue(Helpers.getRandom(20, 30) + Helpers.getRandom(-5, 5), this.PowerLevel) + (10 - this.Level/4));
@@ -76,16 +79,15 @@ export class ItemOfensiveStats implements IItemAffixStats, IEquippableStat {
             this.statsCalculated = true;
         }
 
-        this.InputMeta = new SimpleItemAffixStatsMetadata();
-        this.OutputMeta = new SimpleItemAffixStatsMetadata();
-        this.InputMeta.SelectedCategoryStat = this.constructor.name;
-        this.InputMeta.SelectedStat = Helpers.getPropertyByValue(AffixCategoryEnum, this.CategoryStats);
-        this.OutputMeta.SelectedCategoryStat = "OfensiveStat";
-        this.OutputMeta.SelectedStat = this.selectedStat;
-        this.OutputMeta.SelectedEquipStat = this[this.selectedStat].SelectedEquipStat;
+        this.EquippableStatData = new SimpleAffixStats();
+        this.EquippableStatData.InputMeta.SelectedCategoryStat = this.constructor.name;
+        this.EquippableStatData.InputMeta.SelectedStat = Helpers.getPropertyByValue(AffixCategoryEnum, this.CategoryStats);
+        this.EquippableStatData.OutputMeta.SelectedCategoryStat = "CCEffectsData";
+        this.EquippableStatData.OutputMeta.SelectedStat = this.SelectedStat;
+        this.EquippableStatData.OutputMeta.SelectedEquipStat = this[this.SelectedStat].SelectedEquipStat;
+        this.getZeroStats = (src) => { (src[(src as ItemOfensiveStats).SelectedStat] as InventoryDamageModel).Amount = 0; return src }
+        this.updateEquippedStats = new OfensiveStatsEquippable("CCEffectsData", this.SelectedStat).updateEquippedStats;
     }
-
-    updateEquippedStats: (src:IItemAffix, affix:IItemAffix) => IItemAffix;
 
     private GenerateAppropriateCategoriesByType(type:OfensiveStatsEnum) {
         var categories:OfensiveStatCategoryEnum[] = [];
@@ -167,7 +169,7 @@ export class ItemOfensiveStatsDetail implements IItemAffixStats {
         this.InputMeta.SelectedCategoryStat = this.constructor.name;
         this.InputMeta.SelectedStat = Helpers.getPropertyByValue(AffixCategoryEnum, this.CategoryStats);
         this.OutputMeta.SelectedEquipStat = Helpers.getPropertyByValue(OfensiveStatsEnum, this.Type);
-        this.OutputMeta.SelectedCategoryStat = "OfensiveStat";
-        this.OutputMeta.SelectedStat = "TODO:DetailsForOfensiveStats";
+        this.OutputMeta.SelectedCategoryStat = "OfensiveStatData";
+        this.OutputMeta.SelectedStat = Helpers.getPropertyByValue(AffixCategoryEnum, this.CategoryStats);
     }
 }
