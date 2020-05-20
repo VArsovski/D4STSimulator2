@@ -237,21 +237,6 @@ export class InventoryComponent implements OnInit, OnChanges {
     this.UpdateInventoryImages(selectedInventoryType);
   }
 
-  protected async calculateArmorDetailData() {
-
-      var totals:number[] = [];
-      ["HeavyArmor", "LightArmor", "MysticArmor"].forEach(at => {
-        debugger;
-        var calculationFactor = new CalculationsHelper().GetCalculatedFactor(at, this.ArmorData[at].Amount, this.basicChatStats.Level);
-        totals.push(Math.round(calculationFactor * this.ArmorData[at].Amount * 10) / 10);
-      })
-
-      var total = 0;
-      totals.forEach(t => total += t)
-      debugger;
-      this.ArmorData.Armor.Amount = total;
-  }
-
   protected async calculateArmorTypes(itemData:IItemAffix[], itemType:string) {
     if ((this.inventoryData[itemType] || []).length == 0) {
       this.inventoryData[itemType] = itemData;
@@ -287,6 +272,21 @@ export class InventoryComponent implements OnInit, OnChanges {
       })
     });
   }
+  
+  protected async calculateArmorDetailData() {
+
+    var totals:number[] = [];
+    ["HeavyArmor", "LightArmor", "MysticArmor"].forEach(at => {
+      debugger;
+      var calculationFactor = new CalculationsHelper().GetCalculatedFactor(at, this.ArmorData[at].Amount, this.basicChatStats.Level);
+      totals.push(Math.round(calculationFactor * this.ArmorData[at].Amount * 10) / 10);
+    })
+
+    var total = 0;
+    totals.forEach(t => total += t)
+    debugger;
+    this.ArmorData.Armor.Amount = total;
+}
 
   protected ArmorSrc(type:string):string {
     var srcEmpty = "_Resources\\img\\borders\\border.png";
