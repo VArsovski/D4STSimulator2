@@ -235,7 +235,7 @@ export class CalculationsHelper {
       // Powers, StatReturn
       stat += Math.round((level || 1) * Helpers.getRandom(25, 40)/100 * 10)/10;
     }
-    if (selected == BasicStatTypesEnum.StatNumbers) {
+    if (selected == BasicStatTypesEnum.StatAmount) {
         // + HP/Mana/Stamina
         stat += Math.round((level || 1) * Helpers.getRandom(60, 90)/100 * 10)/10;
     }

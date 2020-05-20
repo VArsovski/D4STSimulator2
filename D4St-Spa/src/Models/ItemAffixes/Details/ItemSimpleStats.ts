@@ -2,17 +2,23 @@ import { PowerTypesEnum } from 'src/_Enums/powerTypesEnum';
 import { Helpers } from 'src/_Helpers/helpers';
 import { ResistanceTypesEnum, AffixCategoryEnum } from 'src/_Enums/itemAffixEnums';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
-import { IItemAffixStats, IItemAffixStatsMetadata, SimpleItemAffixStatsMetadata } from './IItemAffixStats';
+import { IItemAffixStats, IItemAffixStatsMetadata, SimpleItemAffixStatsMetadata, SimpleAffixStats } from './IItemAffixStats';
+import { IEquippableAffixStat } from 'src/Models/IEquippableStatDetails/IEquippableAffixStat';
+import { IItemAffix } from '../IItemAffix';
+import { InventoryDamageModel } from 'src/Models/InventoryModels/InventoryDamageModel';
+import { PowerStatEquippable } from 'src/Models/IEquippableStatDetails/PowerStatEquippable';
+import { ResistanceEquippable } from 'src/Models/IEquippableStatDetails/ResistanceEquippable';
 
-export class ItemBasicPowersDetail implements IItemAffixStats {
+export class ItemBasicPowersDetail implements IEquippableAffixStat {
     CategoryStats: AffixCategoryEnum;
     Amount: number;
     Type: PowerTypesEnum;
     private Level: number;
     private PowerLevel: any;
     private statsCalculated:boolean;
-    InputMeta: IItemAffixStatsMetadata;
-    OutputMeta: IItemAffixStatsMetadata;
+    EquippableStatData: IItemAffixStats;
+    getZeroStats: (src: any) => any;
+    updateEquippedStats: (src: any, affix: IItemAffix) => any;
     
     constructor(level:number, powerLevel:number, amount:number, type:PowerTypesEnum) {
 
@@ -26,13 +32,14 @@ export class ItemBasicPowersDetail implements IItemAffixStats {
             this.statsCalculated = true;
         }
 
-        this.InputMeta = new SimpleItemAffixStatsMetadata();
-        this.OutputMeta = new SimpleItemAffixStatsMetadata();
-        this.InputMeta.SelectedCategoryStat = this.constructor.name;
-        this.InputMeta.SelectedStat = Helpers.getPropertyByValue(AffixCategoryEnum, this.CategoryStats);
-        this.OutputMeta.SelectedCategoryStat = "BasicStat";
-        this.OutputMeta.SelectedStat = "Powers";
-        this.OutputMeta.SelectedEquipStat = Helpers.getPropertyByValue(PowerTypesEnum, this.Type) + "Power";
+        this.EquippableStatData = new SimpleAffixStats();
+        this.EquippableStatData.InputMeta.SelectedCategoryStat = this.constructor.name;
+        this.EquippableStatData.InputMeta.SelectedStat = Helpers.getPropertyByValue(AffixCategoryEnum, this.CategoryStats);
+        this.EquippableStatData.OutputMeta.SelectedCategoryStat = "BasicStat";
+        this.EquippableStatData.OutputMeta.SelectedStat = "PowerData";
+        this.EquippableStatData.OutputMeta.SelectedEquipStat = Helpers.getPropertyByValue(PowerTypesEnum, this.Type) + "Power";
+        this.getZeroStats = (src) => { (src as InventoryDamageModel).Amount = 0; return src; }
+        this.updateEquippedStats = new PowerStatEquippable().updateEquippedStats;
     }
 
     public GetDescription():string {
@@ -41,15 +48,16 @@ export class ItemBasicPowersDetail implements IItemAffixStats {
     }
 }
 
-export class ItemBasicResistanceStatsDetail implements IItemAffixStats {
+export class ItemBasicResistanceStatsDetail implements IEquippableAffixStat {
     Amount:number;
     Type:ResistanceTypesEnum;
     CategoryStats: AffixCategoryEnum;
     private PowerLevel: number;
     private Level: number;
     private statsCalculated:boolean;
-    InputMeta: IItemAffixStatsMetadata;
-    OutputMeta: IItemAffixStatsMetadata;
+    EquippableStatData: IItemAffixStats;
+    getZeroStats: (src: any) => any;
+    updateEquippedStats: (src: any, affix: IItemAffix) => IItemAffix;
 
     constructor(level:number, powerLevel:number, amount:number, type:ResistanceTypesEnum) {
         this.Level = level || 1;
@@ -62,13 +70,14 @@ export class ItemBasicResistanceStatsDetail implements IItemAffixStats {
             this.statsCalculated = true;
         }
 
-        this.InputMeta = new SimpleItemAffixStatsMetadata();
-        this.OutputMeta = new SimpleItemAffixStatsMetadata();
-        this.InputMeta.SelectedCategoryStat = this.constructor.name;
-        this.InputMeta.SelectedStat = Helpers.getPropertyByValue(AffixCategoryEnum, this.CategoryStats);
-        this.OutputMeta.SelectedCategoryStat = "BasicStat";
-        this.OutputMeta.SelectedStat = "Resistance";
-        this.OutputMeta.SelectedEquipStat = Helpers.getPropertyByValue(ResistanceTypesEnum, this.Type) + "Resistance";
+        this.EquippableStatData = new SimpleAffixStats();
+        this.EquippableStatData.InputMeta.SelectedCategoryStat = this.constructor.name;
+        this.EquippableStatData.InputMeta.SelectedStat = Helpers.getPropertyByValue(AffixCategoryEnum, this.CategoryStats);
+        this.EquippableStatData.OutputMeta.SelectedCategoryStat = "BasicStat";
+        this.EquippableStatData.OutputMeta.SelectedStat = "Resistance";
+        this.EquippableStatData.OutputMeta.SelectedEquipStat = Helpers.getPropertyByValue(ResistanceTypesEnum, this.Type) + "Resistance";
+        this.getZeroStats = (src) => { return new InventoryDamageModel(); }
+        this.updateEquippedStats = new ResistanceEquippable().updateEquippedStats;
     }
 
     public GetDescription():string {
@@ -76,7 +85,7 @@ export class ItemBasicResistanceStatsDetail implements IItemAffixStats {
     }
 }
 
-export class ItemSimpleStats implements IItemAffixStats {
+export class ItemSimpleStats implements IEquippableAffixStat {
     Type:string;
     Amount:number;
     AmountPercentage:number;
@@ -84,6 +93,9 @@ export class ItemSimpleStats implements IItemAffixStats {
     private Level: number;
     private statsCalculated:boolean;
     CategoryStats: AffixCategoryEnum;
+    EquippableStatData: IItemAffixStats;
+    getZeroStats: (src: any) => any;
+    updateEquippedStats: (src: any, affix: IItemAffix) => any;
 
     constructor(level:number, powerLevel:number, amount:number, amountPercentage:number, type:string) {
         this.Level = level || 1;
@@ -97,16 +109,13 @@ export class ItemSimpleStats implements IItemAffixStats {
             this.statsCalculated = true;
         }
 
-        this.InputMeta = new SimpleItemAffixStatsMetadata();
-        this.OutputMeta = new SimpleItemAffixStatsMetadata();
-        this.InputMeta.SelectedCategoryStat = this.constructor.name;
-        this.InputMeta.SelectedStat = Helpers.getPropertyByValue(AffixCategoryEnum, this.CategoryStats);
-        this.OutputMeta.SelectedCategoryStat = "BasicStat";
-        this.OutputMeta.SelectedStat = "SimpleStat";
-        this.OutputMeta.SelectedEquipStat = this.Type;
+        this.EquippableStatData = new SimpleAffixStats();
+        this.EquippableStatData.InputMeta.SelectedCategoryStat = this.constructor.name;
+        this.EquippableStatData.InputMeta.SelectedStat = Helpers.getPropertyByValue(AffixCategoryEnum, this.CategoryStats);
+        this.EquippableStatData.OutputMeta.SelectedCategoryStat = "BasicStat";
+        this.EquippableStatData.OutputMeta.SelectedStat = "SimpleStat";
+        this.EquippableStatData.OutputMeta.SelectedEquipStat = this.Type;
     }
-    InputMeta: IItemAffixStatsMetadata;
-    OutputMeta: IItemAffixStatsMetadata;
 
     public GetDescription():string {
         var amtDescr = this.Amount ? this.Amount + " " + this.Type : "";

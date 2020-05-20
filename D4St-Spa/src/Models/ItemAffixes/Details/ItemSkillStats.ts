@@ -1,11 +1,12 @@
-import { IItemAffixStats, SimpleItemAffixStatsMetadata, IItemAffixStatsMetadata } from './IItemAffixStats';
+import { SimpleItemAffixStatsMetadata, IItemAffixStatsMetadata, IItemAffixStats } from './IItemAffixStats';
 import { AffixCategoryEnum } from 'src/_Enums/itemAffixEnums';
 import { SkillVM } from 'src/Models/SkillVM';
-import { IEquippableStat } from 'src/Models/InventoryModels/InventoryDetailModels/IEquippableStat';
 import { IItemAffix } from '../IItemAffix';
 import { Helpers } from 'src/_Helpers/helpers';
+import { SkillStatEquippable } from 'src/Models/IEquippableStatDetails/SkillStatEquippable';
+import { IEquippableAffixStat } from 'src/Models/IEquippableStatDetails/IEquippableAffixStat';
 
-export class ItemSkillStats implements IItemAffixStats, IEquippableStat {
+export class ItemSkillStats implements IEquippableAffixStat {
     Level: number;
     Amount: number;
     PowerLevel:number
@@ -13,6 +14,9 @@ export class ItemSkillStats implements IItemAffixStats, IEquippableStat {
     CategoryStats: AffixCategoryEnum;
     InputMeta: IItemAffixStatsMetadata;
     OutputMeta: IItemAffixStatsMetadata;
+    EquippableStatData: IItemAffixStats;
+    updateEquippedStats: (src: IItemAffix, affix: IItemAffix) => IItemAffix;
+    getZeroStats: (src: any) => any;
 
     constructor(category:AffixCategoryEnum, affixData:SkillVM, level:number, powerLevel:number) {
         this.Level = level;
@@ -31,11 +35,11 @@ export class ItemSkillStats implements IItemAffixStats, IEquippableStat {
         this.InputMeta.SelectedCategoryStat = this.constructor.name;
         this.InputMeta.SelectedStat = Helpers.getPropertyByValue(AffixCategoryEnum, this.CategoryStats);
         this.OutputMeta.SelectedCategoryStat = "BasicStat";
-        this.OutputMeta.SelectedStat = "SkillEmpower";
+        this.OutputMeta.SelectedStat = "Skills";
         this.OutputMeta.SelectedEquipStat = (this.AffixData || {name:"SkillNotSelected"}).name;
+        this.getZeroStats = (src) => { (src as ItemSkillStats).Amount = 0; return src }
+        this.updateEquippedStats = new SkillStatEquippable(this.OutputMeta.SelectedStat, this.OutputMeta.SelectedEquipStat).updateEquippedStats;
     }
-    
-    updateEquippedStats: (src: IItemAffix, affix: IItemAffix) => IItemAffix;
 
     GetDescription(): string {
         return this.AffixData ? "+ " + ((this.AffixData.level + this.PowerLevel) || 1) + " to " + this.AffixData.name + " (" + this.AffixData.className + " only)" : "";

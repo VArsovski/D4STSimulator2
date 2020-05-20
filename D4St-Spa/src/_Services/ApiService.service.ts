@@ -91,15 +91,16 @@ export class ApiServiceService {
           this.http.post(this.baseUrl + "Auth/InitAccess", model, requestOptions)
           .pipe(
             map((response: any) => {
+              debugger;
             token = response.token;
           }))
           .subscribe(
           response => {
+            debugger;
             localStorage["currentAccessKey"] = response["token"];
             setFn();
             },
           error => {
-            debugger;
             console.log(error);
           }
         )};

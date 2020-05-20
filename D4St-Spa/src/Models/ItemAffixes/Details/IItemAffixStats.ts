@@ -3,12 +3,9 @@ import { AffixCategoryEnum } from 'src/_Enums/itemAffixEnums';
 export interface IItemAffixStats {
     Amount:number;
     CategoryStats:AffixCategoryEnum;
-    // SelectedStat:string;
-    // SelectedEquipStat:string;
-    // SelectedCategoryStat:string;
     InputMeta: IItemAffixStatsMetadata;
     OutputMeta: IItemAffixStatsMetadata;
-    GetDescription():string;
+    // SelectedCategoryStat:string;
 }
 
 export interface IItemAffixStatsMetadata {
@@ -22,4 +19,15 @@ export class SimpleItemAffixStatsMetadata implements IItemAffixStatsMetadata {
     SelectedEquipStat: string;
     SelectedCategoryStat: string;
     constructor() { }
+}
+
+export class SimpleAffixStats implements IItemAffixStats {
+    Amount: number;
+    CategoryStats: AffixCategoryEnum;
+    InputMeta: IItemAffixStatsMetadata;
+    OutputMeta: IItemAffixStatsMetadata;
+    constructor() {
+        this.InputMeta = new SimpleItemAffixStatsMetadata();
+        this.OutputMeta = new SimpleItemAffixStatsMetadata();
+    }
 }

@@ -1,9 +1,11 @@
-import { IEquippableStat } from 'src/Models/InventoryModels/InventoryDetailModels/IEquippableStat';
 import { IItemAffix } from '../ItemAffixes/IItemAffix';
+import { ItemBasicPowersDetail } from '../ItemAffixes/Details/ItemSimpleStats';
+import { IEquippableAffixStat } from './IEquippableAffixStat';
+import { IItemAffixStats } from '../ItemAffixes/Details/IItemAffixStats';
 
-export class PowerStatEquippable implements IEquippableStat {
-    SelectedStat: string;
-    SelectedEquipStat: string;
+export class PowerStatEquippable implements IEquippableAffixStat {
+    EquippableStatData: IItemAffixStats;
+    getZeroStats: (src:any) => any;
     updateEquippedStats: (src:IItemAffix, affix:IItemAffix) => IItemAffix;
 
     private calculatePowerStats(src:IItemAffix, affix:IItemAffix):IItemAffix {
@@ -13,9 +15,8 @@ export class PowerStatEquippable implements IEquippableStat {
         return combinedStat;
     }
 
-    constructor(selectedStat:string, selectedEquipStat:string) {
-        this.SelectedStat = selectedStat;
-        this.SelectedEquipStat = selectedEquipStat;
+    constructor() {
         this.updateEquippedStats = this.calculatePowerStats;
+        this.getZeroStats = (src) => { (src as ItemBasicPowersDetail).Amount = 0; return src; }
     }
 }

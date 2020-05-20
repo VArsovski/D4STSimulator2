@@ -7,11 +7,11 @@ export class BasicStatInventoryModel implements IBasicStatInventoryModel {
     AmountPercentage:number;
     AmountPercentageRegen:number;
 
-    constructor(amount:number, regen:number, amountP:number, amountRP:number, ret:number) {
-        this.Amount = amount;
-        this.Regen = regen;
-        this.AmountPercentage = amountP;
-        this.AmountPercentageRegen = amountRP;
-        this.Return = ret;
+    constructor(amount?:number, regen?:number, amountP?:number, amountRP?:number, ret?:number) {
+        this.Amount = amount || 0;
+        this.Regen = regen || 0;
+        this.AmountPercentage = amountP || 0;
+        this.AmountPercentageRegen = amountRP || 0;
+        this.Return = ret || 0;
     }
 }

@@ -2,10 +2,10 @@ import { ItemArmorTypesEnum, ArmorTypesEnum, AffixCategoryEnum } from 'src/_Enum
 import { Helpers } from 'src/_Helpers/helpers';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 import { CCEffectTypesEnum } from 'src/_Enums/triggerAffixEnums';
-import { IItemAffixStats, IItemAffixStatsMetadata, SimpleItemAffixStatsMetadata } from './IItemAffixStats';
-import { IEquippableStat } from 'src/Models/InventoryModels/InventoryDetailModels/IEquippableStat';
+import { IItemAffixStats, SimpleItemAffixStatsMetadata, SimpleAffixStats } from './IItemAffixStats';
 import { ArmorStatEquippable, ArmorStatPrimaryEquippable } from '../../IEquippableStatDetails/ArmorStatEquppable';
 import { IItemAffix } from '../IItemAffix';
+import { IEquippableAffixStat } from 'src/Models/IEquippableStatDetails/IEquippableAffixStat';
 
 export class ItemArmorDetailStats {
     ItemArmorType:ItemArmorTypesEnum;
@@ -33,7 +33,7 @@ export class ItemArmorDetailStats {
     }
 }
 
-export class ItemArmorStats implements IItemAffixStats, IEquippableStat {
+export class ItemArmorStats implements IEquippableAffixStat {
     ArmorType: ArmorTypesEnum;
     private PowerLevel: any;
     private Level: number;
@@ -41,8 +41,10 @@ export class ItemArmorStats implements IItemAffixStats, IEquippableStat {
     private ArmorStatDetails:ItemArmorDetailStats;
     private statsCalculated:boolean;
     Amount:number;
-    InputMeta: IItemAffixStatsMetadata;
-    OutputMeta: IItemAffixStatsMetadata;
+    CategoryStats: AffixCategoryEnum;
+    EquippableStatData: IItemAffixStats;
+    getZeroStats: (src: any) => any;
+    updateEquippedStats: (src:IItemAffix, affix:IItemAffix) => IItemAffix;
 
     constructor(category: AffixCategoryEnum, level:number, powerLevel:number, itemType: ItemArmorTypesEnum, armorType?: ArmorTypesEnum, armor?:number) {
         this.CategoryStats = category;
@@ -51,8 +53,7 @@ export class ItemArmorStats implements IItemAffixStats, IEquippableStat {
         this.PowerLevel = powerLevel;
         this.ItemType = itemType;
         this.ArmorType = armorType || Helpers.getRandom(1, 3);
-        this.InputMeta = new SimpleItemAffixStatsMetadata();
-        this.OutputMeta = new SimpleItemAffixStatsMetadata();
+        this.EquippableStatData = new SimpleAffixStats();
 
         if (!this.statsCalculated)
         {
@@ -65,18 +66,16 @@ export class ItemArmorStats implements IItemAffixStats, IEquippableStat {
             this.Amount = armor || selectedAmount;
         }
 
-        this.InputMeta.SelectedCategoryStat = this.constructor.name;
-        this.InputMeta.SelectedStat = Helpers.getPropertyByValue(AffixCategoryEnum, this.CategoryStats);
-        this.OutputMeta.SelectedStat = "ArmorData";
-        this.OutputMeta.SelectedEquipStat = Helpers.getPropertyByValue(ArmorTypesEnum, this.ArmorType) + "Armor";
+        this.EquippableStatData.InputMeta.SelectedCategoryStat = this.constructor.name;
+        this.EquippableStatData.InputMeta.SelectedStat = Helpers.getPropertyByValue(AffixCategoryEnum, this.CategoryStats);
+        this.EquippableStatData.OutputMeta.SelectedStat = "ArmorData";
+        this.EquippableStatData.OutputMeta.SelectedEquipStat = Helpers.getPropertyByValue(ArmorTypesEnum, this.ArmorType) + "Armor";
 
         // TODO: Should call both, see if that's properly done
-        this.updateEquippedStats = new ArmorStatEquippable(this.OutputMeta.SelectedStat, this.OutputMeta.SelectedEquipStat).updateEquippedStats;
-        this.updateEquippedStats = new ArmorStatPrimaryEquippable(this.OutputMeta.SelectedStat, this.OutputMeta.SelectedEquipStat).updateEquippedStats;
+        this.updateEquippedStats = new ArmorStatEquippable(this.EquippableStatData.OutputMeta.SelectedStat, this.EquippableStatData.OutputMeta.SelectedEquipStat).updateEquippedStats;
+        this.updateEquippedStats = new ArmorStatPrimaryEquippable(this.EquippableStatData.OutputMeta.SelectedStat, this.EquippableStatData.OutputMeta.SelectedEquipStat).updateEquippedStats;
+        this.getZeroStats = (src) => { (src as ItemArmorStats).Amount = 0; return src; }
     }
-
-    updateEquippedStats: (src:IItemAffix, affix:IItemAffix) => IItemAffix;
-    CategoryStats: AffixCategoryEnum;
 
     // Stats for level1, calculate for other levels
     private GetLevelData(level:number):ItemArmorDetailStats[] {

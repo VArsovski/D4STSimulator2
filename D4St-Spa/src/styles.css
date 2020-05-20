@@ -287,13 +287,13 @@ input[type=checkbox] {
 
 .attacksDisplayHolder {
     width: 740px;
-    transform: translate(96%, 70%);
+    transform: translate(96%, 90%);
     list-style: none;
     /* float: left; */
 }
 .attacksDisplayHolder2 {
-    width: 770px;
-    transform: translate(92%, 70%);
+    width: 740px;
+    transform: translate(96%, 50%);
     list-style: none;
     /* float: left; */
 }
@@ -307,14 +307,14 @@ input[type=checkbox] {
 .basicStatsDisplayHolder {
     width:520px;
     /*transform:translate(162%,-750%);*/
-    bottom: calc(175% + 10px);
+    bottom: calc(180% + 10px);
     left: calc(72% + 5px);
     position: absolute;
 }
 
 .powerStatsDisplayHolder {
     width:520px;
-    transform:translate(162%,-1300%);
+    transform:translate(162%,-1360%);
 }
 
 .iconTop {

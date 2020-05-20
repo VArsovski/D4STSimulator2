@@ -14,8 +14,8 @@ export class BasicAffixHelper {
             selected = BasicStatTypesEnum.PowerStats;
             basicAffix.SetPowers(level, powerLevel, amount, Helpers.getRandom(1,4));
         }
-        if (index % delimiter == BasicStatTypesEnum.StatNumbers) {
-            selected = BasicStatTypesEnum.StatNumbers;
+        if (index % delimiter == BasicStatTypesEnum.StatAmount) {
+            selected = BasicStatTypesEnum.StatAmount;
             basicAffix.SetBasicStat(level, powerLevel, amount, Helpers.getRandom(1,3));
         }
         if (index % delimiter == BasicStatTypesEnum.StatRegen) {
