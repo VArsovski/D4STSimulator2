@@ -123,7 +123,7 @@ export class InventoryComponent implements OnInit, OnChanges {
     this.inventoryData.selectedType = changesMade && changes["inventoryItem"].currentValue ? changes["inventoryItem"].currentValue["selectedType"] : null;
     this.inventoryData.selectedRarity = changesMade && changes["inventoryItem"].currentValue ? changes["inventoryItem"].currentValue["selectedRarity"] : null;
 
-    // TODO: Step1: find SelectedItem
+    // Step1: find SelectedItem
     var selectedInventoryType = changesMade ? this.inventoryData.selectedCategory == ItemCategoriesEnum.Armor ? this.armors[this.inventoryData.selectedType - 1]
                                             : this.inventoryData.selectedCategory == ItemCategoriesEnum.Jewelry ? this.jewelries[this.inventoryData.selectedType - 1]
                                             : "Weapon" : null;
@@ -135,12 +135,31 @@ export class InventoryComponent implements OnInit, OnChanges {
 
     // Reset Model Data
     this.InitializeModelData();
+    this.UpdateInventoryImages(selectedInventoryType);
 
     // Recalculate for Each equipped Item
-    availableCategories.forEach(cat => {
 
-    selectedItem = this.inventoryData[cat];
-    // TODO: Step2: Foreach Affix in selected item, reset the numbers
+    // UPDATE-INFO: getZeroStats() doesn't really have any useful usage unless redone (with -). Basically Reinitializing the Model itself does this step better..
+    // // Step2: Foreach Affix in selected item, reset the numbers
+    // availableCategories.forEach(cat => {
+    //   selectedItem = this.inventoryData[cat];
+    //   this.ResetAffixes(selectedItem);
+    // });
+
+    // Step3: Foreach Affix in selected item, recalculate the numbers
+    availableCategories.forEach(cat => {
+      selectedItem = this.inventoryData[cat];
+      this.ApplyAffixes(selectedItem);
+    });
+
+    availableCategories.forEach(cat => {
+      var affixDescriptions:string[] = [];
+      this.inventoryData[cat].forEach(a => affixDescriptions.push(a.GetAffixDescription(this.skillData)));
+      this[cat + "Description"] = affixDescriptions.join('<br/>');
+    });
+  }
+
+  private async ResetAffixes(selectedItem:IItemAffix[]) {
     selectedItem.forEach(async a => {
       var outputMetaData = a.Contents.AffixData.EquippableStatData.OutputMeta;
       var selectedStat = outputMetaData["SelectedStat"];
@@ -173,8 +192,10 @@ export class InventoryComponent implements OnInit, OnChanges {
           debugger;
         }
       }
-    });
-    
+    });    
+  }
+
+  private async ApplyAffixes(selectedItem:IItemAffix[]) {
     selectedItem.forEach(async a => {
       var outputMetaData = a.Contents.AffixData.EquippableStatData.OutputMeta;
       var selectedStat = outputMetaData["SelectedStat"];
@@ -227,14 +248,6 @@ export class InventoryComponent implements OnInit, OnChanges {
         debugger;
       };
     })
-    debugger;
-    var affixDescriptions:string[] = [];
-    selectedItem.forEach(a => affixDescriptions.push(a.GetAffixDescription(this.skillData)));
-    this[cat + "Description"] = affixDescriptions.join('<br/>');
-        })
-    
-    debugger;
-    this.UpdateInventoryImages(selectedInventoryType);
   }
 
   protected async calculateArmorTypes(itemData:IItemAffix[], itemType:string) {
