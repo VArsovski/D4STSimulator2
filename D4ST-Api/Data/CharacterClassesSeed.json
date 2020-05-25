@@ -2,8 +2,8 @@
     {
     "Id":"1",
     "Name":"Barbarian",
-    "HP":"65",
-    "Resource":"35",
+    "HP":"125",
+    "Resource":"50",
     "HPRegen":" 0.065m",
     "ResourceRegen":" 0.035m",
     "StaminaRegen":" 0.080m"
@@ -11,8 +11,8 @@
     {
     "Id":" 2",
     "Name":"Sorceress",
-    "HP":" 40",
-    "Resource":" 60",
+    "HP":" 70",
+    "Resource":"120",
     "HPRegen":" 0.040m",
     "ResourceRegen":" 0.060m",
     "StaminaRegen":" 0.060m"
@@ -20,8 +20,8 @@
     {
     "Id":" 3",
     "Name":"Druid",
-    "HP":" 50",
-    "Resource":" 50",
+    "HP":" 100",
+    "Resource":"80",
     "HPRegen":" 0.050m",
     "ResourceRegen":" 0.050m",
     "StaminaRegen":" 0.080m"

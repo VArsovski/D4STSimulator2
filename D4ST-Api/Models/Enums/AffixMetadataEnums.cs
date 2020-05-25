@@ -2,7 +2,7 @@ namespace D4ST_Api.Models.Enums
 {
     public enum AffixMetadataEnum
     {
-        HitProc = 0, ProcsOnDeath = 1, HighDamage = 2, CC = 3, Curse = 4, BuffDebuff = 5,
+        HitProc = 0, ProcsOnDeath = 1, HighDamage = 2, CC = 3, UsesWeaponDamage = 4, BuffDebuff = 5,
         Melee = 6, AoE = 7, Projectile = 8, ProjectileCharacter = 9, DoA = 10, HasDoT = 11, Summon = 12,
         IsWeak = 13, IsStrong = 14, HighCost = 15, HighCD = 16, Ultimate = 17, BannerOrTotem = 18, ProcsBuff = 19, Stackable = 20
     }

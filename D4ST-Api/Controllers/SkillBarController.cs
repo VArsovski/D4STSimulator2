@@ -50,12 +50,14 @@ namespace D4ST_Api.Controllers
                         var skillData = skill.SkillData; //getRandomSkillData(selectedClassType, tier);
                         skillData.Level = skillLevel;
                         var scs = new SkillCostStat(skillData);
-                        var skillToAdd = new Skill(skill.Id, skill.Name, skillTier, skill.SkillData, scs, skillData.IsCC);
+                        var data = new SimpleSkillDamageAffixData();
+                        data.PowerData = skill.SkillData;
+                        var skillToAdd = new Skill(skill.Id, new SkillDTO(skill.Id, skill.Name, skillLevel, data, scs, skill.AttackTypes, skill.DamageTypes, skill.SkillMetadata, skill.SkillCategoryMetadata, skillData.IsCC), scs);
                         // skillToAdd.Data.SkillData.Level = skill.SkillData.Level;
                         // skillToAdd.Data.SkillData.PowerData.Tier = skillTier;
                         // skillToAdd.Data.SkillData.PowerUp.Tier = skillTier;
 
-                        var skillMetadata = SkillStatHelper.GetSkillMetadata(PowerTypesEnum.AngelicPower, (ClassTypeEnum)skill.ClassType, skillToAdd.Data);
+                        var skillMetadata = skill.SkillMetadata; //SkillStatHelper.GetSkillMetadata(PowerTypesEnum.AngelicPower, (ClassTypeEnum)skill.ClassType, skillToAdd.Data);
                         var PoDAng = SkillStatHelper.GetRNG(PowerTypesEnum.AngelicPower).Next(1, 18) % 5 == 0;
                         var PoDDem = SkillStatHelper.GetRNG(PowerTypesEnum.DemonicPower).Next(1, 18) % 4 == 0;
                         var PoDAnc = SkillStatHelper.GetRNG(PowerTypesEnum.AncestralPower).Next(1, 18) % 3 == 0;
@@ -69,9 +71,9 @@ namespace D4ST_Api.Controllers
 
                         skillToAdd.ClassId = skill.ClassType;// classType;
                         skillToAdd.ClassName = EnumHelper.GetName<ClassTypeEnum>((ClassTypeEnum)skill.ClassType);
-                        skillToAdd.Data.AngelicAffix = SpellPowerDataCalculator.GetPowerAffixesForSkill(PowerTypesEnum.AngelicPower, (SkillCastTypeEnum)skill.CastType, skillToAdd.Data.SkillData.PowerData, md1);
-                        skillToAdd.Data.DemonicAffix = SpellPowerDataCalculator.GetPowerAffixesForSkill(PowerTypesEnum.DemonicPower, (SkillCastTypeEnum)skill.CastType, skillToAdd.Data.SkillData.PowerData, md2);
-                        skillToAdd.Data.AncestralAffix = SpellPowerDataCalculator.GetPowerAffixesForSkill(PowerTypesEnum.AncestralPower, (SkillCastTypeEnum)skill.CastType, skillToAdd.Data.SkillData.PowerData, md3);
+                        skillToAdd.Data.AngelicAffix = SpellPowerDataCalculator.GetPowerAffixesForSkill(PowerTypesEnum.AngelicPower, skill.AttackTypes ?? new List<CastTypesEnum>(), skill.DamageTypes, skillToAdd.Data.SkillData.PowerData, md1);
+                        skillToAdd.Data.DemonicAffix = SpellPowerDataCalculator.GetPowerAffixesForSkill(PowerTypesEnum.DemonicPower, skill.AttackTypes ?? new List<CastTypesEnum>(), skill.DamageTypes, skillToAdd.Data.SkillData.PowerData, md2);
+                        skillToAdd.Data.AncestralAffix = SpellPowerDataCalculator.GetPowerAffixesForSkill(PowerTypesEnum.AncestralPower, skill.AttackTypes ?? new List<CastTypesEnum>(), skill.DamageTypes, skillToAdd.Data.SkillData.PowerData, md3);
 
                         // Recalculate for same affix selected from above..
                         // skillToAdd.LevelUp.AngelicAffix = SpellPowerDataCalculator.RecalculatePowerAffixesForSkill(PowerTypesEnum.AngelicPower, (SkillCastTypeEnum)skill.CastType, skillToAdd.Data.AngelicAffix.PowerUp, skillToAdd.LevelUp.SkillData, md1);
@@ -108,9 +110,9 @@ namespace D4ST_Api.Controllers
                 var level = sd.Level;
                 sd.Level = level + 1;
                 var scs = new SkillCostStat(sd);
-                var skillData = new Skill(id, data.Name, data.SkillData, scs);
+                var skillData = new Skill(id, data, scs);
                 sd.Level = level + 2;
-                var nextLvlSkillData = new Skill(id, data.Name, data.SkillData, scs);
+                var nextLvlSkillData = new Skill(id, data, scs);
                 if (level == _MAX)
                     nextLvlSkillData = skillData;
                 return Ok(new { Current = skillData, New = nextLvlSkillData, IsMaxxed = level == _MAX });
@@ -129,9 +131,9 @@ namespace D4ST_Api.Controllers
                 var level = sd.Level;
                 data.SkillData.PowerData.Level = level + 1;
                 var scs = new SkillCostStat(sd);
-                var skillData = new Skill(id, data.Name, data.SkillData, scs);
+                var skillData = new Skill(id, data, scs);
                 data.SkillData.PowerData.Level = level + 2;
-                var nextLvlSkillData = new Skill(id, data.Name, data.SkillData, scs);
+                var nextLvlSkillData = new Skill(id, data, scs);
                 if (level == _MAX)
                     nextLvlSkillData = skillData;
                 return Ok(new { Current = skillData, New = nextLvlSkillData, IsMaxxed = level == _MAX });

@@ -212,7 +212,9 @@ export class ItemBasicStats implements IEquippableAffixStat {
         if (!this.selectedStat)
             this.selectedStat = this.GetSelectedStat();
 
-        this.EquippableStatData.OutputMeta.SelectedCategoryStat = this.selectedStat == BasicStatTypesEnum.SkillEmpower ? "SkillStats" : "BasicStats";
+        this.EquippableStatData.OutputMeta.SelectedCategoryStat = this.selectedStat == BasicStatTypesEnum.SkillEmpower ? "SkillStats"
+        : this.selectedStat == BasicStatTypesEnum.Resistance ? ""
+        : "BasicStats";
 
         this.EquippableStatData.OutputMeta.SelectedStat = this.selectedStat != BasicStatTypesEnum.SkillEmpower ? Helpers.getPropertyByValue(BasicStatTypesEnum, this.selectedStat) : "SkillData";
 

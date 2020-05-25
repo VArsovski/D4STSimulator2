@@ -17,9 +17,10 @@ export class ResistanceEquippable implements IEquippableAffixStat {
 
     private calculateResistanceStats(src:IItemAffix, affix:IItemAffix):IItemAffix {
         var combinedStat = src;
-        var selectedStat = affix.Contents.AffixData.OutputMeta.SelectedStat;
+        var selectedStat = affix.Contents.AffixData.EquippableStatData.OutputMeta.SelectedStat;
+        var selectedSubStat = affix.Contents.AffixData.EquippableStatData.OutputMeta.SelectedEquipStat;
         var amount = affix.Contents.AffixData[selectedStat].Amount;
-        combinedStat["Percentage"] += amount;
+        combinedStat[selectedSubStat]["Percentage"] += amount;
         return combinedStat;
     }
 }

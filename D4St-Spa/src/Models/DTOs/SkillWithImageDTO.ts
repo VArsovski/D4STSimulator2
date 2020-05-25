@@ -13,7 +13,10 @@ export class SkillWithImageDTO implements ISkillWithImageDTO {
     angelicAffix: ISkillPowerDataDTO;
     demonicAffix: ISkillPowerDataDTO;
     ancestralAffix: ISkillPowerDataDTO;
+    attackTypes: number[];
+    damageTypes: number[];
     affixMetadata: number[];
+    skillCategoryMetadata: number[];
     generatedByGen: number;
     imageUrl: SafeUrl;
     imageStyle: SafeStyle;

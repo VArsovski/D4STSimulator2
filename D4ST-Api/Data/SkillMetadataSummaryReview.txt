@@ -1,0 +1,62 @@
+BARB:
+Melee [x4]
+Projectile [x3]
+Stackable [x3]
+Buff [x2]
+Debuff [x6]
+AoE [x6]
+DoA [x2]
+DoT [x2]
+TBS [x1] (short for Totem/Shout/Banner)
+Setup [x10]
+Disengage [x8] (Mostly setups but can be used for buying time)
+Movement [x2]
+Finisher [x5]
+Summon [x3]
+Shapeshift [x1]
+Ultimate [x1]
+[TOTAL:x59]
+
+SORC:
+Delayed [x7]
+Melee [x5, CL can be used otherwise]
+Disengage [x7]
+Setup [x6]
+Projectile [x6]
+AoE [x4]
+DoT [x5]
+DoA [x4]
+Stackable [x5]
+Barrier [x2]
+Movement [x1]
+Summon [x5]
+Finisher [x1] (no need much of these TBH)
+TBS [x1]
+Shapeshift [x2]
+Ultimate [x1]
+Buff [x1] (no need much)
+Debuff [x1] (no need much)
+[TOTAL: x60]
+
+DRUID:
+Summon [x7]
+Setup  [x7]
+Barrier  [x3]
+Stackable [x4]
+Shapeshift [x7]
+Melee [x4]
+Finisher [x4]
+Disengage [x6]
+Movement [x1]
+Projectile [x1] (no need much)
+AoE [x4]
+DoA [x2]
+DoT [x2]
+Buff [x5]
+Debuff [x2]
+Delayed [x2]
+Ultimate [x3]
+[TOTAL: x64] (Most of this "unfair" advantage is caused by the "extra" Shapeshift abilities)]
+
+CONCLUSION ALTOGETHER:
+[Barb has no Delayed (except Execute if counted as such), Sorc has no TBS/Buff/Debuff (which isn't much as needed), Druid has too much Setup/Disengage, but these are mostly "ground/environment effects" that can have a dual purpose. In terms of Movement, seems fair, all classes have 1 Movement-Specific skill (barb has 2 but one has to target a target), Sorc has only Teleport but it's CD isn't as high (and can use either/or of the Shapeshift abilities to avoid/delay death, Druid has only Trample but that's ok cause has a plethora of Ground-Based/Battle-Control abilities at his disposal]

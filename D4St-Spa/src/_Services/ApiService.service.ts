@@ -287,10 +287,6 @@ export class ApiServiceService {
     skill.tier = element.skillData.tier;
     skill.skillData.powerData = new SkillDetailDTO(element.skillData.powerData);
     skill.skillData.powerUp = new SkillDetailDTO(element.skillData.powerUp);
-
-    // skill.angelicAffix = new SkillPowerDetailDTO();
-    // skill.demonicAffix = new SkillPowerDetailDTO();
-    // skill.ancestralAffix = new SkillPowerDetailDTO();
     skill.angelicAffix.powerData = this.extractSkillDetailsFromResponse(element.angelicAffix.powerData, 1);
     skill.angelicAffix.powerUp = this.extractSkillDetailsFromResponse(element.angelicAffix.powerUp, 1);
     skill.demonicAffix.powerData = this.extractSkillDetailsFromResponse(element.demonicAffix.powerData, 2);
@@ -298,7 +294,10 @@ export class ApiServiceService {
     skill.ancestralAffix.powerData = this.extractSkillDetailsFromResponse(element.ancestralAffix.powerData, 3);
     skill.ancestralAffix.powerUp = this.extractSkillDetailsFromResponse(element.ancestralAffix.powerUp, 3);
     skill.generatedByGen = element.generatedByGen;
-    skill.affixMetadata = element.affixMetadata;
+    skill.attackTypes = element.castTypes;
+    skill.damageTypes = element.damageTypes;
+    skill.affixMetadata = element.skillMetadata;
+    skill.skillCategoryMetadata = element.skillCategoriesMetadata;
     return skill;
   }
 }

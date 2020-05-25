@@ -15,6 +15,9 @@ export class SkillDTO implements ISkillDTO {
     ancestralAffix: ISkillPowerDataDTO;
     affixMetadata: number[];
     generatedByGen: number;
+    attackTypes: number[];
+    damageTypes: number[];
+    skillCategoryMetadata:number[];
 
     constructor(sd:ISkillDamageDataDTO = null, aa:ISkillPowerDataDTO = null, da:ISkillPowerDataDTO = null, ca:ISkillPowerDataDTO = null, md:Array<number> = null) {
         this.skillData = sd || new SkillDamageDataDTO();

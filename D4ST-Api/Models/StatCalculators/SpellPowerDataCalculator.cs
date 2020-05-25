@@ -7,7 +7,7 @@ namespace D4ST_Api.Models.StatCalculators
 {
     public static class SpellPowerDataCalculator
     {
-        public static SkillPowerAffixData GetPowerAffixesForSkill(PowerTypesEnum powerType, SkillCastTypeEnum castType, DamageSkillStat skillData, List<AffixMetadataEnum> skillMetadata) {
+        public static SkillPowerAffixData GetPowerAffixesForSkill(PowerTypesEnum powerType, List<CastTypesEnum> castTypes, List<DamageTypesEnum> damageTypes,DamageSkillStat skillData, List<AffixMetadataEnum> skillMetadata) {
             var skillPowerAffixData = new SkillPowerAffixData();
             var level = (powerType == PowerTypesEnum.AngelicPower) ? skillData.AngelicPower
             : (powerType == PowerTypesEnum.DemonicPower) ? skillData.DemonicPower
@@ -19,7 +19,7 @@ namespace D4ST_Api.Models.StatCalculators
             var rand = SkillStatHelper.GetRNG(powerType);
             var isHighTier = skillData.Tier > 2;
             var procsBuff = false;
-            var procChance = SkillStatHelper.GetProcChance(level, powerType, isHighTier, castType, skillMetadata);
+            var procChance = SkillStatHelper.GetProcChance(level, powerType, isHighTier, castTypes, skillMetadata);
 
             if (!isHighTier) {
                 if (isCC) selectedAffix = calculateAffix2(powerType, skillMetadata, rand, ref selectedPowerData);
@@ -79,7 +79,7 @@ namespace D4ST_Api.Models.StatCalculators
             return skillPowerAffixData;
         }
 
-        internal static SkillPowerAffixData RecalculatePowerAffixesForSkill(PowerTypesEnum powerType, SkillCastTypeEnum castType, ISkillAffixProcStat affixStat, DamageSkillStat skillData, List<AffixMetadataEnum> md)
+        internal static SkillPowerAffixData RecalculatePowerAffixesForSkill(PowerTypesEnum powerType, CastTypesEnum castType, ISkillAffixProcStat affixStat, DamageSkillStat skillData, List<AffixMetadataEnum> md)
         {
             var empoweredAffixData = new SkillPowerAffixData();
             var level = powerType == PowerTypesEnum.AngelicPower ? skillData.AngelicPower : powerType == PowerTypesEnum.DemonicPower ? skillData.DemonicPower : skillData.AncestralPower;

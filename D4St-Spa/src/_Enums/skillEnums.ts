@@ -7,9 +7,14 @@
 //     // }
 
     export enum AffixMetadataEnum {
-        HitProc= 0, ProcsOnDeath= 1, HighDamage= 2, HighProcRate= 3, CC= 4, Curse= 5, BuffDebuff= 6,
-        Melee= 7, AoE= 8, Projectile= 9, ProjectileCharacter= 10, DoA= 11, HasDoT= 12, Summon= 13,
-        HighCost_Spender= 14, HighCD= 15, Ultimate= 16, BannerOrTotem= 17, Stackable= 18
+        HitProc = 0, ProcsOnDeath = 1, HighDamage = 2, CC = 3, UsesWeaponDamage = 4, BuffDebuff = 5,
+        Melee = 6, AoE = 7, Projectile = 8, ProjectileCharacter = 9, DoA = 10, HasDoT = 11, Summon = 12,
+        IsWeak = 13, IsStrong = 14, HighCost = 15, HighCD = 16, Ultimate = 17, BannerOrTotem = 18, ProcsBuff = 19, Stackable = 20
+    }
+
+    export enum SkillCategoriesEnum {
+        Melee = 0, Projectile = 1, Stackable = 2, Buff = 3, Debuff = 4, AoE = 5, DoA = 6, DoT = 7, TBS = 8,// (short for Totem/Shout/Banner)
+        Setup = 9, Disengage = 10, Movement = 11, Finisher = 12, Summon = 13, Shapeshift = 14, Ultimate = 15, Delayed = 17, Barrier = 17        
     }
 
     export enum AffixTypeEnum {

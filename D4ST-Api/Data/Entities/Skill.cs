@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using D4ST_Api.Models.Enums;
 using D4ST_Api.Models.StatCalculators;
 
@@ -9,12 +10,12 @@ namespace D4St_Api.Data.Entities
         public string Name { get; set; }
         public string Description { get; set; }
         public string PhotoUrl { get; set; }
-        public SkillCastTypeEnum CastType { get; set; }
-        public SkillTypeEnum? SkillType { get; set; }
+        public List<CastTypesEnum> CastTypes { get; set; }
+        public List<DamageTypesEnum> DamageTypes { get; set; }
+        public List<AffixMetadataEnum> SkillMetadata { get; set; }
+        public List<SkillCategoriesEnum> SkillCategoryMetadata { get; set; }
         public DamageSkillStat SkillDamageStats { get; set; }
-        // public SkillRequirementStat? SkillRequirement { get; set; }
         public SkillCostStat SkillCostStats { get; set; }
-        // public SkillDamageStats? SkillDamageStats { get; set; }
         public SkillAffixData SkillAffixes { get; set; }
 
         // public SkillBuffStats? SkillBuffStats { get; set; }

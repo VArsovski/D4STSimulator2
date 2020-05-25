@@ -169,7 +169,7 @@ export class InventoryComponent implements OnInit, OnChanges {
       var categoryStat = outputMetaData["SelectedCategoryStat"];
       if (categoryStat == "BasicStats") {
         selectedStat = selectedStat.replace("Stat", "");
-        selectedSubStat = selectedSubStat.replace("Percentage", "").replace("Amount", "").replace("Regen", "").replace("Return", "");
+        selectedSubStat = selectedSubStat.replace("Percentage", "").replace("Amount", "").replace("Regen", "").replace("Return", "").replace("Resistance", "");
         // Swap
         var tempStat = selectedStat;
         selectedStat = selectedSubStat;
@@ -226,7 +226,7 @@ export class InventoryComponent implements OnInit, OnChanges {
         selectedSubStat = tempStat;
         if (selectedModelStat) {
           selectedModelStat[0] = selectedStat;
-          selectedModelStat[1] = selectedStat;
+          selectedModelStat[1] = selectedSubStat;
         } else {
           debugger;
         }
@@ -234,15 +234,19 @@ export class InventoryComponent implements OnInit, OnChanges {
     
       if (selectedModelStat) {
         debugger;
-        var srcStat = categoryStat ? this[categoryStat][selectedModelStat[0]][selectedModelStat[1]] : this[selectedModelStat[0]][selectedModelStat[1]];
+        var srcStat = categoryStat ? this[categoryStat][selectedModelStat[0]]//[selectedModelStat[1]]
+                                   : this[selectedModelStat[0]];//[selectedModelStat[1]];
     
         if (selectedModelStat[0] == "ArmorData") {
-          var srcStat = this[selectedModelStat[0]];
+          srcStat = this[selectedModelStat[0]];
           this[selectedModelStat[0]] = a.Contents.updateEquippedStats(srcStat, a);
         }
         else if (categoryStat)
-          this[categoryStat][selectedModelStat[0]][selectedModelStat[1]] = a.Contents.updateEquippedStats(srcStat, a);
-        else this[selectedModelStat[0]][selectedModelStat[1]] = a.Contents.updateEquippedStats(srcStat, a);
+          this[categoryStat][selectedModelStat[0]] = a.Contents.updateEquippedStats(srcStat, a);
+        else {
+          srcStat = this[selectedModelStat[0]];
+          this[selectedModelStat[0]] = a.Contents.updateEquippedStats(srcStat, a);
+        }
       }
       else {
         debugger;

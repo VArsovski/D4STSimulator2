@@ -7,9 +7,13 @@ export interface ISkillDTO {
   level: number;
   tier: number;
   skillData: ISkillDamageDataDTO;
+  attackTypes:number[];
+  damageTypes:number[];
+  affixMetadata: number[];
+  skillCategoryMetadata: number[];
+
   angelicAffix: ISkillPowerDataDTO;
   demonicAffix: ISkillPowerDataDTO;
   ancestralAffix: ISkillPowerDataDTO;
-  affixMetadata: number[];
   generatedByGen: number;
 }

@@ -89,9 +89,9 @@ export class CalculationsHelper {
             description = "Gains " + pd.ProcChance + " chance to " + pd.SelectedAffix;
         }
 
-        if (pd.SelectedAffix && md.indexOf(AffixMetadataEnum.Curse) != -1) {
-            description += " cast a " + pd.SelectedAffix + " on target";
-        }
+        // if (pd.SelectedAffix && md.indexOf(AffixMetadataEnum.Curse) != -1) {
+        //     description += " cast a " + pd.SelectedAffix + " on target";
+        // }
         if (pd.SelectedAffix && md.indexOf(AffixMetadataEnum.CC) != -1) {
             description += pd.SelectedAffix + " target ";
         }

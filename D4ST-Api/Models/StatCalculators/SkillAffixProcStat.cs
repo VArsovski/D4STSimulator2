@@ -66,11 +66,11 @@ namespace D4ST_Api.Models.StatCalculators
                 this.Duration = DecimalHelper.RoundToDecimals(randDurBonus/50, 2);
                 this.ProcAmount = DecimalHelper.RoundToDecimalsD(average * (randBonus/75), 2);
             }
-            else if (md.Contains(AffixMetadataEnum.Curse))
-            {
-                this.Duration = DecimalHelper.RoundToDecimals(randDurBonus/125, 2);
-                this.ProcAmount = DecimalHelper.RoundToDecimalsD(average * (randBonus/75), 2);
-            }
+            // else if (md.Contains(AffixMetadataEnum.Curse))
+            // {
+            //     this.Duration = DecimalHelper.RoundToDecimals(randDurBonus/125, 2);
+            //     this.ProcAmount = DecimalHelper.RoundToDecimalsD(average * (randBonus/75), 2);
+            // }
             else
             {
                 var durIncr = highTier ? rand.Next(level * 25, level * 45) : rand.Next(level * 15, level * 25);
