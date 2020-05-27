@@ -10,8 +10,9 @@ import { IItemAffixStats, SimpleAffixStats } from './IItemAffixStats';
 import { IItemAffix } from '../IItemAffix';
 import { IEquippableAffixStat } from 'src/Models/IEquippableStatDetails/IEquippableAffixStat';
 import { SecondaryTriggerStatsEquippable } from 'src/Models/IEquippableStatDetails/SecondaryTriggerStatsEquippable';
+import { IDescribable } from '../IDescribable';
 
-export class ItemSecondaryTriggerStatsDetail implements IEquippableAffixStat {
+export class ItemSecondaryTriggerStatsDetail implements IEquippableAffixStat, IDescribable {
     private Level: number;
     private PowerLevel: any;
     private statsCalculated:boolean;
@@ -41,7 +42,6 @@ export class ItemSecondaryTriggerStatsDetail implements IEquippableAffixStat {
             this.statsCalculated = true;
         }
 
-        debugger;
         this.EquippableStatData = new SimpleAffixStats();
         this.EquippableStatData.InputMeta.SelectedCategoryStat = this.constructor.name;
         this.EquippableStatData.InputMeta.SelectedStat = Helpers.getPropertyByValue(AffixCategoryEnum, this.CategoryStats);

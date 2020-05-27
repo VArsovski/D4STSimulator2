@@ -2,14 +2,15 @@ import { PowerTypesEnum } from 'src/_Enums/powerTypesEnum';
 import { Helpers } from 'src/_Helpers/helpers';
 import { ResistanceTypesEnum, AffixCategoryEnum } from 'src/_Enums/itemAffixEnums';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
-import { IItemAffixStats, IItemAffixStatsMetadata, SimpleItemAffixStatsMetadata, SimpleAffixStats } from './IItemAffixStats';
+import { IItemAffixStats, SimpleAffixStats } from './IItemAffixStats';
 import { IEquippableAffixStat } from 'src/Models/IEquippableStatDetails/IEquippableAffixStat';
 import { IItemAffix } from '../IItemAffix';
 import { InventoryDamageModel } from 'src/Models/InventoryModels/InventoryDamageModel';
 import { PowerStatEquippable } from 'src/Models/IEquippableStatDetails/PowerStatEquippable';
 import { ResistanceEquippable } from 'src/Models/IEquippableStatDetails/ResistanceEquippable';
+import { IDescribable } from '../IDescribable';
 
-export class ItemBasicPowersDetail implements IEquippableAffixStat {
+export class ItemBasicPowersDetail implements IEquippableAffixStat, IDescribable {
     CategoryStats: AffixCategoryEnum;
     Amount: number;
     Type: PowerTypesEnum;

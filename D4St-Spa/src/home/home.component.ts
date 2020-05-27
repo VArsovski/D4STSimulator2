@@ -52,6 +52,7 @@ export class HomeComponent implements OnInit, OnChanges {
       data.tier = element;
       this.skillTiers.push(data);
     });
+
     this.skillsModel.skills.filter(s => s.classId == this.model.BasicData.ClassType).forEach(element => {
       this.skillTiers[(element.tier || element.data.tier) - 1].skills.push(element);
     });

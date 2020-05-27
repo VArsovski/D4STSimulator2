@@ -21,11 +21,11 @@ export interface ICCEffectStatDetailsInventoryModel {
 
 export interface ICCffectStatDetailsInventoryModelCombined {
     StunOrKnockdown:ICCEffectAffixData;
-    KnockbackOrLevitate:ICCEffectAffixData;
+    KnockbackOrBleed:ICCEffectAffixData;
     WitherOrConflagrate:ICCEffectAffixData;
-    BlindOrCurse:ICCEffectAffixData;
-    FreezeOrRoot:ICCEffectAffixData;
-    ReduceArmorOrBleed:ICCEffectAffixData;
+    FreezeOrCurse:ICCEffectAffixData;
+    BlindOrRoot:ICCEffectAffixData;
+    ReduceArmorOrLevitate:ICCEffectAffixData;
 }
 
 export interface IPhysicalffectStatDetailsInventoryModelCombined {

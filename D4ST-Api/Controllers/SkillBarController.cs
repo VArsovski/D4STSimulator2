@@ -11,8 +11,6 @@ using D4ST_Api.Models.StatCalculators;
 using D4ST_Api.Models.Helpers;
 using System;
 using Microsoft.Extensions.Configuration;
-using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Authorization;
 
 namespace D4ST_Api.Controllers
 {
@@ -52,10 +50,14 @@ namespace D4ST_Api.Controllers
                         var scs = new SkillCostStat(skillData);
                         var data = new SimpleSkillDamageAffixData();
                         data.PowerData = skill.SkillData;
-                        var skillToAdd = new Skill(skill.Id, new SkillDTO(skill.Id, skill.Name, skillLevel, data, scs, skill.AttackTypes, skill.DamageTypes, skill.SkillMetadata, skill.SkillCategoryMetadata, skillData.IsCC), scs);
-                        // skillToAdd.Data.SkillData.Level = skill.SkillData.Level;
-                        // skillToAdd.Data.SkillData.PowerData.Tier = skillTier;
-                        // skillToAdd.Data.SkillData.PowerUp.Tier = skillTier;
+                        var skillToAdd = new Skill(skill.Id, new SkillDTO(skill.Id, skill.Name, skill.Description, skillLevel, data, scs, skill.AttackTypes, skill.DamageTypes, skill.SkillMetadata, skill.SkillClassification, skillData.IsCC), scs);
+                        var castTypesData = "CastTypes: [" + string.Join(", ", skillToAdd.Data.CastTypes.Select(t => EnumHelper.GetName<CastTypesEnum>(t))) + "]";
+                        var damageTypesData = "DamageTypes: [" + string.Join(", ", skillToAdd.Data.DamageTypes.Select(t => EnumHelper.GetName<DamageTypesEnum>(t))) + "]";
+                        // [" + string.Join(", ", skillToAdd.Data.SkillCategoriesMetadata.Select(t => EnumHelper.GetName<SkillCategoriesEnum>(t))) + "]";
+
+                        var descriptionWithDetails = skillToAdd.Description + "<br/>" + "<br/>" + castTypesData + "<br/>" + damageTypesData + "<br/>";
+                        skillToAdd.Description = descriptionWithDetails;
+                        skillToAdd.Data.Description = descriptionWithDetails;
 
                         var skillMetadata = skill.SkillMetadata; //SkillStatHelper.GetSkillMetadata(PowerTypesEnum.AngelicPower, (ClassTypeEnum)skill.ClassType, skillToAdd.Data);
                         var PoDAng = SkillStatHelper.GetRNG(PowerTypesEnum.AngelicPower).Next(1, 18) % 5 == 0;
@@ -75,13 +77,6 @@ namespace D4ST_Api.Controllers
                         skillToAdd.Data.DemonicAffix = SpellPowerDataCalculator.GetPowerAffixesForSkill(PowerTypesEnum.DemonicPower, skill.AttackTypes ?? new List<CastTypesEnum>(), skill.DamageTypes, skillToAdd.Data.SkillData.PowerData, md2);
                         skillToAdd.Data.AncestralAffix = SpellPowerDataCalculator.GetPowerAffixesForSkill(PowerTypesEnum.AncestralPower, skill.AttackTypes ?? new List<CastTypesEnum>(), skill.DamageTypes, skillToAdd.Data.SkillData.PowerData, md3);
 
-                        // Recalculate for same affix selected from above..
-                        // skillToAdd.LevelUp.AngelicAffix = SpellPowerDataCalculator.RecalculatePowerAffixesForSkill(PowerTypesEnum.AngelicPower, (SkillCastTypeEnum)skill.CastType, skillToAdd.Data.AngelicAffix.PowerUp, skillToAdd.LevelUp.SkillData, md1);
-                        // skillToAdd.LevelUp.DemonicAffix = SpellPowerDataCalculator.RecalculatePowerAffixesForSkill(PowerTypesEnum.DemonicPower, (SkillCastTypeEnum)skill.CastType, skillToAdd.Data.DemonicAffix.PowerUp, skillToAdd.LevelUp.SkillData, md2);
-                        // skillToAdd.LevelUp.AncestralAffix = SpellPowerDataCalculator.RecalculatePowerAffixesForSkill(PowerTypesEnum.AncestralPower, (SkillCastTypeEnum)skill.CastType, skillToAdd.Data.AncestralAffix.PowerUp, skillToAdd.LevelUp.SkillData, md3);
-
-                        // skillToAdd.Data.Tier = skillTier;
-                        // skillToAdd.Data.Level = skillLevel;
                         skills.Skills.Add(skillToAdd);
                         skillCount++;
                     }
@@ -144,11 +139,36 @@ namespace D4ST_Api.Controllers
             var skillSeedData = new List<SkillSeedData>();
             var publishFolder =_config["DataFolders:PublishFolder"];
             var dataFolder =_config["DataFolders:DataFolder"];
+
             // _config.ContentRootPath
             var path = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).FullName, publishFolder, dataFolder, "SkillDataSeed.json");
             var skillStr = System.IO.File.ReadAllText(path);
             string lines = System.IO.File.ReadAllText(path, System.Text.Encoding.UTF8);
             skillSeedData = JsonConvert.DeserializeObject<List<SkillSeedData>>(lines);
+            skillSeedData.ForEach(ssd => {
+                ssd.From = ssd.SkillData.From;
+                ssd.To = ssd.SkillData.To;
+                ssd.Duration = (float)ssd.SkillData.Duration;
+                ssd.Percentage = ssd.SkillData.Percentage ?? 0;
+                ssd.Description = ssd.Description.Replace("<<Percentage>>", ssd.Percentage.ToString())
+                                                 .Replace("<<Duration>>", ssd.Duration.ToString())
+                                                 .Replace("<<From>>", ssd.From.ToString())
+                                                 .Replace("<<To>>", ssd.To.ToString());
+
+                var skillCharacteristics = new List<string>();
+                if (ssd.SkillClassification.Contains(SkillCategoriesEnum.Finisher)) { skillCharacteristics.Add("Finisher"); }
+                if (ssd.SkillClassification.Contains(SkillCategoriesEnum.Ultimate)) { skillCharacteristics.Add("Ultimate"); }
+                if (ssd.SkillClassification.Contains(SkillCategoriesEnum.Stackable)) { skillCharacteristics.Add("Stackable"); }
+                if (ssd.SkillClassification.Contains(SkillCategoriesEnum.Setup)) { skillCharacteristics.Add("Setup"); }
+                if (ssd.SkillClassification.Contains(SkillCategoriesEnum.Barrier)) { skillCharacteristics.Add("Barrier"); } // Not sure if this is needed tbh
+                if (ssd.SkillMetadata.Contains(AffixMetadataEnum.Summon)) { skillCharacteristics.Add("Summon"); }
+                if (ssd.SkillMetadata.Contains(AffixMetadataEnum.HighCost)) { skillCharacteristics.Add("HighCost"); }
+                if (ssd.SkillMetadata.Contains(AffixMetadataEnum.HighCD)) { skillCharacteristics.Add("HighCD"); }
+                if (ssd.SkillMetadata.Contains(AffixMetadataEnum.IsWeak)) { skillCharacteristics.Add("Weak"); }
+                if (ssd.SkillMetadata.Contains(AffixMetadataEnum.BannerOrTotem)) { skillCharacteristics.Add("BannerTotemShout"); }
+                var skillCharacteristicsStr = skillCharacteristics.Any() ? " [" + string.Join(", ", skillCharacteristics) + "]" : "";
+                ssd.Description = ssd.Description + skillCharacteristicsStr;
+            });
 
             return skillSeedData;
         }

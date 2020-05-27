@@ -1,10 +1,10 @@
-import { ItemAffixTypeEnum, AffixCategoryEnum, AttackTypesEnum, CastProcTypesEnum  } from "../../_Enums/itemAffixEnums";
+import { ItemAffixTypeEnum, AffixCategoryEnum, CastTypesEnum, CastProcTypesEnum  } from "../../_Enums/itemAffixEnums";
 
 export interface IItemAffixBlueprint {
     Index: number;
     AffixType: ItemAffixTypeEnum;
     AffixCategory: AffixCategoryEnum;
-    AttackProcType?: AttackTypesEnum;
+    AttackProcType?: CastTypesEnum;
     CastProcType?: CastProcTypesEnum;
     IsConditional: boolean;
 }

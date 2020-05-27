@@ -3,8 +3,11 @@
 export enum BasicStatsEnum {
     HP = 1,
     Resource = 2,
-    Stamina = 3
+    Stamina = 3,
+    // Instead of creating a new Type that contains Armor but without HP, will just randomize between (1,3) where applicable or (2,4)
+    Armor = 4,
 }
+
 export enum ItemCategoriesEnum {
     Armor= 1,
     Weapon= 2,
@@ -73,6 +76,9 @@ export enum ItemAffixTypeEnum {
     BasicStat= 1,
     Damage = 2,
     Armor = 3,
+    // Added afterwards to reduce/increase randomness of A/W types
+    SecondaryDefensiveStat=11,
+    SecondaryDamageStat=12,
     SecondaryStat= 4,
     TriggerEffect = 5,
     Offensive= 6,
@@ -92,12 +98,14 @@ export enum ItemAffixSTatsEnum {
     LegendaryStat = 8,
     OtherTypeStat = 9
 }
-export enum AttackTypesEnum {
+export enum CastTypesEnum {
     MeleeHit= 1,
     Projectile= 2,
     AoE= 3,
-    TriggerEffect= 4, // Critical, CrushingBlow, Knockback, ..
-    Summon= 5
+    TriggerEffect= 4,
+    BuffDebuff=5,
+    MovementOrPeel=6,
+    Summon= 7
 }
 export enum DamageTypesEnum {
     PhysicalOrCC = 1,
@@ -106,17 +114,15 @@ export enum DamageTypesEnum {
     TrapOrSummon = 4,
     TickOrCurse = 5
 }
-export enum TrapAndSummonStatsEnum {
-    LifeAndDuration = 1,
-    DamageAndCharges = 2,
-    ProcEffectChance = 3
-}
 
 export enum AffixCategoryEnum {
     PrimaryArmor = 1,
     PrimaryDamage= 2,
+    // These 3 below were added afterwards to increase/reduce randomness of first stats in Armors/Weapons
     EmpowerDamageType = 22,
-    IncreaseBasicStat= 3, // +HP, +Armor, +Resource, +Regen, +Resistance
+    IncreaseSecondaryStatDefensive = 23, // +Resistance, +CCReduction
+    IncreaseSecondaryStatDamage = 24, // +SunderStatPerHit, +CCDuration/Damage
+    IncreaseBasicStat= 3, // +HP, +Armor, +Resource, +Regen
     IncreaseCastAffixStat= 4, // +CastRange, AoE, Pierce, Duration
     IncreaseTriggerStat= 5, //+Crit/Crushing/Knockback/Stun/Freeze chance
     IncreaseSkillStat= 6, // +X skill
@@ -154,11 +160,12 @@ export enum BasicStatTypesEnum {
 
 export enum SecondaryStatTypesEnum {
     Resistance = 1,
-    RedirectDamage = 2,
+    ReduceCCTaken = 2,
     IncreaseStatSunder = 3,
     EmpowerTrapsAndSummons = 4,
-    DamageTakenReduced = 5,
-    CCReduction = 6
+    ReduceDamageTaken = 5,
+    EmpowerSkillType = 6,
+    Socket = 7
 }
 
 export enum OfensiveStatsEnum {

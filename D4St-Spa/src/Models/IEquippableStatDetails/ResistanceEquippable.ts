@@ -2,6 +2,8 @@ import { IItemAffix } from '../ItemAffixes/IItemAffix';
 import { InventoryResistanceModel } from '../InventoryModels/InventoryDamageModel';
 import { IEquippableAffixStat } from './IEquippableAffixStat';
 import { IItemAffixStats } from '../ItemAffixes/Details/IItemAffixStats';
+import { Helpers } from 'src/_Helpers/helpers';
+import { ResistanceTypesEnum } from 'src/_Enums/itemAffixEnums';
 
 export class ResistanceEquippable implements IEquippableAffixStat {
     SelectedStat: string;
@@ -20,7 +22,18 @@ export class ResistanceEquippable implements IEquippableAffixStat {
         var selectedStat = affix.Contents.AffixData.EquippableStatData.OutputMeta.SelectedStat;
         var selectedSubStat = affix.Contents.AffixData.EquippableStatData.OutputMeta.SelectedEquipStat;
         var amount = affix.Contents.AffixData[selectedStat].Amount;
-        combinedStat[selectedSubStat]["Percentage"] += amount;
+
+        // Make sure the word ends with Resistance even if only the type is present
+        selectedSubStat = selectedSubStat.replace("Resistance", "") + "Resistance";
+        if (selectedSubStat != "AllResistance")
+            combinedStat[selectedSubStat]["Percentage"] += amount;
+        else
+        {
+            [1,2,3,4,5].forEach(r => {
+                selectedSubStat = Helpers.getPropertyByValue(ResistanceTypesEnum, r) + "Resistance";
+                combinedStat[selectedSubStat]["Percentage"] += amount;
+            })
+        }
         return combinedStat;
     }
 }

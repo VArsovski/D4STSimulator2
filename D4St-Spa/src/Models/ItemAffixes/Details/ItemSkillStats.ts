@@ -5,8 +5,9 @@ import { IItemAffix } from '../IItemAffix';
 import { Helpers } from 'src/_Helpers/helpers';
 import { SkillStatEquippable } from 'src/Models/IEquippableStatDetails/SkillStatEquippable';
 import { IEquippableAffixStat } from 'src/Models/IEquippableStatDetails/IEquippableAffixStat';
+import { IDescribable } from '../IDescribable';
 
-export class ItemSkillStats implements IEquippableAffixStat {
+export class ItemSkillStats implements IEquippableAffixStat, IDescribable {
     Level: number;
     Amount: number;
     PowerLevel:number

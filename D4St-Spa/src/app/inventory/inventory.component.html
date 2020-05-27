@@ -70,28 +70,20 @@
     </li>
 
     <li class="armorDetailDisplayHolder customFontBlue h3">
-        <app-CustomCompareTooltip width="45px" height="45px" contentImg="../../_Resources/img/defense_stun.png" contentLabel="" text="StunDuration + KnockdownDamage reduction (bonus from Heavy armor) </br> Duration and effect damage suffered reduced by: %"></app-CustomCompareTooltip>
+        <app-CustomCompareTooltip width="45px" height="45px" contentImg="../../_Resources/img/defense_stun.png" contentLabel="" text="Stun/Knockdown Damage/Duration [Reduction/Chance/Bonus] (bonus from Heavy armor)"></app-CustomCompareTooltip>
         <label *ngIf="this.ArmorData" style="transform: translate(-180%, 140%);" class="customFontRed h3">{{this.CCEffectsData.StunOrKnockdown.ReducePercentage + "%"}}</label>
-        <app-CustomCompareTooltip width="45px" height="45px" contentImg="../../_Resources/img/defense_knockback.png" contentLabel="" text="Knockback/Levitate reduction (bonus from Heavy/Light armor) </br> Reduces knockback distance+slow and duration airborne by: %"></app-CustomCompareTooltip>
-        <label *ngIf="this.ArmorData" style="transform: translate(-180%, 140%);" class="customFontRed h3">{{this.CCEffectsData.KnockbackOrLevitate.ReducePercentage + "%"}}</label>
-        <app-CustomCompareTooltip width="45px" height="45px" contentImg="../../_Resources/img/defense_burn.jpg" contentLabel="" text="Conflagrate/Wither reduction (bonus from Light/Mystic armor) </br> Reduces duration and poison/burn DoT effects suffered by: %"></app-CustomCompareTooltip>
+        <app-CustomCompareTooltip width="45px" height="45px" contentImg="../../_Resources/img/defense_knockback.png" contentLabel="" text="Knockback/Bleed Damage/Duration [Reduction/Chance/Bonus] (bonus from Heavy armor)"></app-CustomCompareTooltip>
+        <label *ngIf="this.ArmorData" style="transform: translate(-180%, 140%);" class="customFontRed h3">{{this.CCEffectsData.KnockbackOrBleed.ReducePercentage + "%"}}</label>
+        <app-CustomCompareTooltip width="45px" height="45px" contentImg="../../_Resources/img/defense_burn.jpg" contentLabel="" text="Conflagrate/Wither Damage/Duration [Reduction/Chance/Bonus] (bonus from Mystic armor)"></app-CustomCompareTooltip>
         <label *ngIf="this.ArmorData" style="transform: translate(-180%, 140%);" class="customFontRed h3">{{this.CCEffectsData.WitherOrConflagrate.ReducePercentage + "%"}}</label>
-        <!-- <app-CustomCompareTooltip width="45px" height="45px" contentImg="../../_Resources/img/defense_wither.png" contentLabel="" text="Wither reduction (bonus from Light/Mystic armor) </br> Reduces poison duration and Wither-effect power by: %"></app-CustomCompareTooltip>
-        <label *ngIf="this.HeavyArmor" style="transform: translate(-180%, 140%);" class="customFontRed h3">{{this.ArmorDetailsCombined.WitherReduction + "%"}}</label> -->
     </li>
     <li class="armorDetailDisplayHolder customFontBlue h3" style="margin-top:2rem">
-        <app-CustomCompareTooltip width="45px" height="45px" contentImg="../../_Resources/img/defense_blind.png" contentLabel="" text="Blind/Curse reduction (bonus from Light/Mystic armor) </br> Reduces blind/curse duration/power effects suffered by% :"></app-CustomCompareTooltip>
-        <label *ngIf="this.ArmorData" style="transform: translate(-180%, 140%);" class="customFontRed h3">{{this.CCEffectsData.BlindOrCurse.ReducePercentage + "%"}}</label>
-        <!-- <app-CustomCompareTooltip width="45px" height="45px" contentImg="../../_Resources/img/defense_curse.png" contentLabel="" text="Curse reduction (bonus from Mystic armor) </br> Reduces power-level/duration of curses suffered by: %"></app-CustomCompareTooltip>
-        <label *ngIf="this.HeavyArmor" style="transform: translate(-180%, 140%);" class="customFontRed h3">{{this.ArmorDetails.CurseReduction + "%"}}</label> -->
-        <app-CustomCompareTooltip width="45px" height="45px" contentImg="../../_Resources/img/defense_root.jpg" contentLabel="" text="Root/Freeze reduction (bonus from Light/Mystic armor) </br> Reduces root/freeze immobilize effect power (and CC duration) suffered by: %"></app-CustomCompareTooltip>
-        <label *ngIf="this.ArmorData" style="transform: translate(-180%, 140%);" class="customFontRed h3">{{this.CCEffectsData.FreezeOrRoot.ReducePercentage + "%"}}</label>
-        <!-- <app-CustomCompareTooltip width="45px" height="45px" contentImg="../../_Resources/img/defense_freeze.jpg" contentLabel="" text="Freeze reduction (bonus from Mystic armor) </br> Reduces damage/duration of Frost-bite hits and slow by cold by: %"></app-CustomCompareTooltip>
-        <label *ngIf="this.HeavyArmor" style="transform: translate(-180%, 140%);" class="customFontRed h3">{{this.ArmorDetails.FreezeReduction + "%"}}</label>
-        <app-CustomCompareTooltip width="45px" height="45px" contentImg="../../_Resources/img/defense_levitate.jpg" contentLabel="" text="Levitate reduction (bonus from Heavy armor) </br> Reduces damage/duration of Levitation effects and damage taken while airborne by: %"></app-CustomCompareTooltip>
-        <label *ngIf="this.HeavyArmor" style="transform: translate(-180%, 140%);" class="customFontRed h3">{{this.ArmorDetails.LevitateReduction + "%"}}</label> -->
-        <app-CustomCompareTooltip width="45px" height="45px" contentImg="../../_Resources/img/defense_reducearmor.png" contentLabel="" text="ReduceArmor/Bleed reduction (bonus from Heavy/Mystic armor) </br> Reduces power of ReduceArmor/Bleed effects suffered by: %"></app-CustomCompareTooltip>
-        <label *ngIf="this.ArmorData" style="transform: translate(-180%, 140%);" class="customFontRed h3">{{this.CCEffectsData.ReduceArmorOrBleed.ReducePercentage + "%"}}</label>
+        <app-CustomCompareTooltip width="45px" height="45px" contentImg="../../_Resources/img/defense_blind.png" contentLabel="" text="Curse/Freeze Damage/Duration [Reduction/Chance/Bonus] (bonus from Mystic armor)"></app-CustomCompareTooltip>
+        <label *ngIf="this.ArmorData" style="transform: translate(-180%, 140%);" class="customFontRed h3">{{this.CCEffectsData.FreezeOrCurse.ReducePercentage + "%"}}</label>
+        <app-CustomCompareTooltip width="45px" height="45px" contentImg="../../_Resources/img/defense_root.jpg" contentLabel="" text="Root/Blind Damage/Duration [Reduction/Chance/Bonus] (bonus from Light armor)"></app-CustomCompareTooltip>
+        <label *ngIf="this.ArmorData" style="transform: translate(-180%, 140%);" class="customFontRed h3">{{this.CCEffectsData.BlindOrRoot.ReducePercentage + "%"}}</label>
+        <app-CustomCompareTooltip width="45px" height="45px" contentImg="../../_Resources/img/defense_reducearmor.png" contentLabel="" text="ReduceArmor/Levitate Damage/Duration [Reduction/Chance/Bonus] (bonus from Light armor)"></app-CustomCompareTooltip>
+        <label *ngIf="this.ArmorData" style="transform: translate(-180%, 140%);" class="customFontRed h3">{{this.CCEffectsData.ReduceArmorOrLevitate.ReducePercentage + "%"}}</label>
     </li>
 </ul>
 

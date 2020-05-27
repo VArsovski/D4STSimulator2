@@ -49,14 +49,16 @@ export class ArmorStatEquippable implements IEquippableAffixStat {
         var selectedType = affix.SelectedEquipStat || affix.Contents.EquippableStatData.OutputMeta.SelectedEquipStat;
         if (selectedType == Helpers.getPropertyByValue(CCEffectTypesEnum, CCEffectTypesEnum.StunOrKnockdown) + "Reduction")
             combinedStat.StunOrKnockdown.ReducePercentage += affix.Contents.AffixData["StunOrKnockdown"];
-        if (selectedType == Helpers.getPropertyByValue(CCEffectTypesEnum, CCEffectTypesEnum.KnockbackOrLevitate) + "Reduction")
-            combinedStat.KnockbackOrLevitate.ReducePercentage += affix.Contents.AffixData["KnockbackOrLevitate"];
+        if (selectedType == Helpers.getPropertyByValue(CCEffectTypesEnum, CCEffectTypesEnum.KnockbackOrBleed) + "Reduction")
+            combinedStat.KnockbackOrBleed.ReducePercentage += affix.Contents.AffixData["KnockbackOrBleed"];
         if (selectedType == Helpers.getPropertyByValue(CCEffectTypesEnum, CCEffectTypesEnum.WitherOrConflagrate) + "Reduction")
             combinedStat.WitherOrConflagrate.ReducePercentage += affix.Contents.AffixData["WitherOrConflagrate"];
-        if (selectedType == Helpers.getPropertyByValue(CCEffectTypesEnum, CCEffectTypesEnum.BlindOrCurse) + "Reduction")
-            combinedStat.BlindOrCurse.ReducePercentage += affix.Contents.AffixData["BlindOrCurse"];
-        if (selectedType == Helpers.getPropertyByValue(CCEffectTypesEnum, CCEffectTypesEnum.FreezeOrRoot) + "Reduction")
-            combinedStat.FreezeOrRoot.ReducePercentage += affix.Contents.AffixData["FreezeOrRoot"];
+        if (selectedType == Helpers.getPropertyByValue(CCEffectTypesEnum, CCEffectTypesEnum.FreezeOrCurse) + "Reduction")
+            combinedStat.FreezeOrCurse.ReducePercentage += affix.Contents.AffixData["FreezeOrCurse"];
+        if (selectedType == Helpers.getPropertyByValue(CCEffectTypesEnum, CCEffectTypesEnum.BlindOrRoot) + "Reduction")
+            combinedStat.BlindOrRoot.ReducePercentage += affix.Contents.AffixData["BlindOrRoot"];
+        if (selectedType == Helpers.getPropertyByValue(CCEffectTypesEnum, CCEffectTypesEnum.ReduceArmorOrLevitate) + "Reduction")
+            combinedStat.ReduceArmorOrLevitate.ReducePercentage += affix.Contents.AffixData["ReduceArmorOrLevitate"];
 
         var combinedStatAffix = new ItemAffix(ItemAffixTypeEnum.Armor, src.Condition, src.AffixCategory);
         combinedStatAffix.Contents = src.Contents;
@@ -90,17 +92,19 @@ export class ArmorStatEquippableCombined implements IEquippableAffixStat {
         }
 
         if (selectedCombinedStat) {
-            var selectedType = Helpers.getPropertyByValue(CCEffectTypesEnum, selectedCombinedStat);
+            var selectedType = affix.SelectedEquipStat || affix.Contents.EquippableStatData.OutputMeta.SelectedEquipStat;
             if (selectedType == Helpers.getPropertyByValue(CCEffectTypesEnum, CCEffectTypesEnum.StunOrKnockdown) + "Reduction")
-                combinedStat.StunOrKnockdown.ReducePercentage += affix.Contents.AffixData["StunOrKnockdownReduction"];
-            if (selectedType == Helpers.getPropertyByValue(CCEffectTypesEnum, CCEffectTypesEnum.KnockbackOrLevitate) + "Reduction")
-                combinedStat.KnockbackOrLevitate.ReducePercentage += affix.Contents.AffixData["KnockbackOrLevitateReduction"];
+                combinedStat.StunOrKnockdown.ReducePercentage += affix.Contents.AffixData["StunOrKnockdown"];
+            if (selectedType == Helpers.getPropertyByValue(CCEffectTypesEnum, CCEffectTypesEnum.KnockbackOrBleed) + "Reduction")
+                combinedStat.KnockbackOrBleed.ReducePercentage += affix.Contents.AffixData["KnockbackOrBleed"];
             if (selectedType == Helpers.getPropertyByValue(CCEffectTypesEnum, CCEffectTypesEnum.WitherOrConflagrate) + "Reduction")
-                combinedStat.WitherOrConflagrate.ReducePercentage += affix.Contents.AffixData["WitherOrConflagrateReduction"];
-            if (selectedType == Helpers.getPropertyByValue(CCEffectTypesEnum, CCEffectTypesEnum.BlindOrCurse) + "Reduction")
-                combinedStat.BlindOrCurse.ReducePercentage += affix.Contents.AffixData["BlindOrCurseReduction"];
-            if (selectedType == Helpers.getPropertyByValue(CCEffectTypesEnum, CCEffectTypesEnum.FreezeOrRoot) + "Reduction")
-                combinedStat.FreezeOrRoot.ReducePercentage += affix.Contents.AffixData["FreezeOrRootReduction"];
+                combinedStat.WitherOrConflagrate.ReducePercentage += affix.Contents.AffixData["WitherOrConflagrate"];
+            if (selectedType == Helpers.getPropertyByValue(CCEffectTypesEnum, CCEffectTypesEnum.FreezeOrCurse) + "Reduction")
+                combinedStat.FreezeOrCurse.ReducePercentage += affix.Contents.AffixData["FreezeOrCurse"];
+            if (selectedType == Helpers.getPropertyByValue(CCEffectTypesEnum, CCEffectTypesEnum.BlindOrRoot) + "Reduction")
+                combinedStat.BlindOrRoot.ReducePercentage += affix.Contents.AffixData["BlindOrRoot"];
+            if (selectedType == Helpers.getPropertyByValue(CCEffectTypesEnum, CCEffectTypesEnum.ReduceArmorOrLevitate) + "Reduction")
+                combinedStat.ReduceArmorOrLevitate.ReducePercentage += affix.Contents.AffixData["ReduceArmorOrLevitate"];
     
             var combinedStatAffix = new ItemAffix(ItemAffixTypeEnum.Armor, src.Condition, src.AffixCategory);
             combinedStatAffix.Contents = src.Contents;
@@ -114,14 +118,14 @@ export class ArmorStatEquippableCombined implements IEquippableAffixStat {
     constructor(selectedStat:string, selectedEquipStat:string) {
         this.CCStatsDict["Stun"] = CCEffectTypesEnum.StunOrKnockdown;
         this.CCStatsDict["Knockdown"] = CCEffectTypesEnum.StunOrKnockdown;
-        this.CCStatsDict["Knockback"] = CCEffectTypesEnum.KnockbackOrLevitate;
-        this.CCStatsDict["Levitate"] = CCEffectTypesEnum.KnockbackOrLevitate;
+        this.CCStatsDict["Knockback"] = CCEffectTypesEnum.KnockbackOrBleed;
+        this.CCStatsDict["Levitate"] = CCEffectTypesEnum.ReduceArmorOrLevitate;
         this.CCStatsDict["Wither"] = CCEffectTypesEnum.WitherOrConflagrate;
         this.CCStatsDict["Conflagrate"] = CCEffectTypesEnum.WitherOrConflagrate;
-        this.CCStatsDict["Freeze"] = CCEffectTypesEnum.FreezeOrRoot;
-        this.CCStatsDict["Root"] = CCEffectTypesEnum.FreezeOrRoot;
-        this.CCStatsDict["Blind"] = CCEffectTypesEnum.BlindOrCurse;
-        this.CCStatsDict["Curse"] = CCEffectTypesEnum.BlindOrCurse;
+        this.CCStatsDict["Freeze"] = CCEffectTypesEnum.FreezeOrCurse;
+        this.CCStatsDict["Curse"] = CCEffectTypesEnum.FreezeOrCurse;
+        this.CCStatsDict["Root"] = CCEffectTypesEnum.BlindOrRoot;
+        this.CCStatsDict["Blind"] = CCEffectTypesEnum.BlindOrRoot;
 
         this.EquippableStatData = new SimpleAffixStats();
         this.EquippableStatData.OutputMeta.SelectedCategoryStat = "ArmorCCData";

@@ -12,11 +12,13 @@ export class SkillVM {
     className:string;
     id: number;
     name: string;
+    description:string;
     level: number;
     tier: number;
     data: ISkillDTO;
+    details:string;
 
-    constructor(sd:ISkillDetailDTO=null, su:ISkillDetailDTO=null, aa:ISkillPowerDataDTO = null, da:ISkillPowerDataDTO = null, ca:ISkillPowerDataDTO = null, id:number=0, name:string=null, level:number=0, tier:number=0) {
+    constructor(sd:ISkillDetailDTO=null, su:ISkillDetailDTO=null, aa:ISkillPowerDataDTO = null, da:ISkillPowerDataDTO = null, ca:ISkillPowerDataDTO = null, id:number=0, name:string=null, description:string=null, level:number=0, tier:number=0) {
         if (sd != null && su != null) {
             var sdad = new SkillDamageDataDTO(sd, su);
             this.data = new SkillDTO(sdad, aa, da, ca);

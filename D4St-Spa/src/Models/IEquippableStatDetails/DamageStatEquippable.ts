@@ -13,9 +13,10 @@ export class DamageStatPrimaryEquippable implements IEquippableAffixStat {
 
     // PhysicalOrCC = 1,    // CleaveOrAoE = 2,   // ChainOrProjectile = 3,   // TrapOrSummon = 4,   // TickOrCurse = 5
     private calculateAmount(src:IItemAffix, affix:IItemAffix):IItemAffix {
-        var selectedEquipStat = src; //InventoryDamageModel
-        src["Percentage"] += affix.Contents.AffixData.EmpowerPercentage;
-        return selectedEquipStat;
+        var combinedStat = src;
+        var selectedEquipStat = affix.Contents.AffixData.EquippableStatData.OutputMeta.SelectedEquipStat;
+        combinedStat[selectedEquipStat]["Percentage"] += affix.Contents.AffixData["Percentage"] || affix.Contents.AffixData["EmpowerPercentage"];
+        return combinedStat;
     }
 
     constructor(selectedStat:string, selectedEquipStat:string) {
@@ -33,12 +34,12 @@ export class DamageStatMinMaxEquippable implements IEquippableAffixStat {
     getZeroStats: () => any;
     updateEquippedStats: (src:IItemAffix, affix:IItemAffix) => IItemAffix;
 
-    // PhysicalOrCC = 1,    // CleaveOrAoE = 2,   // ChainOrProjectile = 3,   // TrapOrSummon = 4,   // TickOrCurse = 5
     private calculateAmount(src:IItemAffix, affix:IItemAffix): IItemAffix {
-        var selectedEquipStat = src;
-        selectedEquipStat["MinDamage"] += affix.Contents.AffixData["MinDamage"];
-        selectedEquipStat["MaxDamage"] += affix.Contents.AffixData["MaxDamage"];
-        return selectedEquipStat;
+        var combinedStat = src;
+        var selectedEquipStat = affix.Contents.AffixData.EquippableStatData.OutputMeta.SelectedEquipStat;
+        combinedStat[selectedEquipStat]["MinDamage"] += affix.Contents.AffixData["MinDamage"];
+        combinedStat[selectedEquipStat]["MaxDamage"] += affix.Contents.AffixData["MaxDamage"];
+        return combinedStat;
     }
 
     constructor(selectedStat:string, selectedEquipStat:string) {

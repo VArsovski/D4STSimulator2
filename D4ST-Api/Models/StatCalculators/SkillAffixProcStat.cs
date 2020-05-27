@@ -74,7 +74,7 @@ namespace D4ST_Api.Models.StatCalculators
             else
             {
                 var durIncr = highTier ? rand.Next(level * 25, level * 45) : rand.Next(level * 15, level * 25);
-                this.Duration = skillData.Duration * (1 + durIncr/100);
+                this.Duration = ((skillData.Duration ?? 0) * (1 + durIncr/100));
                 this.ProcAmount = DecimalHelper.RoundToDecimalsD(average * randBonus/100, 2);
             }
 

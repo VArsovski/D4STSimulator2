@@ -175,12 +175,12 @@ export class InventoryComponent implements OnInit, OnChanges {
         selectedStat = selectedSubStat;
         selectedSubStat = tempStat;
     
-        debugger;
+        // debugger;
         var srcStat = a.Contents.AffixData;//this[categoryStat][selectedStat];
         this[categoryStat][selectedStat] = a.Contents.AffixData.getZeroStats(srcStat);
       }
       else {
-        debugger;
+        // debugger;
         var selectedParentStat = categoryStat && this[categoryStat] ? this[categoryStat][selectedStat] : this[selectedStat];
         if (a.Contents.AffixData.getZeroStats && selectedParentStat) {
           var srcStat = selectedParentStat[selectedSubStat];
@@ -201,23 +201,25 @@ export class InventoryComponent implements OnInit, OnChanges {
       var selectedStat = outputMetaData["SelectedStat"];
       var selectedSubStat = outputMetaData["SelectedEquipStat"] || a.Contents.AffixData.SelectedEquipStat;
       var categoryStat = outputMetaData["SelectedCategoryStat"];
-    
+
       var selectedModelStat = (selectedStat == "DamageData") ? ["DamageData", selectedSubStat] //this[selectedStat][selectedSubStat]
       : (selectedStat == "DamageEmpowerData") ? ["DamageEmpowerData", selectedSubStat] //this[selectedStat][selectedSubStat]
       : (["StatNumbers", "StatRegen", "StatPercentage", "StatPercentageRegen", "StatReturn"].includes(selectedStat)) ? [selectedStat, selectedSubStat] //this["BasicStats"][selectedSubStat]
       : (selectedStat == "Resistance") ? ["Resistance", selectedSubStat] //this[selectedStat][statType]
-      : (selectedStat == "PowerData") ? ["PowerData", selectedSubStat]// this["BasicStats"][selectedSubStat]
+      : (selectedStat == "PowerData" || selectedStat == "PowerStats") ? ["PowerData", selectedSubStat]// this["BasicStats"][selectedSubStat]
       : (selectedStat == "SkillData" || selectedStat == "SkillEmpower") ? ["SkillData", selectedSubStat]//this["BasicStats"][selectedStat]
       : (selectedStat == "ArmorData") ? ["ArmorData", selectedSubStat] // this["ArmorData"][selectedStat + "Armor"]
       : null;
-    
+
+
+
       if (categoryStat == "SkillStats") {
         selectedModelStat = ["SkillData", "Skills"];
         selectedSubStat = "Skills";
       }
-    
-      if (categoryStat == "BasicStats") {
-        debugger;
+
+      if (categoryStat == "BasicStats" && selectedStat.indexOf("Power") == -1) {
+        // debugger;
         selectedStat = selectedStat.replace("Stat", "");
         selectedSubStat = selectedSubStat.replace("Percentage", "").replace("Amount", "").replace("Regen", "").replace("Return", "");
         // Swap
@@ -231,12 +233,12 @@ export class InventoryComponent implements OnInit, OnChanges {
           debugger;
         }
       }
-    
+
       if (selectedModelStat) {
-        debugger;
+        // debugger;
         var srcStat = categoryStat ? this[categoryStat][selectedModelStat[0]]//[selectedModelStat[1]]
                                    : this[selectedModelStat[0]];//[selectedModelStat[1]];
-    
+
         if (selectedModelStat[0] == "ArmorData") {
           srcStat = this[selectedModelStat[0]];
           this[selectedModelStat[0]] = a.Contents.updateEquippedStats(srcStat, a);
@@ -303,7 +305,7 @@ export class InventoryComponent implements OnInit, OnChanges {
     totals.forEach(t => total += t)
     debugger;
     this.ArmorData.Armor.Amount = total;
-}
+  }
 
   protected ArmorSrc(type:string):string {
     var srcEmpty = "_Resources\\img\\borders\\border.png";
@@ -316,6 +318,7 @@ export class InventoryComponent implements OnInit, OnChanges {
     var selectedItemType = data.selectedCategory == 1 ? this.armors[data.selectedType - 1] : data.selectedCategory == 2 ? this.weapons[data.selectedType - 1] : this.jewelries[data.selectedType - 1];
     return (this.inventoryData["Weapon"] || []).length ? "_Resources\\img\\items\\W" + selectedItemType[0] + selectedItemType[1] + this.imageRaritiesDict["Weapon"] + ".png" : srcEmpty;
   }
+
   protected JewelrySrc(type:string):string {
     var srcEmpty = "_Resources\\img\\borders\\border.png";
     return (this.inventoryData[type] || []).length ? "_Resources\\img\\items\\J" + type[0] + type[1] + this.imageRaritiesDict[type] + ".png" : srcEmpty;

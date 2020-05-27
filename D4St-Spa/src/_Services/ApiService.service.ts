@@ -207,6 +207,7 @@ export class ApiServiceService {
               skill.id = element.id;
               skill.name = element.name;
               skill.data = this.extractSkillDTOFromResponse(element.data);
+              skill.description = element.data.description;
 
               // TODO: Fix on API (if possible without Overchanging stuff)
               skill.level = element.level || element.data.skillData.level;
@@ -284,7 +285,8 @@ export class ApiServiceService {
     skill.id = element.id;
     skill.level = element.skillData.level;
     skill.name = element.name;
-    skill.tier = element.skillData.tier;
+    skill.description = element.description;
+    skill.tier = element.tier;
     skill.skillData.powerData = new SkillDetailDTO(element.skillData.powerData);
     skill.skillData.powerUp = new SkillDetailDTO(element.skillData.powerUp);
     skill.angelicAffix.powerData = this.extractSkillDetailsFromResponse(element.angelicAffix.powerData, 1);
@@ -294,7 +296,7 @@ export class ApiServiceService {
     skill.ancestralAffix.powerData = this.extractSkillDetailsFromResponse(element.ancestralAffix.powerData, 3);
     skill.ancestralAffix.powerUp = this.extractSkillDetailsFromResponse(element.ancestralAffix.powerUp, 3);
     skill.generatedByGen = element.generatedByGen;
-    skill.attackTypes = element.castTypes;
+    skill.castTypes = element.castTypes;
     skill.damageTypes = element.damageTypes;
     skill.affixMetadata = element.skillMetadata;
     skill.skillCategoryMetadata = element.skillCategoriesMetadata;

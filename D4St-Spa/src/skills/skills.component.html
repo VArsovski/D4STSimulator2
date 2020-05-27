@@ -2,6 +2,7 @@
   <div class="col">
     <div class="row" *ngIf="model.data.skillData">
       <div class="col-2 offset-2 text-left">
+        <app-CustomCompareTooltip width="45px" height="45px" contentImg="{{this.model.imageUrl}}" contentLabel="Details" text="{{this.model.description}}"></app-CustomCompareTooltip>
         <label class="clearfix" *ngIf="this.model.level && this.model.level != 0">[Level {{model.level}}]</label>
         <div class="row"><div class="col">
           <label class="clearfix" *ngIf="this.model.data.skillData && model.data.skillData.powerData.from != 0">

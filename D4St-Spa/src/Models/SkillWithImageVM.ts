@@ -13,6 +13,7 @@ export class SkillWithImageVM extends SkillVM implements IImageUrl {
     data: ISkillDTO;
     id: number;
     name: string;
+    description:string;
     level: number;
     tier: number;
 

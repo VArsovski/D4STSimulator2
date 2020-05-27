@@ -35,18 +35,18 @@ export class ArmorStatDetailsInventoryModel implements ICCEffectStatDetailsInven
 
 export class ArmorStatDetailsInventoryModelCombined implements ICCffectStatDetailsInventoryModelCombined {
     StunOrKnockdown: SimpleCCEffectAffixData;
-    KnockbackOrLevitate: SimpleCCEffectAffixData;
+    KnockbackOrBleed: SimpleCCEffectAffixData;
     WitherOrConflagrate: SimpleCCEffectAffixData;
-    BlindOrCurse: SimpleCCEffectAffixData;
-    FreezeOrRoot: SimpleCCEffectAffixData;
-    ReduceArmorOrBleed: SimpleCCEffectAffixData;
+    FreezeOrCurse: SimpleCCEffectAffixData;
+    BlindOrRoot: SimpleCCEffectAffixData;
+    ReduceArmorOrLevitate: SimpleCCEffectAffixData;
 
     constructor() {
         this.StunOrKnockdown = new SimpleCCEffectAffixData();
-        this.KnockbackOrLevitate = new SimpleCCEffectAffixData();
+        this.KnockbackOrBleed = new SimpleCCEffectAffixData();
         this.WitherOrConflagrate = new SimpleCCEffectAffixData();
-        this.BlindOrCurse = new SimpleCCEffectAffixData();
-        this.FreezeOrRoot = new SimpleCCEffectAffixData();
-        this.ReduceArmorOrBleed = new SimpleCCEffectAffixData();
+        this.FreezeOrCurse = new SimpleCCEffectAffixData();
+        this.BlindOrRoot = new SimpleCCEffectAffixData();
+        this.ReduceArmorOrLevitate = new SimpleCCEffectAffixData();
     }
 }

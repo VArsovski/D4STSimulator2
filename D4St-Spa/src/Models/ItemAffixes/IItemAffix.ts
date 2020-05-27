@@ -1,4 +1,4 @@
-import { ItemCategoriesEnum, ItemAffixTypeEnum, CastProcTypesEnum, AttackTypesEnum, AffixCategoryEnum } from 'src/_Enums/itemAffixEnums';
+import { ItemCategoriesEnum, ItemAffixTypeEnum, CastProcTypesEnum, CastTypesEnum, AffixCategoryEnum } from 'src/_Enums/itemAffixEnums';
 import { ItemAffixOutput } from './Details/ItemAffixOutput';
 import { SkillVM } from '../SkillVM';
 import { IItemAffixCondition } from './IItemAffixCondition';
@@ -8,7 +8,7 @@ export interface IItemAffix {            // : ItemAffixBlueprint {
     ItemType: number;
     AffixType: ItemAffixTypeEnum;        // Basic, Off/Def && Unc/Cond
     CastProcType: CastProcTypesEnum;     // OnHit, OnCast, OnDeath
-    AttackProcType: AttackTypesEnum;     // OnHit, OnCast, OnDeath
+    AttackProcType: CastTypesEnum;     // OnHit, OnCast, OnDeath
     AffixCategory: AffixCategoryEnum;    // Melee, Projectile, AoE, TriggerEffect, Summon
     ConditionSatisfied: boolean;
     SelectedEquipStat:string;

@@ -7,6 +7,7 @@ import { SkillDamageDataDTO } from './SkillDamageDataDTO';
 export class SkillDTO implements ISkillDTO {
     id: number;
     name: string;
+    description:string;
     level: number;
     tier: number;
     skillData: ISkillDamageDataDTO;
@@ -15,7 +16,7 @@ export class SkillDTO implements ISkillDTO {
     ancestralAffix: ISkillPowerDataDTO;
     affixMetadata: number[];
     generatedByGen: number;
-    attackTypes: number[];
+    castTypes: number[];
     damageTypes: number[];
     skillCategoryMetadata:number[];
 

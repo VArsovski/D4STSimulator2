@@ -8,6 +8,7 @@ namespace D4ST_Api.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public string Description { get; set; }
         public int Level { get; set; }
         public ClassTypeEnum CharacterClass { get; set; }
         public List<CastTypesEnum> CastTypes { get; set; }
@@ -21,10 +22,11 @@ namespace D4ST_Api.Models
         public int GeneratedByGen { get; set; }
         public int Tier { get; set; }
 
-        public SkillDTO(int id, string name, int level, ISkillDamageAffixData skillStats, ISkillCostStat cs, List<CastTypesEnum> castTypes, List<DamageTypesEnum> damageTypes, List<AffixMetadataEnum> skillMetadata, List<SkillCategoriesEnum> skillCategoriesMetadata, bool IsCC = false)
+        public SkillDTO(int id, string name, string description, int level, ISkillDamageAffixData skillStats, ISkillCostStat cs, List<CastTypesEnum> castTypes, List<DamageTypesEnum> damageTypes, List<AffixMetadataEnum> skillMetadata, List<SkillCategoriesEnum> skillCategoriesMetadata, bool IsCC = false)
         {
             this.Id = id;
             this.Name = name;
+            this.Description = description;
             this.Level = level != 0 ? level : skillStats?.PowerData?.Level ?? 0;
             this.Tier = skillStats?.PowerData?.Tier ?? 0;
             this.SkillData = new SkillDamageAffixData(skillStats?.PowerData, skillStats?.PowerUp);

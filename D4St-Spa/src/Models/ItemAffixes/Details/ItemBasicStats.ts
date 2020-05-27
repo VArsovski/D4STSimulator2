@@ -274,7 +274,6 @@ export class ItemBasicStatsDetail implements IEquippableAffixStat {
         this.EquippableStatData.OutputMeta.SelectedEquipStat = Helpers.getPropertyByValue(BasicStatsEnum, this.Type) + suffix;
         this.updateEquippedStats = new BasicStatEquippable(this.EquippableStatData.OutputMeta.SelectedStat, this.EquippableStatData.OutputMeta.SelectedEquipStat).updateEquippedStats;
         this.getZeroStats = (src) => {
-            debugger;
             var selectedStat = Helpers.getPropertyByValue(BasicStatsEnum, (src as ItemBasicStatsDetail).Type);
             var selectedStatType = Helpers.getPropertyByValue(BasicStatTypesEnum, (src as ItemBasicStatsDetail).StatType);
             var srcReturnData = new InventoryBasicStatsModel();

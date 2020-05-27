@@ -1,8 +1,8 @@
-import { DefensiveStatCategoryEnum, DefensiveStatsEnum, DamageTypesEnum, AttackTypesEnum, ResistanceTypesEnum, AffixCategoryEnum } from 'src/_Enums/itemAffixEnums';
+import { DefensiveStatCategoryEnum, DefensiveStatsEnum, DamageTypesEnum, ResistanceTypesEnum, AffixCategoryEnum, CastTypesEnum } from 'src/_Enums/itemAffixEnums';
 import { Helpers } from 'src/_Helpers/helpers';
 import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 import { CCEffectTypesEnum } from 'src/_Enums/triggerAffixEnums';
-import { IItemAffixStats, SimpleItemAffixStatsMetadata, IItemAffixStatsMetadata, SimpleAffixStats } from './IItemAffixStats';
+import { IItemAffixStats, SimpleItemAffixStatsMetadata, SimpleAffixStats } from './IItemAffixStats';
 import { IEquippableAffixStat } from 'src/Models/IEquippableStatDetails/IEquippableAffixStat';
 import { IItemAffix } from '../IItemAffix';
 
@@ -124,7 +124,7 @@ export class ItemDefensiveStatsDetail implements IEquippableAffixStat {
     CategoryStats: AffixCategoryEnum;
     private CCType:CCEffectTypesEnum;
     private DamageType:DamageTypesEnum;
-    private AttackType:AttackTypesEnum;
+    private CastType:CastTypesEnum;
     private AmountPercentage?:number;
     private Duration?:number;
     private Chance?: number;
@@ -147,7 +147,7 @@ export class ItemDefensiveStatsDetail implements IEquippableAffixStat {
         });
 
         var damageType = Helpers.getPropertyByValue(DamageTypesEnum, this.DamageType);
-        var attackType = Helpers.getPropertyByValue(AttackTypesEnum, this.AttackType);
+        var castType = Helpers.getPropertyByValue(CastTypesEnum, this.CastType);
         var ccType = Helpers.getPropertyByValue(CCEffectTypesEnum, this.CCType);
 
         if (this.Type == DefensiveStatsEnum.CCEffects)
@@ -177,10 +177,10 @@ export class ItemDefensiveStatsDetail implements IEquippableAffixStat {
         if (this.Type == DefensiveStatsEnum.AttacksTaken)
         {
             if (this.AmountPercentage)
-                str += Helpers.getPropertyByValue(DefensiveStatsEnum, this.Type) + " of type " + attackType + " reduced by " + this.AmountPercentage + "%";
+                str += Helpers.getPropertyByValue(DefensiveStatsEnum, this.Type) + " of type " + castType + " reduced by " + this.AmountPercentage + "%";
             if (this.Amount)
             if (!str)
-                str += Helpers.getPropertyByValue(DefensiveStatsEnum, this.Type) + " of type " + attackType + " reduced by " + this.Amount;
+                str += Helpers.getPropertyByValue(DefensiveStatsEnum, this.Type) + " of type " + castType + " reduced by " + this.Amount;
         }
         if (this.Type == DefensiveStatsEnum.ThornsDamage)
         {
@@ -204,7 +204,7 @@ export class ItemDefensiveStatsDetail implements IEquippableAffixStat {
                 str += this.AmountPercentage + "% of " +  damageType + " damage returned as " + Helpers.getPropertyByValue(DefensiveStatsEnum, this.Type) + " for " + this.Duration + " seconds";
             if (this.Amount)
             if (!str)
-                str += this.Chance + "% chance " + " of " +  attackType + " attacks to return as " + Helpers.getPropertyByValue(DefensiveStatsEnum, this.Type);
+                str += this.Chance + "% chance " + " of " +  castType + " attacks to return as " + Helpers.getPropertyByValue(DefensiveStatsEnum, this.Type);
         }
 
         if (str.startsWith("+")) {
@@ -224,11 +224,11 @@ export class ItemDefensiveStatsDetail implements IEquippableAffixStat {
         this.DefensiveAffixStatCategories = defensiveStatCategories;
 
         var damageType = Helpers.getRandom(1 ,8);
-        var attackType = Helpers.getRandom(1 ,5);
+        var castType = Helpers.getRandom(1 ,5);
         var ccType = Helpers.getRandom(1 ,5);
 
         this.DamageType = damageType;
-        this.AttackType = attackType;
+        this.CastType = castType;
         this.CCType = ccType;
 
         this.EquippableStatData = new SimpleAffixStats();

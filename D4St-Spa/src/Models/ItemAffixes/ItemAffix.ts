@@ -1,4 +1,4 @@
-import { ItemCategoriesEnum, ItemAffixTypeEnum, AffixCategoryEnum, AttackTypesEnum, CastProcTypesEnum } from "../../_Enums/itemAffixEnums";
+import { ItemCategoriesEnum, ItemAffixTypeEnum, AffixCategoryEnum, CastTypesEnum, CastProcTypesEnum } from "../../_Enums/itemAffixEnums";
 import { IItemAffix } from './IItemAffix';
 import { IItemAffixCondition } from './IItemAffixCondition';
 import { Helpers } from 'src/_Helpers/helpers';
@@ -13,7 +13,7 @@ export class ItemAffix implements IItemAffix {
     ItemType: number;                      // Which W,A,J
     AffixType: ItemAffixTypeEnum;          // Basic, Off, Def, Trigger, Legendary
     CastProcType: CastProcTypesEnum;       // OnHit, OnCast, OnDeath
-    AttackProcType: AttackTypesEnum;       // Melee, Projectile, AoE, TriggerEffect, Summon
+    AttackProcType: CastTypesEnum;       // Melee, Projectile, AoE, TriggerEffect, Summon
     AffixCategory: AffixCategoryEnum;
     ConditionSatisfied: boolean;
 
@@ -29,7 +29,7 @@ export class ItemAffix implements IItemAffix {
     PowerLevel: number;
     SelectedEquipStat: string;
 
-    constructor(affixType: ItemAffixTypeEnum, condition?:IItemAffixCondition, affixCategory?: AffixCategoryEnum, powerLevel?:number, attacProckType?: AttackTypesEnum, castProcType?: CastProcTypesEnum) {
+    constructor(affixType: ItemAffixTypeEnum, condition?:IItemAffixCondition, affixCategory?: AffixCategoryEnum, powerLevel?:number, attacProckType?: CastTypesEnum, castProcType?: CastProcTypesEnum) {
         this.AffixType = affixType;
         this.Condition = condition;
         this.PowerLevel = powerLevel;
@@ -88,20 +88,18 @@ export class ItemAffix implements IItemAffix {
         }
 
         if (statDescr.includes("NaN ") || statDescr.startsWith("0") || statDescr.includes("null") || statDescr.replace("*", "").length == 0) {
+            debugger;
             console.log("Data missing for:");
             console.log(this);
+
+            var inputData = this.Contents.EquippableStatData.InputMeta;
+            var outputData = this.Contents.EquippableStatData.OutputMeta;
+            var innerInputData = this.Contents.AffixData ? this.Contents.AffixData.EquippableStatData["InputMeta"] : "";
+            var innerOutputData = this.Contents.AffixData ? this.Contents.AffixData.EquippableStatData["OutputMeta"] : "";
+
+            suffix += JSON.stringify(outputData || inputData);
+            suffix += JSON.stringify(innerOutputData || innerInputData);
         }
-
-        // TODO: Find the rest of the types and Set
-        // if (this.AffixType > 3 && this.AffixType < 9) {
-        //     var inputData = this.Contents.InputMeta;
-        //     var outputData = this.Contents.OutputMeta;
-        //     var innerInputData = this.Contents.AffixData["InputMeta"];
-        //     var innerOutputData = this.Contents.AffixData["OutputMeta"];
-
-        //     suffix += JSON.stringify(outputData);
-        //     suffix += JSON.stringify(innerOutputData);
-        // }
 
         return statDescr + " " + conditionStr + suffix;
     }

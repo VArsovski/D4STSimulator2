@@ -33,6 +33,10 @@ export class SkillsComponent implements OnInit, OnChanges {
     this.current = new SkillAffixDetail();
     this.srcBorder = "../_Resources/img/borders/border-1.png";
     this.previewChanges = new SkillDTO();
+
+    // Prevent "(Undefined)" type of label appear
+    this.previewChanges.skillData.powerData.from = 0;
+    this.previewChanges.skillData.powerData.to = 0;
     // this.previewModel = new BasicStatDifferencesVM<SkillWithImageVM>(new SkillWithImageVM());
   }
 
@@ -46,6 +50,9 @@ export class SkillsComponent implements OnInit, OnChanges {
   }
   async LevelUpCancel() {
     this.previewChanges = new SkillDTO();
+    // Prevent "(Undefined)" type of label appear
+    this.previewChanges.skillData.powerData.from = 0;
+    this.previewChanges.skillData.powerData.to = 0;
   }
 
   async EquipSkill(data: any) {

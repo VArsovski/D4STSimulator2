@@ -3,12 +3,13 @@ import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
 import { TriggerTypesEnum, CCEffectTypesEnum, SpellEffectTypesEnum, HitEffectTypesEnum } from 'src/_Enums/triggerAffixEnums';
 import { SkillVM } from 'src/Models/SkillVM';
 import { AffixCategoryEnum } from 'src/_Enums/itemAffixEnums';
-import { SimpleItemAffixStatsMetadata, IItemAffixStats, SimpleAffixStats } from './IItemAffixStats';
+import { IItemAffixStats, SimpleAffixStats } from './IItemAffixStats';
 import { IItemAffix } from '../IItemAffix';
 import { IEquippableAffixStat } from 'src/Models/IEquippableStatDetails/IEquippableAffixStat';
 import { TriggerStatEquippable } from 'src/Models/IEquippableStatDetails/TriggerStatEquippable';
+import { IDescribable } from '../IDescribable';
 
-export class ItemTriggerStats implements IEquippableAffixStat {
+export class ItemTriggerStats implements IEquippableAffixStat, IDescribable {
     Chance:number;
     Amount:number;
     Type:TriggerTypesEnum;

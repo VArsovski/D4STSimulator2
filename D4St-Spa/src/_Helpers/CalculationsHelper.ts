@@ -275,15 +275,15 @@ export class CalculationsHelper {
 
     armorTypesList.forEach(at => {
       if (at == ArmorTypesEnum.Heavy && (!armorType || armorType == at)) {
-        selectedCCTypes.push(CCEffectTypesEnum.ReduceArmorOrBleed);
-        selectedCCTypes.push(CCEffectTypesEnum.KnockbackOrLevitate);
+        selectedCCTypes.push(CCEffectTypesEnum.StunOrKnockdown);
+        selectedCCTypes.push(CCEffectTypesEnum.KnockbackOrBleed);
       }
       if (at == ArmorTypesEnum.Light && (!armorType || armorType == at)) {
-        selectedCCTypes.push(CCEffectTypesEnum.FreezeOrRoot);
-        selectedCCTypes.push(CCEffectTypesEnum.StunOrKnockdown);
+        selectedCCTypes.push(CCEffectTypesEnum.BlindOrRoot);
+        selectedCCTypes.push(CCEffectTypesEnum.ReduceArmorOrLevitate);
       }
       if (at == ArmorTypesEnum.Mystic && (!armorType || armorType == at)) {
-          selectedCCTypes.push(CCEffectTypesEnum.BlindOrCurse);
+          selectedCCTypes.push(CCEffectTypesEnum.FreezeOrCurse);
           selectedCCTypes.push(CCEffectTypesEnum.WitherOrConflagrate);
       }
     });
@@ -336,11 +336,11 @@ export class CalculationsHelper {
 
     var ccAttackTriggers = [
       CCEffectTypesEnum.StunOrKnockdown,
-      CCEffectTypesEnum.KnockbackOrLevitate,
+      CCEffectTypesEnum.KnockbackOrBleed,
       CCEffectTypesEnum.WitherOrConflagrate,
-      CCEffectTypesEnum.BlindOrCurse,
-      CCEffectTypesEnum.FreezeOrRoot,
-      CCEffectTypesEnum.ReduceArmorOrBleed
+      CCEffectTypesEnum.FreezeOrCurse,
+      CCEffectTypesEnum.BlindOrRoot,
+      CCEffectTypesEnum.ReduceArmorOrLevitate
     ];
 
     var spellAttackTriggers = [
@@ -483,27 +483,27 @@ export class CalculationsHelper {
     return data;
   }
 
-  public GetAppropriateDamageTypesForCCEffect(effect:CCEffectTypesEnum):DamageTypesEnum[] {
-    var slashOrPierceCCTypes: CCEffectTypesEnum[] = [CCEffectTypesEnum.FreezeOrRoot, CCEffectTypesEnum.ReduceArmorOrBleed, CCEffectTypesEnum.StunOrKnockdown];
-    var bludgeonCCTypes: CCEffectTypesEnum[] = [CCEffectTypesEnum.ReduceArmorOrBleed, CCEffectTypesEnum.StunOrKnockdown, CCEffectTypesEnum.KnockbackOrLevitate];
-    var chainPierceCCTypes: CCEffectTypesEnum[] = [CCEffectTypesEnum.WitherOrConflagrate, CCEffectTypesEnum.BlindOrCurse, CCEffectTypesEnum.FreezeOrRoot];
-    var mysticCCTypes: CCEffectTypesEnum[] = [CCEffectTypesEnum.BlindOrCurse, CCEffectTypesEnum.WitherOrConflagrate, CCEffectTypesEnum.FreezeOrRoot];
+  // public GetAppropriateDamageTypesForCCEffect(effect:CCEffectTypesEnum):DamageTypesEnum[] {
+  //   var slashOrPierceCCTypes: CCEffectTypesEnum[] = [CCEffectTypesEnum.FreezeOrRoot, CCEffectTypesEnum.ReduceArmorOrBleed, CCEffectTypesEnum.StunOrKnockdown];
+  //   var bludgeonCCTypes: CCEffectTypesEnum[] = [CCEffectTypesEnum.ReduceArmorOrBleed, CCEffectTypesEnum.StunOrKnockdown, CCEffectTypesEnum.KnockbackOrLevitate];
+  //   var chainPierceCCTypes: CCEffectTypesEnum[] = [CCEffectTypesEnum.WitherOrConflagrate, CCEffectTypesEnum.BlindOrCurse, CCEffectTypesEnum.FreezeOrRoot];
+  //   var mysticCCTypes: CCEffectTypesEnum[] = [CCEffectTypesEnum.BlindOrCurse, CCEffectTypesEnum.WitherOrConflagrate, CCEffectTypesEnum.FreezeOrRoot];
 
-    var physicalDamageTypes = [DamageTypesEnum.PhysicalOrCC, DamageTypesEnum.TickOrCurse, DamageTypesEnum.CleaveOrAoE];
-    var bludgeonDamageTypes = [DamageTypesEnum.PhysicalOrCC, DamageTypesEnum.TrapOrSummon, DamageTypesEnum.TickOrCurse];
-    var chainPierceDamageTypes = [DamageTypesEnum.TrapOrSummon, DamageTypesEnum.CleaveOrAoE, DamageTypesEnum.ChainOrProjectile];
-    var spellDamageTypes = [DamageTypesEnum.ChainOrProjectile, DamageTypesEnum.TickOrCurse, DamageTypesEnum.TrapOrSummon];
+  //   var physicalDamageTypes = [DamageTypesEnum.PhysicalOrCC, DamageTypesEnum.TickOrCurse, DamageTypesEnum.CleaveOrAoE];
+  //   var bludgeonDamageTypes = [DamageTypesEnum.PhysicalOrCC, DamageTypesEnum.TrapOrSummon, DamageTypesEnum.TickOrCurse];
+  //   var chainPierceDamageTypes = [DamageTypesEnum.TrapOrSummon, DamageTypesEnum.CleaveOrAoE, DamageTypesEnum.ChainOrProjectile];
+  //   var spellDamageTypes = [DamageTypesEnum.ChainOrProjectile, DamageTypesEnum.TickOrCurse, DamageTypesEnum.TrapOrSummon];
 
-    var ccTypesArray = [slashOrPierceCCTypes, bludgeonCCTypes, chainPierceCCTypes, mysticCCTypes];
-    var damageTypes = [physicalDamageTypes, bludgeonDamageTypes, chainPierceDamageTypes, spellDamageTypes];
+  //   var ccTypesArray = [slashOrPierceCCTypes, bludgeonCCTypes, chainPierceCCTypes, mysticCCTypes];
+  //   var damageTypes = [physicalDamageTypes, bludgeonDamageTypes, chainPierceDamageTypes, spellDamageTypes];
 
-    var selectedDamageTypes:DamageTypesEnum[] = [];
-    ccTypesArray.forEach((c, i) => {if (c.includes(effect))
-      selectedDamageTypes.concat(damageTypes[i]);
-    });
+  //   var selectedDamageTypes:DamageTypesEnum[] = [];
+  //   ccTypesArray.forEach((c, i) => {if (c.includes(effect))
+  //     selectedDamageTypes.concat(damageTypes[i]);
+  //   });
 
-    return selectedDamageTypes;
-  }
+  //   return selectedDamageTypes;
+  // }
 
   public GetCalculatedFactor(selectedType: string, amount: number, level: number) {
     var isHeavy = selectedType == Helpers.getPropertyByValue(ArmorTypesEnum, ArmorTypesEnum.Heavy) + "Armor";

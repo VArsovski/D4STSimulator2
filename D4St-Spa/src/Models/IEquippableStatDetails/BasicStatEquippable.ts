@@ -23,19 +23,7 @@ export class BasicStatEquippable implements IEquippableAffixStat {
         else {
             var selectedStatAmount = affix.Contents.AffixData[selectedStat]["Amount"];
             var selectedType = affix.Contents.AffixData.EquippableStatData.OutputMeta.SelectedStat;
-    
-            // debugger;
-            // var selectedStat = (src as ItemBasicStatsDetail).EquippableStatData.OutputMeta.SelectedStat;
-            // var selectedStatData = (src as ItemBasicStatsDetail).StatType;
-            // var srcReturnData = new InventoryBasicStatsModel();
-            // var selectedStatDetails = srcReturnData[selectedStat] as BasicStatInventoryModel;
-            // selectedStatDetails.Amount = 0;
-            // selectedStatDetails.AmountPercentage = 0;
-            // selectedStatDetails.AmountPercentageRegen = 0;
-            // selectedStatDetails.Regen = 0;
-            // selectedStatDetails.Return = 0;
-    
-                debugger;
+            
             if (selectedType == Helpers.getPropertyByValue(BasicStatTypesEnum, BasicStatTypesEnum.StatAmount))
                 selectedEquipModel["Amount"] += selectedStatAmount || 0;
             if (selectedType == Helpers.getPropertyByValue(BasicStatTypesEnum, BasicStatTypesEnum.StatRegen))

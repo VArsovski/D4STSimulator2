@@ -19,6 +19,7 @@ namespace D4ST_Api.Models
         {
             this.Id = data.Id;
             this.Name = data.Name;
+            this.Description = data.Description;
             this.Tier = data.Tier;
             this.Level = data.Level;
             var ds = data.SkillData.PowerData;

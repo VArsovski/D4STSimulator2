@@ -39,10 +39,8 @@ export class SkillPickerComponent implements OnInit, OnChanges {
   }
 
   SelectSkill(data: any) {//ISkillWithImageDTO) {
-    //var ss = this.model.skills.filter(x => { return x.id == data.id; })[0];
-    // var pd = new SkillDTO(ss.skillData.skillData, ss.skillData.angelicAffix, ss.skillData.demonicAffix, ss.skillData.ancestralAffix);
-    // var pu = new SkillDTO(ss.skillLvlUpData.skillData, ss.skillLvlUpData.angelicAffix, ss.skillLvlUpData.demonicAffix, ss.skillLvlUpData.ancestralAffix);
-    // var newData = new SkillVM(ss.skillData.skillData, ss.skillLvlUpData.skillData, pd, pu);
+    // Data gets returned in somewhat Generic form (cause using a custom/multi-intended control), reapply the description here
+    data.description = data.data.description;
     this.model.selectedSkill = data as SkillWithImageVM;//new SkillWithImageVM(null, ss, data.imageUrl, data.imageStyle);
   }
 

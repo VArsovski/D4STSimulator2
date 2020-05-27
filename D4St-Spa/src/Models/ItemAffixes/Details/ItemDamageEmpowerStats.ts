@@ -70,7 +70,7 @@ export class ItemDamageEmpowerStats implements IEquippableAffixStat {
     }
 
     GetDescription(): string {
-        return "Increase " + Helpers.getPropertyByValue(DamageTypesEnum, this.DamageData.MainDamageType) + " damage by " + this.DamageData.EmpowerPercentage + "%";
+        return "+" + this.DamageData.EmpowerPercentage + "% " + Helpers.getPropertyByValue(DamageTypesEnum, this.DamageData.MainDamageType) + " damage";
     }
 
     private GetCategoryWeaponStats(type?:ItemWeaponTypesEnum) {
