@@ -466,73 +466,73 @@ third step: add .mainNav li a {white-space:nowrap;} */
 .chestItem {
     position:absolute;
     opacity:1.0;
-    top: 25%;
+    top: 35%;
     right: 75%;
 }
 .chestItem10 {
     position:absolute;
     opacity:1.0;
-    top: 25%;
+    top: 35%;
     right: 80%;
 }
 .chestItem100 {
     position:absolute;
     opacity:1.0;
-    top: 25%;
+    top: 35%;
     right: 85%;
 }
 .chestItem1000 {
     position:absolute;
     opacity:1.0;
-    top: 25%;
+    top: 35%;
     right: 90%;
 }
 .glovesItem {
     position:absolute;
     opacity:1.0;
-    top: 25%;
+    top: 35%;
     left: 55%;
 }
 .glovesItem10 {
     position:absolute;
     opacity:1.0;
-    top: 25%;
+    top: 35%;
     left: 50%;
 }
 .glovesItem100 {
     position:absolute;
     opacity:1.0;
-    top: 25%;
+    top: 35%;
     left: 45%;
 }
 .glovesItem1000 {
     position:absolute;
     opacity:1.0;
-    top: 25%;
+    top: 35%;
     left: 40%;
 }
 .helmItem {
     position:absolute;
     width:75px;height:75px; opacity:1.0;
-    bottom: 95%;
+    bottom: 80%;
     right: 85%;
 }
 .helmItem10 {
     position:absolute;
     width:75px;height:75px; opacity:1.0;
-    bottom: 95%;
+    bottom: 80%;
     right: 90%;
 }
 .helmItem100 {
     position:absolute;
     width:75px;height:75px; opacity:1.0;
-    bottom: 95%;
+    bottom: 80%;
     right: 95%;
 }
 .helmItem1000 {
     position:absolute;
     width:75px;height:75px; opacity:1.0;
-    bottom: 95%;
+    bottom: 80%;
     right: 100%;
 }
 .pantsItem {
@@ -586,73 +586,67 @@ third step: add .mainNav li a {white-space:nowrap;} */
 .amuletItem {
     position:absolute;
     width:45px; height:45px; opacity:1.0;
-    right: 50%;
-    top: -10%;
+    right: 55%;
+    top: -5%;
 }
 .amuletItem10 {
     position:absolute;
     width:45px; height:45px; opacity:1.0;
-    right: 55%;
-    top: -10%;
+    right: 60%;
+    top: -5%;
 }
 .amuletItem100 {
     position:absolute;
     width:45px; height:45px; opacity:1.0;
-    right: 60%;
-    top: -10%;
+    right: 65%;
+    top: -5%;
 }
 .amuletItem1000 {
     position:absolute;
     width:45px; height:45px; opacity:1.0;
-    right: 65%;
-    top: -10%;
+    right: 70%;
+    top: -5%;
 }
 .ring1Item {
     position:absolute;
     width:45px; height:45px; opacity:1.0;
-    right: 160%;
-    top: 110%;
+    right: 150%;
+    top: 115%;
 }
 .ring1Item10 {
     position:absolute;
     width:45px; height:45px; opacity:1.0;
-    right: 165%;
-    top: 110%;
+    right: 160%;
+    top: 120%;
 }
 .ring1Item100 {
     position:absolute;
     width:45px; height:45px; opacity:1.0;
     right: 170%;
-    top: 110%;
+    top: 125%;
 }
 .ring1Item1000 {
     position:absolute;
     width:45px; height:45px; opacity:1.0;
-    right: 175%;
-    top: 110%;
+    right: 180%;
+    top: 130%;
 }
 .ring2Item {
     position:absolute;
     width:45px; height:45px; opacity:1.0;
-    left: 40%;
-    top: 110%;
-}
-.ring2Item {
-    position:absolute;
-    width:45px; height:45px; opacity:1.0;
-    left: 35%;
+    left: 55%;
     top: 110%;
 }
 .ring2Item10 {
     position:absolute;
     width:45px; height:45px; opacity:1.0;
-    left: 30%;
+    left: 50%;
     top: 110%;
 }
 .ring2Item100 {
     position:absolute;
     width:45px; height:45px; opacity:1.0;
-    left: 25%;
+    left: 45%;
     top: 110%;
 }
 .ring2Item1000 {
