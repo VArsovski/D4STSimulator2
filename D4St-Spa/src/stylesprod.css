@@ -101,7 +101,7 @@ body img {
 .customHeaderFont {
     font-family: 'Bebas Neue', cursive;
     font-weight: bolder;
-    text-shadow: #7518cc 2px 0 10px;
+    text-shadow: #0562fe 2px 0 10px;
     opacity: 1;
 }
 
@@ -110,7 +110,7 @@ body img {
     left:15px;
     font-family: 'Bebas Neue', cursive;
     font-weight: bolder;
-    text-shadow: #5758BB 2px 0 10px;
+    text-shadow: #7518cc 2px 0 10px; /*#5758BB*/
     opacity: 1;
 }
 
