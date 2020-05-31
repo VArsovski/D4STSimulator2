@@ -199,8 +199,10 @@ export class ItemAffixGenerator {
             // 2 PowerUpOrBasic stats, 2 random, 1 conditional each
             affixesBlueprint.push(this.GetPrimaryJewelryBlueprint(false));
             affixesBlueprint.push(this.GetPrimaryJewelryBlueprint(false));
-            if (empowerUnc)
-                affixesBlueprint[Helpers.getRandom(0, !omitConditional ? 2 : 1)].PowerUp();
+            if (empowerUnc) {
+                if (affixesBlueprint[Helpers.getRandom(0, !omitConditional ? 2 : 1)])
+                    affixesBlueprint[Helpers.getRandom(0, !omitConditional ? 2 : 1)].PowerUp();
+            }
             if (!omitConditional) {
                 affixesBlueprint.push(this.GetPrimaryJewelryBlueprint(true));
                 affixesBlueprint.push(this.GetSecondaryJewelryBlueprint(true))

@@ -230,6 +230,7 @@ export class ApiServiceService {
     vm.BasicData.UnassignedPower = data.classDefinition.unassignedPower;
     vm.BasicData.ClassType = data.classDefinition.classType;
     vm.BasicData.ClassTypeStr = data.classDefinition.classTypeStr;
+    vm.BasicData.ClassDescription = data.classDefinition.classDescription;
 
     vm.BasicData.AngelicPower = data.classDefinition.angelicPower;
     vm.BasicData.DemonicPower = data.classDefinition.demonicPower;

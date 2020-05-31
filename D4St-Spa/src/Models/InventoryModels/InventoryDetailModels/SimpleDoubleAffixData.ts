@@ -1,6 +1,6 @@
-import { ICCEffectAffixData } from './ICCEffectDetailsInventoryModel';
+import { IDoubleStatAffix } from './IDoubleStatAffixData';
 
-export class SimpleCCEffectAffixData implements ICCEffectAffixData {
+export class SimpleDoubleAffixData implements IDoubleStatAffix {
     ReduceChance: number;
     ReducePercentage: number;
     ReduceAmount: number;

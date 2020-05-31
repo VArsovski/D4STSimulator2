@@ -10,7 +10,6 @@ namespace D4ST_Api.Models
         public Resource Resource { get; set; }
         public Stamina Stamina { get; set; }
         public IDamageHitAffix DamagePerHit { get; set; }
-
         public IHitProcAffix LifeReturn { get; set; }
         public IHitProcAffix ResourceReturn { get; set; }
         public IHitProcAffix StaminaReturn { get; set; }

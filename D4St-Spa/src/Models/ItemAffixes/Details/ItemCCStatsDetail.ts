@@ -4,6 +4,7 @@ import { IDescribable } from '../IDescribable';
 import { Helpers } from 'src/_Helpers/helpers';
 import { IItemAffixStats, SimpleAffixStats } from './IItemAffixStats';
 import { IItemAffix } from '../IItemAffix';
+import { CCEffectTypesEquippable } from 'src/Models/IEquippableStatDetails/CCEffectTypesEquippable';
 
 export class ItemCCStatsDetail implements IEquippableAffixStat, IDescribable {
     Level: number;
@@ -21,15 +22,17 @@ export class ItemCCStatsDetail implements IEquippableAffixStat, IDescribable {
         this.EquippableStatData = new SimpleAffixStats();
         this.EquippableStatData.InputMeta.SelectedCategoryStat = this.constructor.name;
         this.EquippableStatData.InputMeta.SelectedStat = Helpers.getPropertyByValue(CCEffectTypesEnum, this.Type);
-        this.EquippableStatData.OutputMeta.SelectedCategoryStat = "TriggerData";
+        this.EquippableStatData.OutputMeta.SelectedCategoryStat = "CCEffectsData";
         this.EquippableStatData.OutputMeta.SelectedStat = Helpers.getPropertyByValue(CCEffectTypesEnum, this.Type);
-        this.EquippableStatData.OutputMeta.SelectedEquipStat = Helpers.getPropertyByValue(CCEffectTypesEnum, this.Type);
+        this.EquippableStatData.OutputMeta.SelectedEquipStat = "ReducePercentage";
+        this.updateEquippedStats = new CCEffectTypesEquippable().updateEquippedStats;
+        this.getZeroStats = (src) => { console.log("Not implemented"); }
     }
     
     GetDescription(): string {
         var isPercentage = this.Percentage;
         var quantifier = isPercentage ? this.Percentage + "%" : this.Amount;
-        var ccDescr = Helpers.getPropertyByValue(CCEffectTypesEnum, this.Type) + " CCEffects reduced by " + quantifier;
+        var ccDescr = "Reduce CCEffects of type " + Helpers.getPropertyByValue(CCEffectTypesEnum, this.Type) + " by " + quantifier;
         return ccDescr;
     }
 

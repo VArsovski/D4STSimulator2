@@ -8,6 +8,13 @@ import { IEquippableAffixStat } from 'src/Models/IEquippableStatDetails/IEquippa
 import { InventoryDamageModel } from 'src/Models/InventoryModels/InventoryDamageModel';
 
 export class ItemOfensiveStats implements IEquippableAffixStat {
+    // private CleaveAndAoE?:ItemOfensiveStatsDetail;     // Radius        [DamageType]
+    // private ChainOrProjectile?:ItemOfensiveStatsDetail; // Range        [DamageType]
+    // private StunOrKnockdown?:ItemOfensiveStatsDetail;  // Damage        [CCEffectType]
+    // private KnockbackOrBleed?:ItemOfensiveStatsDetail; // Damage        [CCEffectType]
+    // private WitherOrConflagrate?:ItemOfensiveStatsDetail; // Duration   [CCEffectType]
+    // private TickOrCurse?:ItemOfensiveStatsDetail;      // Duration      [CCEffectType]
+    // private Socket:ItemOfensiveStatsDetail;
     private CleaveAndAoE?:ItemOfensiveStatsDetail;
     private PoisonAndBurn?:ItemOfensiveStatsDetail;
     private ArmorReductionAndBleed?:ItemOfensiveStatsDetail;

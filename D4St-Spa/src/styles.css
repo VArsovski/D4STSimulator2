@@ -1,9 +1,15 @@
-body {
-    /* background-image: url("_Resources/img/background3.png"); */
-    background:linear-gradient(rgba(255,255,255,0.4), rgba(255,255,255,0.4)), url("_Resources/img/background3.png");
+/* body {
+    background:linear-gradient(rgba(255,255,255,0.4), rgba(255,255,255,0.4)), url("_Resources/img/backgrounds/background3.jpg");
     background-size: cover;
     background-repeat: no-repeat;
-}
+} */
+
+.bg-image {
+    filter: blur(8px);
+    -webkit-filter: blur(8px);
+    height: 100%;
+    background-position: center;
+  }
 
 body img {
     opacity: 0.7;
@@ -243,7 +249,7 @@ input[type=checkbox] {
 
 .wrapperLeft {
 	display:table;
-    transform: translate(10%, -25%);
+    transform: translate(10%, -35%);
 	width:62%;
     max-width:62%;
     margin:auto;
@@ -253,7 +259,7 @@ input[type=checkbox] {
 
 .wrapperRight {
     display:table;
-    transform: translate(80%, -50%);
+    transform: translate(80%, -72%);
 	width:25%;
     max-width:25%;
     margin:auto;
@@ -281,40 +287,32 @@ input[type=checkbox] {
     padding-right: 3rem;
 }
 
-.armorDisplayHolder label {
-    transform:translate(10%, -200%);
-}
-
 .attacksDisplayHolder {
     width: 740px;
     transform: translate(96%, 90%);
     list-style: none;
-    /* float: left; */
 }
 .attacksDisplayHolder2 {
     width: 740px;
-    transform: translate(96%, 50%);
+    transform: translate(96%, 75%);
     list-style: none;
-    /* float: left; */
 }
 .resistancesDisplayHolder {
     width: 770px;
     transform: translate(92%, 70%);
     list-style: none;
-    /* float: left; */
 }
 
 .basicStatsDisplayHolder {
-    width:520px;
-    /*transform:translate(162%,-750%);*/
-    bottom: calc(180% + 10px);
-    left: calc(72% + 5px);
+    width:480px;
+    bottom: calc(170% + 25px);
+    left: calc(72% + 15px);
     position: absolute;
 }
 
 .powerStatsDisplayHolder {
     width:520px;
-    transform:translate(162%,-1360%);
+    transform:translate(162%,-1160%);
 }
 
 .iconTop {
@@ -324,12 +322,20 @@ input[type=checkbox] {
 .inventoryHolder {
     width: 480px;
     height: 520px;
-    background-image: url("_Resources/img/Inventory2.png");
+    background-image: url("_Resources/img/inventory/Inventory2.png");
     background-size: cover;
     background-repeat: no-repeat;
-    transform: translate(175%, -150%);
+    transform: translate(175%, calc(-150% - 20px));
     opacity: 0.7;
     position:relative;
+}
+
+.inventoryAreaHolder {
+    transform: translate(0, -8%);
+}
+
+.verticalButtonTop {
+    vertical-align: top;
 }
 
 .btnGroupCustom, .btnGroupCustom ul {
@@ -432,83 +438,226 @@ input[type=checkbox] {
 second step: add the css li li {width:100%;}
 
 third step: add .mainNav li a {white-space:nowrap;} */
+
 .bootsItem {
     position:absolute;
-    opacity:1.0; /*transform: translate(-70%, 220%);*/
+    opacity:1.0;
+    top: 175%;
+    right: 105%;
+}
+.bootsItem10 {
+    position:absolute;
+    opacity:1.0;
+    top: 175%;
+    right: 110%;
+}
+.bootsItem100 {
+    position:absolute;
+    opacity:1.0;
+    top: 175%;
+    right: 115%;
+}
+.bootsItem1000 {
+    position:absolute;
+    opacity:1.0;
     top: 175%;
     right: 120%;
 }
 .chestItem {
     position:absolute;
-    opacity:1.0; /*transform: translate(-60%, -70%);*/
+    opacity:1.0;
+    top: 25%;
+    right: 75%;
+}
+.chestItem10 {
+    position:absolute;
+    opacity:1.0;
+    top: 25%;
+    right: 80%;
+}
+.chestItem100 {
+    position:absolute;
+    opacity:1.0;
     top: 25%;
     right: 85%;
 }
+.chestItem1000 {
+    position:absolute;
+    opacity:1.0;
+    top: 25%;
+    right: 90%;
+}
 .glovesItem {
     position:absolute;
-    opacity:1.0; /*transform: translate(40%, -160%);*/
+    opacity:1.0;
+    top: 25%;
+    left: 55%;
+}
+.glovesItem10 {
+    position:absolute;
+    opacity:1.0;
+    top: 25%;
+    left: 50%;
+}
+.glovesItem100 {
+    position:absolute;
+    opacity:1.0;
+    top: 25%;
+    left: 45%;
+}
+.glovesItem1000 {
+    position:absolute;
+    opacity:1.0;
     top: 25%;
     left: 40%;
 }
 .helmItem {
     position:absolute;
-    width:75px;height:75px; opacity:1.0; /*transform: translate(-135%, -650%);*/
+    width:75px;height:75px; opacity:1.0;
     bottom: 95%;
-    right: 110%;
+    right: 85%;
+}
+.helmItem10 {
+    position:absolute;
+    width:75px;height:75px; opacity:1.0;
+    bottom: 95%;
+    right: 90%;
+}
+.helmItem100 {
+    position:absolute;
+    width:75px;height:75px; opacity:1.0;
+    bottom: 95%;
+    right: 95%;
+}
+.helmItem1000 {
+    position:absolute;
+    width:75px;height:75px; opacity:1.0;
+    bottom: 95%;
+    right: 100%;
 }
 .pantsItem {
     position:absolute;
-    opacity:1.0; /*transform: translate(-15%, -170%);*/
+    opacity:1.0;
+    top: 145%;
+    right: 45%;
+}
+.pantsItem10 {
+    position:absolute;
+    opacity:1.0;
+    top: 145%;
+    right: 50%;
+}
+.pantsItem100 {
+    position:absolute;
+    opacity:1.0;
+    top: 145%;
+    right: 55%;
+}
+.pantsItem1000 {
+    position:absolute;
+    opacity:1.0;
     top: 145%;
     right: 60%;
 }
 .weaponItem {
     position:absolute;
-    opacity:1.0; /*transform: translate(-235%, 30%);*/
+    opacity:1.0;
     top: 30%;
-    right: 175%;
+    right: 145%;
 }
-.weaponWithArmorItem, .weaponWithWeaponItem, .weaponWithArmorWithWeaponItem, .weaponWithJewelryItem {
+.weaponItem10 {
     position:absolute;
-    width: 100px;
-    opacity:1.0; /*transform: translate(-280%, -420%);*/
-    top: 25%;
-    right: 165%;
+    opacity:1.0;
+    top: 30%;
+    right: 150%;
+}
+.weaponItem100 {
+    position:absolute;
+    opacity:1.0;
+    top: 30%;
+    right: 155%;
+}
+.weaponItem1000 {
+    position:absolute;
+    opacity:1.0;
+    top: 30%;
+    right: 160%;
 }
 .amuletItem {
     position:absolute;
-    width:45px; height:45px; opacity:1.0; /*transform: translate(70%, -480%);*/
-    right: 70%;
+    width:45px; height:45px; opacity:1.0;
+    right: 50%;
     top: -10%;
 }
-.amuletWithWeaponItem, .amuletWithArmorItem, .amuletWithArmorWithWeaponItem {
+.amuletItem10 {
     position:absolute;
-    width:45px; height:45px; opacity:1.0; /*transform: translate(650%, -825%);*/
-    right: 70%;
+    width:45px; height:45px; opacity:1.0;
+    right: 55%;
     top: -10%;
 }
-
+.amuletItem100 {
+    position:absolute;
+    width:45px; height:45px; opacity:1.0;
+    right: 60%;
+    top: -10%;
+}
+.amuletItem1000 {
+    position:absolute;
+    width:45px; height:45px; opacity:1.0;
+    right: 65%;
+    top: -10%;
+}
 .ring1Item {
     position:absolute;
-    width:45px; height:45px; opacity:1.0; /*transform: translate(-450%, 450%);*/
-    right: 190%;
+    width:45px; height:45px; opacity:1.0;
+    right: 160%;
     top: 110%;
 }
-.ring1WithWeaponItem, .ring1WithWeaponItem, .ring1WithArmorItem, .ring1WithArmorWithWeaponItem {
+.ring1Item10 {
     position:absolute;
-    width:45px; height:45px; opacity:1.0; /*transform: translate(130%, -455%);*/
-    right: 190%;
+    width:45px; height:45px; opacity:1.0;
+    right: 165%;
+    top: 110%;
+}
+.ring1Item100 {
+    position:absolute;
+    width:45px; height:45px; opacity:1.0;
+    right: 170%;
+    top: 110%;
+}
+.ring1Item1000 {
+    position:absolute;
+    width:45px; height:45px; opacity:1.0;
+    right: 175%;
     top: 110%;
 }
 .ring2Item {
     position:absolute;
-    width:45px; height:45px; opacity:1.0; /*transform: translate(200%, -200%);*/
+    width:45px; height:45px; opacity:1.0;
     left: 40%;
     top: 110%;
 }
-.ring2WithWeaponItem, .ring2WithArmorItem, .ring2WithArmorWithWeaponItem {
+.ring2Item {
     position:absolute;
-    width:45px; height:45px; opacity:1.0; /*transform: translate(800%, -550%);*/
+    width:45px; height:45px; opacity:1.0;
+    left: 35%;
+    top: 110%;
+}
+.ring2Item10 {
+    position:absolute;
+    width:45px; height:45px; opacity:1.0;
+    left: 30%;
+    top: 110%;
+}
+.ring2Item100 {
+    position:absolute;
+    width:45px; height:45px; opacity:1.0;
+    left: 25%;
+    top: 110%;
+}
+.ring2Item1000 {
+    position:absolute;
+    width:45px; height:45px; opacity:1.0;
     left: 40%;
     top: 110%;
 }

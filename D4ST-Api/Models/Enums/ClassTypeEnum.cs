@@ -5,6 +5,6 @@ namespace D4ST_Api.Models.Enums
         Barbarian = 1,  //Melee
         Sorceress = 2,  //Ranged
         Druid = 3,      //Alternate
-        Kheshig = 4     //Imperial Guard
+        // Kheshig = 4     //Imperial Guard
     }
 }

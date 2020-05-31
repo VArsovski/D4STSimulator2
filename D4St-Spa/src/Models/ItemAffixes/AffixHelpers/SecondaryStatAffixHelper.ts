@@ -34,39 +34,34 @@ export class SecondaryStatAffixHelper {
         var statTrapsSummons = selected == 4 ? new ItemTrapsDetail(level, powerLevel, Helpers.getRandom(0,6), Helpers.getRandom(1,3), amount, amountPerc) : null;
         var statDamage = selected == 5 ? new ItemDamageEmpowerStats(category, amount, level, powerLevel, ItemWeaponTypesEnum.Wand, ItemRarityTypesEnum.Legendary, new ItemDamageCategoryStats(Helpers.getRandom(1,5), selectedRes, amountPerc)) : null;
 
-        var hasData = statRes || statCC || statSunder || statTrapsSummons || statDamage;
-        if (!hasData) {
-            debugger;
-        }
-
         var selectedSkillCategory = Helpers.getRandom(1,10);
         // Summons get Buffed with the "statTrapsSummons" stat, whilest Barriers are VERY rare to be considered here
         if (selectedSkillCategory == SkillCategoryTypesEnum.Summon || selectedSkillCategory == SkillCategoryTypesEnum.Barrier)
             selectedSkillCategory += 2;
-        // Since TBS is also rare, increase it's PowerLevel by quite a bit..
-        if (selected == 5 && selectedSkillCategory == SkillCategoryTypesEnum.BannerTotemShout)
-            powerLevel += 3;
-        var selectedSkillSelectedType = this.GetAppropriateSkillSpellStatForCategory(selectedSkillCategory);
+            
+        if (selected == 6)
+            // Since TBS is really rare, increase it's PowerLevel by quite a bit..
+            powerLevel += selectedSkillCategory == SkillCategoryTypesEnum.BannerTotemShout ? 3 : 1;
 
+        var selectedSkillSelectedType = this.GetAppropriateSkillSpellStatForCategory(selectedSkillCategory);
         var statSkillEmpower = selected == 6 ? new ItemSkillTypeStats(level, powerLevel, selectedSkillCategory, selectedSkillSelectedType, amount, amount) : null;
         var secondaryBasicStat = new ItemSecondaryBasicStats(category, level, powerLevel, selected, statRes, statCC, statSunder, statTrapsSummons, statDamage, statSkillEmpower);
         return new ItemAffixOutput(category, secondaryBasicStat);
     }
 
     GetAppropriateSkillSpellStatForCategory(skillCategory: number): SkillSpellStatsEnum {
-        debugger;
         var appropriateAffixes: SkillSpellStatsEnum[] = [];
 
-        if (skillCategory == SkillCategoryTypesEnum.Finisher) { appropriateAffixes.push(SkillSpellStatsEnum.IncreaseDamage); }
-        if (skillCategory == SkillCategoryTypesEnum.Ultimate) { appropriateAffixes.push(SkillSpellStatsEnum.ReduceCD); appropriateAffixes.push(SkillSpellStatsEnum.IncreaseDuration); }
-        if (skillCategory == SkillCategoryTypesEnum.Stackable) { appropriateAffixes.push(SkillSpellStatsEnum.IncreaseDamage); appropriateAffixes.push(SkillSpellStatsEnum.IncreaseDuration); }
-        // if (skillCategory == SkillCategoryTypesEnum.Summon) { appropriateAffixes.push(SkillSpellStatsEnum.IncreaseDamage); appropriateAffixes.push(SkillSpellStatsEnum.IncreaseDuration); }
-        // if (skillCategory == SkillCategoryTypesEnum.Barrier) { appropriateAffixes.push(SkillSpellStatsEnum.ReduceCost); appropriateAffixes.push(SkillSpellStatsEnum.IncreaseDuration); }
-        if (skillCategory == SkillCategoryTypesEnum.HighCost) { appropriateAffixes.push(SkillSpellStatsEnum.ReduceCost); appropriateAffixes.push(SkillSpellStatsEnum.IncreaseDamage); }
-        if (skillCategory == SkillCategoryTypesEnum.HighCD) { appropriateAffixes.push(SkillSpellStatsEnum.ReduceCD); }
-        if (skillCategory == SkillCategoryTypesEnum.Weak) { appropriateAffixes.push(SkillSpellStatsEnum.IncreaseDamage); }
-        if (skillCategory == SkillCategoryTypesEnum.BannerTotemShout) { appropriateAffixes.push(SkillSpellStatsEnum.IncreaseProcChance); appropriateAffixes.push(SkillSpellStatsEnum.IncreaseDuration); }
-        if (skillCategory == SkillCategoryTypesEnum.Setup) { appropriateAffixes.push(SkillSpellStatsEnum.ReduceCost); appropriateAffixes.push(SkillSpellStatsEnum.ReduceCD); appropriateAffixes.push(SkillSpellStatsEnum.IncreaseDuration); }
+        if (skillCategory == SkillCategoryTypesEnum.Finisher) { appropriateAffixes.push(SkillSpellStatsEnum.DamageIncreased); }
+        if (skillCategory == SkillCategoryTypesEnum.Ultimate) { appropriateAffixes.push(SkillSpellStatsEnum.CDReduced); appropriateAffixes.push(SkillSpellStatsEnum.DurationIncreased); }
+        if (skillCategory == SkillCategoryTypesEnum.Stackable) { appropriateAffixes.push(SkillSpellStatsEnum.DamageIncreased); appropriateAffixes.push(SkillSpellStatsEnum.DurationIncreased); }
+        // if (skillCategory == SkillCategoryTypesEnum.Summon) { appropriateAffixes.push(SkillSpellStatsEnum.DamageIncreased); appropriateAffixes.push(SkillSpellStatsEnum.DurationIncreased); }
+        // if (skillCategory == SkillCategoryTypesEnum.Barrier) { appropriateAffixes.push(SkillSpellStatsEnum.CostReduced); appropriateAffixes.push(SkillSpellStatsEnum.DurationIncreased); }
+        if (skillCategory == SkillCategoryTypesEnum.HighCost) { appropriateAffixes.push(SkillSpellStatsEnum.CostReduced); appropriateAffixes.push(SkillSpellStatsEnum.DurationIncreased); }
+        if (skillCategory == SkillCategoryTypesEnum.HighCD) { appropriateAffixes.push(SkillSpellStatsEnum.CDReduced); }
+        if (skillCategory == SkillCategoryTypesEnum.Weak) { appropriateAffixes.push(SkillSpellStatsEnum.DamageIncreased); }
+        if (skillCategory == SkillCategoryTypesEnum.BannerTotemShout) { appropriateAffixes.push(SkillSpellStatsEnum.ProcChanceIncreased); appropriateAffixes.push(SkillSpellStatsEnum.DurationIncreased); }
+        if (skillCategory == SkillCategoryTypesEnum.Setup) { appropriateAffixes.push(SkillSpellStatsEnum.DamageIncreased); appropriateAffixes.push(SkillSpellStatsEnum.CDReduced); appropriateAffixes.push(SkillSpellStatsEnum.DurationIncreased); }
 
         return appropriateAffixes[Helpers.getRandom(0, appropriateAffixes.length - 1)];
     }

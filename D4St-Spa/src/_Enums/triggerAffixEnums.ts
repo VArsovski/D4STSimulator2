@@ -53,11 +53,11 @@ export enum TrapAndSummonStatsEnum {
 }
 
 export enum SkillSpellStatsEnum {
-    IncreaseDamage = 1, // Weak, Finisher, Ultimate
-    IncreaseDuration = 2, // Weak, Stackable, Ultimate
-    IncreaseProcChance = 3, // Stackable, BannerTotemShout
-    ReduceCost = 4, // HighCost
-    ReduceCD = 5 // HighCd, Ultimate
+    DamageIncreased = 1, // Weak, Finisher, Ultimate
+    DurationIncreased = 2, // Weak, Stackable, Ultimate
+    ProcChanceIncreased = 3, // Stackable, BannerTotemShout
+    CostReduced = 4, // HighCost
+    CDReduced = 5 // HighCd, Ultimate
 }
 
 export enum TriggerTypesEnum {

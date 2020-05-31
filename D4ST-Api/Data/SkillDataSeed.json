@@ -67,7 +67,7 @@
     ,"SkillClassification":[1,2,16],"Description":"Launch Charged Bolts that travel toward a general direction but travel in a random fashion. Sometimes multiple can hit a target"},
 {"ClassType":2,"Id":33,"Name":"Ice Shards","skillData":{"From":6,"To":8,"Percentage":30, "Level":1,"Tier":2,"CD":9,"Cost":0,"Charges":2,"Duration": 16, "IsCC": true},"AttackTypes": [2,5,6],"DamageTypes": [2,3,5], "SkillMetadata":[7,8,13,14,19]
     ,"SkillClassification":[9,12,17],"Description":"Launch a blob of Ice bolts in close range, then levitate them to form a floating Barrier reducing damage taken from incoming projectiles by <<Percentage>>% for <<Duration>> sec. If the shards cause a kill, duration is refreshed"},
-{"ClassType":2,"Id":34,"Name":"Teleport","skillData":{"From":6,"To":8,"Percentage":0, "Level":1,"Tier":2,"CD":6,"Cost":15,"Charges":1,"Duration": 0, "IsCC": false},"AttackTypes": [5,7],"DamageTypes": [2,4], "SkillMetadata":[5,9,19]
+{"ClassType":2,"Id":34,"Name":"Teleport","skillData":{"From":6,"To":8,"Percentage":0, "Level":1,"Tier":2,"CD":6,"Cost":15,"Charges":1,"Duration": 0, "IsCC": false},"AttackTypes": [5,6],"DamageTypes": [], "SkillMetadata":[5,9]
     ,"SkillClassification":[10,11],"Description":"Teleport a short distance to a target location. Additionally get rid of effects of type DoT/Debuffs possible"},
 {"ClassType":2,"Id":36,"Name":"Enchant","skillData":{"From":8,"To":16,"Percentage":0, "Level":1,"Tier":2,"CD":16,"Cost":4,"Charges":2,"Duration": 7, "IsCC": false},"AttackTypes": [5,7],"DamageTypes": [], "SkillMetadata":[0,6,11,19]
     ,"SkillClassification":[0,2,12],"Description":"Whatever weapon you wield, enchant it to deal additional <<From>>-<<To>> damage per hit as fire. Melee kills refresh the duration"},

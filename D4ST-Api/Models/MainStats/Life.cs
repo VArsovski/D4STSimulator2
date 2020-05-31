@@ -1,4 +1,5 @@
 using System;
+using D4St_Api.Data.Entities;
 using D4ST_Api.Models.Enums;
 using D4ST_Api.Models.Helpers;
 using D4ST_Api.Models.Interfaces;
@@ -16,16 +17,15 @@ namespace D4ST_Api.Models.MainStats
         public decimal BonusRegenPercentage { get; set; }
         public decimal TotalRegen { get; set; }
 
-        public Life(IClassDefinition classInfo)
+        public Life(IClassDefinition classInfo, CharacterClass classData)
         {
             var baseAmt = (classInfo.ClassType == ClassTypeEnum.Sorceress ? 45 : 55);
-            BasicAmount = baseAmt + classInfo.Level * 1;
+            BasicAmount = classData.HP + classInfo.Level * 1;
             BonusAmount = classInfo.AngelicPower * 3;
             TotalAmount = CalculateAmount(classInfo);
             var regenCoeff = DecimalHelper.RoundToDecimals(Math.Pow(Convert.ToDouble(1.05), classInfo.Level / 2), 3);
-            var classCoeff = Math.Round(0.033m * baseAmt, 3);
-            BasicRegen = DecimalHelper.RoundToDecimalsD(classCoeff - 1.44m, 2);
-            var ratio = Math.Round((decimal)BonusAmount/60, 3);
+            BasicRegen = Math.Round(0.024m * classData.HPRegen, 3);
+            var ratio = Math.Round((decimal)BonusAmount/classData.HP, 3);
             BonusRegen = Math.Round(regenCoeff * ratio, 2);
             TotalRegen = CalculateRegen(classInfo);
         }

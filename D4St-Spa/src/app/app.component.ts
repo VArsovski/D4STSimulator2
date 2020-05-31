@@ -28,13 +28,9 @@ export class AppComponent {
   async initCharacter() {
     const result = await this.apiService.getBasicStats(); // as Promise<BasicStatsVM>;
     const initValueFn = async (data: LevelUpStatsVM) => {
-        // setTimeout(() => {
-        // this.model = data.Current;
-        // this.levelUpModel = data.New;
         this.model = data;
         this.getSkills(this.model.Current.BasicData.ClassType);
         this.initializeChildren = true;
-      // }, 350);
     };
     await initValueFn(result);
   }

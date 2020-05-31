@@ -5,8 +5,6 @@ import { IEquippableAffixStat } from './IEquippableAffixStat';
 import { IItemAffixStats } from '../ItemAffixes/Details/IItemAffixStats';
 
 export class DamageStatPrimaryEquippable implements IEquippableAffixStat {
-    SelectedStat: string;
-    SelectedEquipStat: string;
     EquippableStatData: IItemAffixStats;
     getZeroStats: () => any;
     updateEquippedStats: (src:IItemAffix, affix:IItemAffix) => IItemAffix;
@@ -14,14 +12,18 @@ export class DamageStatPrimaryEquippable implements IEquippableAffixStat {
     // PhysicalOrCC = 1,    // CleaveOrAoE = 2,   // ChainOrProjectile = 3,   // TrapOrSummon = 4,   // TickOrCurse = 5
     private calculateAmount(src:IItemAffix, affix:IItemAffix):IItemAffix {
         var combinedStat = src;
+        var selectedStat = affix.Contents.AffixData.EquippableStatData.OutputMeta.SelectedStat;
         var selectedEquipStat = affix.Contents.AffixData.EquippableStatData.OutputMeta.SelectedEquipStat;
-        combinedStat[selectedEquipStat]["Percentage"] += affix.Contents.AffixData["Percentage"] || affix.Contents.AffixData["EmpowerPercentage"];
+        var statAlreadySelected = !combinedStat[selectedStat];
+        var amount = affix.Contents.AffixData["Percentage"] || affix.Contents.AffixData["EmpowerPercentage"] || affix.Contents.AffixData["ReduceDamageTaken"]["Amount"];
+        if (statAlreadySelected)
+            combinedStat[selectedEquipStat] += amount;
+        else
+            combinedStat[selectedStat][selectedEquipStat] += amount;
         return combinedStat;
     }
 
-    constructor(selectedStat:string, selectedEquipStat:string) {
-        this.SelectedStat = selectedStat;
-        this.SelectedEquipStat = selectedEquipStat;
+    constructor() {
         this.updateEquippedStats = this.calculateAmount;
         this.getZeroStats = () => { return new InventoryDamageModel(); }
     }

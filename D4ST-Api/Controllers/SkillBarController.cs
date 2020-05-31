@@ -52,7 +52,7 @@ namespace D4ST_Api.Controllers
                         data.PowerData = skill.SkillData;
                         var skillToAdd = new Skill(skill.Id, new SkillDTO(skill.Id, skill.Name, skill.Description, skillLevel, data, scs, skill.AttackTypes, skill.DamageTypes, skill.SkillMetadata, skill.SkillClassification, skillData.IsCC), scs);
                         var castTypesData = "CastTypes: [" + string.Join(", ", skillToAdd.Data.CastTypes.Select(t => EnumHelper.GetName<CastTypesEnum>(t))) + "]";
-                        var damageTypesData = "DamageTypes: [" + string.Join(", ", skillToAdd.Data.DamageTypes.Select(t => EnumHelper.GetName<DamageTypesEnum>(t))) + "]";
+                        var damageTypesData = "EmpoweredByDamageTypes: [" + string.Join(", ", skillToAdd.Data.DamageTypes.Select(t => EnumHelper.GetName<DamageTypesEnum>(t))) + "]";
                         // [" + string.Join(", ", skillToAdd.Data.SkillCategoriesMetadata.Select(t => EnumHelper.GetName<SkillCategoriesEnum>(t))) + "]";
 
                         var descriptionWithDetails = skillToAdd.Description + "<br/>" + "<br/>" + castTypesData + "<br/>" + damageTypesData + "<br/>";

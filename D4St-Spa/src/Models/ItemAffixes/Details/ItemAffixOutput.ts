@@ -17,11 +17,10 @@ export class ItemAffixOutput implements IEquippableAffixStat {
         this.CategoryStat = category;
         this.AffixData = affixData;
         this.EquippableStatData = new SimpleAffixStats();
-        this.EquippableStatData.OutputMeta = affixData ? (affixData.EquippableStatData || { OutputMeta: new SimpleItemAffixStatsMetadata()}).OutputMeta : new SimpleItemAffixStatsMetadata();
+        this.EquippableStatData = (affixData || { EquippableStatData: new SimpleAffixStats() }).EquippableStatData;
         if (affixData) {
-            this.EquippableStatData = new SimpleAffixStats();
             this.updateEquippedStats = (this.AffixData as IEquippableAffixStat).updateEquippedStats;
-            this.getZeroStats = () => { this.Amount = 0; return this; }
+            this.getZeroStats = (this.AffixData as IEquippableAffixStat).getZeroStats || ((src) => { this.Amount = 0; return this; })
         }
     }
 }

@@ -31,13 +31,9 @@ export class ItemConditionalBasicStats implements IEquippableAffixStat {
         this.Duration = duration;
 
         this.EquippableStatData = new SimpleAffixStats();
-        this.EquippableStatData.InputMeta = new SimpleItemAffixStatsMetadata();
-        this.EquippableStatData.OutputMeta = new SimpleItemAffixStatsMetadata();
         this.EquippableStatData.InputMeta.SelectedCategoryStat = this.constructor.name;
-        this.EquippableStatData.InputMeta.SelectedStat = this.BasicStatsData.EquippableStatData.InputMeta.SelectedStat;
-        this.EquippableStatData.InputMeta.SelectedEquipStat = this.BasicStatsData.EquippableStatData.InputMeta.SelectedEquipStat;
-        this.EquippableStatData.OutputMeta.SelectedCategoryStat = "ConditionalAffixStatsData"; //"Conditional:TODO" + this.BasicStatsData.EquippableStatData.OutputMeta.SelectedCategoryStat;
-        this.EquippableStatData.OutputMeta.SelectedStat = this.BasicStatsData.EquippableStatData.OutputMeta.SelectedStat;
+        this.EquippableStatData.OutputMeta = this.BasicStatsData.EquippableStatData.OutputMeta;
+        this.EquippableStatData.OutputMeta.SelectedCategoryStat = "ConditionalAffixStatsData";
         this.EquippableStatData.OutputMeta.SelectedEquipStat = this.TriggerData.EquippableStatData.OutputMeta.SelectedStat;
 
         // TODO: Define the methods for returning calculated Data for Triggers & ConditionalTriggers

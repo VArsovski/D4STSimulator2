@@ -14,6 +14,9 @@ import { ItemCCStatsDetail } from './ItemCCStatsDetail';
 import { IDescribable } from '../IDescribable';
 import { ItemTrapsDetail } from './ItemTrapsDetail';
 import { ItemSkillTypeStats } from './ItemSkillTypeStats';
+import { CCEffectTypesEquippable } from 'src/Models/IEquippableStatDetails/CCEffectTypesEquippable';
+import { DamageEmpowerAffixHelper } from '../AffixHelpers/DamageAffixHelper';
+import { DamageStatPrimaryEquippable } from 'src/Models/IEquippableStatDetails/DamageStatEquippable';
 
 export class ItemSecondaryBasicStats implements IEquippableAffixStat, IDescribable {
     Level: number;
@@ -72,20 +75,33 @@ export class ItemSecondaryBasicStats implements IEquippableAffixStat, IDescribab
             this.statsCalculated = true;
         }
 
+        var selectedStatStr = Helpers.getPropertyByValue(SecondaryStatTypesEnum, this.selectedStat);
         this.EquippableStatData = new SimpleAffixStats();
         this.EquippableStatData.InputMeta = new SimpleItemAffixStatsMetadata();
         this.EquippableStatData.OutputMeta = new SimpleItemAffixStatsMetadata();
         this.EquippableStatData.InputMeta.SelectedCategoryStat = this.constructor.name;
-        this.EquippableStatData.InputMeta.SelectedStat = Helpers.getPropertyByValue(AffixCategoryEnum, this.CategoryStats);
-        this.EquippableStatData.OutputMeta.SelectedCategoryStat = this.selectedStat == SecondaryStatTypesEnum.Resistance ? "" : "SecondaryBasicStat";
-        this.EquippableStatData.OutputMeta.SelectedStat = Helpers.getPropertyByValue(SecondaryStatTypesEnum, this.selectedStat);
+        this.EquippableStatData.InputMeta.SelectedStat = Helpers.getPropertyByValue(SecondaryStatTypesEnum, this.selectedStat);
+
+        if (selectedStat == SecondaryStatTypesEnum.ReduceDamageTaken) {
+            debugger;
+            debugger;
+            debugger;
+        }
+
+        this.EquippableStatData.OutputMeta.SelectedCategoryStat = this.selectedStat == SecondaryStatTypesEnum.Resistance ? ""
+        : this.selectedStat == SecondaryStatTypesEnum.ReduceCCTaken ? "CCEffectsData"
+        : this.selectedStat == SecondaryStatTypesEnum.ReduceDamageTaken ? "DamageEmpowerData"
+        : "";
+
+        var selectedStatStr = Helpers.getPropertyByValue(SecondaryStatTypesEnum, this.selectedStat);
+        this.EquippableStatData.OutputMeta.SelectedStat = selectedStatStr;
 
         var selectedSubStatObj = this[Helpers.getPropertyByValue(SecondaryStatTypesEnum, this.selectedStat)];
         var selectedSubStatType = this.selectedStat == SecondaryStatTypesEnum.Resistance ? ResistanceTypesEnum
-                                : this.selectedStat == SecondaryStatTypesEnum.ReduceCCTaken ? DamageTypesEnum
+                                : this.selectedStat == SecondaryStatTypesEnum.ReduceCCTaken ? CCEffectTypesEnum
                                 : this.selectedStat == SecondaryStatTypesEnum.IncreaseStatSunder ? BasicStatsEnum
                                 : this.selectedStat == SecondaryStatTypesEnum.EmpowerTrapsAndSummons ? TrapsEnum
-                                : this.selectedStat == SecondaryStatTypesEnum.ReduceDamageTaken ? CCEffectTypesEnum
+                                : this.selectedStat == SecondaryStatTypesEnum.ReduceDamageTaken ? DamageTypesEnum
                                 : this.selectedStat == SecondaryStatTypesEnum.EmpowerSkillType ? CastTypesEnum
                                 : Helpers.getPropertyByValue(SecondaryStatTypesEnum, this.selectedStat);
 
@@ -96,9 +112,16 @@ export class ItemSecondaryBasicStats implements IEquippableAffixStat, IDescribab
 
         var selectedSubStat = Helpers.getPropertyByValue(selectedSubStatType, selectedSubStatObj.Type) || selectedSubStatObj.Type;
         this.EquippableStatData.OutputMeta.SelectedEquipStat = selectedSubStat;
-        this.updateEquippedStats = this.selectedStat == SecondaryStatTypesEnum.Resistance
-                                                      ? new ResistanceEquippable().updateEquippedStats
-                                                      : new SecondaryBasicStatsEquippable().updateEquippedStats;
+        this.updateEquippedStats = this.selectedStat == SecondaryStatTypesEnum.Resistance ? new ResistanceEquippable().updateEquippedStats
+                                 : this.selectedStat == SecondaryStatTypesEnum.ReduceCCTaken ? new CCEffectTypesEquippable().updateEquippedStats
+                                 : this.selectedStat == SecondaryStatTypesEnum.ReduceDamageTaken ? new DamageStatPrimaryEquippable().updateEquippedStats
+                                 : new SecondaryBasicStatsEquippable().updateEquippedStats;
+        
+        if (this.selectedStat == SecondaryStatTypesEnum.ReduceDamageTaken) {
+            var temp = this.EquippableStatData.OutputMeta.SelectedEquipStat;
+            this.EquippableStatData.OutputMeta.SelectedStat = this.EquippableStatData.OutputMeta.SelectedEquipStat;
+            this.EquippableStatData.OutputMeta.SelectedEquipStat = "ReducePercentage";
+        }
     }
 
     GetDescription(): string {

@@ -1,104 +1,112 @@
-<div class="row basicStatsDisplayHolder">
-    <div class="customFontBlue h3 sizeCrystal iconTop col">
-        <app-CustomCompareTooltip contentImg="../../_Resources/img/HealthPotion.png" contentLabel="HP" text="
-        Amount: {{'+' + this.BasicStats.HP.Amount + ' (+' + this.BasicStats.HP.AmountPercentage + '%)'}}
-        <br/>
-        Regen: {{'+' + this.BasicStats.HP.Regen + ' (+' + this.BasicStats.HP.AmountPercentageRegen + '%)/s'
-        + '<br/>' + ' +' + this.BasicStats.HP.Return + '/hit return'}}
-        "></app-CustomCompareTooltip>
+<div class="inventoryAreaHolder">
+    <div class="row basicStatsDisplayHolder">
+        <div class="customFontBlue h3 sizeCrystal iconTop col">
+            <app-CustomCompareTooltip contentImg="../../_Resources/img/statusimages/HealthPotion.png" contentLabel="HP" classLabel="h4" text="
+            Amount: {{'+' + this.BasicStats.HP.Amount + ' (+' + this.BasicStats.HP.AmountPercentage + '%)'}}
+            <br/>
+            Regen: {{'+' + this.BasicStats.HP.Regen + ' (+' + this.BasicStats.HP.AmountPercentageRegen + '%)/s'
+            + '<br/>' + ' +' + this.BasicStats.HP.Return + '/hit return'}}
+            "></app-CustomCompareTooltip>
+        </div>
+        <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentLabel="Resource" classLabel="h4" contentImg="../../_Resources/img/statusimages/ResourcePotion3.gif" text="
+            Amount: {{'+' + this.BasicStats.Resource.Amount + ' (+' + this.BasicStats.Resource.AmountPercentage + '%)'}}
+            <br/>
+            Regen: {{'+' + this.BasicStats.Resource.Regen + ' (+' + this.BasicStats.Resource.AmountPercentageRegen + '%)/s'
+            + '<br/>' + ' +' + this.BasicStats.Resource.Return + '/hit return'}}
+            "></app-CustomCompareTooltip>
+        </div>
+        <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentLabel="Stamina" classLabel="h4" contentImg="../../_Resources/img/statusimages/StaminaPotion.png" text="
+            Amount: {{'+' + this.BasicStats.Stamina.Amount + ' (+' + this.BasicStats.Stamina.AmountPercentage + '%)'}}
+            <br/>
+            Regen: {{'+' + this.BasicStats.Stamina.Regen + ' (+' + this.BasicStats.Stamina.AmountPercentageRegen + '%)/s'
+            + '<br/>' + ' +' + this.BasicStats.Stamina.Return + '/hit return'}}
+            "></app-CustomCompareTooltip>
+        </div>
     </div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentLabel="Resource" contentImg="../../_Resources/img/ResourcePotion3.gif" text="
-        Amount: {{'+' + this.BasicStats.Resource.Amount + ' (+' + this.BasicStats.Resource.AmountPercentage + '%)'}}
-        <br/>
-        Regen: {{'+' + this.BasicStats.Resource.Regen + ' (+' + this.BasicStats.Resource.AmountPercentageRegen + '%)/s'
-        + '<br/>' + ' +' + this.BasicStats.Resource.Return + '/hit return'}}
-        "></app-CustomCompareTooltip>
+    <div class="row powerStatsDisplayHolder">
+        <div class="customFontBlue h3 sizeCrystal iconTop col sizeSmall ornament yellowGlow"><app-CustomCompareTooltip contentImg="../_Resources/img/selectors/skull-1.png" text="Angelic Power (Empowers self/buff effects)"></app-CustomCompareTooltip>
+            <label>{{this.BasicStats.PowerData.AngelicPower.Amount}}</label></div>
+        <div class="customFontBlue h3 sizeCrystal iconTop col sizeSmall ornament redGlow"><app-CustomCompareTooltip contentImg="../_Resources/img/selectors/skull-1.png" text="Demonic Power (Empowers CC/debuff effects)"></app-CustomCompareTooltip>
+            <label>{{this.BasicStats.PowerData.DemonicPower.Amount}}</label></div>
+        <div class="customFontBlue h3 sizeCrystal iconTop col sizeSmall ornament purpleGlow"><app-CustomCompareTooltip contentImg="../_Resources/img/selectors/skull-1.png" text="Ancestral Power (Empowers direct combat and frequency of Angelic/Demonic effects)"></app-CustomCompareTooltip>
+            <label>{{this.BasicStats.PowerData.AncestralPower.Amount}}</label></div>
     </div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentLabel="Stamina" contentImg="../../_Resources/img/StaminaPotion.png" text="
-        Amount: {{'+' + this.BasicStats.Stamina.Amount + ' (+' + this.BasicStats.Stamina.AmountPercentage + '%)'}}
-        <br/>
-        Regen: {{'+' + this.BasicStats.Stamina.Regen + ' (+' + this.BasicStats.Stamina.AmountPercentageRegen + '%)/s'
-        + '<br/>' + ' +' + this.BasicStats.Stamina.Return + '/hit return'}}
-        "></app-CustomCompareTooltip>
+    
+    <div class="row attacksDisplayHolder">
+        <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/statusimages/PhysicalDamage1.png" text="Physical damage (% Resistance)"></app-CustomCompareTooltip><label>{{ this.DamageData.PhysicalDamage.AvgDamage ? this.DamageData.PhysicalDamage.AvgDamage : this.DamageData.PhysicalDamage.MinDamage + "-" + this.DamageData.PhysicalDamage.MaxDamage}} ({{ this.Resistance.PhysicalResistance.Percentage + "%" }})</label></div>
+        <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/statusimages/FireDamage1.png" text="Fire damage (% Resistance)"></app-CustomCompareTooltip><label>{{ this.DamageData.FireDamage.AvgDamage ? this.DamageData.FireDamage.AvgDamage : this.DamageData.FireDamage.MinDamage + "-" + this.DamageData.FireDamage.MaxDamage}} ({{ this.Resistance.FireResistance.Percentage + "%" }})</label></div>
+        <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/statusimages/PoisonDamage.png" text="Poison damage (% Resistance)"></app-CustomCompareTooltip><label>{{ this.DamageData.PhysicalDamage.AvgDamage ? this.DamageData.PoisonDamage.AvgDamage : this.DamageData.PoisonDamage.MinDamage + "-" + this.DamageData.PoisonDamage.MaxDamage}} ({{ this.Resistance.PoisonResistance.Percentage + "%" }})</label></div>
+        <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/statusimages/ColdDamage.png" text="Cold damage (% Resistance)"></app-CustomCompareTooltip><label>{{ this.DamageData.ColdDamage.AvgDamage ? this.DamageData.ColdDamage.AvgDamage : this.DamageData.ColdDamage.MinDamage + "-" + this.DamageData.ColdDamage.MaxDamage}} ({{ this.Resistance.ColdResistance.Percentage + "%" }})</label></div>
+        <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/statusimages/LightningDamage.jpg" text="Lightning damage (% Resistance)"></app-CustomCompareTooltip><label>{{ this.DamageData.LightningDamage.AvgDamage ? this.DamageData.LightningDamage.AvgDamage : this.DamageData.LightningDamage.MinDamage + "-" + this.DamageData.LightningDamage.MaxDamage}} ({{ this.Resistance.LightningResistance.Percentage + "%" }})</label></div>
     </div>
-</div>
-<div class="row powerStatsDisplayHolder">
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/AngelicPower.png" text="Angelic Power (Empowers self/buff effects)"></app-CustomCompareTooltip>
-        <label>{{this.BasicStats.PowerData.AngelicPower.Amount}}</label></div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/DemonicPower.png" text="Demonic Power (Empowers CC/debuff effects)"></app-CustomCompareTooltip>
-        <label>{{this.BasicStats.PowerData.DemonicPower.Amount}}</label></div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/AncestralPower.png" text="Ancestral Power (Empowers direct combat and frequency of Angelic/Demonic effects)"></app-CustomCompareTooltip>
-        <label>{{this.BasicStats.PowerData.AncestralPower.Amount}}</label></div>
-</div>
+    <div class="row attacksDisplayHolder2">
+        <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip classText="h4" contentImg="../../_Resources/img/statusimages/AttackKnockback.jpg" text="PhysicalOrCC damage bonuses (Bonus/Resistance) <br/><br/> Physical melee attacks and on-hit CC in form of Stun, Knockback, Knockdown.. (Rolls extra on Hammer, Axe, Staff)">
+        </app-CustomCompareTooltip><label>{{"+" + this.DamageEmpowerData.PhysicalOrCC.Percentage + "% (-" + this.DamageEmpowerData.PhysicalOrCC.ReducePercentage + "%)"}}</label></div>
+        <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip classText="h4" contentImg="../../_Resources/img/statusimages/AttackPoison.png" text="TickOrCurse damage bonuses (Bonus/Resistance) <br/><br/>Damage overtime (poison or fire damage). Curse powers gets empowered as well. (Rolls extra on Bow, Wand, Javelin)">
+        </app-CustomCompareTooltip><label>{{"+" + this.DamageEmpowerData.TickOrCurse.Percentage + "% (-" + this.DamageEmpowerData.TickOrCurse.ReducePercentage + "%)"}}</label></div>
+        <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip classText="h4" contentImg="../../_Resources/img/statusimages/AttackCleave.png" text="CleaveOrAoE damage bonuses (Bonus/Resistance) <br/><br/>Empowers melee cleave-type attack. Also empowers AoE type of abilities for casters (Sword wield)">
+        </app-CustomCompareTooltip><label>{{"+" + this.DamageEmpowerData.CleaveOrAoE.Percentage + "% (-" + this.DamageEmpowerData.CleaveOrAoE.ReducePercentage + "%)"}}</label></div>
+        <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip classText="h4" contentImg="../../_Resources/img/statusimages/AttackProjectile.png" text="ChainOrProjectile damage bonuses (Bonus/Resistance) <br/><br/>Projectile or chain-proc attacks. Usually is dealt when wielding a Wand, Staff or Javelin (Highest roll on Wands)">
+        </app-CustomCompareTooltip><label>{{"+" + this.DamageEmpowerData.ChainOrProjectile.Percentage + "% (-" + this.DamageEmpowerData.ChainOrProjectile.ReducePercentage + "%)"}}</label></div>
+        <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip classText="h4" contentImg="../../_Resources/img/statusimages/AttackReduceArmor.png" text="TrapOrSummon damage bonuses (Bonus/Resistance) <br/><br/>Procs or abilities can cast a trap or a summoned. This type increases their damage. Usually found on Bow, Wand, or Staff">
+        </app-CustomCompareTooltip><label>{{"+" + this.DamageEmpowerData.TrapOrSummon.Percentage + "% (-" + this.DamageEmpowerData.TrapOrSummon.ReducePercentage + "%)"}}</label></div>
+    </div>
+    
+    <ul class="armorDisplayHolder">
+        <li class="customFontBlue h3">
+            <app-CustomCompareTooltip contentImg="../../_Resources/img/statusimages/ArmorHeavy.png" contentLabel="Armor" classLabel="h4" text="
+            Less % damage taken from physical hits (in %)
+        <br/> 3 types of Armor, Heavy best for direct/physical reduction, but each have different CC reduction bonuses:
+        <br/> Heavy armor reduces: ReduceArmor, Bleed, Knockback, Stun suffered
+        <br/> Light armor reduces: Root, Wither, Blind, Burn suffered
+        <br/> Mystic armor reduces: Burn, Curse, Freeze, ReduceArmor suffered
+        "></app-CustomCompareTooltip>
+            <!-- <label *ngIf="this.ArmorData" style="transform: translate(0%, 20%);" class="customFontRed h2"></label> -->
 
-<div class="row attacksDisplayHolder">
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/AttackKnockback.jpg" text="Physical melee attacks and on-hit CC in form of Stun, Knockback, Knockdown.. (Rolls extra on Hammer, Axe, Staff)"></app-CustomCompareTooltip><label>{{this.DamageEmpowerData.PhysicalOrCC.Percentage + "%"}}</label></div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/AttackPoison.png" text="Damage overtime (poison or fire damage). Curse powers gets empowered as well. (Rolls extra on Bow, Wand, Javelin)"></app-CustomCompareTooltip><label>{{this.DamageEmpowerData.TickOrCurse.Percentage + "%"}}</label></div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/AttackCleave.png" text="Empowers melee cleave-type attack. Also empowers AoE type of abilities for casters (Sword wield)"></app-CustomCompareTooltip><label>{{this.DamageEmpowerData.CleaveOrAoE.Percentage + "%"}}</label></div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/AttackProjectile.png" text="Projectile or chain-proc attacks. Usually is dealt when wielding a Wand, Staff or Javelin (Highest roll on Wands)"></app-CustomCompareTooltip><label>{{this.DamageEmpowerData.ChainOrProjectile.Percentage + "%"}}</label></div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/AttackReduceArmor.png" text="Procs or abilities can cast a trap or a summoned. This type increases their damage. Usually found on Bow, Wand, or Staff"></app-CustomCompareTooltip><label>{{this.DamageEmpowerData.TrapOrSummon.Percentage + "%"}}</label></div>
-</div>
-<div class="row attacksDisplayHolder2">
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/PhysicalDamage1.png" text="Physical damage (% Resistance)"></app-CustomCompareTooltip><label>{{ this.DamageData.PhysicalDamage.AvgDamage ? this.DamageData.PhysicalDamage.AvgDamage : this.DamageData.PhysicalDamage.MinDamage + "-" + this.DamageData.PhysicalDamage.MaxDamage}} ({{ this.Resistance.PhysicalResistance.Percentage + "%" }})</label></div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/FireDamage1.png" text="Fire damage (% Resistance)"></app-CustomCompareTooltip><label>{{ this.DamageData.FireDamage.AvgDamage ? this.DamageData.FireDamage.AvgDamage : this.DamageData.FireDamage.MinDamage + "-" + this.DamageData.FireDamage.MaxDamage}} ({{ this.Resistance.FireResistance.Percentage + "%" }})</label></div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/PoisonDamage.png" text="Poison damage (% Resistance)"></app-CustomCompareTooltip><label>{{ this.DamageData.PhysicalDamage.AvgDamage ? this.DamageData.PoisonDamage.AvgDamage : this.DamageData.PoisonDamage.MinDamage + "-" + this.DamageData.PoisonDamage.MaxDamage}} ({{ this.Resistance.PoisonResistance.Percentage + "%" }})</label></div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/ColdDamage.png" text="Cold damage (% Resistance)"></app-CustomCompareTooltip><label>{{ this.DamageData.ColdDamage.AvgDamage ? this.DamageData.ColdDamage.AvgDamage : this.DamageData.ColdDamage.MinDamage + "-" + this.DamageData.ColdDamage.MaxDamage}} ({{ this.Resistance.ColdResistance.Percentage + "%" }})</label></div>
-    <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/LightningDamage.jpg" text="Lightning damage (% Resistance)"></app-CustomCompareTooltip><label>{{ this.DamageData.LightningDamage.AvgDamage ? this.DamageData.LightningDamage.AvgDamage : this.DamageData.LightningDamage.MinDamage + "-" + this.DamageData.LightningDamage.MaxDamage}} ({{ this.Resistance.LightningResistance.Percentage + "%" }})</label></div>
-</div>
-
-<ul class="armorDisplayHolder">
-    <li class="customFontBlue h3">
-        <app-CustomCompareTooltip contentImg="../../_Resources/img/ArmorHeavy.png" contentLabel="Armor" text="
-        Less % damage taken from physical hits (in %)
-    <br/> 3 types of Armor, Heavy best for direct/physical reduction, but each have different CC reduction bonuses:
-    <br/> Heavy armor reduces: ReduceArmor, Bleed, Knockback, Stun suffered
-    <br/> Light armor reduces: Root, Wither, Blind, Burn suffered
-    <br/> Mystic armor reduces: Burn, Curse, Freeze, ReduceArmor suffered
-    "></app-CustomCompareTooltip>
-        <br/>
-        <label *ngIf="this.ArmorData" style="transform: translate(0%, 20%);" class="customFontRed h2">Total: {{this.ArmorData.HeavyArmor.Amount + this.ArmorData.LightArmor.Amount + this.ArmorData.MysticArmor.Amount}}</label>
-        <app-CustomCompareTooltip width="45px" height="45px" maxwidth="75px" contentImg="../../_Resources/img/PhysicalDamage1.png" contentLabel="{{'-' + (this.ArmorData.Armor.Amount | number:'1.0-0') + '%'}}" text="
-        Heavy: {{this.ArmorData.HeavyArmor.Amount}}
-        <br/>
-        Light: {{this.ArmorData.LightArmor.Amount}}
-        <br/>
-        Mystic: {{this.ArmorData.MysticArmor.Amount}}
-        <br/>
-        PhysicalDamage Taken reduced by {{this.ArmorData.Armor.Amount | number:'1.0-0'}}%"></app-CustomCompareTooltip>
-        
-        <!-- <label *ngIf="this.ArmorData" style="transform: translate(20%, 20%);" class="customFontRed h2">{{" [" + this.ArmorData.Armor.Amount | number:'1.0-0' + "%]"}}</label> -->
-    </li>
-
-    <li class="armorDetailDisplayHolder customFontBlue h3">
-        <app-CustomCompareTooltip width="45px" height="45px" contentImg="../../_Resources/img/defense_stun.png" contentLabel="" text="Stun/Knockdown Damage/Duration [Reduction/Chance/Bonus] (bonus from Heavy armor)"></app-CustomCompareTooltip>
-        <label *ngIf="this.ArmorData" style="transform: translate(-180%, 140%);" class="customFontRed h3">{{this.CCEffectsData.StunOrKnockdown.ReducePercentage + "%"}}</label>
-        <app-CustomCompareTooltip width="45px" height="45px" contentImg="../../_Resources/img/defense_knockback.png" contentLabel="" text="Knockback/Bleed Damage/Duration [Reduction/Chance/Bonus] (bonus from Heavy armor)"></app-CustomCompareTooltip>
-        <label *ngIf="this.ArmorData" style="transform: translate(-180%, 140%);" class="customFontRed h3">{{this.CCEffectsData.KnockbackOrBleed.ReducePercentage + "%"}}</label>
-        <app-CustomCompareTooltip width="45px" height="45px" contentImg="../../_Resources/img/defense_burn.jpg" contentLabel="" text="Conflagrate/Wither Damage/Duration [Reduction/Chance/Bonus] (bonus from Mystic armor)"></app-CustomCompareTooltip>
-        <label *ngIf="this.ArmorData" style="transform: translate(-180%, 140%);" class="customFontRed h3">{{this.CCEffectsData.WitherOrConflagrate.ReducePercentage + "%"}}</label>
-    </li>
-    <li class="armorDetailDisplayHolder customFontBlue h3" style="margin-top:2rem">
-        <app-CustomCompareTooltip width="45px" height="45px" contentImg="../../_Resources/img/defense_blind.png" contentLabel="" text="Curse/Freeze Damage/Duration [Reduction/Chance/Bonus] (bonus from Mystic armor)"></app-CustomCompareTooltip>
-        <label *ngIf="this.ArmorData" style="transform: translate(-180%, 140%);" class="customFontRed h3">{{this.CCEffectsData.FreezeOrCurse.ReducePercentage + "%"}}</label>
-        <app-CustomCompareTooltip width="45px" height="45px" contentImg="../../_Resources/img/defense_root.jpg" contentLabel="" text="Root/Blind Damage/Duration [Reduction/Chance/Bonus] (bonus from Light armor)"></app-CustomCompareTooltip>
-        <label *ngIf="this.ArmorData" style="transform: translate(-180%, 140%);" class="customFontRed h3">{{this.CCEffectsData.BlindOrRoot.ReducePercentage + "%"}}</label>
-        <app-CustomCompareTooltip width="45px" height="45px" contentImg="../../_Resources/img/defense_reducearmor.png" contentLabel="" text="ReduceArmor/Levitate Damage/Duration [Reduction/Chance/Bonus] (bonus from Light armor)"></app-CustomCompareTooltip>
-        <label *ngIf="this.ArmorData" style="transform: translate(-180%, 140%);" class="customFontRed h3">{{this.CCEffectsData.ReduceArmorOrLevitate.ReducePercentage + "%"}}</label>
-    </li>
-</ul>
-
-<div class="inventoryHolder">
-    <div class="row" style="height:25vh">
-        <div class="col customFontBlue sizeThumbnail" style="height:25vh">
-            <div id="ABoHolder" class="bootsItem"><app-CustomCompareTooltip     class="itemTooltip" contentImg={{this.bootsSrc}} text={{this.BootsDescription}}></app-CustomCompareTooltip></div>
-            <div id="AChHolder" class="chestItem"><app-CustomCompareTooltip     class="itemTooltip" contentImg={{this.chestSrc}} text={{this.ChestDescription}}></app-CustomCompareTooltip></div>
-            <div id="AGlHolder" class="glovesItem"><app-CustomCompareTooltip    class="itemTooltip" contentImg={{this.glovesSrc}} text={{this.GlovesDescription}}></app-CustomCompareTooltip></div>
-            <div id="AHeHolder" class="helmItem"><app-CustomCompareTooltip      class="itemTooltip" width="75px" height="75px" contentImg={{this.helmSrc}} text={{this.HelmDescription}}></app-CustomCompareTooltip></div>
-            <div id="APaHolder" class="pantsItem"><app-CustomCompareTooltip     class="itemTooltip" contentImg={{this.pantsSrc}} text={{this.PantsDescription}}></app-CustomCompareTooltip></div>
-            <div id="WepHolder" class= "weaponItem"><app-CustomCompareTooltip   class="itemTooltip" contentImg={{this.weaponSrc}} text={{this.WeaponDescription}}></app-CustomCompareTooltip></div>
-            <div id="JAmHolder" class= "amuletItem"><app-CustomCompareTooltip   class="itemTooltip" width="45px" height="45px" contentImg={{this.amuletSrc}} text={{this.AmuletDescription}}></app-CustomCompareTooltip></div>
-            <div id="JRi1Holder" class="ring1Item"><app-CustomCompareTooltip    class="itemTooltip" width="45px" height="45px" contentImg={{this.ring1Src}} text={{this.Ring1Description}}></app-CustomCompareTooltip></div>
-            <div id="JRi2Holder" class="ring2Item"><app-CustomCompareTooltip    class="itemTooltip" width="45px" height="45px" contentImg={{this.ring2Src}} text={{this.Ring2Description}}></app-CustomCompareTooltip></div>
+            <!-- contentImg="../../_Resources/img/statusimages/PhysicalDamage1.png" -->
+            <app-CustomCompareTooltip class="armorDataDetailsHolder" classButton="verticalButtonTop" classLabel="customFontRed h2" contentLabel="{{this.ArmorData.HeavyArmor.Amount + this.ArmorData.LightArmor.Amount + this.ArmorData.MysticArmor.Amount}}" text="
+            Heavy: {{this.ArmorData.HeavyArmor.Amount}}
+            <br/>
+            Light: {{this.ArmorData.LightArmor.Amount}}
+            <br/>
+            Mystic: {{this.ArmorData.MysticArmor.Amount}}
+            <br/>
+            PhysicalDamage Taken reduced by {{this.ArmorData.Armor.Amount | number:'1.0-0'}}%"></app-CustomCompareTooltip>
+            
+            <!-- <label *ngIf="this.ArmorData" style="transform: translate(20%, 20%);" class="customFontRed h2">{{" [" + this.ArmorData.Armor.Amount | number:'1.0-0' + "%]"}}</label> -->
+        </li>
+    
+        <li class="armorDetailDisplayHolder">
+            <app-CustomCompareTooltip width="45px" height="45px" classLabel="h4" contentImg="../../_Resources/img/statusimages/defense_stun.png" contentLabel="" classLabel="h4" text="Stun/Knockdown Damage/Duration [Reduction/Chance/Bonus] (bonus from Heavy armor)"></app-CustomCompareTooltip>
+            <label *ngIf="this.ArmorData" style="transform: translate(-180%, 140%);" class="customFontRed h3">{{this.CCEffectsData.StunOrKnockdown.ReducePercentage + "%"}}</label>
+            <app-CustomCompareTooltip width="45px" height="45px" classLabel="h4" contentImg="../../_Resources/img/statusimages/defense_knockback.png" contentLabel="" classLabel="h4" text="Knockback/Bleed Damage/Duration [Reduction/Chance/Bonus] (bonus from Heavy armor)"></app-CustomCompareTooltip>
+            <label *ngIf="this.ArmorData" style="transform: translate(-180%, 140%);" class="customFontRed h3">{{this.CCEffectsData.KnockbackOrBleed.ReducePercentage + "%"}}</label>
+            <app-CustomCompareTooltip width="45px" height="45px" classLabel="h4" contentImg="../../_Resources/img/statusimages/defense_burn.jpg" contentLabel="" classLabel="h4" text="Conflagrate/Wither Damage/Duration [Reduction/Chance/Bonus] (bonus from Mystic armor)"></app-CustomCompareTooltip>
+            <label *ngIf="this.ArmorData" style="transform: translate(-180%, 140%);" class="customFontRed h3">{{this.CCEffectsData.WitherOrConflagrate.ReducePercentage + "%"}}</label>
+        </li>
+        <li class="armorDetailDisplayHolder" style="margin-top:2rem">
+            <app-CustomCompareTooltip width="45px" height="45px" classLabel="h4" contentImg="../../_Resources/img/statusimages/defense_blind.png" contentLabel="" classLabel="h4" text="Curse/Freeze Damage/Duration [Reduction/Chance/Bonus] (bonus from Mystic armor)"></app-CustomCompareTooltip>
+            <label *ngIf="this.ArmorData" style="transform: translate(-180%, 140%);" class="customFontRed h3">{{this.CCEffectsData.FreezeOrCurse.ReducePercentage + "%"}}</label>
+            <app-CustomCompareTooltip width="45px" height="45px" classLabel="h4" contentImg="../../_Resources/img/statusimages/defense_root.jpg" contentLabel="" classLabel="h4" text="Root/Blind Damage/Duration [Reduction/Chance/Bonus] (bonus from Light armor)"></app-CustomCompareTooltip>
+            <label *ngIf="this.ArmorData" style="transform: translate(-180%, 140%);" class="customFontRed h3">{{this.CCEffectsData.BlindOrRoot.ReducePercentage + "%"}}</label>
+            <app-CustomCompareTooltip width="45px" height="45px" classLabel="h4" contentImg="../../_Resources/img/statusimages/defense_reducearmor.png" contentLabel="" classLabel="h4" text="ReduceArmor/Levitate Damage/Duration [Reduction/Chance/Bonus] (bonus from Light armor)"></app-CustomCompareTooltip>
+            <label *ngIf="this.ArmorData" style="transform: translate(-180%, 140%);" class="customFontRed h3">{{this.CCEffectsData.ReduceArmorOrLevitate.ReducePercentage + "%"}}</label>
+        </li>
+    </ul>
+    
+    <div class="inventoryHolder">
+        <div class="row" style="height:25vh">
+            <div class="col customFontBlue sizeThumbnail" style="height:25vh">
+                <div id="ABoHolder"  [class]=this.bootsItemClass  >  <app-CustomCompareTooltip  class="itemTooltip"  classLabel="h4" contentImg={{this.bootsSrc}} text={{this.BootsDescription}}></app-CustomCompareTooltip></div>
+                <div id="AChHolder"  [class]=this.chestItemClass  >  <app-CustomCompareTooltip  class="itemTooltip"  classLabel="h4" contentImg={{this.chestSrc}} text={{this.ChestDescription}}></app-CustomCompareTooltip></div>
+                <div id="AGlHolder"  [class]=this.glovesItemClass >  <app-CustomCompareTooltip  class="itemTooltip"  classLabel="h4" contentImg={{this.glovesSrc}} text={{this.GlovesDescription}}></app-CustomCompareTooltip></div>
+                <div id="AHeHolder"  [class]=this.helmItemClass   >  <app-CustomCompareTooltip  class="itemTooltip"  classLabel="h4" width="75px" height="75px" contentImg={{this.helmSrc}} text={{this.HelmDescription}}></app-CustomCompareTooltip></div>
+                <div id="APaHolder"  [class]=this.pantsItemClass  >  <app-CustomCompareTooltip  class="itemTooltip"  classLabel="h4" contentImg={{this.pantsSrc}} text={{this.PantsDescription}}></app-CustomCompareTooltip></div>
+                <div id="WepHolder"  [class]=this.weaponItemClass >  <app-CustomCompareTooltip  class="itemTooltip"  classLabel="h4" contentImg={{this.weaponSrc}} text={{this.WeaponDescription}}></app-CustomCompareTooltip></div>
+                <div id="JAmHolder"  [class]=this.amuletItemClass >  <app-CustomCompareTooltip  class="itemTooltip"  classLabel="h4" width="45px" height="45px" contentImg={{this.amuletSrc}} text={{this.AmuletDescription}}></app-CustomCompareTooltip></div>
+                <div id="JRi1Holder" [class]=this.ring1ItemClass  >  <app-CustomCompareTooltip  class="itemTooltip"  classLabel="h4" width="45px" height="45px" contentImg={{this.ring1Src}} text={{this.Ring1Description}}></app-CustomCompareTooltip></div>
+                <div id="JRi2Holder" [class]=this.ring2ItemClass  >  <app-CustomCompareTooltip  class="itemTooltip"  classLabel="h4" width="45px" height="45px" contentImg={{this.ring2Src}} text={{this.Ring2Description}}></app-CustomCompareTooltip></div>
+            </div>
         </div>
     </div>
 </div>

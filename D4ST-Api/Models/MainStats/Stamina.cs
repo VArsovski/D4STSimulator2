@@ -1,4 +1,5 @@
 using System;
+using D4St_Api.Data.Entities;
 using D4ST_Api.Models.Enums;
 using D4ST_Api.Models.Helpers;
 using D4ST_Api.Models.Interfaces;
@@ -16,18 +17,18 @@ namespace D4ST_Api.Models.MainStats
         public decimal BonusRegenPercentage { get; set; }
         public decimal TotalRegen { get; set; }
 
-        public Stamina(IClassDefinition classInfo)
+        public Stamina(IClassDefinition classInfo, CharacterClass classData)
         {
             var baseAmt = classInfo.ClassType == ClassTypeEnum.Druid ? 60 : classInfo.ClassType == ClassTypeEnum.Barbarian ? 50 : 35;
-            BasicAmount = baseAmt + classInfo.Level * 1;
+            BasicAmount = classData.Stamina + classInfo.Level * 1;
             BonusAmount = classInfo.AncestralPower * 3;
             TotalAmount = CalculateAmount(classInfo);
             var regenCoeff = DecimalHelper.RoundToDecimals(Math.Pow(Convert.ToDouble(1.05), classInfo.Level/2), 3);
             var classCoeff = Math.Round((classInfo.ClassType == ClassTypeEnum.Druid ? 0.050m : 0.040m) * baseAmt, 3);
-            BasicRegen = DecimalHelper.RoundToDecimalsD(classCoeff, 2);
-            var ratio = Math.Round((decimal)classInfo.AngelicPower * 3 /40, 3);
-            BonusRegen = Math.Round(ratio * regenCoeff, 2);
-            TotalRegen = CalculateRegen(classInfo);
+            BasicRegen = Math.Round(classCoeff * classData.StaminaRegen, 3);
+            var ratio = Math.Round((decimal)BonusAmount/classData.Stamina, 3);
+            BonusRegen = Math.Round(regenCoeff * ratio, 2);
+            TotalRegen = CalculateRegen(classInfo);            
         }
 
         public int CalculateAmount(IClassDefinition classInfo)

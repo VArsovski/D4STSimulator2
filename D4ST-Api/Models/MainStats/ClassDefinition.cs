@@ -17,6 +17,7 @@ namespace D4ST_Api.Models.MainStats
         {
             this.classDefinition = classDefinition;
             this.ClassType = classDefinition.ClassType;
+            this.ClassDescription = classDefinition.ClassDescription;
             this.Level = classDefinition.Level;
             this.AngelicPower = classDefinition.AngelicPower;
             this.DemonicPower = classDefinition.DemonicPower;
@@ -25,6 +26,8 @@ namespace D4ST_Api.Models.MainStats
 
         public ClassTypeEnum ClassType { get; set; }
         public string ClassTypeStr { get{ return EnumHelper.GetName(this.ClassType);} }
+        public string ClassDescription { get; set; }
+        string IClassDefinition.ClassTypeStr { get; set; }
         public int Level { get; set; }
         public int AngelicPower { get; set; }
         public int DemonicPower { get; set; }

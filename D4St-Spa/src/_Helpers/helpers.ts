@@ -1,5 +1,3 @@
-import { debug } from 'util';
-
 export class Helpers {
     // min and max included
     public static getRandom(min:number, max:number): number {

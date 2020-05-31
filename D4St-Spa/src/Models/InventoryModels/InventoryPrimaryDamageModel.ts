@@ -1,4 +1,6 @@
 import { InventoryDamageModel } from './InventoryDamageModel';
+import { IDoubleStatAffix } from './InventoryDetailModels/IDoubleStatAffixData';
+import { SimpleDoubleAffixData } from './InventoryDetailModels/SimpleDoubleAffixData';
 
 export class InventoryDamageModelCombined {
     PhysicalDamage: InventoryPrimaryDamageModel;
@@ -17,18 +19,18 @@ export class InventoryDamageModelCombined {
 }
 
 export class InventoryDamageEmpowerModelCombined {
-    PhysicalOrCC:InventoryDamageModel;
-    CleaveOrAoE:InventoryDamageModel;
-    ChainOrProjectile:InventoryDamageModel;
-    TrapOrSummon:InventoryDamageModel;
-    TickOrCurse:InventoryDamageModel;
+    PhysicalOrCC:IDoubleStatAffix;
+    CleaveOrAoE:IDoubleStatAffix;
+    ChainOrProjectile:IDoubleStatAffix;
+    TrapOrSummon:IDoubleStatAffix;
+    TickOrCurse:IDoubleStatAffix;
 
     constructor() {
-        this.PhysicalOrCC = new InventoryDamageModel();
-        this.TickOrCurse = new InventoryDamageModel();
-        this.CleaveOrAoE = new InventoryDamageModel();
-        this.TrapOrSummon = new InventoryDamageModel();
-        this.ChainOrProjectile = new InventoryDamageModel();
+        this.PhysicalOrCC = new SimpleDoubleAffixData();
+        this.TickOrCurse = new SimpleDoubleAffixData();
+        this.CleaveOrAoE = new SimpleDoubleAffixData();
+        this.TrapOrSummon = new SimpleDoubleAffixData();
+        this.ChainOrProjectile = new SimpleDoubleAffixData();
     }
 }
 

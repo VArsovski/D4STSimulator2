@@ -6,6 +6,7 @@ namespace D4St_Api.Data.Entities
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public string Description { get; set; }
         public int HP { get; set; }
         public int Resource { get; set; }
         public int Stamina { get; set; }

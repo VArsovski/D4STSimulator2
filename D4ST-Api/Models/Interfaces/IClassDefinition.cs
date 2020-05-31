@@ -5,7 +5,8 @@ namespace D4ST_Api.Models.Interfaces
     public interface IClassDefinition
     {
         ClassTypeEnum ClassType { get; set; }
-        string ClassTypeStr { get; }
+        string ClassTypeStr { get; set; }
+        string ClassDescription { get; set; }
         int Level { get; set; }
         int TotalPower { get; }
         int UnassignedPower { get; }

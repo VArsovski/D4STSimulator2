@@ -40,7 +40,10 @@ export class CustomCompareTooltipComponent {
   @Input() text:string;
   @Input() html:string;
   @Input() class:string;
+  @Input() classText:string;
+  @Input() classLabel:string;
   @Input() contentTitle:string;
+  @Input() classButton:string;
   @Input() width:string;
   @Input() height:string;
   @Input() maxwidth:string;
@@ -48,16 +51,26 @@ export class CustomCompareTooltipComponent {
   @Input() contentLabel:string;
   @Input() style:SafeStyle;
 
-  constructor(private sanitizer: DomSanitizer) {}
+  constructor(private sanitizer: DomSanitizer) { }
 
   transformStyleToSafe(htmlTextWithStyle) {
     return this.sanitizer.bypassSecurityTrustStyle(htmlTextWithStyle);
-  }  
+  }
+  
+  ngOnInit(): void {
+    // //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
+    // //Add 'implements OnInit' to the class.
+    // if (!this.class)
+    //   this.class = 'h4';
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['text']) {
       this.html = `<span>` + changes['text'].currentValue + `</span>`;
     }
+    // if (changes['classText']) {
+    //   this.html = `<span classs="` + changes['classText'].currentValue + `">` + changes['text'].currentValue + `</span>`;
+    // }
     if (changes['style']) {
       this.style = this.transformStyleToSafe(//"style=\"" + 
         changes['style'].currentValue// + "\"");

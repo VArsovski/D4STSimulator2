@@ -1,11 +1,13 @@
+using System.Collections.Generic;
+using System.Linq;
+using D4St_Api.Data.Entities;
 using D4ST_Api.Models;
 using D4ST_Api.Models.Enums;
 using D4ST_Api.Models.HitEffects;
 using D4ST_Api.Models.MainStats;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace D4ST_Api.Controllers
 {
@@ -118,14 +120,18 @@ namespace D4ST_Api.Controllers
             else return BadRequest(_POWER_INVALID);
         }
 
-        private BasicStats GetCharStats(ClassTypeEnum classType, int lvl, int angPower = 0, int demPower = 0, int ancPower = 0) {
-            
-            var classSample = new ClassDefinition { Level = lvl, ClassType = classType, AngelicPower = angPower, DemonicPower = demPower, AncestralPower = ancPower };
+        private BasicStats GetCharStats(ClassTypeEnum classType, int lvl, int angPower = 0, int demPower = 0, int ancPower = 0)
+        {
+            var charClassesJson = System.IO.File.ReadAllText("./Data/CharacterClassesSeed.json");
+            var charClasses = JsonConvert.DeserializeObject<List<CharacterClass>>(charClassesJson);
+            var selectedClass = charClasses.FirstOrDefault(c => c.Id == (int)classType);
+
+            var classSample = new ClassDefinition { Level = lvl, ClassType = classType, ClassDescription = selectedClass.Description, AngelicPower = angPower, DemonicPower = demPower, AncestralPower = ancPower };
 
             var charData = new BasicStats { ClassDefinition = classSample
-                , Life = new Life(classSample)
-                , Resource = new Resource(classSample)
-                , Stamina = new Stamina(classSample)
+                , Life = new Life(classSample, selectedClass)
+                , Resource = new Resource(classSample, selectedClass)
+                , Stamina = new Stamina(classSample, selectedClass)
                 , DamagePerHit = new DamagePerHit(classSample)
                 , LifeReturn = new LifestealHitProc().CalculateProcAmount(classSample)
                 , ResourceReturn = new ResourceReturnHitProc().CalculateProcAmount(classSample)

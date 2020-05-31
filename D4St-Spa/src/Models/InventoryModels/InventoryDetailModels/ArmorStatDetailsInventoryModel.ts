@@ -1,52 +1,53 @@
-import { ICCEffectStatDetailsInventoryModel, ICCffectStatDetailsInventoryModelCombined, ICCEffectAffixData } from './ICCEffectDetailsInventoryModel';
-import { SimpleCCEffectAffixData } from './SimpleCCEffectAffixData';
+import { ICCEffectStatDetailsInventoryModel, ICCffectStatDetailsInventoryModelCombined } from './ICCEffectDetailsInventoryModel';
+import { SimpleDoubleAffixData } from './SimpleDoubleAffixData';
+import { IDoubleStatAffix } from './IDoubleStatAffixData';
 
 export class ArmorStatDetailsInventoryModel implements ICCEffectStatDetailsInventoryModel {
-    Stun: ICCEffectAffixData;
-    Knockdown: ICCEffectAffixData;
-    Knockback: ICCEffectAffixData;
-    Levitate: ICCEffectAffixData;
-    Wither: ICCEffectAffixData;
-    Conflagrate: ICCEffectAffixData;
-    Blind: ICCEffectAffixData;
-    Curse: ICCEffectAffixData;
-    Freeze: ICCEffectAffixData;
-    Root: ICCEffectAffixData;
-    ReduceArmor: ICCEffectAffixData;
-    Bleed: ICCEffectAffixData;
+    Stun: IDoubleStatAffix;
+    Knockdown: IDoubleStatAffix;
+    Knockback: IDoubleStatAffix;
+    Levitate: IDoubleStatAffix;
+    Wither: IDoubleStatAffix;
+    Conflagrate: IDoubleStatAffix;
+    Blind: IDoubleStatAffix;
+    Curse: IDoubleStatAffix;
+    Freeze: IDoubleStatAffix;
+    Root: IDoubleStatAffix;
+    ReduceArmor: IDoubleStatAffix;
+    Bleed: IDoubleStatAffix;
     SelectedStat: string;
     SelectedEquipStat: string;
 
     constructor() {
-        this.Stun= new SimpleCCEffectAffixData();
-        this.Knockback= new SimpleCCEffectAffixData();
-        this.Knockdown= new SimpleCCEffectAffixData();
-        this.Levitate= new SimpleCCEffectAffixData();
-        this.Wither= new SimpleCCEffectAffixData();
-        this.Conflagrate= new SimpleCCEffectAffixData();
-        this.Blind= new SimpleCCEffectAffixData();
-        this.Curse= new SimpleCCEffectAffixData();
-        this.Freeze= new SimpleCCEffectAffixData();
-        this.Root= new SimpleCCEffectAffixData();
-        this.ReduceArmor= new SimpleCCEffectAffixData();
-        this.Bleed= new SimpleCCEffectAffixData();
+        this.Stun= new SimpleDoubleAffixData();
+        this.Knockback= new SimpleDoubleAffixData();
+        this.Knockdown= new SimpleDoubleAffixData();
+        this.Levitate= new SimpleDoubleAffixData();
+        this.Wither= new SimpleDoubleAffixData();
+        this.Conflagrate= new SimpleDoubleAffixData();
+        this.Blind= new SimpleDoubleAffixData();
+        this.Curse= new SimpleDoubleAffixData();
+        this.Freeze= new SimpleDoubleAffixData();
+        this.Root= new SimpleDoubleAffixData();
+        this.ReduceArmor= new SimpleDoubleAffixData();
+        this.Bleed= new SimpleDoubleAffixData();
     }
 }
 
 export class ArmorStatDetailsInventoryModelCombined implements ICCffectStatDetailsInventoryModelCombined {
-    StunOrKnockdown: SimpleCCEffectAffixData;
-    KnockbackOrBleed: SimpleCCEffectAffixData;
-    WitherOrConflagrate: SimpleCCEffectAffixData;
-    FreezeOrCurse: SimpleCCEffectAffixData;
-    BlindOrRoot: SimpleCCEffectAffixData;
-    ReduceArmorOrLevitate: SimpleCCEffectAffixData;
+    StunOrKnockdown: SimpleDoubleAffixData;
+    KnockbackOrBleed: SimpleDoubleAffixData;
+    WitherOrConflagrate: SimpleDoubleAffixData;
+    FreezeOrCurse: SimpleDoubleAffixData;
+    BlindOrRoot: SimpleDoubleAffixData;
+    ReduceArmorOrLevitate: SimpleDoubleAffixData;
 
     constructor() {
-        this.StunOrKnockdown = new SimpleCCEffectAffixData();
-        this.KnockbackOrBleed = new SimpleCCEffectAffixData();
-        this.WitherOrConflagrate = new SimpleCCEffectAffixData();
-        this.FreezeOrCurse = new SimpleCCEffectAffixData();
-        this.BlindOrRoot = new SimpleCCEffectAffixData();
-        this.ReduceArmorOrLevitate = new SimpleCCEffectAffixData();
+        this.StunOrKnockdown = new SimpleDoubleAffixData();
+        this.KnockbackOrBleed = new SimpleDoubleAffixData();
+        this.WitherOrConflagrate = new SimpleDoubleAffixData();
+        this.FreezeOrCurse = new SimpleDoubleAffixData();
+        this.BlindOrRoot = new SimpleDoubleAffixData();
+        this.ReduceArmorOrLevitate = new SimpleDoubleAffixData();
     }
 }

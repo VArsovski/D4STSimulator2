@@ -25,6 +25,8 @@ export class ItemDefenseStats implements IEquippableAffixStat {
     EquippableStatData: IItemAffixStats;
     updateEquippedStats: (src:IItemAffix, affix:IItemAffix) => IItemAffix;
     getZeroStats: (src: any) => any;
+    Type: DefensiveStatsEnum;
+    DamageType: any;
 
     GetDescription(): string {
         var descr1 = (this.CCDamageAndDurationReduced) ? this.CCDamageAndDurationReduced.GetDescription() : "";
@@ -44,12 +46,14 @@ export class ItemDefenseStats implements IEquippableAffixStat {
         // return descr1 + descr2 + descr3 + descr4 + descr5 + descr6 + descr7 + descr8 + empoweredStr;
     }
 
-    constructor(category: AffixCategoryEnum, level:number, powerLevel:number, amount:number, amountPercentage:number, chance:number, duration:number, type:DefensiveStatsEnum, affectedCategories?:DefensiveStatCategoryEnum[]) {
+    constructor(category: AffixCategoryEnum, level:number, powerLevel:number, amount:number, amountPercentage:number, chance:number, duration:number, type:DefensiveStatsEnum, damageType:DamageTypesEnum, affectedCategories?:DefensiveStatCategoryEnum[]) {
         this.CategoryStats = category;
         this.Amount = -1; // Just make sure it's not 0, (again) for outside check
         this.Socket = new ItemDefensiveStatsDetail(category, 0, 0, 0, 0, DefensiveStatsEnum.Socket, []);
         this.PowerLevel = powerLevel;
         this.Level = level;
+        this.Type = type;
+        this.DamageType = damageType;
         var appropriateCategories = affectedCategories ? affectedCategories : this.GenerateAppropriateCategoriesByType(type);
 
         // Instead of adressing this relatively weaker stat from outside we address it here..
@@ -146,7 +150,15 @@ export class ItemDefensiveStatsDetail implements IEquippableAffixStat {
             else defensiveAffixStatCategoryStr += " and " + Helpers.getPropertyByValue(DefensiveStatCategoryEnum, element);
         });
 
-        var damageType = Helpers.getPropertyByValue(DamageTypesEnum, this.DamageType);
+        var type = Helpers.getPropertyByValue(DefensiveStatsEnum, this.Type);
+        var damageType = this.Type != DefensiveStatsEnum.ThornsDamage ? Helpers.getPropertyByValue(DamageTypesEnum, this.DamageType)
+        : Helpers.getPropertyByValue(ResistanceTypesEnum, this.DamageType);
+
+        if (!damageType) {
+            console.log("ItemDefensiveStats, data failed:");
+            console.log(this);
+        }
+
         var castType = Helpers.getPropertyByValue(CastTypesEnum, this.CastType);
         var ccType = Helpers.getPropertyByValue(CCEffectTypesEnum, this.CCType);
 

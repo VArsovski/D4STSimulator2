@@ -149,7 +149,7 @@ export class ItemAffixEnumsHelper {
         if (affixType == ItemAffixTypeEnum.Offensive)
             affixOutput = new OfensiveAffixHelper().GetByIndex(ofensiveOrDefensiveCategory, level, powerLevel, Helpers.getRandom(1, 8));
         else if (affixType == ItemAffixTypeEnum.Defensive)
-            affixOutput = new DefensiveAffixHelper().GetByIndex(ofensiveOrDefensiveCategory, level, powerLevel, Helpers.getRandom(1, 8));
+            affixOutput = new DefensiveAffixHelper().GetByIndex(ofensiveOrDefensiveCategory, level, powerLevel, Helpers.getRandom(1, 8), Helpers.getRandom(1,5));
 
         if (affixType == ItemAffixTypeEnum.TriggerEffect)
             affixOutput = this.GetTriggerAffixFromCategoryStats(level, powerLevel, affixType, itemType, affix, selectedSkill);

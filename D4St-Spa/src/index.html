@@ -14,6 +14,25 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
   <link href="https://fonts.googleapis.com/css?family=Bebas+Neue&display=swap" rel="stylesheet">
 
+  <script type="text/javascript"> 
+    function setupRandomBackground(selected) 
+    {
+      document.body.background = '_Resources/img/backgrounds/Background'+ selected +'.jpg';
+      document.body.style.backgroundSize = "cover";// Background size
+      document.body.style.backgroundRepeat = "no-repeat";// Background repeat
+    }
+  </script>
+</head>
+  <script type="text/javascript">
+    window.onload = function(){
+    var min = 1;
+    var max = 12;
+    var selected = Math.floor(Math.random() * (max - min + 1) + min);
+    console.clear();
+    console.log(selected);
+    setupRandomBackground(selected);
+  }
+  </script>
 </head>
 <body>
   <app-root></app-root>

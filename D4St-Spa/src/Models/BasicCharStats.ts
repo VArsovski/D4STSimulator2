@@ -7,6 +7,7 @@ export class BasicCharStats {
     AncestralPower: number;
     ClassType: number;
     ClassTypeStr: string;
+    ClassDescription:string;
     MinDamage: number;
     MaxDamage: number;
     MinDamageBonus: number;

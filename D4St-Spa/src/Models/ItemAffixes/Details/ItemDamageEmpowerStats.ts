@@ -28,7 +28,7 @@ export class ItemDamageEmpowerStats implements IEquippableAffixStat {
     DamageData:ItemDamageCategoryStats;
     WeaponType:ItemWeaponTypesEnum;
     RarityType:ItemRarityTypesEnum;
-    MainDamageType: DamageTypesEnum;
+    Type: DamageTypesEnum;    //MainDamageType
     ElementType: ResistanceTypesEnum;
     EmpowerPercentage: number;
     SelectedStat: string;
@@ -53,7 +53,7 @@ export class ItemDamageEmpowerStats implements IEquippableAffixStat {
         }
 
         if (this.DamageData) {
-            this.MainDamageType = this.DamageData.MainDamageType;
+            this.Type = this.DamageData.MainDamageType;
             this.ElementType = this.DamageData.ElementType;
             this.EmpowerPercentage = this.DamageData.EmpowerPercentage;
         }
@@ -63,9 +63,10 @@ export class ItemDamageEmpowerStats implements IEquippableAffixStat {
         this.EquippableStatData.OutputMeta = new SimpleItemAffixStatsMetadata();
         this.EquippableStatData.InputMeta.SelectedCategoryStat = this.constructor.name;
         this.EquippableStatData.InputMeta.SelectedStat = Helpers.getPropertyByValue(AffixCategoryEnum, this.CategoryStats);
-        this.EquippableStatData.OutputMeta.SelectedStat = "DamageEmpowerData";
-        this.EquippableStatData.OutputMeta.SelectedEquipStat = Helpers.getPropertyByValue(DamageTypesEnum, this.MainDamageType);
-        this.updateEquippedStats = new DamageStatPrimaryEquippable(this.EquippableStatData.OutputMeta.SelectedStat, this.EquippableStatData.OutputMeta.SelectedEquipStat).updateEquippedStats;
+        this.EquippableStatData.OutputMeta.SelectedCategoryStat = "DamageEmpowerData";
+        this.EquippableStatData.OutputMeta.SelectedStat = Helpers.getPropertyByValue(DamageTypesEnum, this.Type);
+        this.EquippableStatData.OutputMeta.SelectedEquipStat = "Percentage";
+        this.updateEquippedStats = new DamageStatPrimaryEquippable().updateEquippedStats;
         this.getZeroStats = (src) => { (src as InventoryDamageModel) = new InventoryDamageModel(); return src; }
     }
 
