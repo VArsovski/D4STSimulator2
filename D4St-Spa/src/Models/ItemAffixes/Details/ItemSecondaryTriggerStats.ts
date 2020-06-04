@@ -185,7 +185,7 @@ export class ItemSecondaryTriggerStats implements IEquippableAffixStat {
         this.EquippableStatData.OutputMeta.SelectedStat = Helpers.getPropertyByValue(SecondaryTriggerStatsEnum, this.Type);
         this.EquippableStatData.OutputMeta.SelectedEquipStat = Helpers.getPropertyByValue(SecondaryTriggerStatsEnum, this.Type);
         this.getZeroStats = (src) => { var stat = (src as ItemSecondaryTriggerStats);
-            debugger;
+            // debugger;
             if (stat) {
                 stat.Amount = 0; stat.Chance = 0; stat.Duration = 0; stat.Trigger.Chance = 0;
             }

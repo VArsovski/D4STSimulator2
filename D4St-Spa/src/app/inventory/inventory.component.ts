@@ -1,15 +1,14 @@
 import { Component, OnInit, Input, Output, SimpleChanges, OnChanges } from '@angular/core';
 import { IItemAffix } from 'src/Models/ItemAffixes/IItemAffix';
 import { InventoryVM } from 'src/Models/InventoryModels/InventoryVM';
-import { InventoryArmorModelCombined, InventoryArmorModel } from 'src/Models/InventoryModels/InventoryArmorModel';
+import { InventoryArmorModelCombined } from 'src/Models/InventoryModels/InventoryArmorModel';
 import { InventoryBasicStatsModel } from 'src/Models/InventoryModels/InventoryBasicStatsModel';
 import { SkillVM } from 'src/Models/SkillVM';
 import { ICCEffectStatDetailsInventoryModel, ICCffectStatDetailsInventoryModelCombined } from 'src/Models/InventoryModels/InventoryDetailModels/ICCEffectDetailsInventoryModel';
 import { ArmorStatDetailsInventoryModelCombined } from 'src/Models/InventoryModels/InventoryDetailModels/ArmorStatDetailsInventoryModel';
 import { InventoryDamageModelCombined, InventoryDamageEmpowerModelCombined } from 'src/Models/InventoryModels/InventoryPrimaryDamageModel';
 import { InventoryResistancesModel } from 'src/Models/InventoryModels/InventoryResistancesModel';
-import { Helpers } from 'src/_Helpers/helpers';
-import { ItemCategoriesEnum, ItemArmorTypesEnum, ItemJewelryTypesEnum } from 'src/_Enums/itemAffixEnums';
+import { ItemCategoriesEnum, ArmorTypesEnum } from 'src/_Enums/itemAffixEnums';
 import { BasicCharStats } from 'src/Models/BasicCharStats';
 import { InventoryTriggerModelCombined } from 'src/Models/InventoryModels/InventoryTriggerModelCombined';
 import { InventorySkillStatModelCombined } from 'src/Models/InventoryModels/InventorySkillStatModelCombined';
@@ -19,6 +18,8 @@ import { InventoryLegendaryModelCombined } from 'src/Models/InventoryModels/Inve
 import { InventorySecondaryTriggerModelCombined } from 'src/Models/InventoryModels/InventorySecondaryTriggerModelCombined';
 import { InventorySecondaryBasicModelCombined } from 'src/Models/InventoryModels/InventorySecondaryBasicModelCombined';
 import { InventoryConditionalModelCombined } from 'src/Models/InventoryModels/InventoryConditionalModelCombined';
+import { CalculationsHelper } from 'src/_Helpers/CalculationsHelper';
+import { Helpers } from 'src/_Helpers/helpers';
 
 @Component({
   selector: 'app-inventory',
@@ -29,7 +30,7 @@ export class InventoryComponent implements OnInit, OnChanges {
 
   protected inventoryData: InventoryVM;
   @Input()inventoryItem: InventoryVM;
-  @Input()basicChatStats: BasicCharStats;
+  @Input()basicCharStats: BasicCharStats;
   protected tempInventoryData: InventoryVM;
 
   protected BasicStats:InventoryBasicStatsModel;
@@ -48,6 +49,7 @@ export class InventoryComponent implements OnInit, OnChanges {
   protected ConditionalAffixStatsData: InventoryConditionalModelCombined;
   protected LegendaryStatData: InventoryLegendaryModelCombined;
 
+  protected TotalArmorClassStr:string;
   protected BootsDescription:string;
   protected ChestDescription:string;
   protected GlovesDescription:string;
@@ -99,7 +101,7 @@ export class InventoryComponent implements OnInit, OnChanges {
     this.SkillStats = new InventorySkillStatModelCombined();
 
     this.BasicStats = new InventoryBasicStatsModel();
-    this.basicChatStats = new BasicCharStats();
+    this.basicCharStats = new BasicCharStats();
     this.DamageData = new InventoryDamageModelCombined();
     this.DamageEmpowerData = new InventoryDamageEmpowerModelCombined();
     this.ArmorData = new InventoryArmorModelCombined();
@@ -135,12 +137,18 @@ export class InventoryComponent implements OnInit, OnChanges {
                                             : "Weapon" : null;
 
     var slotAlreadyEquipped = (this.inventoryData[selectedInventoryType] || []).length != 0;
+    if (slotAlreadyEquipped)
+      this.tempInventoryData[selectedInventoryType] = this.inventoryData[selectedInventoryType];
     var selectedItem:IItemAffix[] = selectedInventoryType? (changes["inventoryItem"] || {currentValue:[]}).currentValue[selectedInventoryType] || [] : [];
     this.imageRaritiesDict[selectedInventoryType] = this.inventoryData.selectedRarity;
     this.inventoryData[selectedInventoryType] = selectedItem;
 
     // Reset Model Data
+    var basicCharStats = this.basicCharStats;
     this.InitializeModelData();
+
+    // Reinit CharStats (most importantly Level)
+    this.basicCharStats = changes["basicCharStats"] && changes["basicCharStats"].currentValue ? changes["basicCharStats"].currentValue : basicCharStats;
 
     // Recalculate for Each equipped Item
     // // Step2: Foreach Affix in selected item, reset the numbers
@@ -148,9 +156,12 @@ export class InventoryComponent implements OnInit, OnChanges {
 
     // Step3: Foreach Affix in selected item, recalculate the numbers
     availableCategories.forEach(cat => {
-      selectedItem = this.inventoryData[cat];
-      this.ApplyAffixes(selectedItem);
+      this.ApplyAffixes(this.inventoryData[cat]);
+      this.recalculateCCTypes(this.inventoryData[cat]);
     });
+
+    this.RecalculatePhysicalDamageReduction();
+    this.TotalArmorClassStr = this.ArmorData.HeavyArmor.Amount + this.ArmorData.LightArmor.Amount + this.ArmorData.MysticArmor.Amount < 1000 ? "customFontRed h2" : "customFontRed h3";
 
     availableCategories.forEach(cat => {
       var affixDescriptions:string[] = [];
@@ -186,6 +197,7 @@ export class InventoryComponent implements OnInit, OnChanges {
 
       if (categoryStat == "BasicStats" && selectedStat.indexOf("Power") == -1) {
         // debugger;
+        selectedModelStat = [];
         selectedStat = selectedStat.replace("Stat", "");
         selectedSubStat = selectedSubStat.replace("Percentage", "").replace("Amount", "").replace("Regen", "").replace("Return", "");
         // Swap
@@ -196,12 +208,11 @@ export class InventoryComponent implements OnInit, OnChanges {
           selectedModelStat[0] = selectedStat;
           selectedModelStat[1] = selectedSubStat;
         } else {
-          debugger;
+          // debugger;
         }
       }
 
       if (selectedModelStat) {
-        // debugger;
         var srcStat = categoryStat ? this[categoryStat][selectedModelStat[0]]//[selectedModelStat[1]]
                                    : this[selectedModelStat[0]];//[selectedModelStat[1]];
 
@@ -210,53 +221,54 @@ export class InventoryComponent implements OnInit, OnChanges {
           this[selectedModelStat[0]] = a.Contents.updateEquippedStats(srcStat, a);
         }
         else if (categoryStat)
-          this[categoryStat][selectedModelStat[0]] = a.Contents.updateEquippedStats(srcStat, a);
+        if (!a.Contents.updateEquippedStats){
+          debugger;
+        } else this[categoryStat][selectedModelStat[0]] = a.Contents.updateEquippedStats(srcStat, a);
         else {
           srcStat = this[selectedModelStat[0]];
           this[selectedModelStat[0]] = a.Contents.updateEquippedStats(srcStat, a);
         }
       }
       else {
-        debugger;
+        // debugger;
       };
     })
   }
 
-  // protected async calculateArmorTypes(itemData:IItemAffix[], itemType:string) {
-  //   if ((this.inventoryData[itemType] || []).length == 0) {
-  //     this.inventoryData[itemType] = itemData;
-  //   }
-  //   else this.tempInventoryData[itemType] = itemData;
+  private RecalculatePhysicalDamageReduction() {
+    var armorData = [this.ArmorData.LightArmor.Amount, this.ArmorData.HeavyArmor.Amount, this.ArmorData.MysticArmor.Amount];
+    var phReduction = 0;
+    armorData.forEach((a, i) => {
+      var selectedType = Helpers.getPropertyByValue(ArmorTypesEnum, i + 1);
+      var level = this.basicCharStats.Level;
+      phReduction += new CalculationsHelper().GetCalculatedFactor(selectedType, a, level);
+    })
 
-  //   var data:IItemAffix[][] = [
-  //     this.inventoryData.Helm,
-  //     this.inventoryData.Chest,
-  //     this.inventoryData.Pants,
-  //     this.inventoryData.Boots,
-  //     this.inventoryData.Gloves,
-  //     this.inventoryData.Amulet,
-  //     this.inventoryData.Ring1,
-  //     this.inventoryData.Ring2,
-  //     this.inventoryData.Weapon
-  //   ];
+    this.ArmorData.Armor.Amount = phReduction;
+  }
 
-  //   this.ArmorData.HeavyArmor = new InventoryArmorModel();
-  //   this.ArmorData.LightArmor = new InventoryArmorModel();
-  //   this.ArmorData.MysticArmor = new InventoryArmorModel();
-
-  //   var ccTypesdata = { totalCCPercentageRateHeavy: 0, totalCCPercentageRateLight: 0, totalCCPercentageRateMystic: 0 }
-  //   data.forEach(a => {
-  //     a.forEach(affix => {
-  //       var selectedStat = affix.Contents.EquippableStatData.OutputMeta["SelectedStat"] || affix.Contents.AffixData.OutputMeta["SelectedStat"];
-  //       var selectedType = affix.Contents.AffixData.OutputMeta.SelectedEquipStat;
-  //       if (selectedStat == "ArmorData") {
-  //         var armorAffixData = affix.Contents.AffixData as ItemArmorStats;
-  //         var selectedArmor = Helpers.getPropertyByValue(ArmorTypesEnum, armorAffixData.ArmorType);
-  //         this["ArmorData"][selectedArmor + "Armor"].Amount += armorAffixData.Amount;
-  //       }
-  //     })
-  //   });
-  // }
+  recalculateCCTypes(selectedItemm: IItemAffix[]) {
+    selectedItemm.forEach(a => {
+      var outputMetaData = a.Contents.AffixData.EquippableStatData.OutputMeta;
+      if (outputMetaData["SelectedStat"] == "ArmorData") {
+        var amount = a.Contents.AffixData.Amount;
+        var type = a.Contents.AffixData.ArmorType;
+        var calcAmount = Math.round(new CalculationsHelper().getCCTypeDataForArmor(this.basicCharStats.Level, amount) * 10)/10;
+        if (type == ArmorTypesEnum.Heavy) {
+          this.CCEffectsData.StunOrKnockdown.ReducePercentage += calcAmount;
+          this.CCEffectsData.KnockbackOrBleed.ReducePercentage += calcAmount;
+        }
+        if (type == ArmorTypesEnum.Light) {
+          this.CCEffectsData.BlindOrRoot.ReducePercentage += calcAmount;
+          this.CCEffectsData.ReduceArmorOrLevitate.ReducePercentage += calcAmount;
+        }
+        if (type == ArmorTypesEnum.Mystic) {
+          this.CCEffectsData.FreezeOrCurse.ReducePercentage += calcAmount;
+          this.CCEffectsData.WitherOrConflagrate.ReducePercentage += calcAmount;
+        }
+      }
+    })
+  }
 
   protected ArmorSrc(type:string):string {
     var srcEmpty = "_Resources\\img\\borders\\border.png";

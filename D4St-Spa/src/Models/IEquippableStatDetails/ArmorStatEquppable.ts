@@ -18,10 +18,7 @@ export class ArmorStatPrimaryEquippable implements IEquippableAffixStat {
         var combinedStat = src as InventoryArmorModelCombined;
         var selectedType = Helpers.getPropertyByValue(ArmorTypesEnum, affix.Contents.AffixData["ArmorType"]);//.EquippableStatData.OutputMeta.SelectedEquipStat;
 
-        // Recalculate full armor
-        var calculationFactor = new CalculationsHelper().GetCalculatedFactor(selectedType, combinedStat[selectedType + "Armor"].Amount, 0);
         combinedStat[selectedType + "Armor"].Amount += affix.Contents.AffixData.Amount;
-        combinedStat.Armor.Amount += Math.round(calculationFactor * affix.Contents.AffixData.Amount * 10) / 10;
         return combinedStat;
     }
 
@@ -45,7 +42,6 @@ export class ArmorStatEquippable implements IEquippableAffixStat {
     private calculateEquippedStats(src:IItemAffix, affix:IItemAffix):IItemAffix {
         var combinedStat = new ArmorStatDetailsInventoryModelCombined();
 
-        debugger;
         var selectedType = affix.SelectedEquipStat || affix.Contents.EquippableStatData.OutputMeta.SelectedEquipStat;
         if (selectedType == Helpers.getPropertyByValue(CCEffectTypesEnum, CCEffectTypesEnum.StunOrKnockdown) + "Reduction")
             combinedStat.StunOrKnockdown.ReducePercentage += affix.Contents.AffixData["StunOrKnockdown"];

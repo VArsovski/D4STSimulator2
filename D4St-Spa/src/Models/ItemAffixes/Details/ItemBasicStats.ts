@@ -77,8 +77,9 @@ export class ItemBasicStats implements IEquippableAffixStat {
                 var selectedStatStr = Helpers.getPropertyByValue(BasicStatTypesEnum, (src as ItemBasicStats).selectedStat);
                 var selectedStat = src[selectedStatStr];
                 return selectedStat.getZeroStats(selectedStat);
-            } else {
-                debugger;
+            }
+            else {
+                // debugger;
             }
         }
     }

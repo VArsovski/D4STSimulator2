@@ -21,7 +21,7 @@ namespace D4ST_Api.Models.MainStats
         {
             var baseAmt = (classInfo.ClassType == ClassTypeEnum.Sorceress ? 45 : 55);
             BasicAmount = classData.HP + classInfo.Level * 1;
-            BonusAmount = classInfo.AngelicPower * 3;
+            BonusAmount = classInfo.AngelicPower * 4;
             TotalAmount = CalculateAmount(classInfo);
             var regenCoeff = DecimalHelper.RoundToDecimals(Math.Pow(Convert.ToDouble(1.05), classInfo.Level / 2), 3);
             BasicRegen = Math.Round(0.024m * classData.HPRegen, 3);
@@ -32,12 +32,12 @@ namespace D4ST_Api.Models.MainStats
 
         public int CalculateAmount(IClassDefinition classInfo)
         {
-            return System.Convert.ToInt32((BasicAmount  + BonusAmount) * (1 + BonusAmountPercentage));
+            return System.Convert.ToInt32((BasicAmount + BonusAmount) * (1 + BonusAmountPercentage));
         }
 
         public decimal CalculateRegen(IClassDefinition classInfo)
         {
-            var totalRegen = Convert.ToDouble(BasicRegen  + BonusRegen);
+            var totalRegen = Convert.ToDouble(BasicRegen + BonusRegen);
             return DecimalHelper.RoundToDecimals(totalRegen * Convert.ToDouble(1 + BonusRegenPercentage), 2);
         }
     }

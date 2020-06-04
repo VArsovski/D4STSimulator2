@@ -9,7 +9,6 @@ export class OfensiveStatsEquippable implements IEquippableAffixStat {
     getZeroStats: (src: any) => any;
 
     private calculatePowerStats(src:any, affix:IItemAffix):IItemAffix {
-        debugger;
         var selectedOfensiveStat = (src as ItemOfensiveStats).EquippableStatData.OutputMeta.SelectedStat;
         var amount = affix.Contents.AffixData[selectedOfensiveStat].Amount;
         var percentage = affix.Contents.AffixData[selectedOfensiveStat].Percentage;

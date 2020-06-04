@@ -16,12 +16,18 @@ import { TriggerTypesEnum, HitEffectTypesEnum, CCEffectTypesEnum, SpellEffectTyp
 import { AffixMetadataEnum } from 'src/_Enums/skillEnums';
 import { SkillVM } from 'src/Models/SkillVM';
 import { IItemAffix } from 'src/Models/ItemAffixes/IItemAffix';
-import { IEffectAffix, SimpleEffectAffix, IEffectAffixHolder } from 'src/Models/ItemAffixes/EffectAffixes/IEffectAffix';
+import { SimpleEffectAffix, IEffectAffixHolder } from 'src/Models/ItemAffixes/EffectAffixes/IEffectAffix';
 import { HitEffectAffix } from 'src/Models/ItemAffixes/EffectAffixes/HitEffectAffix';
 import { SpellEffectAffix } from 'src/Models/ItemAffixes/EffectAffixes/SpellEffectAffix';
 import { CCEffectAffix } from 'src/Models/ItemAffixes/EffectAffixes/CCEffectAffix';
 
 export class CalculationsHelper {
+  getCCTypeDataForArmor(level: number, amount: number) {
+    var armorCalcFactor = 0.05;
+    var armorCalcLeveFactor = Math.pow(1.15, (45 - level)/10);
+    // Set a default of 0.5 minimum per item
+    return Math.round(0.5 + armorCalcFactor * amount * armorCalcLeveFactor  * 10) / 10;
+  }
 
   public static calculateChangeDetails(change: BasicStatsVM, orig: BasicStatsVM) {
     var changedData = new BasicStatsVM();
@@ -506,35 +512,58 @@ export class CalculationsHelper {
   // }
 
   public GetCalculatedFactor(selectedType: string, amount: number, level: number) {
-    var isHeavy = selectedType == Helpers.getPropertyByValue(ArmorTypesEnum, ArmorTypesEnum.Heavy) + "Armor";
-    var isLight = selectedType == Helpers.getPropertyByValue(ArmorTypesEnum, ArmorTypesEnum.Light) + "Armor";
-    // var isMystic = selectedType == Helpers.getPropertyByValue(ArmorTypesEnum, ArmorTypesEnum.Mystic) + "Armor";
+    var isHeavy = selectedType == Helpers.getPropertyByValue(ArmorTypesEnum, ArmorTypesEnum.Heavy);
+    var isLight = selectedType == Helpers.getPropertyByValue(ArmorTypesEnum, ArmorTypesEnum.Light);
+    // var isMystic = selectedType == Helpers.getPropertyByValue(ArmorTypesEnum, ArmorTypesEnum.Mystic);
 
     // Start relative high numbers, then do Diminished returns afterwards
-    var factorZero = isHeavy ? 0.64 : isLight ? 0.42 : 0.28;
-    var factorMin = isHeavy ? 0.18 : isLight ? 0.14 : 0.08;
+    var factorZero = isHeavy ? 0.52 : isLight ? 0.38 : 0.24;
+    var factorMin = isHeavy ? 0.14 : isLight ? 0.14 : 0.20;
 
-    // 16 Armor per level the requirement, as levels go up, the requirement gets a bit higher
-    var amountPerLvl = 20;
+    // 25 Armor per level the requirement, as levels go up, the requirement gets a bit higher
+    var amountPerLvl = 25;
     var lvlCalcFactor = 4;
-    var lvlMaxCoeff = amountPerLvl + Math.round(level/lvlCalcFactor);
+    var lvlMaxCoeff = amountPerLvl + Math.round(2*level/lvlCalcFactor);
     var factorCalc = factorZero;
 
     // Calculate Average of reductions for each LvlCalcFactor levels
-    var maxLvl = 40;
+    var maxLvl = 50;
     var currentLvl = 0;
-    var step = Math.round((factorZero - factorMin) * lvlMaxCoeff/maxLvl * 100) / 100;
+
+    // Calculate factors for each new amount of lvlMaxCoeff amount of Armor in comparison to factorZero
+    var factorDiff = (factorZero - factorMin);
+    var expectedAmountOfFactors = Math.round(level/lvlCalcFactor);
+    var factorLevelReduction = lvlMaxCoeff / maxLvl;
+    var step = Math.round((factorDiff * factorLevelReduction / (expectedAmountOfFactors - 1)) * 100) / 100;
     var factorCalcList:number[] = [];
+
+    console.log(selectedType);
     while(currentLvl <= level && factorCalc > step) {
+      // Each new factor also gets not only linearly reduced by step, but also 15% multiplicatively in addition, this prevents getting crazy reduction numbers on higher levels
+      step *= 1.15;
       factorCalc -= step;
-      // factorCalc *= amountPerLvl * lvlMaxCoeff;
       currentLvl+=lvlCalcFactor;
       factorCalcList.push(Math.round(factorCalc * 100) / 100);
     }
-    
-    var sum = factorCalcList.reduce((a, b) => a + b, 0);
-    var avg = (sum / factorCalcList.length) || 0;
-    
-    return Math.round(avg * 100)/100;
+
+    var total = 0;
+    var cLevel = 0;
+    var factorCalcCount = 0;
+    while(amount > 0) {
+      if (amount > lvlMaxCoeff) {
+        lvlMaxCoeff = amountPerLvl + Math.round(cLevel/lvlCalcFactor);
+        total += (factorCalcList[factorCalcCount] || factorZero) * amountPerLvl;
+        cLevel += amountPerLvl;
+        amount -= amountPerLvl;
+        factorCalcCount +=1;
+      }
+      else {
+        total += factorCalc * amount;
+        amount = 0
+      }
+    }
+
+    var totalCalcReductionFactor = Math.pow(0.72, Math.max(1, (level - 20)/lvlCalcFactor));
+    return Math.round(total * totalCalcReductionFactor * 100)/100;
   }
 }

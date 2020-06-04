@@ -88,7 +88,6 @@ export class ItemAffix implements IItemAffix {
         }
 
         if (statDescr.includes("NaN ") || statDescr.startsWith("0") || statDescr.includes("null") || statDescr.replace("*", "").length == 0) {
-            debugger;
             console.log("Data missing for:");
             console.log(this);
 

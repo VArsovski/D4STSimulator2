@@ -33,11 +33,11 @@
     </div>
     
     <div class="row attacksDisplayHolder">
-        <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/statusimages/PhysicalDamage1.png" text="Physical damage (% Resistance)"></app-CustomCompareTooltip><label>{{ this.DamageData.PhysicalDamage.AvgDamage ? this.DamageData.PhysicalDamage.AvgDamage : this.DamageData.PhysicalDamage.MinDamage + "-" + this.DamageData.PhysicalDamage.MaxDamage}} ({{ this.Resistance.PhysicalResistance.Percentage + "%" }})</label></div>
-        <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/statusimages/FireDamage1.png" text="Fire damage (% Resistance)"></app-CustomCompareTooltip><label>{{ this.DamageData.FireDamage.AvgDamage ? this.DamageData.FireDamage.AvgDamage : this.DamageData.FireDamage.MinDamage + "-" + this.DamageData.FireDamage.MaxDamage}} ({{ this.Resistance.FireResistance.Percentage + "%" }})</label></div>
-        <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/statusimages/PoisonDamage.png" text="Poison damage (% Resistance)"></app-CustomCompareTooltip><label>{{ this.DamageData.PhysicalDamage.AvgDamage ? this.DamageData.PoisonDamage.AvgDamage : this.DamageData.PoisonDamage.MinDamage + "-" + this.DamageData.PoisonDamage.MaxDamage}} ({{ this.Resistance.PoisonResistance.Percentage + "%" }})</label></div>
-        <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/statusimages/ColdDamage.png" text="Cold damage (% Resistance)"></app-CustomCompareTooltip><label>{{ this.DamageData.ColdDamage.AvgDamage ? this.DamageData.ColdDamage.AvgDamage : this.DamageData.ColdDamage.MinDamage + "-" + this.DamageData.ColdDamage.MaxDamage}} ({{ this.Resistance.ColdResistance.Percentage + "%" }})</label></div>
-        <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/statusimages/LightningDamage.jpg" text="Lightning damage (% Resistance)"></app-CustomCompareTooltip><label>{{ this.DamageData.LightningDamage.AvgDamage ? this.DamageData.LightningDamage.AvgDamage : this.DamageData.LightningDamage.MinDamage + "-" + this.DamageData.LightningDamage.MaxDamage}} ({{ this.Resistance.LightningResistance.Percentage + "%" }})</label></div>
+        <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/statusimages/PhysicalDamage1.png" text="Physical damage (% Resistance)"></app-CustomCompareTooltip><label>{{ this.DamageData.PhysicalDamage.AvgDamage ? this.DamageData.PhysicalDamage.AvgDamage : this.DamageData.PhysicalDamage.MinDamage + "-" + this.DamageData.PhysicalDamage.MaxDamage}} ({{'-' + this.Resistance.PhysicalResistance.Percentage + "%" }})</label></div>
+        <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/statusimages/FireDamage1.png" text="Fire damage (% Resistance)"></app-CustomCompareTooltip><label>{{ this.DamageData.FireDamage.AvgDamage ? this.DamageData.FireDamage.AvgDamage : this.DamageData.FireDamage.MinDamage + "-" + this.DamageData.FireDamage.MaxDamage}} ({{'-' + this.Resistance.FireResistance.Percentage + "%" }})</label></div>
+        <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/statusimages/PoisonDamage.png" text="Poison damage (% Resistance)"></app-CustomCompareTooltip><label>{{ this.DamageData.PhysicalDamage.AvgDamage ? this.DamageData.PoisonDamage.AvgDamage : this.DamageData.PoisonDamage.MinDamage + "-" + this.DamageData.PoisonDamage.MaxDamage}} ({{'-' + this.Resistance.PoisonResistance.Percentage + "%" }})</label></div>
+        <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/statusimages/ColdDamage.png" text="Cold damage (% Resistance)"></app-CustomCompareTooltip><label>{{ this.DamageData.ColdDamage.AvgDamage ? this.DamageData.ColdDamage.AvgDamage : this.DamageData.ColdDamage.MinDamage + "-" + this.DamageData.ColdDamage.MaxDamage}} ({{'-' + this.Resistance.ColdResistance.Percentage + "%" }})</label></div>
+        <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip contentImg="../../_Resources/img/statusimages/LightningDamage.jpg" text="Lightning damage (% Resistance)"></app-CustomCompareTooltip><label>{{ this.DamageData.LightningDamage.AvgDamage ? this.DamageData.LightningDamage.AvgDamage : this.DamageData.LightningDamage.MinDamage + "-" + this.DamageData.LightningDamage.MaxDamage}} ({{'-' + this.Resistance.LightningResistance.Percentage + "%" }})</label></div>
     </div>
     <div class="row attacksDisplayHolder2">
         <div class="customFontBlue h3 sizeCrystal iconTop col"><app-CustomCompareTooltip classText="h4" contentImg="../../_Resources/img/statusimages/AttackKnockback.jpg" text="PhysicalOrCC damage bonuses (Bonus/Resistance) <br/><br/> Physical melee attacks and on-hit CC in form of Stun, Knockback, Knockdown.. (Rolls extra on Hammer, Axe, Staff)">
@@ -56,6 +56,7 @@
         <li class="customFontBlue h3">
             <app-CustomCompareTooltip contentImg="../../_Resources/img/statusimages/ArmorHeavy.png" contentLabel="Armor" classLabel="h4" text="
             Less % damage taken from physical hits (in %)
+        <br/>
         <br/> 3 types of Armor, Heavy best for direct/physical reduction, but each have different CC reduction bonuses:
         <br/> Heavy armor reduces: ReduceArmor, Bleed, Knockback, Stun suffered
         <br/> Light armor reduces: Root, Wither, Blind, Burn suffered
@@ -64,7 +65,7 @@
             <!-- <label *ngIf="this.ArmorData" style="transform: translate(0%, 20%);" class="customFontRed h2"></label> -->
 
             <!-- contentImg="../../_Resources/img/statusimages/PhysicalDamage1.png" -->
-            <app-CustomCompareTooltip class="armorDataDetailsHolder" classButton="verticalButtonTop" classLabel="customFontRed h2" contentLabel="{{this.ArmorData.HeavyArmor.Amount + this.ArmorData.LightArmor.Amount + this.ArmorData.MysticArmor.Amount}}" text="
+            <app-CustomCompareTooltip class="armorDataDetailsHolder" classButton="verticalButtonTop" classLabel="{{this.TotalArmorClassStr}}" contentLabel="{{this.ArmorData.HeavyArmor.Amount + this.ArmorData.LightArmor.Amount + this.ArmorData.MysticArmor.Amount}}" text="
             Heavy: {{this.ArmorData.HeavyArmor.Amount}}
             <br/>
             Light: {{this.ArmorData.LightArmor.Amount}}
@@ -78,19 +79,19 @@
     
         <li class="armorDetailDisplayHolder">
             <app-CustomCompareTooltip width="45px" height="45px" classLabel="h4" contentImg="../../_Resources/img/statusimages/defense_stun.png" contentLabel="" classLabel="h4" text="Stun/Knockdown Damage/Duration [Reduction/Chance/Bonus] (bonus from Heavy armor)"></app-CustomCompareTooltip>
-            <label *ngIf="this.ArmorData" style="transform: translate(-180%, 140%);" class="customFontRed h3">{{this.CCEffectsData.StunOrKnockdown.ReducePercentage + "%"}}</label>
-            <app-CustomCompareTooltip width="45px" height="45px" classLabel="h4" contentImg="../../_Resources/img/statusimages/defense_knockback.png" contentLabel="" classLabel="h4" text="Knockback/Bleed Damage/Duration [Reduction/Chance/Bonus] (bonus from Heavy armor)"></app-CustomCompareTooltip>
-            <label *ngIf="this.ArmorData" style="transform: translate(-180%, 140%);" class="customFontRed h3">{{this.CCEffectsData.KnockbackOrBleed.ReducePercentage + "%"}}</label>
+            <label *ngIf="this.ArmorData" style="position:relative; right:20%; top:50px" class="customFontRed h3">{{(-this.CCEffectsData.StunOrKnockdown.ReducePercentage || 0  | number:'1.0-2') + "%"}}</label>
+            <app-CustomCompareTooltip width="45px" height="45px" classLabel="h4" contentImg="../../_Resources/img/statusimages/defense_root.jpg" contentLabel="" classLabel="h4" text="Root/Blind Damage/Duration [Reduction/Chance/Bonus] (bonus from Light armor)"></app-CustomCompareTooltip>
+            <label *ngIf="this.ArmorData" style="position:relative; right:20%; top:50px" class="customFontRed h3">{{(-this.CCEffectsData.BlindOrRoot.ReducePercentage || 0  | number:'1.0-2') + "%"}}</label>
             <app-CustomCompareTooltip width="45px" height="45px" classLabel="h4" contentImg="../../_Resources/img/statusimages/defense_burn.jpg" contentLabel="" classLabel="h4" text="Conflagrate/Wither Damage/Duration [Reduction/Chance/Bonus] (bonus from Mystic armor)"></app-CustomCompareTooltip>
-            <label *ngIf="this.ArmorData" style="transform: translate(-180%, 140%);" class="customFontRed h3">{{this.CCEffectsData.WitherOrConflagrate.ReducePercentage + "%"}}</label>
+            <label *ngIf="this.ArmorData" style="position:relative; right:20%; top:50px" class="customFontRed h3">{{(-this.CCEffectsData.WitherOrConflagrate.ReducePercentage || 0  | number:'1.0-2')+ "%"}}</label>
         </li>
         <li class="armorDetailDisplayHolder" style="margin-top:2rem">
-            <app-CustomCompareTooltip width="45px" height="45px" classLabel="h4" contentImg="../../_Resources/img/statusimages/defense_blind.png" contentLabel="" classLabel="h4" text="Curse/Freeze Damage/Duration [Reduction/Chance/Bonus] (bonus from Mystic armor)"></app-CustomCompareTooltip>
-            <label *ngIf="this.ArmorData" style="transform: translate(-180%, 140%);" class="customFontRed h3">{{this.CCEffectsData.FreezeOrCurse.ReducePercentage + "%"}}</label>
-            <app-CustomCompareTooltip width="45px" height="45px" classLabel="h4" contentImg="../../_Resources/img/statusimages/defense_root.jpg" contentLabel="" classLabel="h4" text="Root/Blind Damage/Duration [Reduction/Chance/Bonus] (bonus from Light armor)"></app-CustomCompareTooltip>
-            <label *ngIf="this.ArmorData" style="transform: translate(-180%, 140%);" class="customFontRed h3">{{this.CCEffectsData.BlindOrRoot.ReducePercentage + "%"}}</label>
+            <app-CustomCompareTooltip width="45px" height="45px" classLabel="h4" contentImg="../../_Resources/img/statusimages/defense_knockback.png" contentLabel="" classLabel="h4" text="Knockback/Bleed Damage/Duration [Reduction/Chance/Bonus] (bonus from Heavy armor)"></app-CustomCompareTooltip>
+            <label *ngIf="this.ArmorData" style="position:relative; right:20%; top:50px" class="customFontRed h3">{{(-this.CCEffectsData.KnockbackOrBleed.ReducePercentage || 0  | number:'1.0-2')+ "%"}}</label>
             <app-CustomCompareTooltip width="45px" height="45px" classLabel="h4" contentImg="../../_Resources/img/statusimages/defense_reducearmor.png" contentLabel="" classLabel="h4" text="ReduceArmor/Levitate Damage/Duration [Reduction/Chance/Bonus] (bonus from Light armor)"></app-CustomCompareTooltip>
-            <label *ngIf="this.ArmorData" style="transform: translate(-180%, 140%);" class="customFontRed h3">{{this.CCEffectsData.ReduceArmorOrLevitate.ReducePercentage + "%"}}</label>
+            <label *ngIf="this.ArmorData" style="position:relative; right:20%; top:50px" class="customFontRed h3">{{(-this.CCEffectsData.ReduceArmorOrLevitate.ReducePercentage || 0 | number:'1.0-2') + "%"}}</label>
+            <app-CustomCompareTooltip width="45px" height="45px" classLabel="h4" contentImg="../../_Resources/img/statusimages/defense_freeze.png" contentLabel="" classLabel="h4" text="Curse/Freeze Damage/Duration [Reduction/Chance/Bonus] (bonus from Mystic armor)"></app-CustomCompareTooltip>
+            <label *ngIf="this.ArmorData" style="position:relative; right:20%; top:50px" class="customFontRed h3">{{(-this.CCEffectsData.FreezeOrCurse.ReducePercentage || 0  | number:'1.0-2') + "%"}}</label>
         </li>
     </ul>
     

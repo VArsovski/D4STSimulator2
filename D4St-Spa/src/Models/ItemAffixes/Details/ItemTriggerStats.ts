@@ -80,7 +80,7 @@ export class ItemTriggerStats implements IEquippableAffixStat, IDescribable {
         var withoutChanceStr = "Effects of type " + Helpers.getPropertyByValue(CCEffectTypesEnum, this[this.SelectedType]) + " do additional " + this.Amount + "% damage";
 
         if (!this.Chance) {
-            debugger;
+            // debugger;
         }
 
         return this.Chance ? withChanceStr : withoutChanceStr;

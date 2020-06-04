@@ -107,7 +107,7 @@ export class ItemSecondaryBasicStats implements IEquippableAffixStat, IDescribab
 
         // TODO: MAKE ITEMSIMPLESTATS RETURN PROPERLY THE SUBVALUES
         if (this.selectedStat == SecondaryStatTypesEnum.EmpowerTrapsAndSummons) {
-            debugger;
+            // debugger;
         }
 
         var selectedSubStat = Helpers.getPropertyByValue(selectedSubStatType, selectedSubStatObj.Type) || selectedSubStatObj.Type;
@@ -139,7 +139,7 @@ export class ItemSecondaryBasicStats implements IEquippableAffixStat, IDescribab
         }
 
         if (!this.EquippableStatData.OutputMeta.SelectedStat) {
-            debugger;
+            // debugger;
             return "";
         }
 

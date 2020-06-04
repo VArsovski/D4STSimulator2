@@ -219,9 +219,6 @@ export class ItemDefensiveStatsDetail implements IEquippableAffixStat {
                 str += this.Chance + "% chance " + " of " +  castType + " attacks to return as " + Helpers.getPropertyByValue(DefensiveStatsEnum, this.Type);
         }
 
-        if (str.startsWith("+")) {
-            debugger;
-        }
         return str;
     }
 

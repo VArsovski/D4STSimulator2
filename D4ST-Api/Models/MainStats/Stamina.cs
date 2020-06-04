@@ -21,7 +21,7 @@ namespace D4ST_Api.Models.MainStats
         {
             var baseAmt = classInfo.ClassType == ClassTypeEnum.Druid ? 60 : classInfo.ClassType == ClassTypeEnum.Barbarian ? 50 : 35;
             BasicAmount = classData.Stamina + classInfo.Level * 1;
-            BonusAmount = classInfo.AncestralPower * 3;
+            BonusAmount = classInfo.AncestralPower * 4;
             TotalAmount = CalculateAmount(classInfo);
             var regenCoeff = DecimalHelper.RoundToDecimals(Math.Pow(Convert.ToDouble(1.05), classInfo.Level/2), 3);
             var classCoeff = Math.Round((classInfo.ClassType == ClassTypeEnum.Druid ? 0.050m : 0.040m) * baseAmt, 3);
@@ -33,13 +33,13 @@ namespace D4ST_Api.Models.MainStats
 
         public int CalculateAmount(IClassDefinition classInfo)
         {
-            return System.Convert.ToInt32((BasicAmount  + BonusAmount) * (1 + BonusAmountPercentage));
+            return System.Convert.ToInt32((BasicAmount + BonusAmount) * (1 + BonusAmountPercentage));
         }
 
         public decimal CalculateRegen(IClassDefinition classInfo)
         {
             // var life = CalculateAmount(level, classType);
-            var totalRegen = Convert.ToDouble(BasicRegen  + BonusRegen);
+            var totalRegen = Convert.ToDouble(BasicRegen + BonusRegen);
             return DecimalHelper.RoundToDecimals(totalRegen * Convert.ToDouble(1 + BonusRegenPercentage), 2);
         }
     }

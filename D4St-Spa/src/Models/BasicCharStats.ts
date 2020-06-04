@@ -20,5 +20,6 @@ export class BasicCharStats {
         // this.Level = 1;
         if (classType != 0)
             this.ClassType = classType;
+        this.Level = 1;
     }
 }
