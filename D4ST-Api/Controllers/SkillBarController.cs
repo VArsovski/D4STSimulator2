@@ -20,7 +20,7 @@ namespace D4ST_Api.Controllers
     public class SkillBarController : ControllerBase
     {
         private const string _LEVEL_INVALID = "Bad level data inserted";
-        private const int _MAX = 12;
+        private const int _MAX = 20;
 
         private readonly IConfiguration _config;
         public SkillBarController(IConfiguration config) {
@@ -96,24 +96,29 @@ namespace D4ST_Api.Controllers
         [HttpPost]
         [Route("LevelUp")]
         public IActionResult LevelUp([FromBody]SkillDTO data) {
+            // Setup
             var id = data.Id;
+            var level = data.Level;
             var sd = data.SkillData.PowerData;
+            var scs = new SkillCostStat(sd);
+            if (level == 0)
+                level++;
+            sd.Level = level;
+            sd.Tier = data.Tier;
+            
             var su = data.SkillData.PowerUp;
-            // var levelValid = sd.Level > 0 && sd.Level < _MAX;
-            // if (!levelValid)
-            //     return BadRequest(_LEVEL_INVALID);
-            // else
-            // {
-                var level = sd.Level;
-                sd.Level = level + 1;
-                var scs = new SkillCostStat(sd);
-                var skillData = new Skill(id, data, scs);
-                sd.Level = level + 2;
-                var nextLvlSkillData = new Skill(id, data, scs);
-                if (level == _MAX)
-                    nextLvlSkillData = skillData;
-                return Ok(new { Current = skillData, New = nextLvlSkillData, IsMaxxed = level == _MAX });
-            //}
+            // su.CD = scs.CD;
+            // su.Cost = scs.Cost;
+            // su.Charges = scs.Charges;
+            su.Level = level + 1;
+            su.Tier = data.Tier;
+
+            // Modify
+            data.SkillData.PowerData = new DamageSkillStat(level == _MAX ? sd : su);
+            var newUp = new DamageSkillStat(su.CalculateSkillPower(su.Level+1).CalculateSkillCosts(su.Level+1));
+            data.SkillData.PowerUp = level == _MAX ? sd : newUp;
+            data.Level = level;
+            return Ok(data);
         }
 
         [HttpPost]
@@ -143,8 +148,8 @@ namespace D4ST_Api.Controllers
             var dataFolder =_config["DataFolders:DataFolder"];
 
             // _config.ContentRootPath
-            var path = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory()).FullName, publishFolder, dataFolder, "SkillDataSeed.json");
-            var skillStr = System.IO.File.ReadAllText(path);
+            var path = "SkillDataSeed.json";//dataFolder + Path.DirectorySeparatorChar + "SkillDataSeed.json";
+            // var skillStr = System.IO.File.ReadAllText(path);
             string lines = System.IO.File.ReadAllText(path, System.Text.Encoding.UTF8);
             skillSeedData = JsonConvert.DeserializeObject<List<SkillSeedData>>(lines);
             skillSeedData.ForEach(ssd => {

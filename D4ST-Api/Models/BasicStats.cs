@@ -16,10 +16,5 @@ namespace D4ST_Api.Models
         public IHitProcAffix StaminaSunder { get; internal set; }
         public IHitProcAffix SpellPowerBonus { get; set; }
         public IHitProcAffix SpellPowerReduction { get; set; }
-
-        // public IMainStatAffix CCDuration { get; set; }
-        // public IMainStatAffix DebuffDuration { get; set; }
-        // public IHitProcAffix Multicast { get; set; }
-        // public IHitProcAffix Critical { get; set; }
     }
 }

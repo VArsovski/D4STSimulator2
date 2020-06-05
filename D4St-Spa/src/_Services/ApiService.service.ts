@@ -66,7 +66,7 @@ export class ApiServiceService {
           // headerDict["Content-Length"] = JSON.stringify(model).length;
           var requestOptions = { headers: headerDict };
           var token = "";
-          this.http.get(this.baseUrl + "Auth/InitAccess/" + "?Name=" + environment.accessorHost + "&Key=" + environment.accessorKey, requestOptions)
+          this.http.get(this.baseUrl + "Auth/InitAccess?Name=" + environment.accessorHost + "&Key=" + environment.accessorKey, requestOptions)
           .pipe(
             map((response: any) => {
             token = response.token;
@@ -182,7 +182,9 @@ export class ApiServiceService {
       var url = this.baseUrl + "SkillBar/LevelUp";
       this.http.post(url, model, this.requestOptions)
       .pipe(map((response:any) => {
-        // debugger;
+        this.LevelUpSkillVM = model;
+        this.LevelUpSkillVM.level = response.level;
+        this.LevelUpSkillVM.skillData = response.skillData;
       }))
       .subscribe(() => {
         resolve(this.LevelUpSkillVM);
@@ -284,7 +286,7 @@ export class ApiServiceService {
   private extractSkillDTOFromResponse(element: any): ISkillDTO {
     var skill = new SkillDTO();
     skill.id = element.id;
-    skill.level = element.skillData.level;
+    skill.level = element.skillData.powerData.level || element.level;
     skill.name = element.name;
     skill.description = element.description;
     skill.tier = element.tier;

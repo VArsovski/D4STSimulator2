@@ -16,6 +16,8 @@ import { ApiServiceService } from 'src/_Services/ApiService.service';
 export class SkillsComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['model']) {
+      // debugger;
+      // TODO: FIX update of PreviewChanges after LvlUp
       var updatedModel = changes['model'].currentValue;
     }
   }

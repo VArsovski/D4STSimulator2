@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using D4ST_Api.Models.Enums;
-using D4ST_Api.Models.StatCalculators;
+﻿using D4ST_Api.Models.StatCalculators;
 
 namespace D4ST_Api.Models
 {
@@ -27,21 +25,13 @@ namespace D4ST_Api.Models
             ds.CD = cs.CD;
             ds.Charges = cs.Charges;
             var dsUp = new DamageSkillStat(ds);
+            dsUp.Cost = cs.Cost;
+            dsUp.CD = cs.CD;
+            dsUp.Charges = cs.Charges;
             dsUp = dsUp.CalculateSkillPower(ds.Level+1).CalculateSkillCosts(ds.Level+1);
             // var sdad = new SkillDamageAffixData(ds, dsUp, cs);
             data.SkillData.PowerUp = dsUp;
             this.Data = data;
         }
-
-        // public Skill(int id, string name, ISkillDamageAffixData ds, ISkillCostStat cs, List<CastTypesEnum> castTypes, List<DamageTypesEnum> damageTypes, bool isCC = false)
-        // {
-        //     this.Id = id;
-        //     this.Name = name;
-        //     this.Tier = ds?.PowerData?.Tier ?? 0;
-        //     this.Level = ds?.PowerData?.Level ?? 0;
-        //     var dsUp = new DamageSkillStat(ds.PowerData);
-        //     dsUp = dsUp.CalculateSkillPower(ds.PowerData.Level+1).CalculateSkillCosts(ds.PowerData.Level+1);
-        //     this.Data = new SkillDTO(id, name, this.Level, ds, cs, castTypes, damageTypes, isCC);
-        // }
     }
 }

@@ -1,0 +1,35 @@
+[
+    {
+    "Id":"1",
+    "Name":"Barbarian",
+    "HP":140,
+    "Resource":50,
+    "Stamina":75,
+    "HPRegen":0.065,
+    "ResourceRegen":0.035,
+    "StaminaRegen":0.065,
+    "Description": "The Barbarian is a fierce melee warrior excelling in 1 on 1 combat with the tougher ones. In order to deal with the problem of fightning multiple opponents, his [Finishers] are also/mainly [Setup]s as well. <br/><br/> This 'phylosophy of combat' allows the Barbarian endure (or dominate) the battlefield in multiple '1v1 resettable executions' in succession, or remove/single-out opponents from battle. <br/><br/> Thematically the Barbarian is a largely a close-combat (with elements of wrestling even) fighter. He also has some primitive-themed utility abilities that we're certain will make the right impression/s"
+    },
+    {
+    "Id":"2",
+    "Name":"Sorceress",
+    "HP":80,
+    "Resource":120,
+    "Stamina":60,
+    "HPRegen":0.035,
+    "ResourceRegen":0.065,
+    "StaminaRegen":0.050,
+    "Description": "The Sorceress is a 'master of spectacles' and overall the 'maker' of a large scale desctruction. Using the powerful elements of Fire, Lightning, and Ice at her disposal, the battlefield often looks like a figment of her own creation. <br/><br/> Combat-wise the class doesn't have as many disablers as the Barbarian (or Druid), but surely has the biggest impact when hitting a one. <br/><br/> This class is the epitome of 'Master of Comboes' theme, as many abilities have a [Delayed] impact with a delay, but often surely worth the wait"
+    },
+    {
+    "Id":"3",
+    "Name":"Druid",
+    "HP":105,
+    "Resource":65,
+    "Stamina":100,
+    "HPRegen":0.050,
+    "ResourceRegen":0.050,
+    "StaminaRegen":0.100,
+    "Description": "The Druid is a very versatile fighter that can either excell from close combat or 'fire a few ' from safer distance. The Finishers most of the times buff-duration-based but sometimes more destructive in nature. <br/><br/> Has 3 main fighting forms/shapes (Human, Werewolf and Werebear) and can switch relatively seemlesly between them. <br/><br/> That being said, the Druid is the Master of 'Balance' in terms of ofense/defense combat but has an abundance of [Setup]s for making that happen. From AoE disables like Fissure, and AoE buffs like Eclypse, to manipulating the whole world-wide Storm powers"
+    }
+]

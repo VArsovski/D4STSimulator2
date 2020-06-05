@@ -8,14 +8,14 @@
           <label class="clearfix" *ngIf="this.model.data.skillData && model.data.skillData.powerData.from != 0">
             {{"Damage (" + model.data.skillData.powerData.from + " - " + model.data.skillData.powerData.to + ")" }}</label>
           <label class="clearfix" *ngIf="this.previewChanges.skillData && this.previewChanges.skillData.powerData.from != 0">
-            {{"+(" + previewChanges.skillData.powerData.from + " - " + previewChanges.skillData.powerData.to + ")" }}</label>
+            {{"+(" + (previewChanges.skillData.powerData.from || 0) + " - " + (previewChanges.skillData.powerData.to || 0) + ")" }}</label>
         </div></div>
       </div>
       <div class="col-1">
         <div class="row"><div class="col">
           <label class="clearfix" *ngIf="model.data.angelicAffix.powerData.SelectedAffix">{{"Cost: " + model.data.skillData.powerData.cost }}</label>
           <label class="clearfix" *ngIf="this.previewChanges.skillData && previewChanges.skillData.powerData.cost != 0">
-            {{"+(" + previewChanges.skillData.powerData.cost+ ")" }}</label>
+            {{"+(" + previewChanges.skillData.powerData.cost || 0 + ")" }}</label>
         </div></div>
         <div class="row"><div class="col">
           <label class="clearfix" *ngIf="model.data.angelicAffix.powerData.SelectedAffix">CD: {{ model.data.skillData.powerData.cd }}</label>
