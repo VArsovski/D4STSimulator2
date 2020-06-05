@@ -87,18 +87,18 @@ export class ItemAffix implements IItemAffix {
             statDescr = statDescr.replace("****", "***");
         }
 
-        if (statDescr.includes("NaN ") || statDescr.startsWith("0") || statDescr.includes("null") || statDescr.replace("*", "").length == 0) {
-            console.log("Data missing for:");
-            console.log(this);
+        // if (statDescr.includes("NaN ") || statDescr.startsWith("0") || statDescr.includes("null") || statDescr.replace("*", "").length == 0) {
+        //     console.log("Data missing for:");
+        //     console.log(this);
 
-            var inputData = this.Contents.EquippableStatData.InputMeta;
-            var outputData = this.Contents.EquippableStatData.OutputMeta;
-            var innerInputData = this.Contents.AffixData ? this.Contents.AffixData.EquippableStatData["InputMeta"] : "";
-            var innerOutputData = this.Contents.AffixData ? this.Contents.AffixData.EquippableStatData["OutputMeta"] : "";
+        //     var inputData = this.Contents.EquippableStatData.InputMeta;
+        //     var outputData = this.Contents.EquippableStatData.OutputMeta;
+        //     var innerInputData = this.Contents.AffixData ? this.Contents.AffixData.EquippableStatData["InputMeta"] : "";
+        //     var innerOutputData = this.Contents.AffixData ? this.Contents.AffixData.EquippableStatData["OutputMeta"] : "";
 
-            suffix += JSON.stringify(outputData || inputData);
-            suffix += JSON.stringify(innerOutputData || innerInputData);
-        }
+        //     suffix += JSON.stringify(outputData || inputData);
+        //     suffix += JSON.stringify(innerOutputData || innerInputData);
+        // }
 
         return statDescr + " " + conditionStr + suffix;
     }

@@ -23,6 +23,9 @@ namespace D4ST_Api.Models
             this.Tier = data.Tier;
             this.Level = data.Level;
             var ds = data.SkillData.PowerData;
+            ds.Cost = cs.Cost;
+            ds.CD = cs.CD;
+            ds.Charges = cs.Charges;
             var dsUp = new DamageSkillStat(ds);
             dsUp = dsUp.CalculateSkillPower(ds.Level+1).CalculateSkillCosts(ds.Level+1);
             // var sdad = new SkillDamageAffixData(ds, dsUp, cs);

@@ -29,6 +29,8 @@ namespace D4ST_Api.Models
             this.Description = description;
             this.Level = level != 0 ? level : skillStats?.PowerData?.Level ?? 0;
             this.Tier = skillStats?.PowerData?.Tier ?? 0;
+            skillStats.PowerData.CD = cs?.CD ?? 0;
+            skillStats.PowerData.Cost = cs?.Cost ?? 0;
             this.SkillData = new SkillDamageAffixData(skillStats?.PowerData, skillStats?.PowerUp);
             this.CastTypes = castTypes ?? new List<CastTypesEnum>();
             this.DamageTypes = damageTypes ?? new List<DamageTypesEnum>();

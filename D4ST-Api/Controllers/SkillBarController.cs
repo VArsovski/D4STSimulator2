@@ -50,7 +50,8 @@ namespace D4ST_Api.Controllers
                         var scs = new SkillCostStat(skillData);
                         var data = new SimpleSkillDamageAffixData();
                         data.PowerData = skill.SkillData;
-                        var skillToAdd = new Skill(skill.Id, new SkillDTO(skill.Id, skill.Name, skill.Description, skillLevel, data, scs, skill.AttackTypes, skill.DamageTypes, skill.SkillMetadata, skill.SkillClassification, skillData.IsCC), scs);
+                        var sd = new SkillDTO(skill.Id, skill.Name, skill.Description, skillLevel, data, scs, skill.AttackTypes, skill.DamageTypes, skill.SkillMetadata, skill.SkillClassification, skillData.IsCC);
+                        var skillToAdd = new Skill(skill.Id, sd, scs);
                         var castTypesData = "CastTypes: [" + string.Join(", ", skillToAdd.Data.CastTypes.Select(t => EnumHelper.GetName<CastTypesEnum>(t))) + "]";
                         var damageTypesData = "EmpoweredByDamageTypes: [" + string.Join(", ", skillToAdd.Data.DamageTypes.Select(t => EnumHelper.GetName<DamageTypesEnum>(t))) + "]";
                         // [" + string.Join(", ", skillToAdd.Data.SkillCategoriesMetadata.Select(t => EnumHelper.GetName<SkillCategoriesEnum>(t))) + "]";
@@ -93,15 +94,16 @@ namespace D4ST_Api.Controllers
         }
 
         [HttpPost]
+        [Route("LevelUp")]
         public IActionResult LevelUp([FromBody]SkillDTO data) {
             var id = data.Id;
             var sd = data.SkillData.PowerData;
             var su = data.SkillData.PowerUp;
-            var levelValid = sd.Level > 0 && sd.Level < _MAX;
-            if (!levelValid)
-                return BadRequest(_LEVEL_INVALID);
-            else
-            {
+            // var levelValid = sd.Level > 0 && sd.Level < _MAX;
+            // if (!levelValid)
+            //     return BadRequest(_LEVEL_INVALID);
+            // else
+            // {
                 var level = sd.Level;
                 sd.Level = level + 1;
                 var scs = new SkillCostStat(sd);
@@ -111,7 +113,7 @@ namespace D4ST_Api.Controllers
                 if (level == _MAX)
                     nextLvlSkillData = skillData;
                 return Ok(new { Current = skillData, New = nextLvlSkillData, IsMaxxed = level == _MAX });
-            }
+            //}
         }
 
         [HttpPost]
