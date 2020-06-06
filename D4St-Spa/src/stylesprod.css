@@ -389,7 +389,6 @@ input[type=checkbox] {
     background-repeat: no-repeat;
     bottom: calc(80% + 25px);
     left: calc(72% + 15px);
-    /* transform: translate(175%, calc(-150% - 20px)); */
 }
 
 .inventoryHolder2 {
@@ -400,7 +399,6 @@ input[type=checkbox] {
     background-repeat: no-repeat;
     bottom: calc(80% + 25px);
     left: calc(72% + 15px);
-    /* transform: translate(175%, calc(-150% - 20px)); */
     opacity: 0.7;
     position:relative;
 }
