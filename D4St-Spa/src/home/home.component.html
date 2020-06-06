@@ -35,11 +35,13 @@
       <div class="col-1 customHeaderFont h2">SKILLS:</div>
       <app-skillBar [(equippedModel)]="this.skillEquipModel" (selectEquipEmitter)="SkillSelectHandler($event)"></app-skillBar>
     </div>
-    <div *ngFor="let skillTier of this.skillTiers">
-      <app-skillPicker [(model)]="skillTier" (skillEquippedEmitter)="EquipSkillHandler($event)"></app-skillPicker>
+    <div class="row skillPickerContainer">
+      <div class="row" *ngFor="let skillTier of this.skillTiers">
+        <app-skillPicker [(model)]="skillTier" (skillEquippedEmitter)="EquipSkillHandler($event)"></app-skillPicker>
+      </div>
     </div>
     <div class="row">
-      <div class="col">
+      <div class="col inventoryAreaHolder">
         <app-inventory [inventoryItem]="this.inventoryData" [basicCharStats]="model.BasicData"></app-inventory>
       </div>
     </div>

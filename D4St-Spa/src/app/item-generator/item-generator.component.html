@@ -1,6 +1,6 @@
 <div class="row titleRowCustom itemGeneratorBorder">
     <div class="col jumbotron jumbotron-transparentCustom itemGeneratorBorder">
-        <h2 class="display-4 customHeaderFontLeftTop" style="transform: translate(-4%, 0%);">Try the Item Generator</h2>
+        <h2 class="display-4 customHeaderFontRightTop">Try the Item Generator</h2>
     </div>
 </div>
 
@@ -24,9 +24,9 @@
         </div>
     </div>
 
-    <div class="itemGenerator">
+    <div class="itemGenerator" style="transform: translate(-5%, 50%);">
         <div class="col jumbotron jumbotron-transparentCustom itemGeneratorBorder">
-            <div style="width: 200%; transform: translate(-3%, 0);" class="row text-left">
+            <div class="row text-left">
                 <div class="col sizeThumbnail">
                     <label *ngIf="this.levelRequirement > this.BasicData.Level" class="customFontRed customFontRedProd h3">Level requirement {{this.levelRequirement}}</label>
                     <label *ngIf="this.levelRequirement <= this.BasicData.Level" class="customFontGreen h3">Level requirement {{this.levelRequirement}}</label>
@@ -38,7 +38,7 @@
                     <a (click)="EquipItem(this.selectedItem)" class="sizeMid ornament blueGlow redGlowHover customFontBlue h3"><img src="../_Resources/img/selectors/skull-1.png" style="transform: scale(0.5, 0.5);" alt="Equip">Equip</a>
                 </div>
             </div>
-            <div style="width: 200%; transform: translate(-3%, 0);" class="row text-left" *ngFor="let affix of this.generatedAffixes; let i = index">
+            <div class="row text-left" *ngFor="let affix of this.generatedAffixes; let i = index">
                 <div class="col h3 customFontRed customFontRedProd" *ngIf="(affix.Condition != null && affix.Condition?.Condition && !affix.ConditionSatisfied)">{{this.selectedDescriptions[i]}}</div>
                 <div class="col h3 customFontGreen" *ngIf="(affix.Condition != null && affix.Condition?.Condition && affix.ConditionSatisfied)">{{this.selectedDescriptions[i]}}</div>
                 <div class="col h3 customFontGreen" *ngIf="affix.Condition == null">{{this.selectedDescriptions[i]}}</div>

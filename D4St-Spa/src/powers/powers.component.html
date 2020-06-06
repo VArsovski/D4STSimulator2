@@ -1,11 +1,11 @@
 <div *ngIf="this.model?.BasicData">
-  <div id="powerDetails" class="row customFontRed customFontRedProd" style="position:relative; left:54%; width:150%; padding-right: 20rem;">
+  <div id="powerDetails" class="row customFontRed customFontRedProd" style="position:relative; left:24%; width:150%; padding-right: 20rem;">
     <div class="col-3 h1">Angelic:  <a class="sizeSmall ornament yellowGlow blueGlowHover" (mouseout)="PowerUpPreviewCancel()" (mouseover)="PowerUpPreview(1)" (click)="PowerUp(1,1)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a> {{this.model.BasicData.AngelicPower}}</div>
     <div class="col-3 h1">Demonic:  <a class="sizeSmall ornament redGlow blueGlowHover"    (mouseout)="PowerUpPreviewCancel()" (mouseover)="PowerUpPreview(2)" (click)="PowerUp(2,1)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a> {{this.model.BasicData.DemonicPower}}</div>
     <div class="col-3 h1">Ancestral:<a class="sizeSmall ornament purpleGlow blueGlowHover" (mouseout)="PowerUpPreviewCancel()" (mouseover)="PowerUpPreview(3)" (click)="PowerUp(3,1)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a> {{this.model.BasicData.AncestralPower}}</div>
   </div>
 
-  <div class="row" style="width:120%; transform:translate(20%, 25%)">
+  <div class="row" style="width:120%; transform:translate(20%)">
     <div class="col-3 h2 customFontRed customFontRedProd">
       Powers:
       <div>
@@ -29,8 +29,8 @@
     </div>
   </div>
 
-  <div class="row" style="width:120%;transform:translate(20%, 25%)">
-    <div class="col-3 h2 customFontBlue">
+  <div class="row" style="width:120%;transform:translate(20%)">
+    <div class="col-3 h2 customFontBlue" id="giftsSummary">
       Gifts:
       <div>
         {{this.model.BasicData.GiftsLeft || 0}}
