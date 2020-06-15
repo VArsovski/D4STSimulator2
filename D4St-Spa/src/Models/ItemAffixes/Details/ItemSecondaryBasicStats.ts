@@ -133,8 +133,8 @@ export class ItemSecondaryBasicStats implements IEquippableAffixStat, IDescribab
             if (!this[selectedStat]) {
                 this.selectedStat = this.GetSelectedStat();
                 selectedStat = Helpers.getPropertyByValue(SecondaryStatTypesEnum, this.selectedStat);
-                console.log(selectedStat);
-                console.log(this);
+                // console.log(selectedStat);
+                // console.log(this);
             }
         }
 

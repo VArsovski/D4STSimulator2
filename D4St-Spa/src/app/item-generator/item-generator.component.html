@@ -39,9 +39,9 @@
                 </div>
             </div>
             <div class="row text-left" *ngFor="let affix of this.generatedAffixes; let i = index">
-                <div class="col h3 customFontRed customFontRedProd" *ngIf="(affix.Condition != null && affix.Condition?.Condition && !affix.ConditionSatisfied)">{{this.selectedDescriptions[i]}}</div>
-                <div class="col h3 customFontGreen" *ngIf="(affix.Condition != null && affix.Condition?.Condition && affix.ConditionSatisfied)">{{this.selectedDescriptions[i]}}</div>
-                <div class="col h3 customFontGreen" *ngIf="affix.Condition == null">{{this.selectedDescriptions[i]}}</div>
+                <div style="word-wrap: break-word;" class="col h3 customFontRed customFontRedProd" *ngIf="(affix.Condition != null && affix.Condition?.Condition && !affix.ConditionSatisfied)">{{this.selectedDescriptions[i]}}</div>
+                <div style="word-wrap: break-word;" class="col h3 customFontGreen" *ngIf="(affix.Condition != null && affix.Condition?.Condition && affix.ConditionSatisfied)">{{this.selectedDescriptions[i]}}</div>
+                <div style="word-wrap: break-word;" class="col h3 customFontGreen" *ngIf="affix.Condition == null">{{this.selectedDescriptions[i]}}</div>
             </div>
         </div>
     </div>

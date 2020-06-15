@@ -155,8 +155,8 @@ export class ItemDefensiveStatsDetail implements IEquippableAffixStat {
         : Helpers.getPropertyByValue(ResistanceTypesEnum, this.DamageType);
 
         if (!damageType) {
-            console.log("ItemDefensiveStats, data failed:");
-            console.log(this);
+            // console.log("ItemDefensiveStats, data failed:");
+            // console.log(this);
         }
 
         var castType = Helpers.getPropertyByValue(CastTypesEnum, this.CastType);

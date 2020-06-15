@@ -64,7 +64,7 @@ export class SkillsComponent implements OnInit, OnChanges {
 
   async EmpowerAffix(power: number, levels: number) {
     // TODO: EmpowerAffix
-    console.log("TODO: EmpowerAffix");
+    // console.log("TODO: EmpowerAffix");
   }
 
   async PreviewEmpower(power: number) {

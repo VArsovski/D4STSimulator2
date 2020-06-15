@@ -47,11 +47,11 @@ export class ItemConditionalBasicStats implements IEquippableAffixStat {
     }
 
     public GetDescription(): string {
-        console.log("When: ");
+        // console.log("When: ");
         var trigger1Str = this.TriggerData.GetTriggerTypeInfo();
         var trigger2Str = Helpers.getPropertyByValue(CCEffectTypesEnum, this.TriggerData[this.TriggerData.SpellEffect]);
-        console.log(trigger1Str);
-        console.log(trigger2Str);
+        // console.log(trigger1Str);
+        // console.log(trigger2Str);
         return "Gain " + this.BasicStatsData.GetDescription() + " for " + this.Duration + "s when " + trigger1Str + " suffered";
     }
 }
@@ -84,11 +84,11 @@ export class ItemConditionalTriggerStats implements IItemAffixStats {
     }
 
     public GetDescription(): string {
-        console.log("When: ");
+        // console.log("When: ");
         var trigger1Str = this.TriggerData.GetTriggerTypeInfo();
         var trigger2Str = Helpers.getPropertyByValue(CCEffectTypesEnum, this.TriggerData);
-        console.log(trigger1Str);
-        console.log(trigger2Str);
+        // console.log(trigger1Str);
+        // console.log(trigger2Str);
         return "Gain " + this.BasicStatsData.GetDescription() + " for " + this.Duration + "s when " + trigger1Str + " suffered";
     }
 }
@@ -124,11 +124,11 @@ export class ItemConditionalCastStats implements IEquippableAffixStat {
     }
 
     public GetDescription(): string {
-        console.log("When: ");
+        // console.log("When: ");
         var trigger1Str = this.TriggerData.GetTriggerTypeInfo();
         var trigger2Str = Helpers.getPropertyByValue(CCEffectTypesEnum, this.TriggerData[this.TriggerData.SpellEffect]);
-        console.log(trigger1Str);
-        console.log(trigger2Str);
+        // console.log(trigger1Str);
+        // console.log(trigger2Str);
         return "Gain " + this.BasicStatsData.GetDescription() + " for " + this.Duration + "s when " + trigger1Str + " suffered";
     }
 }

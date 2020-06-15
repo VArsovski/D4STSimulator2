@@ -251,7 +251,7 @@ input[type=checkbox] {
     list-style: none;
     position: absolute;
     top: 275%;
-    left:-8%;
+    left:5%;
 }
 
 .wrapHolder li {
@@ -260,13 +260,14 @@ input[type=checkbox] {
 
 .wrap{
 	display:table;
-	width:125%;
+	/* width:125%;
 	height:45%;
-    max-width:125%;
+    max-width:125%; */
     margin:auto;
     position:absolute;
-    top: -35vh;
-    left: -45vh;
+    top:225px;
+    /* top: -35vh;
+    left: -45vh; */
     align-items: center;
     align-self: center;
     transform: scale(0.55, 0.45);
@@ -280,16 +281,31 @@ input[type=checkbox] {
     align-self: center;
 }
 
-.wrapperRight {
-    display:table;
-	width:25%;
-    max-width:25%;
-    margin:auto;
-    align-items: center;
-    align-self: center;
-    position: absolute;
-    left: 240%;
-    top: -35%;
+@media only screen and (min-width: 900px) {
+    .wrapperRight {
+        display:table;
+        width:25%;
+        max-width:25%;
+        margin:auto;
+        align-items: center;
+        align-self: center;
+        position: absolute;
+        left: 240%;
+        top: -35%;
+    }
+}
+@media only screen and (max-width: 900px) {
+    .wrapperRight {
+        display:table;
+        width:25%;
+        max-width:25%;
+        margin:auto;
+        align-items: center;
+        align-self: center;
+        position: absolute;
+        left: 56%;
+        top: 1440px;
+    }
 }
 
 .skillPickerContainer {
@@ -414,11 +430,21 @@ input[type=checkbox] {
     position:relative;
 }
 
-.inventoryAreaHolder {
-    /* transform: translate(0, -8%); */
-    position: absolute;
-    left: 40%;
-    top: 290px;
+@media only screen and (min-width: 750px) {
+    .inventoryAreaHolder {
+        /* transform: translate(0, -8%); */
+        position: absolute;
+        left: 40%;
+        top: 290px;
+    }
+}
+@media only screen and (max-width: 750px) {
+    .inventoryAreaHolder {
+        /* transform: translate(0, -8%); */
+        position: absolute;
+        left: -15%;
+        top: 1420px;
+    }
 }
 
 .verticalButtonTop {

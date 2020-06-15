@@ -78,7 +78,7 @@ export class ApiServiceService {
             },
           error => {
             debugger;
-            console.log(error);
+            console.error(error);
           }
         )};
 
@@ -101,7 +101,7 @@ export class ApiServiceService {
             setFn();
             },
           error => {
-            console.log(error);
+            console.error(error);
           }
         )};
     
@@ -129,7 +129,7 @@ export class ApiServiceService {
             return resolve;
           },
           error => {
-            console.log(error);
+            console.error(error);
             reject(error);
           }
         );

@@ -537,7 +537,6 @@ export class CalculationsHelper {
     var step = Math.round((factorDiff * factorLevelReduction / (expectedAmountOfFactors - 1)) * 100) / 100;
     var factorCalcList:number[] = [];
 
-    console.log(selectedType);
     while(currentLvl <= level && factorCalc > step) {
       // Each new factor also gets not only linearly reduced by step, but also 15% multiplicatively in addition, this prevents getting crazy reduction numbers on higher levels
       step *= 1.15;
