@@ -1,8 +1,8 @@
 <div class="row customHeaderFont">
   <div class="col">
-    <div class="row skillDetailsContainer" *ngIf="model.data.skillData">
+    <div class="row skillDetailsContainer" style="z-index: 999;" *ngIf="model.data.skillData">
       <div class="col-2 offset-2 text-left">
-        <app-CustomCompareTooltip width="45px" height="45px" contentImg="{{this.model.imageUrl}}" contentLabel="Details" text="{{this.model.description}}"></app-CustomCompareTooltip>
+        <app-CustomCompareTooltip width="45px" height="45px" contentImg="{{this.model.imageUrl}}" contentLabel="Details" text="{{this.model.description || 'Select a skill'}}"></app-CustomCompareTooltip>
         <label class="clearfix" *ngIf="this.model.level && this.model.level != 0">[Level {{model.level}}]</label>
         <div class="row"><div class="col">
           <label class="clearfix" *ngIf="this.model.data.skillData && model.data.skillData.powerData.from != 0">
@@ -24,26 +24,26 @@
           <label class="clearfix" *ngIf="model.data.skillData">{{ model.data.skillData.powerData.charges > 1 ? (model.data.skillData.powerData.charges || 0) + " charges" : "" }}</label>
         </div></div>
       </div>
-      <div class="col-1" style="position: relative; left: -15%;">
+      <div class="col-1" style="position: relative; left: -15%; z-index: 999;">
         <div *ngIf="model.data.skillData.powerData.from">
           <a (click)="LevelUpSkill(this.model)" (mouseover)="LevelUpPreview()" (mouseout)="LevelUpCancel()" class="sizeSmall ornament blueGlow redGlowHover"><img src="../_Resources/img/selectors/skull-1.png" alt="LevelUp">+1</a>
-          <a (click)="EquipSkill(this.model)" class="sizeSmall ornament purpleGlow redGlowHover"><img src="../_Resources/img/selectors/skull-1.png" alt="Equip">Equip</a>
+          <!-- <a (click)="EquipSkill(this.model)" class="sizeSmall ornament purpleGlow redGlowHover"><img src="../_Resources/img/selectors/skull-1.png" alt="Equip">Equip</a> -->
         </div>
       </div>
       <div class="col" style="width:180%; position: relative; left: -15%;">
         <div class="row" *ngIf="model.data.angelicAffix.powerData.SelectedAffix">
           <!-- Angelic: -->
-          <div class="col-1"><a class="sizeSmall ornament yellowGlow blueGlowHover" (mouseover)="PreviewEmpower(1)" (mouseout)="CancelPreview(1)" (click)="EmpowerAffix(1,1)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a></div>
+          <div class="col-1" style="z-index: 999;"><a class="sizeSmall ornament yellowGlow blueGlowHover" (mouseover)="PreviewEmpower(1)" (mouseout)="CancelPreview(1)" (click)="EmpowerAffix(1,1)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a></div>
           <div class="col"><label class="clearfix powerAffixDetail">{{ model.data.angelicAffix.powerData.Description }}</label></div>
         </div>
         <div class="row" *ngIf="model.data.demonicAffix.powerData.SelectedAffix">
           <!-- Demonic: -->
-          <div class="col-1"><a class="sizeSmall ornament redGlow blueGlowHover" (mouseover)="PreviewEmpower(2)" (mouseout)="CancelPreview(2)" (click)="EmpowerAffix(2,1)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a></div>
+          <div class="col-1" style="z-index: 999;"><a class="sizeSmall ornament redGlow blueGlowHover" (mouseover)="PreviewEmpower(2)" (mouseout)="CancelPreview(2)" (click)="EmpowerAffix(2,1)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a></div>
           <div class="col"><label class="clearfix powerAffixDetail">{{ model.data.demonicAffix.powerData.Description }}</label></div>
         </div>
         <div class="row" *ngIf="model.data.ancestralAffix.powerData.SelectedAffix">
           <!-- Ancestral: -->
-          <div class="col-1"><a class="sizeSmall ornament purpleGlow blueGlowHover" (mouseover)="PreviewEmpower(3)" (mouseout)="CancelPreview(3)" (click)="EmpowerAffix(3,1)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a></div>
+          <div class="col-1" style="z-index: 999;"><a class="sizeSmall ornament purpleGlow blueGlowHover" (mouseover)="PreviewEmpower(3)" (mouseout)="CancelPreview(3)" (click)="EmpowerAffix(3,1)"><img src="../_Resources/img/selectors/skull-1.png" alt="+1"></a></div>
           <div class="col"><label class="clearfix powerAffixDetail">{{ model.data.ancestralAffix.powerData.Description }}</label></div>
         </div>
       </div>

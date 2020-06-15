@@ -2,7 +2,10 @@
   <li class="wrapperLeft">
     <div class="row titleRowCustom">
       <div class="col jumbotron jumbotron-transparentCustom">
-          <h2 class="display-4 customHeaderFontLeftTop text-left">Our Mother blessed you with 
+          <h2 class="display-4 customHeaderFontLeftTop text-left">
+            <app-CustomCompareTooltip width="65px" classLabel="customHeaderFont h1" height="65px" contentLabel="Greeting wanderer"
+            text="Greetings wanderer, the journey of our fanfic project starts here. Much of information/statistic values are 'hidden' inside a tooltip like this one.<br/><br/>Start with a quick hover over the Class label, might also want to give a look at the 'Powers' or 'Gifts' for a fresh start.<br/><br/>However, keep in mind that this is a fanfic demo, therefore having a lot of 'wishful thinking' in the skill/affixes design"></app-CustomCompareTooltip>
+            Our Mother blessed you with
             <app-CustomCompareTooltip width="45px" classLabel="customHeaderFont h1" height="45px" contentLabel="Powers" text="Powers are your 'main attribute' character stats. There are 3 Powers per level gained as well as 3 types:
             <br/>
             <br/> Angelic (increases HP, Regen, Lifesteal, gains extra self-power on affixes, and even works as a natural Stamina regeneration)
@@ -31,10 +34,10 @@
         <app-powers [(model)]="model" [initialized]="initializeChildren" [previewModel]="powerUpCalculations" (powerUpEmitter)="PowerUpHandler($event)" (powerUpPreviewEmitter)="PowerUpPreviewHandler($event)"></app-powers>
       </div>
     </div>
-    <div class="row rowGiftsCustom" id="giftsContainer">
+    <!-- <div class="row rowGiftsCustom" id="giftsContainer">
       <div class="col-1 customHeaderFont h2">SKILLS:</div>
       <app-skillBar [(equippedModel)]="this.skillEquipModel" (selectEquipEmitter)="SkillSelectHandler($event)"></app-skillBar>
-    </div>
+    </div> -->
     <div class="row skillPickerContainer">
       <div class="row" *ngFor="let skillTier of this.skillTiers">
         <app-skillPicker [(model)]="skillTier" (skillEquippedEmitter)="EquipSkillHandler($event)"></app-skillPicker>

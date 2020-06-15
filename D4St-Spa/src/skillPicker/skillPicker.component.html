@@ -1,6 +1,12 @@
 <div class="row rowSkillsCustom align-content-center">
   <div class="customHeaderFont pt-3 col-2">
-    <app-DemoDropdownCustomHtml [caption]="this.caption" [items]="this.skillsPerTier" (itemSelectedEventAsync)="SelectSkill($event)"></app-DemoDropdownCustomHtml>
+    <!-- <app-CustomCompareTooltip width="75px" height="75px" contentLabel="Tier" text="{{this.model}}"></app-CustomCompareTooltip> -->
+    <div class="skillPickerTierContainer">
+      <div class="row">
+        <div class="col"><label class="h2">Tier {{this.model.tier}}</label></div>
+        <div class="col text-left" style="cursor: pointer; z-index: 999;"><app-DemoDropdownCustomHtml [caption]="this.caption" [items]="this.skillsPerTier" (itemSelectedEventAsync)="SelectSkill($event)"></app-DemoDropdownCustomHtml></div>
+      </div>
+    </div>
   </div>
   <!-- <div class="col-1 text-left">
     <label class="h4"><div class="ml-5">TIER {{this.model.tier}} {{this.model.tierName}}</div></label>
