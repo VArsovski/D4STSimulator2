@@ -1,0 +1,7 @@
+{
+  "name": "D4StSimulator2",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}
